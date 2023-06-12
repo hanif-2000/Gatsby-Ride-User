@@ -1,0 +1,30 @@
+import 'package:equatable/equatable.dart';
+
+import '../../../../core/utility/helper.dart';
+
+class LoginErrorResponseModel extends Equatable {
+  final String errorMessage;
+
+  const LoginErrorResponseModel({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
+
+  factory LoginErrorResponseModel.fromJson(Map<String, dynamic> json) {
+    late String _errorMessage;
+
+    try {
+      final String? errorMessage =
+          json['message'] ?? '';
+
+
+      _errorMessage = errorMessage!;
+    } catch (e) {
+      logMe(e);
+      _errorMessage = '';
+    }
+    return LoginErrorResponseModel(
+      errorMessage: _errorMessage,
+    );
+  }
+}

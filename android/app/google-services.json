@@ -1,0 +1,142 @@
+{
+  "project_info": {
+    "project_number": "1022060321341",
+    "project_id": "gatsbyrideshare",
+    "storage_bucket": "gatsbyrideshare.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022060321341:android:ed95f39f92358cae122854",
+        "android_client_info": {
+          "package_name": "appkey.user.taxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi62G7s0eXnCzwbDYYDIj8yDF0drF0_2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022060321341:android:1d535f74130f9e28122854",
+        "android_client_info": {
+          "package_name": "driver.getride.taxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022060321341-fce1hbj4rfkea3ep5i21tf6eg6kgguof.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "driver.getride.taxi",
+            "certificate_hash": "c0919ead6a94a79bf4b029d7703814ea6b26edcb"
+          }
+        },
+        {
+          "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi62G7s0eXnCzwbDYYDIj8yDF0drF0_2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022060321341:android:eb8276d2fa56bc57122854",
+        "android_client_info": {
+          "package_name": "getride.driver.taxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi62G7s0eXnCzwbDYYDIj8yDF0drF0_2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022060321341:android:190f8c91e45b5201122854",
+        "android_client_info": {
+          "package_name": "getride.user.taxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022060321341-l4jc9qifak0v6bbrfl6uiol4sc5p2pl3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "getride.user.taxi",
+            "certificate_hash": "c0919ead6a94a79bf4b029d7703814ea6b26edcb"
+          }
+        },
+        {
+          "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi62G7s0eXnCzwbDYYDIj8yDF0drF0_2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

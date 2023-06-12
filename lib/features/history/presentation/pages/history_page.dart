@@ -1,0 +1,88 @@
+import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:appkey_taxiapp_user/core/static/styles.dart';
+import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:appkey_taxiapp_user/features/history/presentation/widgets/history_item.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/history_state.dart';
+import '../providers/history_provider.dart';
+
+class HistoryPage extends StatefulWidget {
+  static const String routeName = "HistoryPage";
+  const HistoryPage({Key? key}) : super(key: key);
+
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: whiteColor,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: blackColor,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: whiteColor,
+          centerTitle: true,
+          elevation: 0.0,
+          title: Text(
+            appLoc.history,
+            style: const TextStyle(
+              fontSize: 24.0,
+              fontFamily: 'poPPinMedium',
+              color: blackColor,
+            ),
+          ),
+        ),
+        body: SafeArea(
+          child: Consumer<HistoryProvider>(builder: (context, provider, _) {
+            return StreamBuilder<HistoryState>(
+                stream: context.read<HistoryProvider>().fetchHistory(),
+                builder: (context, state) {
+                  switch (state.data.runtimeType) {
+                    case HistoryLoading:
+                      return const Center(child: CircularProgressIndicator());
+                    case HistoryFailure:
+                      final failure = (state.data as HistoryFailure).failure;
+                      showToast(message: failure);
+                      return const SizedBox.shrink();
+                    case HistoryLoaded:
+                      final _data = (state.data as HistoryLoaded).data;
+                      if (_data.isEmpty) {
+                        return Center(
+                          child: Text(
+                            appLoc.thereAreNoPastOrders,
+                            style: formLabelHeaderStyle,
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                          itemCount: _data.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: HistoryItem(data: _data[index]),
+                            );
+                          });
+                  }
+                  return const SizedBox.shrink();
+                });
+          }),
+        ));
+  }
+}

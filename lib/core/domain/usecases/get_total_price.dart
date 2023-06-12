@@ -1,0 +1,22 @@
+import 'package:appkey_taxiapp_user/core/domain/entities/total_price.dart';
+import 'package:appkey_taxiapp_user/core/domain/repositories/total_price_repository.dart';
+import 'package:dartz/dartz.dart';
+
+import '../../error/failure.dart';
+
+abstract class GetTotalPriceUseCase<Type> {
+  Future<Either<Failure, TotalPrice>> call(
+      String kategoriId, String distance, String night);
+}
+
+class GetTotalPrice implements GetTotalPriceUseCase {
+  TotalPriceRepository repository;
+
+  GetTotalPrice(this.repository);
+
+  @override
+  Future<Either<Failure, TotalPrice>> call(
+      String kategoriId, String distance, String night) async {
+    return await repository.getTotalPrice(kategoriId, distance, night);
+  }
+}

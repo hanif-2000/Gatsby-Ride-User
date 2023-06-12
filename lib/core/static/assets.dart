@@ -1,0 +1,28 @@
+const String appLogo = 'assets/images/icon.png';
+// const String logoSplash = 'assets/images/logo-splash.png';
+const String logoSplash = 'assets/images/splash_logo.png';
+const String splashTaxiImage = 'assets/images/splash_bottom_taxi_image.png';
+const String taxiTextAsset = 'assets/images/taxi-text.png';
+const String userIcon = 'assets/icons/user.png';
+const String menuIcon = 'assets/icons/menu-icon.png';
+const String historyIcon = 'assets/icons/history.png';
+const String carIconAsset = 'assets/icons/car-icon.png';
+const String introductionIcon = 'assets/icons/user-friends.png';
+const String closeIcon = 'assets/icons/close.png';
+const String logoutIcon = 'assets/icons/log-out.png';
+const String redMarkerIcon = 'assets/icons/redMarker.png';
+const String pickupIcon = 'assets/icons/pick-up-icon.png';
+const String destinationIcon = 'assets/icons/destination-icon.png';
+const String carIcon = 'assets/icons/car-dropdown.png';
+const String driverMarkerIcon = 'assets/icons/driverMarker.png';
+const String cashIcon = 'assets/icons/cash.png';
+const String creditIcon = 'assets/icons/credit.png';
+const String userAvatarImage = 'assets/images/user_avatar.png';
+
+
+const String passwordLockIcon = 'assets/icons/password_lock_icon.png';
+const String dividerIcon = 'assets/images/divider_image.png';
+// const String facebookIcon = 'assets/images/fb_logo.png';
+const String facebookIcon ="assets/images/fb.png";
+const String cameraIcon = "assets/images/camera_icon.png";
+const String pickGalleryImage = "assets/images/add_gallery_image.png";
