@@ -1,3 +1,4 @@
+import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../../../features/profile/presentation/providers/profile_provider.dart';
 import '../../../features/profile/presentation/providers/profile_state.dart';
-import '../../static/assets.dart';
 import '../../utility/helper.dart';
 
 class ProfileInformationDrawer extends StatelessWidget {

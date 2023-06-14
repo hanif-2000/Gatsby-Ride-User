@@ -1,11 +1,13 @@
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:appkey_taxiapp_user/features/history/presentation/widgets/rating_widget.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
-import '../../../../core/presentation/widgets/custom_app_title_bar.dart';
-import '../../../../core/static/styles.dart';
 import '../../data/models/history_response_model.dart';
+import '../widgets/driver_profile.dart';
 
 class DetailHistoryPage extends StatefulWidget {
   final HistoryOrder item;
@@ -24,16 +26,31 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    String orderDate = getDateString(widget.item.orderTime);
+    // String orderDate = getDateString(widget.item.orderTime as DateTime);
+    // var _deviceSize = MediaQuery.of(context).size;s
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: greyColor,
-        appBar: CustomAppTtitleBar(
+        backgroundColor: whiteColor,
+        appBar: AppBar(
+          backgroundColor: whiteColor,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            color: blackColor,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: const Text(
+            "Trip Detail",
+            style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.w500,
+              color: blackColor,
+            ),
+          ),
           centerTitle: true,
-          canBack: true,
-          title: appLoc.historyDetail.toUpperCase(),
-          hideShadow: true,
+          elevation: 0.0,
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -41,9 +58,10 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                //Show Trip Date/time and status
                 Container(
                   height: 50,
-                  color: shadowColor,
+                  color: yellowF9EACCColor,
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -51,20 +69,54 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          //Trip Date and Time
                           Flexible(
                             flex: 2,
                             child: AutoSizeText(
-                              orderDate,
+                              DateFormat('dMMM yyyy, h:mma')
+                                  .format(widget.item.orderTime)
+                                  .toString(),
                               maxLines: 1,
                             ),
                           ),
                           Flexible(
                             flex: 2,
-                            child: AutoSizeText(
-                              getHistoryStatus(widget.item.status),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              style: formTextFieldStyle,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                (getHistoryStatus(widget.item.status) ==
+                                        "Cancelled")
+                                    ? SvgPicture.asset(
+                                        'assets/icons/red_dot.svg')
+                                    : SvgPicture.asset(
+                                        'assets/icons/green_dot.svg'),
+                                const SizedBox(
+                                  width: 10.0,
+                                ),
+
+                                AutoSizeText(
+                                  getHistoryStatus(widget.item.status),
+                                  textAlign: TextAlign.end,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                    color:
+                                        (getHistoryStatus(widget.item.status) ==
+                                                "Cancelled")
+                                            ? redf52d56Color
+                                            : green2DAA5FColor,
+                                    fontSize: 14.0,
+                                    fontFamily: 'poPPinMedium',
+                                  ),
+                                ),
+                                // AutoSizeText(
+                                //   getHistoryStatus(widget.item.status),
+                                //   overflow: TextOverflow.ellipsis,
+                                //   maxLines: 2,
+                                //   style: formTextFieldStyle,
+                                // ),
+                              ],
                             ),
                           ),
                         ],
@@ -72,32 +124,52 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                     ),
                   ),
                 ),
+
+//Show Trip Map
+                const Icon(
+                  Icons.map,
+                  size: 200,
+                ),
+
+                /** 
+                 * 
+                 * Show Trip Starting and Ending Points 
+                 * **/
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
                   child: Container(
                     color: whiteColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        DriverProfileWidget(
+                          category: widget.item.category.category,
+                          driverId: widget.item.driverId,
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(
-                              top: 10.0, left: 10.0, bottom: 0, right: 10.0),
+                              top: 10.0, left: 10.0, bottom: 0, right: 0.0),
                           child: Container(
                               decoration: const BoxDecoration(
                                 color: whiteColor,
                               ),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Icon(
-                                      Icons.my_location,
-                                      color: primaryColor,
-                                      size: 35,
-                                    ),
-                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: SvgPicture.asset(
+                                          'assets/icons/color_location_logo.svg')
+
+                                      // Icon(
+                                      //   Icons.my_location,
+                                      //   color: primaryColor,
+                                      //   size: 35,
+                                      // ),
+                                      ),
                                   Flexible(
                                     child: Column(
                                       mainAxisAlignment:
@@ -106,25 +178,29 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Flexible(
+                                        const Flexible(
                                           child: Text(
-                                            appLoc.startingPoint,
+                                            "Pickup Location",
                                             maxLines: 1,
-                                            style: const TextStyle(
-                                                fontFamily: 'Hiragino Kaku',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16),
+                                            style: TextStyle(
+                                              fontFamily: 'poPPinSemiBold',
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(height: 2.0),
                                         Flexible(
-                                          child: Text(widget.item.startAddress,
-                                              maxLines: 5,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                  fontFamily: 'Hiragino Kaku',
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: 14)),
+                                          child: Text(
+                                            widget.item.startAddress,
+                                            maxLines: 5,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontFamily: 'poPPinMedium',
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -142,16 +218,20 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                           child: Container(
                               color: whiteColor,
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Icon(
-                                      Icons.location_on,
-                                      color: primaryColor,
-                                      size: 35,
-                                    ),
-                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: SvgPicture.asset(
+                                          'assets/icons/destination_logo.svg')
+
+                                      //  Icon(
+                                      //   Icons.location_on,
+                                      //   color: primaryColor,
+                                      //   size: 35,
+                                      // ),
+                                      ),
                                   Flexible(
                                     child: Column(
                                       mainAxisAlignment:
@@ -160,25 +240,28 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Flexible(
+                                        const Flexible(
                                           child: Text(
-                                            appLoc.destination,
+                                            "Drop location",
                                             maxLines: 1,
-                                            style: const TextStyle(
-                                                fontFamily: 'Hiragino Kaku',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16),
+                                            style: TextStyle(
+                                                fontFamily: 'poPPinSemiBold',
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18),
                                           ),
                                         ),
                                         const SizedBox(height: 2.0),
                                         Flexible(
-                                          child: Text(widget.item.endAddress,
-                                              maxLines: 5,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                  fontFamily: 'Hiragino Kaku',
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: 14)),
+                                          child: Text(
+                                            widget.item.endAddress,
+                                            maxLines: 5,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontFamily: 'poPPinMedium',
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -190,32 +273,83 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                     ),
                   ),
                 ),
+
+                //Show Payment Method
                 Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
                     child: Container(
-                      color: whiteColor,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            mediumVerticalSpacing(),
-                            Text(
-                              appLoc.paymentMethod,
-                              style: const TextStyle(
-                                  fontFamily: 'Yu Ghotic',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                            ),
-                            smallVerticalSpacing(),
-                            Text(
-                              getPaymentMethod(widget.item),
-                            ),
-                            mediumVerticalSpacing(),
-                          ],
-                        ),
+                      decoration: BoxDecoration(
+                        color: yellowE4AC3BColor.withOpacity(.12),
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                            vertical: 8.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Flexible(
+                                flex: 2,
+                                child: Text(
+                                  "Payment Through",
+                                  style: TextStyle(
+                                    fontFamily: 'poPPinMedium',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                flex: 2,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    SvgPicture.asset('assets/icons/cash.svg'),
+                                    const Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 10.0,
+                                      ),
+                                      child: Text(
+                                        "Cash",
+                                        style: TextStyle(
+                                            fontFamily: 'poPPinMedium',
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                            color: grey7D7979Color),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+
+                          // Column(
+                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                          //   children: [
+                          //     mediumVerticalSpacing(),
+                          //     Text(
+                          //       appLoc.paymentMethod,
+                          //       style: const TextStyle(
+                          //           fontFamily: 'Yu Ghotic',
+                          //           fontWeight: FontWeight.bold,
+                          //           fontSize: 18),
+                          //     ),
+                          //     smallVerticalSpacing(),
+                          //     Text(
+                          //       getPaymentMethod(widget.item),
+                          //     ),
+                          //     mediumVerticalSpacing(),
+                          //   ],
+                          // ),
+
+                          ),
                     )),
+
+                //Show Price Details
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: Container(
@@ -242,6 +376,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    //Distance
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -250,26 +385,40 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                       children: [
                                         Text(appLoc.distance,
                                             style: const TextStyle(
-                                                fontFamily: 'Yu Ghotic',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14)),
-                                        Text(mergeDistanceTxt(
-                                            widget.item.distance))
+                                                fontFamily: 'poPPinSemiBold',
+                                                fontSize: 16)),
+                                        Text(
+                                          mergeDistanceTxt(
+                                            widget.item.distance,
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontFamily: "poPPinMedium",
+                                          ),
+                                        )
                                       ],
                                     ),
+
+                                    //Type of Taxi/Cab Type
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Text(appLoc.typeOfTaxi,
-                                            style: const TextStyle(
-                                                fontFamily: 'Yu Ghotic',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14)),
+                                        const Text("Cab Type",
+                                            style: TextStyle(
+                                                fontFamily: 'poPPinSemiBold',
+                                                fontSize: 16)),
                                         Text(
-                                            mergeTypeTaxi(widget.item.category))
+                                          mergeTypeTaxi(
+                                            widget.item.category,
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontFamily: "poPPinMedium",
+                                          ),
+                                        )
                                       ],
                                     ),
                                     Row(
@@ -280,10 +429,15 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                       children: [
                                         Text(appLoc.price,
                                             style: const TextStyle(
-                                                fontFamily: 'Yu Ghotic',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14)),
-                                        Text(mergePriceTxt(widget.item.total))
+                                                fontFamily: 'poPPinSemiBold',
+                                                fontSize: 16)),
+                                        Text(
+                                          mergePriceTxt(widget.item.total),
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontFamily: "poPPinMedium",
+                                          ),
+                                        )
                                       ],
                                     )
                                   ],
@@ -294,18 +448,24 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(appLoc.total,
-                                        style: const TextStyle(
-                                            fontFamily: 'Yu Ghotic',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            color: primaryColor)),
-                                    Text(mergePriceTxt(widget.item.total),
-                                        style: const TextStyle(
-                                            fontFamily: 'Yu Ghotic',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            color: primaryColor)),
+                                    Text(
+                                      appLoc.total,
+                                      style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 18,
+                                        color: blackColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      mergePriceTxt(widget.item.total),
+                                      style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 18,
+                                        color: blackColor,
+                                      ),
+                                    ),
                                   ])
                             ],
                           ),
@@ -313,7 +473,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       },
                     ),
                   ),
-                )
+                ),
+                const RatingWidget()
               ],
             ),
           ),

@@ -19,10 +19,12 @@ const String cashIcon = 'assets/icons/cash.png';
 const String creditIcon = 'assets/icons/credit.png';
 const String userAvatarImage = 'assets/images/user_avatar.png';
 
-
 const String passwordLockIcon = 'assets/icons/password_lock_icon.png';
 const String dividerIcon = 'assets/images/divider_image.png';
 // const String facebookIcon = 'assets/images/fb_logo.png';
-const String facebookIcon ="assets/images/fb.png";
+const String facebookIcon = "assets/images/fb.png";
 const String cameraIcon = "assets/images/camera_icon.png";
 const String pickGalleryImage = "assets/images/add_gallery_image.png";
+const String userImage = "assets/images/user.png";
+const String starImage = "assets/images/star.png";
+const String cardImage = "assets/images/card.png";

@@ -1,15 +1,12 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:appkey_taxiapp_user/core/domain/entities/order_data_detail.dart';
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/static/order_status.dart';
 import 'package:appkey_taxiapp_user/core/utility/app_settings.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/entities/driver_detail.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/usecases/create_oder.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_driver_detail.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_driver_location.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_order_detail.dart';

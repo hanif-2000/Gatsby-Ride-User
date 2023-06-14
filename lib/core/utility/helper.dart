@@ -116,6 +116,7 @@ Future<double> getDistance(
 
 showLoading() {
   SmartDialog.showLoading(
+    animationType: SmartAnimationType.centerFade_otherSlide,
     backDismiss: false,
     builder: (context) => const CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:appkey_taxiapp_user/core/presentation/widgets/bottom_sheet_book_ride.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_app_bar.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
@@ -43,9 +42,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         child: SafeArea(
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: const CustomAppBar(
-              centerTitle: false,
-            ),
+            // appBar: const CustomAppBar(
+            //   centerTitle: false,
+            // ),
             body: Consumer<HomeProvider>(builder: (context, map, _) {
               return Stack(
                 children: <Widget>[
@@ -64,72 +63,77 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   ),
                   SafeArea(
                       child: Stack(children: [
-                    Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          OriginWidget(
-                            deviceWidth: _deviceSize.width,
-                            isFromOrder: false,
-                          ),
-                          DestinationWidget(
-                            deviceWidth: _deviceSize.width,
-                            isFromOrder: false,
-                          ),
-
-                          /** Below is the new UI*/
-
-                          const Spacer(),
-
-                          Visibility(
-                            visible: map.isDestinationSelected,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: CustomButton(
-                                text: const Text(
-                                  "Confirm",
-                                  style: TextStyle(
-                                    fontFamily: 'poPPinSemiBold',
-                                    fontWeight: FontWeight.w600,
-                                    color: whiteColor,
+                    Container(
+                      child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              child: Column(
+                                children: [
+                                  OriginWidget(
+                                    deviceWidth: _deviceSize.width,
+                                    isFromOrder: false,
                                   ),
-                                ),
-                                event: () {
-                                  showModalBottomSheet(
-                                    useRootNavigator: true,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    // backgroundColor: ,
-                                    context: context,
-                                    builder: (context) {
-                                      return const BottomSheetBookRide();
-                                    },
-                                  );
-                                },
-                                buttonHeight: 50,
-                                isRounded: true,
-                                bgColor: black080809Color,
+                                  DestinationWidget(
+                                    deviceWidth: _deviceSize.width,
+                                    isFromOrder: false,
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
 
-                          /** Below is the old ui  */
+                            /** Below is the new UI*/
 
-                          // const BottomContainerHome(),
-                          // SizedBox(
-                          //   height: _deviceSize.height * .01,
-                          // ),
+                            const Spacer(),
+                            Visibility(
+                              visible: map.isDestinationSelected,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomButton(
+                                  text: const Text(
+                                    "Confirm",
+                                    style: TextStyle(
+                                      fontFamily: 'poPPinSemiBold',
+                                      fontWeight: FontWeight.w600,
+                                      color: whiteColor,
+                                    ),
+                                  ),
+                                  event: () {
+                                    showModalBottomSheet(
+                                      useRootNavigator: true,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      // backgroundColor: ,
+                                      context: context,
+                                      builder: (context) {
+                                        return const BottomSheetBookRide();
+                                      },
+                                    );
+                                  },
+                                  buttonHeight: 50,
+                                  isRounded: true,
+                                  bgColor: black080809Color,
+                                ),
+                              ),
+                            ),
 
-                          // Expanded(
-                          //     child: Column(
-                          //         crossAxisAlignment: CrossAxisAlignment.end,
-                          //         mainAxisAlignment: MainAxisAlignment.end,
-                          //         children: const [
-                          //       CurrentLocationWidget(),
-                          // BottomContainerHome()
-                          //     ]))
-                        ])
+                            // /** Below is the old ui  */
+
+                            // SizedBox(
+                            //   height: _deviceSize.height * .01,
+                            // ),
+                            // Expanded(
+                            //     child: Column(
+                            //         crossAxisAlignment: CrossAxisAlignment.end,
+                            //         mainAxisAlignment: MainAxisAlignment.end,
+                            //         children: const [
+                            //       CurrentLocationWidget(),
+                            //       BottomContainerHome()
+                            //     ]))
+                          ]),
+                    )
                   ]))
                 ],
               );

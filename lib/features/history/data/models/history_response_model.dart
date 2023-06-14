@@ -98,7 +98,7 @@ class HistoryOrder {
         "end_address": endAddress,
         "distance": distance,
         "total": total,
-        "order_time": orderTime.toIso8601String(),
+        "order_time": orderTime,
         "status": status,
         "time_school": timeSchool,
         "time_after_school": timeAfterSchool,

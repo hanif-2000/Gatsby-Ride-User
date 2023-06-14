@@ -22,6 +22,10 @@ class NetworkInfoImplementation implements NetworkInfo {
         return false;
       case ConnectivityResult.vpn:
         return true;
+      case ConnectivityResult.other:
+        return false;
+      default:
+        return false;
     }
   }
 }

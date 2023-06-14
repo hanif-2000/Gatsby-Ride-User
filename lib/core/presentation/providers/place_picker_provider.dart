@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:appkey_taxiapp_user/core/domain/usecases/get_google_place.dart';
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/app_settings.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

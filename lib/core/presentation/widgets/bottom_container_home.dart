@@ -2,7 +2,6 @@ import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.da
 import 'package:appkey_taxiapp_user/core/presentation/widgets/button_request_taxi_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/category_car_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/distance_price_widget.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/payment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +27,7 @@ class BottomContainerHome extends StatelessWidget {
                 DistancePriceWidget(),
 
                 // Show Payment Option
-                PaymentOption(),
+                // PaymentOption(),
 
                 //Call Taxi Button
                 ButtonRequestTaxi()

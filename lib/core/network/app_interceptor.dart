@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../features/login/presentation/pages/login_page.dart';
 import '../utility/helper.dart';
 import '../utility/injection.dart';
 import '../utility/session_helper.dart';
@@ -55,7 +54,6 @@ class AppInterceptor extends Interceptor {
       );
       // final session = locator<Session>();
       // session.setLoggedIn = false;
-
     }
 
     if (statusCode == HttpStatus.forbidden) {}

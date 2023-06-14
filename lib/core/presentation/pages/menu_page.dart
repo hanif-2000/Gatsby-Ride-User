@@ -6,7 +6,6 @@ import 'package:appkey_taxiapp_user/features/privacy_policy/privacy_policy_page.
 import 'package:appkey_taxiapp_user/features/terms_and_conditions/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
 
-import '../../../features/profile/presentation/pages/profile_page.dart';
 import '../../utility/helper.dart';
 import '../widgets/close_button.dart';
 import '../widgets/custom_dialog_logout.dart';
@@ -55,16 +54,16 @@ class HomeDrawerPage extends StatelessWidget {
                         },
                       ),
 
-                      //Information
-                      DrawerButtonItemWidget(
-                        title: appLoc.profile,
-                        onTap: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            ProfilePage.routeName,
-                          );
-                        },
-                      ),
+                      // //Information
+                      // DrawerButtonItemWidget(
+                      //   title: appLoc.profile,
+                      //   onTap: () {
+                      //     Navigator.pushReplacementNamed(
+                      //       context,
+                      //       ProfilePage.routeName,
+                      //     );
+                      //   },
+                      // ),
 
                       //Contact Us
                       DrawerButtonItemWidget(

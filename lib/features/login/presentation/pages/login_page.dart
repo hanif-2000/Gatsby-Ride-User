@@ -1,9 +1,9 @@
-import 'package:appkey_taxiapp_user/core/presentation/pages/home_page/home_page.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/dimens.dart';
 import 'package:appkey_taxiapp_user/features/register/presentation/pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../core/static/assets.dart';
 import '../../../../core/utility/injection.dart';
@@ -181,9 +181,6 @@ class LoginPage extends StatelessWidget {
                   onTap: () {
                     Navigator.pushNamedAndRemoveUntil(
                         context, HomePage.routeName, (route) => false);
-
-                    // Navigator.pushNamedAndRemoveUntil(
-                    //     context, CreateProfilePage.routeName, (route) => false);
                   },
                   child: const Text(
                     'Skip for now',

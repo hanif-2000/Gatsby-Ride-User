@@ -4,10 +4,8 @@ import 'package:appkey_taxiapp_user/features/profile/presentation/widgets/bottom
 import 'package:appkey_taxiapp_user/features/profile/presentation/widgets/top_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/presentation/widgets/custom_app_title_bar.dart';
 import '../providers/profile_provider.dart';
 import '../providers/profile_state.dart';
-
 
 class ProfilePage extends StatefulWidget {
   static const String routeName = "ProfilePage";
@@ -27,16 +25,28 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: whiteColor,
-        appBar: CustomAppTtitleBar(
-          centerTitle: true,
-          canBack: true,
-          title: appLoc.profile.toUpperCase(),
-          hideShadow: true,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: blackColor,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: whiteColor,
+          elevation: 0.0,
         ),
+        // appBar: CustomAppTtitleBar(
+        //   centerTitle: true,
+        //   canBack: true,
+        //   title: appLoc.profile.toUpperCase(),
+        //   hideShadow: true,
+        // ),
         body: SafeArea(
           child: Consumer<ProfileProvider>(builder: (context, provider, _) {
-            return
-              StreamBuilder<ProfileState>(
+            return StreamBuilder<ProfileState>(
                 stream: context.read<ProfileProvider>().fetchProfile(),
                 builder: (context, state) {
                   switch (state.data.runtimeType) {

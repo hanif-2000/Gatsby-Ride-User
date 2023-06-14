@@ -1,19 +1,18 @@
+import 'package:appkey_taxiapp_user/core/presentation/pages/splash_page.dart';
+import 'package:appkey_taxiapp_user/core/routes/route.dart';
+import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/otp_verification_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'core/presentation/pages/splash_page.dart';
 import 'core/presentation/providers/home_provider.dart';
 import 'core/presentation/providers/place_picker_provider.dart';
 import 'core/presentation/providers/splash_provider.dart';
-import 'core/routes/route.dart';
-import 'core/static/colors.dart';
 import 'core/utility/firebase_helper.dart';
 import 'core/utility/helper.dart';
 import 'core/utility/injection.dart';
@@ -26,6 +25,8 @@ import 'features/profile/presentation/providers/change_email_provider.dart';
 import 'features/profile/presentation/providers/change_password_provider.dart';
 import 'features/profile/presentation/providers/profile_edit_provider.dart';
 import 'features/profile/presentation/providers/profile_provider.dart';
+import 'dart:async';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -109,14 +110,14 @@ Future<void> main() async {
 
 //   log("KEY HASH IS===============>>>>>>>>>>>>>" + keyHash);
 
-//   // If the widget was removed from the tree while the asynchronous platform
-//   // message was in flight, we want to discard the reply rather than calling
-//   // setState to update our non-existent appearance.
-//   // if (!mounted) return;
+// If the widget was removed from the tree while the asynchronous platform
+// message was in flight, we want to discard the reply rather than calling
+// setState to update our non-existent appearance.
+// if (!mounted) return;
 
-//   // setState(() {
-//   //   _keyHash = keyHash;
-//   // });
+// setState(() {
+//   _keyHash = keyHash;
+// });
 // }
 
 class MyApp extends StatelessWidget {
@@ -126,29 +127,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        navigatorKey: locator<GlobalKey<NavigatorState>>(),
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme:
-              ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color
-                  // primary: primaryColor,
-                  ),
-        ),
-        navigatorObservers: [routeObserver],
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en', ''),
-        ],
-        // Initialize routes
-        onGenerateRoute: generateRoute,
-        home: const SplashPage(),
-        // home: CreateProfilePage(),
-        debugShowCheckedModeBanner: false,
-        builder: FlutterSmartDialog.init());
+      navigatorKey: locator<GlobalKey<NavigatorState>>(),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme:
+            ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color
+                // primary: primaryColor,
+                ),
+      ),
+      navigatorObservers: [routeObserver],
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+      ],
+      // Initialize routes
+      onGenerateRoute: generateRoute,
+      home: const SplashPage(),
+      // home: CreateProfilePage(),
+      debugShowCheckedModeBanner: false,
+
+      builder: FlutterSmartDialog.init(),
+    );
+
+    // return MaterialApp(
+    //   home: MapSample(),
+    // );
   }
 }

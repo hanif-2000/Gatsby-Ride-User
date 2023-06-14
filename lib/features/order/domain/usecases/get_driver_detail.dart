@@ -1,5 +1,3 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/price_category_list.dart';
-import 'package:appkey_taxiapp_user/core/domain/repositories/price_category_repository.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/repositories/order_repository.dart';
 import 'package:dartz/dartz.dart';
 

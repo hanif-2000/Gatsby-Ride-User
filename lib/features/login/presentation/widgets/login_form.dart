@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_text_field.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/dimens.dart';
@@ -27,17 +29,21 @@ class _LoginFormState extends State<LoginForm> {
     FocusManager.instance.primaryFocus?.unfocus();
     final provider = context.read<LoginProvider>();
     provider.doLoginApi().listen((state) async {
+      log(state.toString());
       switch (state.runtimeType) {
         case LoginLoading:
           showLoading();
+
           break;
         case LoginFailure:
           final msg = (state as LoginFailure).failure;
           dismissLoading();
+
           showToast(message: msg);
           break;
         case LoginSuccess:
           dismissLoading();
+
           final session = locator<Session>();
           session.setLoggedIn = true;
           showToast(message: appLoc.success);

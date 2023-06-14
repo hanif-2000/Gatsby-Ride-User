@@ -2,7 +2,6 @@ import 'package:appkey_taxiapp_user/core/utility/extension.dart';
 import 'package:appkey_taxiapp_user/features/order/data/models/detail_driver_response.dart';
 import 'package:appkey_taxiapp_user/features/order/data/models/detail_order_response_model.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/entities/driver_detail.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/entities/driver_detail_response.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/entities/order_detail.dart';
 import 'package:dio/dio.dart';
 

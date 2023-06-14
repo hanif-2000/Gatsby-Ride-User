@@ -4,6 +4,7 @@ import 'package:appkey_taxiapp_user/features/history/data/models/history_respons
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 import '../pages/detail_history_page.dart';
 
@@ -22,7 +23,7 @@ class HistoryItem extends StatefulWidget {
 class _HistoryItemState extends State<HistoryItem> {
   @override
   Widget build(BuildContext context) {
-    String orderDate = getDateString(widget.data.orderTime);
+    // DateTime orderDate = getDateString(widget.data.orderTime);
 
     return GestureDetector(
         onTap: () {
@@ -50,7 +51,7 @@ class _HistoryItemState extends State<HistoryItem> {
                 Container(
                     height: constraint.maxHeight * 0.25,
                     decoration: BoxDecoration(
-                        color: whiteColor.withOpacity(.8),
+                        color: whiteColor.withOpacity(.5),
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(15),
                             topRight: Radius.circular(15))),
@@ -67,7 +68,10 @@ class _HistoryItemState extends State<HistoryItem> {
                               Flexible(
                                 flex: 2,
                                 child: AutoSizeText(
-                                  orderDate,
+                                  DateFormat('dMMM yyyy, h:mma')
+                                      .format(widget.data.orderTime)
+                                      .toString(),
+                                  // orderDate,
                                   maxLines: 1,
                                   style: const TextStyle(
                                     color: blackColor,
