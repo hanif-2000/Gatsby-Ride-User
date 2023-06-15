@@ -147,6 +147,10 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                         DriverProfileWidget(
                           category: widget.item.category.category,
                           driverId: widget.item.driverId,
+                          driverImage: widget.item.image,
+                          driverName: widget.item.driverName,
+                          platerNumber: widget.item.plateNumber,
+                          rating: widget.item.rating,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(

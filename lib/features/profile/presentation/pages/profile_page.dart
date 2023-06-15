@@ -1,11 +1,14 @@
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/widgets/bottom_profile.dart';
+import 'package:appkey_taxiapp_user/features/profile/presentation/widgets/form_edit_profile.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/widgets/top_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/utility/injection.dart';
+import '../providers/profile_edit_provider.dart';
 import '../providers/profile_provider.dart';
 import '../providers/profile_state.dart';
+import 'edit_profile_page.dart';
 
 class ProfilePage extends StatefulWidget {
   static const String routeName = "ProfilePage";
@@ -61,15 +64,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       return ListView(
                         children: [
                           AspectRatio(
-                            aspectRatio: 5 / 4,
+                            aspectRatio: 5 / 3,
                             child: Container(
-                              color: greySecondColor,
+                              color: whiteColor,
                               child: TopProfile(
                                 data: _data,
                               ),
                             ),
                           ),
-                          const BottomProfile()
+
+                          EditProfilePage(),
+
+                          showProfileData(),
+                          // FormEditProfile(),
+                          // const BottomProfile()
                         ],
                       );
                   }
@@ -77,5 +85,45 @@ class _ProfilePageState extends State<ProfilePage> {
                 });
           }),
         ));
+  }
+}
+
+class showProfileData extends StatefulWidget {
+  const showProfileData({Key? key}) : super(key: key);
+
+  @override
+  State<showProfileData> createState() => _showProfileDataState();
+}
+
+class _showProfileDataState extends State<showProfileData> {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ProfileProvider>(
+              create: (_) => locator<ProfileProvider>()..setProfileData()),
+          ChangeNotifierProxyProvider<ProfileProvider, ProfileEditProvider>(
+            create: (_) => locator<ProfileEditProvider>(),
+            update: (context, profile, edit) =>
+                edit!..setupTextControllerValues(profile.profile),
+          )
+        ],
+        builder: (context, child) => Scaffold(
+            key: locator<GlobalKey<ScaffoldState>>(),
+            backgroundColor: whiteColor,
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                return Consumer<ProfileProvider>(
+                    builder: (context, provider, _) {
+                  if (provider.isLoadProfile) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListView(
+                      children: const [FormEditProfile()],
+                    );
+                  }
+                });
+              },
+            )));
   }
 }

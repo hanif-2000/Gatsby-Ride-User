@@ -37,6 +37,10 @@ class HistoryOrder {
   HistoryOrder({
     required this.id,
     required this.driverId,
+    required this.driverName,
+    required this.image,
+    required this.plateNumber,
+    required this.rating,
     required this.startCoordinate,
     required this.endCoordinate,
     required this.startAddress,
@@ -55,6 +59,10 @@ class HistoryOrder {
 
   String id;
   String driverId;
+  String driverName;
+  String image;
+  dynamic rating;
+  String plateNumber;
   String startCoordinate;
   String endCoordinate;
   String startAddress;
@@ -73,6 +81,10 @@ class HistoryOrder {
   factory HistoryOrder.fromJson(Map<String, dynamic> json) => HistoryOrder(
         id: json["id"],
         driverId: json["driver_id"],
+        driverName: json["driver_name"] ?? '',
+        image: json["image"] ?? '',
+        plateNumber: json["plate_number"] ?? '',
+        rating: json["rating"] ?? '',
         startCoordinate: json["start_coordinate"],
         endCoordinate: json["end_coordinate"],
         startAddress: json["start_address"],
@@ -92,6 +104,10 @@ class HistoryOrder {
   Map<String, dynamic> toJson() => {
         "id": id,
         "driver_id": driverId,
+        "driver_name": driverName,
+        "image": image,
+        "plate_number": plateNumber,
+        "rating": rating,
         "start_coordinate": startCoordinate,
         "end_coordinate": endCoordinate,
         "start_address": startAddress,

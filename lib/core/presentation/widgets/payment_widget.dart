@@ -1,4 +1,3 @@
-import 'package:appkey_taxiapp_user/core/presentation/widgets/credit_card_expansion_tile.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
@@ -91,7 +90,6 @@ class PaymentOption extends StatelessWidget {
                             assets: 'assets/icons/cash.svg',
                             onTap: () {
                               provider.setPaymentMethod = PaymentMethod.cash;
-                              // Navigator.pop(context);
                             },
                             selected: provider.paymentMethod == null
                                 ? false
@@ -100,23 +98,23 @@ class PaymentOption extends StatelessWidget {
                                     : false,
                           )),
 
-                          SizedBox(
-                              child: CreditCardExpansionTile(
-                            title: "Debit/Credit Card",
-                            assets: 'assets/icons/mastercard.svg',
-                            onTap: () {
-                              provider.setPaymentMethod =
-                                  PaymentMethod.creditCard;
-                              // Navigator.pop(context);
-                            },
-                            selected: provider.paymentMethod == null
-                                ? false
-                                : provider.paymentMethod ==
-                                        PaymentMethod.creditCard
-                                    ? true
-                                    : false,
-                            provider: provider,
-                          )),
+                          // SizedBox(
+                          //     child: CreditCardExpansionTile(
+                          //   title: "Debit/Credit Card",
+                          //   assets: 'assets/icons/mastercard.svg',
+                          //   onTap: () {
+                          //     provider.setPaymentMethod =
+                          //         PaymentMethod.creditCard;
+                          //     // Navigator.pop(context);
+                          //   },
+                          //   selected: provider.paymentMethod == null
+                          //       ? false
+                          //       : provider.paymentMethod ==
+                          //               PaymentMethod.creditCard
+                          //           ? true
+                          //           : false,
+                          //   provider: provider,
+                          // )),
                           // SizedBox(
                           //     child: PaymentTile(
                           //   title: "Debit/Credit Card",

@@ -1,10 +1,10 @@
 import 'dart:developer';
 
+import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../../features/login/presentation/pages/login_page.dart';
 import '../../utility/global_function.dart';
@@ -32,32 +32,47 @@ class DestinationWidget extends StatelessWidget {
               child: GestureDetector(
                   onTap: () {},
                   child: SizedBox(
-                      width: deviceWidth,
+                      width: deviceWidth * .8,
                       height: 60,
                       child: Card(
                         child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                SvgPicture.asset(
-                                  'assets/icons/destination_logo.svg',
-                                  height: 30.0,
-                                  width: 30.0,
-                                  fit: BoxFit.cover,
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Drop Off",
+                                  style: TextStyle(
+                                      fontFamily: "poPPinRegular",
+                                      fontSize: 13.0,
+                                      color: greyC8C7CCColor),
                                 ),
-                                const SizedBox(
-                                  width: 10,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    // SvgPicture.asset(
+                                    //   'assets/icons/destination_logo.svg',
+                                    //   height: 30.0,
+                                    //   width: 30.0,
+                                    //   fit: BoxFit.cover,
+                                    // ),
+                                    // const SizedBox(
+                                    //   width: 10,
+                                    // ),
+                                    Flexible(
+                                      child: Text(
+                                        map.destinationAddress,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: 'poPPinRegular',
+                                          fontSize: 17.0,
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                Flexible(
-                                  child: Text(
-                                    map.destinationAddress,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                )
                               ],
                             )),
                       ))));
@@ -100,41 +115,57 @@ class DestinationWidget extends StatelessWidget {
                     });
                   },
                   child: SizedBox(
-                      width: deviceWidth,
+                      width: deviceWidth * .8,
                       height: 60,
                       child: Card(
+                        margin: EdgeInsets.zero,
+                        elevation: 0.0,
                         child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                // SvgPicture.asset(
-                                //   'assets/icons/destination.svg',
-                                //   currentColor: Colors.red,
-                                // ),
-                                SvgPicture.asset(
-                                  'assets/icons/destination_logo.svg',
-                                  height: 30.0,
-                                  width: 30.0,
-                                  fit: BoxFit.cover,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Drop Off",
+                                  style: TextStyle(
+                                      fontFamily: "poPPinRegular",
+                                      fontSize: 13.0,
+                                      color: greyC8C7CCColor),
                                 ),
-                                const SizedBox(
-                                  width: 10,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    // SvgPicture.asset(
+                                    //   'assets/icons/destination.svg',
+                                    //   currentColor: Colors.red,
+                                    // ),
+                                    // SvgPicture.asset(
+                                    //   'assets/icons/destination_logo.svg',
+                                    //   height: 30.0,
+                                    //   width: 30.0,
+                                    //   fit: BoxFit.cover,
+                                    // ),
+                                    // const SizedBox(
+                                    //   width: 10,
+                                    // ),
+                                    Flexible(
+                                      child: Text(
+                                        map.destinationIsFilled
+                                            ? map.destinationAddress
+                                            : appLoc.destination,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontFamily: 'poPPinRegular',
+                                            fontSize: 17.0,
+                                            color: map.destinationIsFilled
+                                                ? Colors.black
+                                                : Colors.grey),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                Flexible(
-                                  child: Text(
-                                    map.destinationIsFilled
-                                        ? map.destinationAddress
-                                        : appLoc.destination,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: map.destinationIsFilled
-                                            ? Colors.black
-                                            : Colors.grey),
-                                  ),
-                                )
                               ],
                             )),
                       ))));

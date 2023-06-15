@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import '../../../features/login/presentation/pages/login_page.dart';
+import '../../static/colors.dart';
 import '../../static/enums.dart';
 import '../../utility/global_function.dart';
 import '../providers/home_provider.dart';
@@ -26,7 +27,7 @@ class OriginWidget extends StatelessWidget {
           return Padding(
               padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
               child: SizedBox(
-                width: deviceWidth,
+                width: deviceWidth * .8,
                 height: 60,
                 child: const Center(
                   child: CircularProgressIndicator(),
@@ -38,32 +39,46 @@ class OriginWidget extends StatelessWidget {
               child: GestureDetector(
                   onTap: () {},
                   child: SizedBox(
-                      width: deviceWidth,
-                      height: 60,
+                      width: deviceWidth * .8,
+                      height: 80,
                       child: Card(
                         child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Image.asset(
-                                  'assets/icons/location.png',
-                                  height: 24.0,
-                                  width: 24.0,
-                                  fit: BoxFit.cover,
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Pick up",
+                                  style: TextStyle(
+                                      fontFamily: "poPPinRegular",
+                                      fontSize: 13.0,
+                                      color: greyC8C7CCColor),
                                 ),
-                                const SizedBox(
-                                  width: 10,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    // Image.asset(
+                                    //   'assets/icons/location.png',
+                                    //   height: 24.0,
+                                    //   width: 24.0,
+                                    //   fit: BoxFit.cover,
+                                    // ),
+                                    // const SizedBox(
+                                    //   width: 10,
+                                    // ),
+                                    Flexible(
+                                      child: Text(
+                                        map.originAddress,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontFamily: 'poPPinRegular',
+                                            fontSize: 17.0,
+                                            color: Colors.black),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                Flexible(
-                                  child: Text(
-                                    map.originAddress,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                )
                               ],
                             )),
                       ))));
@@ -75,7 +90,7 @@ class OriginWidget extends StatelessWidget {
           return Padding(
               padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
               child: SizedBox(
-                width: deviceWidth,
+                width: deviceWidth * .8,
                 height: 60,
                 child: const Center(
                   child: CircularProgressIndicator(),
@@ -83,7 +98,7 @@ class OriginWidget extends StatelessWidget {
               ));
         } else {
           return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
               child: GestureDetector(
                   onTap: () async {
                     checkUserSession().then((value) async {
@@ -107,47 +122,72 @@ class OriginWidget extends StatelessWidget {
                     });
                   },
                   child: SizedBox(
-                      width: deviceWidth,
-                      height: 60,
+                      width: deviceWidth * .8,
+                      height: 70,
                       child: Card(
+                        margin: EdgeInsets.zero,
+                        elevation: 0.0,
                         child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Image.asset(
-                                  'assets/icons/location.png',
-                                  height: 24.0,
-                                  width: 24.0,
-                                  fit: BoxFit.cover,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  "Pick up",
+                                  style: TextStyle(
+                                      fontFamily: "poPPinRegular",
+                                      fontSize: 13.0,
+                                      color: greyC8C7CCColor),
                                 ),
-                                // const Icon(Icons.my_location,
-                                //     color: primaryColor, size: 30),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    map.originAddress,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.menu,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
-                                        type: PageTransitionType.leftToRight,
-                                        child: const HomeDrawerPage(),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    // Image.asset(
+                                    //   'assets/icons/location.png',
+                                    //   height: 24.0,
+                                    //   width: 24.0,
+                                    //   fit: BoxFit.cover,
+                                    // ),
+                                    // // const Icon(Icons.my_location,
+                                    // //     color: primaryColor, size: 30),
+                                    // const SizedBox(
+                                    //   width: 10,
+                                    // ),
+                                    Flexible(
+                                      child: Text(
+                                        map.originAddress,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: 'poPPinRegular',
+                                          fontSize: 17.0,
+                                        ),
                                       ),
-                                    );
-                                  },
+                                    ),
+
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.menu,
+                                        size: 30.0,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            type:
+                                                PageTransitionType.leftToRight,
+                                            child: const HomeDrawerPage(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
                             )),

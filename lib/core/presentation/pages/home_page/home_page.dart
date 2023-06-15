@@ -6,6 +6,7 @@ import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -69,17 +70,59 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              child: Column(
-                                children: [
-                                  OriginWidget(
-                                    deviceWidth: _deviceSize.width,
-                                    isFromOrder: false,
-                                  ),
-                                  DestinationWidget(
-                                    deviceWidth: _deviceSize.width,
-                                    isFromOrder: false,
-                                  ),
-                                ],
+                              color: whiteColor,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 6.0),
+                                child: Container(
+                                    child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/icons/location.png',
+                                          height: 24.0,
+                                          width: 24.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        SvgPicture.asset(
+                                            'assets/icons/dotted_line.svg'),
+                                        SvgPicture.asset(
+                                          'assets/icons/destination_logo.svg',
+                                          height: 30.0,
+                                          width: 30.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        OriginWidget(
+                                          deviceWidth: _deviceSize.width,
+                                          isFromOrder: false,
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.zero,
+                                          width: _deviceSize.width * .8,
+                                          height: 1.0,
+                                          color: whiteEFEFEFColor,
+                                        ),
+                                        Container(
+                                          child: DestinationWidget(
+                                            deviceWidth: _deviceSize.width,
+                                            isFromOrder: false,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )),
                               ),
                             ),
 

@@ -1,9 +1,9 @@
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../../features/profile/presentation/providers/profile_provider.dart';
 import '../../../features/profile/presentation/providers/profile_state.dart';
 import '../../utility/helper.dart';
@@ -62,10 +62,19 @@ class ProfileInformationDrawer extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        ProfilePage.routeName,
-                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const EditProfilePage())).then((value) {
+                        if (value != null) {
+                          // provider.refreshProfile();
+                        }
+                      });
+                      // Navigator.pushReplacementNamed(
+                      //   context,
+                      //   ProfilePage.routeName,
+                      // );
                     },
                     child: const Text(
                       "Edit Profile",

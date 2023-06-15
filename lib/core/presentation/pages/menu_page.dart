@@ -32,6 +32,8 @@ class HomeDrawerPage extends StatelessWidget {
                 const Align(
                     alignment: Alignment.topLeft,
                     child: CloseDrawerButtonWidget()),
+
+                // User Profile
                 const ProfileInformationDrawer(),
                 const SizedBox(
                   height: 20.0,

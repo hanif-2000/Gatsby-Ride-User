@@ -13,6 +13,7 @@ const Color whiteAccentColor = Color(0xFFd9d9d9);
 const Color greyColor = Color(0xFFE9E9E9);
 const Color greySecondColor = Color(0xFFF9F9F9);
 const Color whiteColor = Color(0xFFFFFFFF);
+const Color whiteEFEFEFColor = Color(0xffefefef);
 const Color whiteF2F2F2Color = Color(0xFFF2F2F2);
 
 const Color splashPageColor = Color(0xFF1077E8);
@@ -53,6 +54,7 @@ const Color grey9B9B9BColor = Color(0xFF9B9B9B);
 const Color greyB6B6B6Color = Color(0xffB6B6B6);
 const Color greyF7F7F7Color = Color(0xffF7F7F7);
 const Color grey767676Color = Color(0xff767676);
+
 const Color greyB8B8B8Color = Color(0xffB8B8B8);
 
 const Color black414141Color = Color(0xff414141);

@@ -6,6 +6,7 @@ import 'package:appkey_taxiapp_user/core/domain/usecases/get_total_price.dart';
 import 'package:appkey_taxiapp_user/core/presentation/providers/price_category_state.dart';
 import 'package:appkey_taxiapp_user/core/presentation/providers/total_price_state.dart';
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
+import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
 import 'package:appkey_taxiapp_user/core/static/order_status.dart';
 import 'package:appkey_taxiapp_user/core/utility/app_settings.dart';
@@ -80,7 +81,9 @@ class HomeProvider with ChangeNotifier {
 
   set setPaymentMethod(val) {
     _paymentMethod = val;
+
     notifyListeners();
+    log("Selected Payment Method is========>>>${_paymentMethod}");
   }
 
   set newState(TotalPriceState state) {
@@ -331,7 +334,7 @@ class HomeProvider with ChangeNotifier {
 
         Polyline polyline = Polyline(
             polylineId: const PolylineId("jalur"),
-            color: Colors.lightBlue,
+            color: blackColor,
             points: polylineCoordinates,
             width: 6,
             startCap: Cap.roundCap,

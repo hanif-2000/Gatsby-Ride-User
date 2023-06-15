@@ -8,11 +8,19 @@ import 'package:provider/provider.dart';
 class DriverProfileWidget extends StatefulWidget {
   final String category;
   final String driverId;
+  final String driverName;
+  final String driverImage;
+  final String rating;
+  final String platerNumber;
 
   const DriverProfileWidget({
     Key? key,
     required this.category,
     required this.driverId,
+    required this.driverName,
+    required this.driverImage,
+    required this.rating,
+    required this.platerNumber,
   }) : super(key: key);
 
   @override
@@ -48,8 +56,8 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Driver Name",
+                      Text(
+                        widget.driverName,
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.w500,
@@ -59,10 +67,10 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SvgPicture.asset('assets/icons/filled_star.svg'),
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              "4.5",
+                              widget.rating,
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w600,
@@ -100,8 +108,8 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const Text(
-                      "Car Number",
+                    Text(
+                      widget.platerNumber,
                       style: TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.w500,
