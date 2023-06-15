@@ -1,0 +1,6 @@
+
+*.txt
+*.jar
+build/webview_flutter_android/intermediates/javac/debug/classes/io/flutter/plugins/webviewflutter/WebViewClientFlutterApiImpl.class
+*.class
+build/app/intermediates/compressed_assets/debug/out/assets/flutter_assets/assets/icons/car-icon.png.jar
