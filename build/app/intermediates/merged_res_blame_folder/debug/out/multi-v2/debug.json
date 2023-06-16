@@ -2777,24 +2777,7 @@
                     }
                 },
                 {
-                    "source": "/Users/mac/.gradle/caches/transforms-3/9bd5b35bdc63e3716792861c072973d8/transformed/lifecycle-runtime-2.6.1/res/values/values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "42",
-                        "endOffsets": "93"
-                    },
-                    "to": {
-                        "startLines": "323",
-                        "startColumns": "4",
-                        "startOffsets": "21140",
-                        "endColumns": "42",
-                        "endOffsets": "21178"
-                    }
-                },
-                {
-                    "source": "/Users/mac/Downloads/taxi-user/taxi-user/android/app/src/main/res/values/styles.xml",
+                    "source": "/Users/mac/Documents/projects/taxi-user-git/android/app/src/main/res/values/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -2810,6 +2793,23 @@
                         "endLines": "1512,1515",
                         "endColumns": "12,12",
                         "endOffsets": "98795,98964"
+                    }
+                },
+                {
+                    "source": "/Users/mac/.gradle/caches/transforms-3/9bd5b35bdc63e3716792861c072973d8/transformed/lifecycle-runtime-2.6.1/res/values/values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "42",
+                        "endOffsets": "93"
+                    },
+                    "to": {
+                        "startLines": "323",
+                        "startColumns": "4",
+                        "startOffsets": "21140",
+                        "endColumns": "42",
+                        "endOffsets": "21178"
                     }
                 },
                 {
@@ -5408,7 +5408,7 @@
                     }
                 },
                 {
-                    "source": "/Users/mac/Downloads/taxi-user/taxi-user/android/app/src/main/res/values-night/styles.xml",
+                    "source": "/Users/mac/Documents/projects/taxi-user-git/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

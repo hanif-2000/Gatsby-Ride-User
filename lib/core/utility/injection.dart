@@ -73,18 +73,22 @@ import '../data/datasources/currency_datasource.dart';
 import '../data/datasources/place_text_search_datasource.dart';
 import '../data/datasources/price_category_datasource.dart';
 import '../data/datasources/total_price_datasource.dart';
+import '../data/datasources/vehicles_category_datasource.dart';
 import '../data/repositories/currency_repository_implementation.dart';
 import '../data/repositories/google_place_repository_implementation.dart';
 import '../data/repositories/price_cateogory_repository_implementation.dart';
 import '../data/repositories/total_price_repository_implementation.dart';
+import '../data/repositories/vehicle_catagory_repository_implementation.dart';
 import '../domain/repositories/currency_repository.dart';
 import '../domain/repositories/google_place_repository.dart';
 import '../domain/repositories/price_category_repository.dart';
 import '../domain/repositories/total_price_repository.dart';
+import '../domain/repositories/vehicle_catagory_repository.dart';
 import '../domain/usecases/get_currency.dart';
 import '../domain/usecases/get_google_place.dart';
 import '../domain/usecases/get_price_category.dart';
 import '../domain/usecases/get_total_price.dart';
+import '../domain/usecases/get_vehicle_catagory.dart';
 import '../network/dio_client.dart';
 import '../network/network_info.dart';
 import '../presentation/providers/home_provider.dart';
@@ -126,6 +130,13 @@ Future<void> init() async {
   locator.registerLazySingleton<PriceCategoryRepository>(
     () => PriceCategoryRepositoryImplementation(
       dataSource: locator<PriceCategoryDataSource>(),
+      networkInfo: locator<NetworkInfo>(),
+    ),
+  );
+
+  locator.registerLazySingleton<VehiclesCategoryRepository>(
+    () => VehiclesCategoryRepositoryImplementation(
+      dataSource: locator<VehicleCategoryDataSource>(),
       networkInfo: locator<NetworkInfo>(),
     ),
   );
@@ -199,6 +210,8 @@ Future<void> init() async {
       () => CurrencyDataSourceImplementation(dio: locator<Dio>()));
   locator.registerLazySingleton<PriceCategoryDataSource>(
       () => PriceCategoryDataSourceImplementation(dio: locator<Dio>()));
+  locator.registerLazySingleton<VehicleCategoryDataSource>(
+      () => VehicleCategoryDataSourceImplementation(dio: locator<Dio>()));
   locator.registerLazySingleton<GooglePlaceDataSource>(
       () => GooglePlaceDataSourceImpl(dio: locator<Dio>()));
   locator.registerLazySingleton<GooglePlaceRepository>(() =>
@@ -233,6 +246,8 @@ Future<void> init() async {
       () => GetCurrency(locator<CurrencyRepository>()));
   locator.registerLazySingleton<GetPriceCategory>(
       () => GetPriceCategory(locator<PriceCategoryRepository>()));
+  locator.registerLazySingleton<GetVehiclesCategory>(
+      () => GetVehiclesCategory(locator<VehiclesCategoryRepository>()));
   locator.registerLazySingleton<GetGooglePlace>(
       () => GetGooglePlace(repository: locator()));
   locator.registerLazySingleton<GetTotalPrice>(
@@ -283,9 +298,11 @@ Future<void> init() async {
   );
   locator.registerFactory(
     () => HomeProvider(
-        getPriceCategory: locator<GetPriceCategory>(),
-        createOrder: locator<CreateOrder>(),
-        getTotalPrice: locator<GetTotalPrice>()),
+      getPriceCategory: locator<GetPriceCategory>(),
+      createOrder: locator<CreateOrder>(),
+      getTotalPrice: locator<GetTotalPrice>(),
+      getVehicleCatagory: locator<GetVehiclesCategory>(),
+    ),
   );
   locator.registerFactory(
     () => OrderProvider(

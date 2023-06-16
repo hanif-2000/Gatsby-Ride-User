@@ -16,13 +16,18 @@ class PriceCategoryRepositoryImplementation implements PriceCategoryRepository {
   });
 
   @override
-  Future<Either<Failure, PriceCategoryList>> getPriceCategoryList() async {
+  Future<Either<Failure, PriceCategoryList>> getPriceCategoryList(
+    String distance,
+    String nightService,
+    String coordinates,
+  ) async {
     if (!await networkInfo.isConnected) {
       return const Left(ConnectionFailure());
     }
 
     try {
-      final response = await dataSource.getPriceCategoryList();
+      final response = await dataSource.getPriceCategoryList(
+          distance, nightService, coordinates);
       return Right(response);
     } catch (e) {
       return const Left(ServerFailure());

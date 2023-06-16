@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "/Users/mac/Downloads/taxi-user/taxi-user/android/app/src/main/res/values-night/styles.xml",
+                    "source": "/Users/mac/Documents/projects/taxi-user-git/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

@@ -4,5 +4,9 @@ import 'package:dartz/dartz.dart';
 import '../../error/failure.dart';
 
 abstract class PriceCategoryRepository {
-  Future<Either<Failure, PriceCategoryList>> getPriceCategoryList();
+  Future<Either<Failure, PriceCategoryList>> getPriceCategoryList(
+    String distance,
+    String nightService,
+    String coordinates,
+  );
 }

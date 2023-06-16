@@ -12,38 +12,38 @@
 12         to allow setting breakpoints, to provide hot reload, etc.
 13    -->
 14    <uses-permission android:name="android.permission.INTERNET" />
-14-->/Users/mac/Downloads/taxi-user/taxi-user/android/app/src/debug/AndroidManifest.xml:6:5-66
-14-->/Users/mac/Downloads/taxi-user/taxi-user/android/app/src/debug/AndroidManifest.xml:6:22-64
+14-->/Users/mac/Documents/projects/taxi-user-git/android/app/src/debug/AndroidManifest.xml:6:5-66
+14-->/Users/mac/Documents/projects/taxi-user-git/android/app/src/debug/AndroidManifest.xml:6:22-64
 15    <uses-permission android:name="android.permission.WAKE_LOCK" />
-15-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-68
-15-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-65
+15-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-68
+15-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-65
 16    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-16-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-79
-16-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-76
+16-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-79
+16-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-76
 17    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-17-->[:geolocator_android] /Users/mac/Downloads/taxi-user/taxi-user/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-77
-17-->[:geolocator_android] /Users/mac/Downloads/taxi-user/taxi-user/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-74
+17-->[:geolocator_android] /Users/mac/Documents/projects/taxi-user-git/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-77
+17-->[:geolocator_android] /Users/mac/Documents/projects/taxi-user-git/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-74
 18    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-18-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-81
-18-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-78
+18-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-81
+18-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-78
 19    <uses-permission android:name="android.permission.VIBRATE" />
-19-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-66
-19-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-63
+19-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-66
+19-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-63
 20    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-20-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-81
-20-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-78
+20-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-81
+20-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-78
 21    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-21-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
-21-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:22-76
+21-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
+21-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:22-76
 22    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-22-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-77
-22-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:13:22-74
+22-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-77
+22-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:13:22-74
 23    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-23-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-81
-23-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-78
+23-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-81
+23-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-78
 24    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-24-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-79
-24-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-76
+24-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-79
+24-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-76
 25
 26    <queries>
 26-->[com.facebook.android:facebook-common:16.0.1] /Users/mac/.gradle/caches/transforms-3/e4cb47a6aaca86e6b6c40974e17f1b9f/transformed/jetified-facebook-common-16.0.1/AndroidManifest.xml:17:5-19:15
@@ -130,63 +130,63 @@
 87            android:value="2" />
 88
 89        <service
-89-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:14:9-17:72
+89-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:14:9-17:72
 90            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService"
-90-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-107
+90-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-107
 91            android:exported="false"
-91-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-37
+91-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-37
 92            android:permission="android.permission.BIND_JOB_SERVICE" />
-92-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-69
+92-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-69
 93        <service
-93-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:18:9-24:19
+93-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:18:9-24:19
 94            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService"
-94-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-97
+94-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-97
 95            android:exported="false" >
-95-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-37
+95-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-37
 96            <intent-filter>
-96-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-23:29
+96-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-23:29
 97                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-97-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:17-78
-97-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:25-75
+97-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:17-78
+97-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:25-75
 98            </intent-filter>
 99        </service>
 100
 101        <receiver
-101-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:26:9-33:20
+101-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:26:9-33:20
 102            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver"
-102-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:27:13-98
+102-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:27:13-98
 103            android:exported="true"
-103-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:28:13-36
+103-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:28:13-36
 104            android:permission="com.google.android.c2dm.permission.SEND" >
-104-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:29:13-73
+104-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:29:13-73
 105            <intent-filter>
-105-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-32:29
+105-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-32:29
 106                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-106-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:17-81
-106-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:25-78
+106-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:17-81
+106-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:25-78
 107            </intent-filter>
 108        </receiver>
 109
 110        <service
-110-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:35:9-39:19
+110-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:35:9-39:19
 111            android:name="com.google.firebase.components.ComponentDiscoveryService"
-111-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:35:18-89
+111-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:35:18-89
 112            android:directBootAware="true"
 112-->[com.google.firebase:firebase-common:20.1.2] /Users/mac/.gradle/caches/transforms-3/3faa8979692a599b15e8b56920935e03/transformed/jetified-firebase-common-20.1.2/AndroidManifest.xml:35:13-43
 113            android:exported="false" >
 113-->[com.google.firebase:firebase-messaging:23.0.8] /Users/mac/.gradle/caches/transforms-3/5ec557d4425597b0eb8acd7793f66f42/transformed/jetified-firebase-messaging-23.0.8/AndroidManifest.xml:55:13-37
 114            <meta-data
-114-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:36:13-38:85
+114-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:36:13-38:85
 115                android:name="com.google.firebase.components:io.flutter.plugins.firebase.messaging.FlutterFirebaseAppRegistrar"
-115-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:37:17-128
+115-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:37:17-128
 116                android:value="com.google.firebase.components.ComponentRegistrar" />
-116-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:38:17-82
+116-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:38:17-82
 117            <meta-data
-117-->[:firebase_core] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+117-->[:firebase_core] /Users/mac/Documents/projects/taxi-user-git/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
 118                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
-118-->[:firebase_core] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+118-->[:firebase_core] /Users/mac/Documents/projects/taxi-user-git/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
 119                android:value="com.google.firebase.components.ComponentRegistrar" />
-119-->[:firebase_core] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+119-->[:firebase_core] /Users/mac/Documents/projects/taxi-user-git/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 120            <meta-data
 120-->[com.google.firebase:firebase-messaging:23.0.8] /Users/mac/.gradle/caches/transforms-3/5ec557d4425597b0eb8acd7793f66f42/transformed/jetified-firebase-messaging-23.0.8/AndroidManifest.xml:56:13-58:85
 121                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
@@ -208,93 +208,93 @@
 129        </service>
 130
 131        <provider
-131-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:41:9-45:38
+131-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:41:9-45:38
 132            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingInitProvider"
-132-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:42:13-102
+132-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:42:13-102
 133            android:authorities="getride.user.taxi.flutterfirebasemessaginginitprovider"
-133-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:43:13-88
+133-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:43:13-88
 134            android:exported="false"
-134-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:44:13-37
+134-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:44:13-37
 135            android:initOrder="99" />
-135-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:45:13-35
+135-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:45:13-35
 136
 137        <service
-137-->[:geolocator_android] /Users/mac/Downloads/taxi-user/taxi-user/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:56
+137-->[:geolocator_android] /Users/mac/Documents/projects/taxi-user-git/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:56
 138            android:name="com.baseflow.geolocator.GeolocatorLocationService"
-138-->[:geolocator_android] /Users/mac/Downloads/taxi-user/taxi-user/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-77
+138-->[:geolocator_android] /Users/mac/Documents/projects/taxi-user-git/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-77
 139            android:enabled="true"
-139-->[:geolocator_android] /Users/mac/Downloads/taxi-user/taxi-user/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-35
+139-->[:geolocator_android] /Users/mac/Documents/projects/taxi-user-git/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-35
 140            android:exported="false"
-140-->[:geolocator_android] /Users/mac/Downloads/taxi-user/taxi-user/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-37
+140-->[:geolocator_android] /Users/mac/Documents/projects/taxi-user-git/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-37
 141            android:foregroundServiceType="location" />
-141-->[:geolocator_android] /Users/mac/Downloads/taxi-user/taxi-user/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-53
+141-->[:geolocator_android] /Users/mac/Documents/projects/taxi-user-git/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-53
 142
 143        <provider
-143-->[:image_picker_android] /Users/mac/Downloads/taxi-user/taxi-user/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
+143-->[:image_picker_android] /Users/mac/Documents/projects/taxi-user-git/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
 144            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
-144-->[:image_picker_android] /Users/mac/Downloads/taxi-user/taxi-user/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-82
+144-->[:image_picker_android] /Users/mac/Documents/projects/taxi-user-git/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-82
 145            android:authorities="getride.user.taxi.flutter.image_provider"
-145-->[:image_picker_android] /Users/mac/Downloads/taxi-user/taxi-user/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-74
+145-->[:image_picker_android] /Users/mac/Documents/projects/taxi-user-git/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-74
 146            android:exported="false"
-146-->[:image_picker_android] /Users/mac/Downloads/taxi-user/taxi-user/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
+146-->[:image_picker_android] /Users/mac/Documents/projects/taxi-user-git/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
 147            android:grantUriPermissions="true" >
-147-->[:image_picker_android] /Users/mac/Downloads/taxi-user/taxi-user/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
+147-->[:image_picker_android] /Users/mac/Documents/projects/taxi-user-git/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
 148            <meta-data
-148-->[:image_picker_android] /Users/mac/Downloads/taxi-user/taxi-user/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:75
+148-->[:image_picker_android] /Users/mac/Documents/projects/taxi-user-git/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:75
 149                android:name="android.support.FILE_PROVIDER_PATHS"
-149-->[:image_picker_android] /Users/mac/Downloads/taxi-user/taxi-user/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
+149-->[:image_picker_android] /Users/mac/Documents/projects/taxi-user-git/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
 150                android:resource="@xml/flutter_image_picker_file_paths" />
-150-->[:image_picker_android] /Users/mac/Downloads/taxi-user/taxi-user/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-72
+150-->[:image_picker_android] /Users/mac/Documents/projects/taxi-user-git/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-72
 151        </provider>
 152
 153        <receiver
-153-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-18:40
+153-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-18:40
 154            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
-154-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-97
+154-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-97
 155            android:exported="false" />
-155-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-37
+155-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-37
 156        <receiver
-156-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:19:9-28:20
+156-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:19:9-28:20
 157            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
-157-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-101
+157-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-101
 158            android:exported="false" >
-158-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-37
+158-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-37
 159            <intent-filter>
-159-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-27:29
+159-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-27:29
 160                <action android:name="android.intent.action.BOOT_COMPLETED" />
-160-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:17-79
-160-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:25-76
+160-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:17-79
+160-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:25-76
 161                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-161-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-84
-161-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-81
+161-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-84
+161-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-81
 162                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-162-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:17-82
-162-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:25-79
+162-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:17-82
+162-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:25-79
 163                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-163-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:17-82
-163-->[:flutter_local_notifications] /Users/mac/Downloads/taxi-user/taxi-user/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:25-79
+163-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:17-82
+163-->[:flutter_local_notifications] /Users/mac/Documents/projects/taxi-user-git/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:25-79
 164            </intent-filter>
 165        </receiver>
 166
 167        <activity
-167-->[:url_launcher_android] /Users/mac/Downloads/taxi-user/taxi-user/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-13:74
+167-->[:url_launcher_android] /Users/mac/Documents/projects/taxi-user-git/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-13:74
 168            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
-168-->[:url_launcher_android] /Users/mac/Downloads/taxi-user/taxi-user/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
+168-->[:url_launcher_android] /Users/mac/Documents/projects/taxi-user-git/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
 169            android:exported="false"
-169-->[:url_launcher_android] /Users/mac/Downloads/taxi-user/taxi-user/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
+169-->[:url_launcher_android] /Users/mac/Documents/projects/taxi-user-git/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
 170            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-170-->[:url_launcher_android] /Users/mac/Downloads/taxi-user/taxi-user/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-71
+170-->[:url_launcher_android] /Users/mac/Documents/projects/taxi-user-git/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-71
 171
 172        <service
-172-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:13:9-17:56
+172-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:13:9-17:56
 173            android:name="com.lyokone.location.FlutterLocationService"
-173-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-71
+173-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-71
 174            android:enabled="true"
-174-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-35
+174-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-35
 175            android:exported="false"
-175-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-37
+175-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-37
 176            android:foregroundServiceType="location" />
-176-->[:location] /Users/mac/Downloads/taxi-user/taxi-user/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-53
+176-->[:location] /Users/mac/Documents/projects/taxi-user-git/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-53
 177
 178        <activity
 178-->[com.facebook.android:facebook-common:16.0.1] /Users/mac/.gradle/caches/transforms-3/e4cb47a6aaca86e6b6c40974e17f1b9f/transformed/jetified-facebook-common-16.0.1/AndroidManifest.xml:22:9-25:66
@@ -374,10 +374,10 @@
 218            android:permission="com.google.android.c2dm.permission.SEND" >
 218-->[com.google.firebase:firebase-messaging:23.0.8] /Users/mac/.gradle/caches/transforms-3/5ec557d4425597b0eb8acd7793f66f42/transformed/jetified-firebase-messaging-23.0.8/AndroidManifest.xml:35:13-73
 219            <intent-filter>
-219-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-32:29
+219-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-32:29
 220                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-220-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:17-81
-220-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:25-78
+220-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:17-81
+220-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:25-78
 221            </intent-filter>
 222        </receiver>
 223        <!--
@@ -393,10 +393,10 @@
 230            android:exported="false" >
 230-->[com.google.firebase:firebase-messaging:23.0.8] /Users/mac/.gradle/caches/transforms-3/5ec557d4425597b0eb8acd7793f66f42/transformed/jetified-firebase-messaging-23.0.8/AndroidManifest.xml:48:13-37
 231            <intent-filter android:priority="-500" >
-231-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-23:29
+231-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-23:29
 232                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-232-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:17-78
-232-->[:firebase_messaging] /Users/mac/Downloads/taxi-user/taxi-user/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:25-75
+232-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:17-78
+232-->[:firebase_messaging] /Users/mac/Documents/projects/taxi-user-git/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:25-75
 233            </intent-filter>
 234        </service>
 235

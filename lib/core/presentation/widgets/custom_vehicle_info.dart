@@ -19,49 +19,55 @@ class CustomVehicleInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _deviceSize = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Image.asset(
               vehicleImage!,
               height: 24,
               width: 24,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      vehicleType!,
-                      style: const TextStyle(
-                          fontFamily: 'poPPinRegular',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16.0,
-                          color: black080808Color),
-                    ),
-                    Text(
-                      " (${capacity!} Person)",
-                      style: const TextStyle(
-                          fontFamily: 'poPPinRegular',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16.0,
-                          color: black080808Color),
-                    ),
-                  ],
-                ),
-                Text(
-                  time!,
-                  style: const TextStyle(
-                      fontFamily: 'poPPinRegular',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14.0,
-                      color: greyC8C7CCColor),
-                ),
-              ],
+            SizedBox(
+              width: _deviceSize.width * .15,
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        vehicleType!,
+                        style: const TextStyle(
+                            fontFamily: 'poPPinRegular',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16.0,
+                            color: black080808Color),
+                      ),
+                      Text(
+                        " (${capacity!} Person)",
+                        style: const TextStyle(
+                            fontFamily: 'poPPinRegular',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16.0,
+                            color: black080808Color),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    time!,
+                    style: const TextStyle(
+                        fontFamily: 'poPPinRegular',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14.0,
+                        color: greyC8C7CCColor),
+                  ),
+                ],
+              ),
             ),
             Text(
               price!,
@@ -70,7 +76,7 @@ class CustomVehicleInfo extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   fontSize: 16.0,
                   color: black080808Color),
-            )
+            ),
           ],
         ),
       ),

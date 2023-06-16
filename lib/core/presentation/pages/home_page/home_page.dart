@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/presentation/widgets/bottom_sheet_book_ride.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
@@ -11,6 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/home_provider.dart';
+import '../../widgets/bottom_sheet_book_ride.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -143,6 +144,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                   event: () {
+                                    log(map.originLatLng.toString());
+                                    log(map.destinationLatLng.toString());
+                                    log(map.distance.toString());
+
+                                    map.fetchVehicleCategory().listen((event) {
+                                      log("========>>>>>>" + event.toString());
+                                    });
                                     showModalBottomSheet(
                                       useRootNavigator: true,
                                       shape: RoundedRectangleBorder(

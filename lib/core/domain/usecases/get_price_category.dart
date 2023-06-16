@@ -5,7 +5,11 @@ import 'package:dartz/dartz.dart';
 import '../../error/failure.dart';
 
 abstract class GetPriceCategoryUseCase<Type> {
-  Future<Either<Failure, PriceCategoryList>> call();
+  Future<Either<Failure, PriceCategoryList>> call(
+    String distance,
+    String nightService,
+    String coordinates,
+  );
 }
 
 class GetPriceCategory implements GetPriceCategoryUseCase {
@@ -14,7 +18,12 @@ class GetPriceCategory implements GetPriceCategoryUseCase {
   GetPriceCategory(this.repository);
 
   @override
-  Future<Either<Failure, PriceCategoryList>> call() async {
-    return await repository.getPriceCategoryList();
+  Future<Either<Failure, PriceCategoryList>> call(
+    String distance,
+    String nightService,
+    String coordinates,
+  ) async {
+    return await repository.getPriceCategoryList(
+        distance, nightService, coordinates);
   }
 }

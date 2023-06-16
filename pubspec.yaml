@@ -51,6 +51,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   chat_bubbles: any
   pay: ^0.0.1
+  percent_indicator: ^4.2.3
 
 dependency_overrides:
   provider: ^6.0.3

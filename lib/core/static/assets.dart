@@ -12,12 +12,13 @@ const String closeIcon = 'assets/icons/close.png';
 const String logoutIcon = 'assets/icons/log-out.png';
 const String redMarkerIcon = 'assets/icons/redMarker.png';
 const String pickupIcon = 'assets/icons/pick-up-icon.png';
-const String destinationIcon = 'assets/icons/destination-icon.png';
+const String destinationIcon = 'assets/icons/destination.png';
 const String carIcon = 'assets/icons/car-dropdown.png';
 const String driverMarkerIcon = 'assets/icons/driverMarker.png';
 const String cashIcon = 'assets/icons/cash.png';
 const String creditIcon = 'assets/icons/credit.png';
 const String userAvatarImage = 'assets/images/user_avatar.png';
+const String destination_logo = 'assets/icons/Courier.png';
 
 const String passwordLockIcon = 'assets/icons/password_lock_icon.png';
 const String dividerIcon = 'assets/images/divider_image.png';

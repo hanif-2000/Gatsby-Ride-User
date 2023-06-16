@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:ui' as ui;
 
+import 'package:appkey_taxiapp_user/core/domain/entities/vehicles_category.dart';
 import 'package:appkey_taxiapp_user/core/domain/usecases/get_total_price.dart';
 import 'package:appkey_taxiapp_user/core/presentation/providers/price_category_state.dart';
 import 'package:appkey_taxiapp_user/core/presentation/providers/total_price_state.dart';
+import 'package:appkey_taxiapp_user/core/presentation/providers/vehicle_category_state.dart';
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
@@ -19,9 +21,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart' as lctn;
-
 import '../../domain/entities/price_category.dart';
 import '../../domain/usecases/get_price_category.dart';
+import '../../domain/usecases/get_vehicle_catagory.dart';
 import '../../utility/direction_helper.dart';
 import '../../utility/injection.dart';
 import '../../utility/session_helper.dart';
@@ -32,6 +34,7 @@ class HomeProvider with ChangeNotifier {
   final GetTotalPrice getTotalPrice;
   final GetPriceCategory getPriceCategory;
   final CreateOrder createOrder;
+  final GetVehiclesCategory getVehicleCatagory;
 
   //Initial
   final lctn.Location locationService = lctn.Location();
@@ -67,11 +70,14 @@ class HomeProvider with ChangeNotifier {
   PriceCategory? _selectedCategory;
   PaymentMethod? _paymentMethod;
 
+  List<VehiclesCategory> _vehiclesCategory = [];
+
   // getter
   List<PriceCategory> get priceCategory => _priceCategory;
   PriceCategory? get selectedCategory => _selectedCategory;
   PaymentMethod? get paymentMethod => _paymentMethod;
   TotalPriceState get stateLoadPrice => _stateLoadPrice;
+  List<VehiclesCategory> get vehicleCategory => _vehiclesCategory;
 
   //setter
   set setSelectedCategory(val) {
@@ -108,7 +114,8 @@ class HomeProvider with ChangeNotifier {
   HomeProvider(
       {required this.getTotalPrice,
       required this.getPriceCategory,
-      required this.createOrder}) {
+      required this.createOrder,
+      required this.getVehicleCatagory}) {
     getBytesFromAsset(driverMarkerIcon, 70).then((value) {
       driverMarker = BitmapDescriptor.fromBytes(value);
     });
@@ -394,10 +401,30 @@ class HomeProvider with ChangeNotifier {
     );
   }
 
+  Stream<VehiclesCategoryState> fetchVehicleCategory() async* {
+    yield VehiclesCategoryLoading();
+
+    final result = await getVehicleCatagory(
+        distance, "0", "${originLatLng.latitude},${originLatLng.longitude}");
+    yield* result.fold(
+      (failure) async* {
+        yield VehiclesCategoryFailure(failure: failure);
+      },
+      (data) async* {
+        _vehiclesCategory = data.data;
+        logMe("_priceCategory");
+        logMe(_vehiclesCategory);
+        yield VehiclesCategoryLoaded(data: _vehiclesCategory);
+      },
+    );
+
+    log("--------****************" + vehicleCategory.toString());
+  }
+
   Stream<PriceCategoryState> fetchPriceCategory() async* {
     yield PriceCategoryLoading();
 
-    final result = await getPriceCategory();
+    final result = await getPriceCategory("10", "0", "30.7046083,76.6843826");
     yield* result.fold(
       (failure) async* {
         yield PriceCategoryFailure(failure: failure);
