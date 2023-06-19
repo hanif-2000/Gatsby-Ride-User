@@ -10,7 +10,6 @@ import 'package:appkey_taxiapp_user/core/presentation/providers/vehicle_category
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/static/order_status.dart';
 import 'package:appkey_taxiapp_user/core/utility/app_settings.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/create_oder.dart';
@@ -24,6 +23,7 @@ import 'package:location/location.dart' as lctn;
 import '../../domain/entities/price_category.dart';
 import '../../domain/usecases/get_price_category.dart';
 import '../../domain/usecases/get_vehicle_catagory.dart';
+import '../../static/order_status.dart';
 import '../../utility/direction_helper.dart';
 import '../../utility/injection.dart';
 import '../../utility/session_helper.dart';
@@ -61,7 +61,7 @@ class HomeProvider with ChangeNotifier {
   String originAddress = '';
   bool destinationIsFilled = false;
   String destinationAddress = appLoc.destination;
-  String distance = "0", price = "0";
+  String distance = "0", price = "";
   late Text originText;
   late Text destinationText;
   List<LatLng> polylineCoordinates = [];
@@ -69,6 +69,8 @@ class HomeProvider with ChangeNotifier {
   static List<PriceCategory> _priceCategory = [];
   PriceCategory? _selectedCategory;
   PaymentMethod? _paymentMethod;
+
+  String selectedVehicleId = '';
 
   List<VehiclesCategory> _vehiclesCategory = [];
 
@@ -401,6 +403,14 @@ class HomeProvider with ChangeNotifier {
     );
   }
 
+  //Update Fare Price and vehicle Catagory
+  updatePriceAndCatagortId({required fare, required catagoryId}) {
+    price = fare;
+    selectedVehicleId = catagoryId;
+    notifyListeners();
+  }
+
+//Get all the Vehicles Catagories
   Stream<VehiclesCategoryState> fetchVehicleCategory() async* {
     yield VehiclesCategoryLoading();
 
@@ -421,6 +431,7 @@ class HomeProvider with ChangeNotifier {
     log("--------****************" + vehicleCategory.toString());
   }
 
+//Old Method to get vehicles Catagories
   Stream<PriceCategoryState> fetchPriceCategory() async* {
     yield PriceCategoryLoading();
 
@@ -438,12 +449,25 @@ class HomeProvider with ChangeNotifier {
     );
   }
 
+//update selected car category
+
+// Create or Submit Order
   Stream<CreateOrderState> submitOrder() async* {
+    log("Submit order Clicked");
     yield CreateOrderLoading();
     String txtLatLngOrigin =
         '${originLatLng.latitude},${originLatLng.longitude}';
     String txtLatLngDestination =
         '${destinationLatLng.latitude},${destinationLatLng.longitude}';
+
+    log(txtLatLngOrigin.toString());
+    log(txtLatLngDestination.toString());
+    log(originAddress.toString());
+    log(destinationAddress.toString());
+    log(distance.toString());
+    log(price.toString());
+    log(_paymentMethod.toString());
+    log(selectedVehicleId.toString());
 
     final formData = FormData.fromMap({
       'start_coordinate': txtLatLngOrigin,
@@ -453,10 +477,12 @@ class HomeProvider with ChangeNotifier {
       'distance': distance,
       'total': price,
       'payment_method': _paymentMethod == PaymentMethod.cash ? "1" : "2",
-      'vehicle_category_id': _selectedCategory!.categoryId.toString(),
+      'vehicle_category_id': selectedVehicleId.toString(),
     });
+
+    log(formData.toString());
     logMe("formData");
-    logMe(_selectedCategory!.categoryId.toString());
+    // logMe(_selectedCategory!.categoryId.toString());
     final result = await createOrder.execute(formData);
     yield* result.fold((failure) async* {
       logMe("failure");

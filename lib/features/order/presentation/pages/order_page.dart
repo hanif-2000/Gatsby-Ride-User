@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:appkey_taxiapp_user/core/domain/entities/order_data_detail.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_app_bar.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/app_config.dart';
@@ -10,20 +10,20 @@ import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_order_detail_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_status_order_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/widgets/bottom_container_order.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/providers/home_provider.dart';
+import '../../../../core/presentation/widgets/searching_ride_bottom_sheet.dart';
+import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
 import '../providers/get_driver_detail_state.dart';
 import '../providers/update_status_order_state.dart';
 import '../widgets/button_cancel_order.dart';
-import '../widgets/current_location_order.dart';
 import '../widgets/depart_dialog.dart';
 import '../widgets/dialog_driver_detail.dart';
 import '../widgets/thank_you_dialog.dart';
@@ -46,6 +46,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
@@ -67,9 +69,9 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: const CustomAppBar(
-            centerTitle: false,
-          ),
+          // appBar: const CustomAppBar(
+          //   centerTitle: false,
+          // ),
           body: Consumer<OrderProvider>(builder: (context, provider, _) {
             if (checkOrderStatusTimer != null) {
               checkOrderStatusTimer!.cancel();
@@ -87,12 +89,17 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                       case Order.driverAccept:
                         provider.fetchOrderDetail().listen((event) async {
                           if (event is GetOrderDetailLoading) {
+                            log(' Get Order Details Loading');
                             showLoading();
                           } else if (event is GetOrderDetailLoaded) {
+                            log(' Get Order Details Loaded');
+
                             provider
                                 .fetchDriverDetail()
                                 .listen((eventDriverDetail) async {
                               if (eventDriverDetail is GetDriverDetailLoaded) {
+                                log(' Get Driver Details Loaded');
+
                                 provider.changeOrderStatus =
                                     OrderStatus.driverAccept;
                                 dismissLoading();
@@ -100,6 +107,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                     const Duration(milliseconds: 3000), () {
                                   Navigator.pop(context);
                                 });
+
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
@@ -223,25 +231,87 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        OriginWidget(
-                          deviceWidth: _deviceSize.width,
-                          isFromOrder: true,
+                        /** New code  */
+                        Container(
+                          color: whiteColor,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 6.0),
+                            child: Container(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/icons/location.png',
+                                      height: 24.0,
+                                      width: 24.0,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    SvgPicture.asset(
+                                        'assets/icons/dotted_line.svg'),
+                                    SvgPicture.asset(
+                                      'assets/icons/destination_logo.svg',
+                                      height: 30.0,
+                                      width: 30.0,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    OriginWidget(
+                                      deviceWidth: _deviceSize.width,
+                                      isFromOrder: false,
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.zero,
+                                      width: _deviceSize.width * .8,
+                                      height: 1.0,
+                                      color: whiteEFEFEFColor,
+                                    ),
+                                    Container(
+                                      child: DestinationWidget(
+                                        deviceWidth: _deviceSize.width,
+                                        isFromOrder: false,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            )),
+                          ),
                         ),
-                        DestinationWidget(
-                          deviceWidth: _deviceSize.width,
-                          isFromOrder: true,
-                        ),
-                        Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                              provider.orderStatus == OrderStatus.lookingDriver
-                                  ? const SizedBox()
-                                  : const CurrentLocationOrderWidget(),
-                              const BottomContaineOrder()
-                            ]))
+
+                        /**Old Code  */
+
+                        // OriginWidget(
+                        //   deviceWidth: _deviceSize.width,
+                        //   isFromOrder: true,
+                        // ),
+                        // DestinationWidget(
+                        //   deviceWidth: _deviceSize.width,
+                        //   isFromOrder: true,
+                        // ),
+
+                        // // Top Section Drop And Pick up
+                        // Expanded(
+                        //     child: Column(
+                        //         crossAxisAlignment: CrossAxisAlignment.end,
+                        //         mainAxisAlignment: MainAxisAlignment.end,
+                        //         children: [
+                        //       provider.orderStatus == OrderStatus.lookingDriver
+                        //           ? const SizedBox()
+                        //           : const CurrentLocationOrderWidget(),
+                        //       const BottomContaineOrder()
+                        //     ]))
                       ]),
+
+                  // Searching Drivers
                   Container(
                     color: Colors.black12,
                     height: double.infinity,
@@ -271,5 +341,22 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
             );
           }),
         ));
+  }
+
+  show(BuildContext context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * .5,
+        ),
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(50.0),
+          ),
+        ),
+        builder: (context) {
+          return SearchingRideBottomSheet();
+        });
   }
 }

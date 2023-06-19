@@ -1,17 +1,22 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_vehicle_info.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/payment_widget.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/searching_ride_bottom_sheet.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../features/order/presentation/pages/order_page.dart';
+import '../../domain/entities/order_data_detail.dart';
 import '../../static/enums.dart';
 import '../../utility/helper.dart';
+import '../providers/create_order_state.dart';
 import '../providers/vehicle_category_state.dart';
 import 'custom_button/custom_button_widget.dart';
+import 'custom_simple_dialog.dart';
 
 class BottomSheetBookRide extends StatelessWidget {
   const BottomSheetBookRide({Key? key}) : super(key: key);
@@ -71,13 +76,30 @@ class BottomSheetBookRide extends StatelessWidget {
                                   return Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: CustomVehicleInfo(
-                                      vehicleImage:
-                                          'assets/icons/car-dropdown.png',
-                                      time: "2min",
-                                      price: data[index].totalFare.toString(),
-                                      vehicleType: data[index].categoryCar,
-                                      capacity: data[index].seat.toString(),
+                                    child: InkWell(
+                                      onTap: () {
+                                        provider.updatePriceAndCatagortId(
+                                            fare: data[index]
+                                                .totalFare
+                                                .toString(),
+                                            catagoryId: data[index]
+                                                .categoryId
+                                                .toString());
+
+                                        log(index.toString());
+                                        log(data[index].totalFare.toString());
+                                        log(data[index].categoryCar.toString());
+                                        log(data[index].seat.toString());
+                                        log(data[index].categoryId.toString());
+                                      },
+                                      child: CustomVehicleInfo(
+                                        vehicleImage:
+                                            'assets/icons/car-dropdown.png',
+                                        time: "2 Min",
+                                        price: data[index].totalFare.toString(),
+                                        vehicleType: data[index].categoryCar,
+                                        capacity: data[index].seat.toString(),
+                                      ),
                                     ),
                                   );
                                 },
@@ -183,23 +205,86 @@ class BottomSheetBookRide extends StatelessWidget {
                                       ),
                                       event: () {
                                         if (provider.paymentMethod != null) {
-                                          Navigator.pop(context);
-                                          showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              constraints: BoxConstraints(
-                                                  maxHeight:
-                                                      _deviceSize.height * .5),
+                                          if (provider.price.isEmpty ||
+                                              provider
+                                                  .selectedVehicleId.isEmpty) {
+                                            showDialog(
+                                              barrierDismissible: false,
                                               context: context,
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                                  top: Radius.circular(50.0),
-                                                ),
-                                              ),
                                               builder: (context) {
-                                                return SearchingRideBottomSheet();
-                                              });
+                                                return CustomSimpleDialog(
+                                                    text: appLoc
+                                                        .taxiTypeNotSelected,
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    });
+                                              },
+                                            );
+                                          } else {
+                                            // Navigator.pop(context);
+
+                                            provider
+                                                .submitOrder()
+                                                .listen((event) async {
+                                              if (event is CreateOrderLoading) {
+                                                showLoading();
+                                              } else if (event
+                                                  is CreateOrderLoaded) {
+                                                dismissLoading();
+                                                showToast(
+                                                    message: appLoc
+                                                        .orderCreatedSuccessfully);
+                                                final OrderDataDetail
+                                                    orderDataDetail = OrderDataDetail(
+                                                        originLatLng: provider
+                                                            .originLatLng,
+                                                        destinationLatLng: provider
+                                                            .destinationLatLng,
+                                                        originAddress: provider
+                                                            .originAddress,
+                                                        destinationAddress: provider
+                                                            .destinationAddress);
+                                                Navigator
+                                                    .pushNamedAndRemoveUntil(
+                                                        context,
+                                                        OrderPage.routeName,
+                                                        (route) => false,
+                                                        arguments:
+                                                            orderDataDetail);
+                                              } else if (event
+                                                  is CreateOrderFailure) {
+                                                dismissLoading();
+                                              }
+                                            });
+                                          }
+
+                                          // provider.submitOrder();
+
+                                          //                                        log(provider.txtLatLngOrigin.toString());
+                                          // log(txtLatLngDestination.toString());
+                                          log(provider.originAddress
+                                              .toString());
+                                          log(provider.destinationAddress
+                                              .toString());
+                                          log(provider.distance.toString());
+                                          log(provider.price.toString());
+
+                                          // showModalBottomSheet(
+                                          //     isScrollControlled: true,
+                                          //     constraints: BoxConstraints(
+                                          //         maxHeight:
+                                          //             _deviceSize.height * .5),
+                                          //     context: context,
+                                          //     shape:
+                                          //         const RoundedRectangleBorder(
+                                          //       borderRadius:
+                                          //           BorderRadius.vertical(
+                                          //         top: Radius.circular(50.0),
+                                          //       ),
+                                          //     ),
+                                          //     builder: (context) {
+                                          //       return SearchingRideBottomSheet();
+                                          //     });
                                         } else {
                                           showToast(
                                               message:
