@@ -52,7 +52,7 @@ class BottomSheetBookRide extends StatelessWidget {
                       height: _deviceSize.height * .5,
                       child: SingleChildScrollView(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             GestureDetector(
@@ -68,6 +68,7 @@ class BottomSheetBookRide extends StatelessWidget {
                               ),
                             ),
                             Container(
+                              color: whiteColor,
                               height: _deviceSize.height * .22,
                               child: ListView.builder(
                                 itemCount: data.length,
@@ -95,7 +96,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                       child: CustomVehicleInfo(
                                         vehicleImage:
                                             'assets/icons/car-dropdown.png',
-                                        time: "2 Min",
+                                        time: "${data[index].time} Min",
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
                                         capacity: data[index].seat.toString(),

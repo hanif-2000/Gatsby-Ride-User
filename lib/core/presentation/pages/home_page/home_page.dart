@@ -154,9 +154,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     showModalBottomSheet(
                                       useRootNavigator: true,
                                       shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      // backgroundColor: ,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0),
+                                        ),
+                                      ),
+                                      backgroundColor: whiteColor,
                                       context: context,
                                       builder: (context) {
                                         return const BottomSheetBookRide();

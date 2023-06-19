@@ -34,6 +34,8 @@ const Color grey7C7C7CColor = Color(0xFF7C7C7C);
 const Color greyEBEBEBColor = Color(0xFFEBEBEB);
 const Color greyC8C7CCColor = Color(0xFFC8C7CC);
 const Color grey7D7979Color = Color(0xFF7D7979);
+const Color grey707070Color = Color(0xFF707070);
+
 const Color greyB2B2B22Color = Color(0xFFB2B2B22);
 const Color grey585858Color = Color(0xFF585858);
 
@@ -66,4 +68,6 @@ const Color greyF9F9F9Color = Color(0xffF9F9F9);
 const Color grey8A8A8FColor = Color(0xff8a8a8f);
 
 const Color greyEFEFEFColor = Color(0x00efefef);
+const Color greyECECECColor = Color(0xffececec);
+
 const Color grey858585Color = Color(0xff858585);

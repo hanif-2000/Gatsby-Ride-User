@@ -1,1 +1,0 @@
- /Users/mac/Documents/projects/taxi-user-git/.dart_tool/flutter_gen/gen_l10n/app_localizations_en.dart /Users/mac/Documents/projects/taxi-user-git/.dart_tool/flutter_gen/gen_l10n/app_localizations.dart:  /Users/mac/Documents/projects/taxi-user-git/l10n.yaml /Users/mac/Documents/projects/taxi-user-git/lib/l10n/app_en.arb

@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:appkey_taxiapp_user/core/domain/entities/order_data_detail.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
-import 'package:appkey_taxiapp_user/core/static/app_config.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_order_detail_state.dart';
@@ -23,11 +22,9 @@ import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
 import '../providers/get_driver_detail_state.dart';
 import '../providers/update_status_order_state.dart';
-import '../widgets/button_cancel_order.dart';
 import '../widgets/depart_dialog.dart';
 import '../widgets/dialog_driver_detail.dart';
 import '../widgets/thank_you_dialog.dart';
-import '../widgets/waiting_driver_dialog.dart';
 
 class OrderPage extends StatefulWidget {
   final OrderDataDetail location;
@@ -47,7 +44,9 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showSearchingVehiclesBottomSheet(context);
+    });
   }
 
   @override
@@ -312,30 +311,30 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                       ]),
 
                   // Searching Drivers
-                  Container(
-                    color: Colors.black12,
-                    height: double.infinity,
-                    child: provider.orderStatus == OrderStatus.lookingDriver
-                        ? LayoutBuilder(
-                            builder: (context, constraints) {
-                              return Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: App(context).appHeight(25)),
-                                    child: WaitingDriverDialog(
-                                      size: constraints,
-                                    ),
-                                  ),
-                                  const ButtonCancelOrder()
-                                ],
-                              );
-                            },
-                          )
-                        : const SizedBox.shrink(),
-                  ),
+                  // Container(
+                  //   color: Colors.black12,
+                  //   height: double.infinity,
+                  //   child: provider.orderStatus == OrderStatus.lookingDriver
+                  //       ? LayoutBuilder(
+                  //           builder: (context, constraints) {
+                  //             return Column(
+                  //               mainAxisAlignment:
+                  //                   MainAxisAlignment.spaceBetween,
+                  //               children: [
+                  //                 Padding(
+                  //                   padding: EdgeInsets.only(
+                  //                       top: App(context).appHeight(25)),
+                  //                   child: WaitingDriverDialog(
+                  //                     size: constraints,
+                  //                   ),
+                  //                 ),
+                  //                 const ButtonCancelOrder()
+                  //               ],
+                  //             );
+                  //           },
+                  //         )
+                  //       : const SizedBox.shrink(),
+                  // ),
                 ]))
               ],
             );
@@ -343,18 +342,20 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
         ));
   }
 
-  show(BuildContext context) {
+  showSearchingVehiclesBottomSheet(BuildContext context) {
     showModalBottomSheet(
-        isScrollControlled: true,
+        isDismissible: false,
+        isScrollControlled: false,
+        backgroundColor: Colors.blue,
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * .5,
+          maxHeight: MediaQuery.of(context).size.height * .4,
         ),
         context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(50.0),
-          ),
-        ),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topRight: Radius.circular(16.0),
+          topLeft: Radius.circular(16.0),
+        )),
         builder: (context) {
           return SearchingRideBottomSheet();
         });
