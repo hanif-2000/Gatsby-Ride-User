@@ -50,7 +50,11 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
             child: Row(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const CircleAvatar(),
+                CircleAvatar(
+                  backgroundImage: NetworkImage(widget.driverImage == ''
+                      ? 'https://picsum.photos/250?image=9'
+                      : widget.driverImage),
+                ),
                 Padding(
                   padding: EdgeInsets.only(left: _deviceSize.width * .02),
                   child: Column(

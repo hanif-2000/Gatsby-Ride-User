@@ -1,3 +1,4 @@
+import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,8 @@ class CustomVehicleInfo extends StatelessWidget {
   final String? price;
   final String? capacity;
   final VoidCallback? onTap;
+  final int? index;
+  final HomeProvider provider;
 
   const CustomVehicleInfo({
     Key? key,
@@ -17,17 +20,24 @@ class CustomVehicleInfo extends StatelessWidget {
     this.price,
     this.capacity,
     this.onTap,
+    this.index,
+    required this.provider,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          // color: Colors.yellow,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        color: provider.selectedVehicleIndex == index
+            ? yellowE5A829FColor.withOpacity(.15)
+            : Colors.transparent,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: _deviceSize.width * .05,
+            vertical: 8.0,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

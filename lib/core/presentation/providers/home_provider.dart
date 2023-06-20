@@ -70,6 +70,8 @@ class HomeProvider with ChangeNotifier {
   PriceCategory? _selectedCategory;
   PaymentMethod? _paymentMethod;
 
+  int selectedVehicleIndex = -1;
+
   String selectedVehicleId = '';
 
   List<VehiclesCategory> _vehiclesCategory = [];
@@ -109,6 +111,12 @@ class HomeProvider with ChangeNotifier {
     _selectedCategory = null;
     _paymentMethod = null;
     markers.clear();
+    notifyListeners();
+  }
+
+  //Update Selected Vehicle Index
+  updateSelectedVehicleIndex({index}) {
+    selectedVehicleIndex = index;
     notifyListeners();
   }
 

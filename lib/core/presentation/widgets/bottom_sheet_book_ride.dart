@@ -16,7 +16,6 @@ import '../../utility/helper.dart';
 import '../providers/create_order_state.dart';
 import '../providers/vehicle_category_state.dart';
 import 'custom_button/custom_button_widget.dart';
-import 'custom_simple_dialog.dart';
 
 class BottomSheetBookRide extends StatelessWidget {
   const BottomSheetBookRide({Key? key}) : super(key: key);
@@ -31,14 +30,13 @@ class BottomSheetBookRide extends StatelessWidget {
           switch (state.data.runtimeType) {
             case VehiclesCategoryLoading:
               return const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: Center(child: CircularProgressIndicator()),
               );
             case VehiclesCategoryLoaded:
               final data = (state.data as VehiclesCategoryLoaded).data;
               return Padding(
-                padding: const EdgeInsets.only(
-                    left: 8.0, right: 8.0, top: 10.0, bottom: 0.0),
+                padding: const EdgeInsets.only(top: 10.0, bottom: 0.0),
                 child: Scaffold(
                   body: Consumer<HomeProvider>(builder: (context, provider, _) {
                     return Container(
@@ -76,7 +74,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
+                                        EdgeInsets.symmetric(horizontal: 0.0),
                                     child: InkWell(
                                       onTap: () {
                                         provider.updatePriceAndCatagortId(
@@ -92,14 +90,19 @@ class BottomSheetBookRide extends StatelessWidget {
                                         log(data[index].categoryCar.toString());
                                         log(data[index].seat.toString());
                                         log(data[index].categoryId.toString());
+
+                                        provider.updateSelectedVehicleIndex(
+                                            index: index);
                                       },
                                       child: CustomVehicleInfo(
+                                        index: index,
                                         vehicleImage:
                                             'assets/icons/car-dropdown.png',
                                         time: "${data[index].time} Min",
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
                                         capacity: data[index].seat.toString(),
+                                        provider: provider,
                                       ),
                                     ),
                                   );
@@ -193,7 +196,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                       ],
                                     ),
                                     SizedBox(
-                                      height: _deviceSize.height * .05,
+                                      height: _deviceSize.height * .03,
                                     ),
                                     CustomButton(
                                       text: const Text(
@@ -209,18 +212,21 @@ class BottomSheetBookRide extends StatelessWidget {
                                           if (provider.price.isEmpty ||
                                               provider
                                                   .selectedVehicleId.isEmpty) {
-                                            showDialog(
-                                              barrierDismissible: false,
-                                              context: context,
-                                              builder: (context) {
-                                                return CustomSimpleDialog(
-                                                    text: appLoc
-                                                        .taxiTypeNotSelected,
-                                                    onTap: () {
-                                                      Navigator.pop(context);
-                                                    });
-                                              },
-                                            );
+                                            showToast(
+                                                message:
+                                                    appLoc.taxiTypeNotSelected);
+                                            // showDialog(
+                                            //   barrierDismissible: false,
+                                            //   context: context,
+                                            //   builder: (context) {
+                                            //     return CustomSimpleDialog(
+                                            //         text: appLoc
+                                            //             .taxiTypeNotSelected,
+                                            //         onTap: () {
+                                            //           Navigator.pop(context);
+                                            //         });
+                                            //   },
+                                            // );
                                           } else {
                                             // Navigator.pop(context);
 

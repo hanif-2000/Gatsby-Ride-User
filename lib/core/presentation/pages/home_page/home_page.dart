@@ -152,7 +152,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       log("========>>>>>>" + event.toString());
                                     });
                                     showModalBottomSheet(
+                                      barrierColor: Colors.transparent,
                                       useRootNavigator: true,
+                                      // isScrollControlled: true,
+                                      constraints: BoxConstraints(
+                                          maxHeight: _deviceSize.height * .45),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(16.0),
@@ -162,7 +166,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       backgroundColor: whiteColor,
                                       context: context,
                                       builder: (context) {
-                                        return const BottomSheetBookRide();
+                                        return Container(
+                                            child: BottomSheetBookRide());
                                       },
                                     );
                                   },

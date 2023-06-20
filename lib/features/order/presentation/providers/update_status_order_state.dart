@@ -1,4 +1,3 @@
-import 'package:appkey_taxiapp_user/features/order/data/models/create_order_response_model.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/error/failure.dart';

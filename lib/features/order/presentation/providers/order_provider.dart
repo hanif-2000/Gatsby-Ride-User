@@ -74,6 +74,7 @@ class OrderProvider with ChangeNotifier {
   //setter
   set changeOrderStatus(val) {
     _orderStatus = val;
+
     notifyListeners();
   }
 
@@ -205,6 +206,7 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
+//Call Driver
   callDriver() async {
     final call = Uri.parse('tel:${_driverDetail!.phone}');
     launchUrl(call);
@@ -234,6 +236,7 @@ class OrderProvider with ChangeNotifier {
     });
   }
 
+//Update Order Status from User side
   Stream<UpdateStatusOrderState> submitStatusOrder(int orderStatus) async* {
     yield UpdateStatusOrderLoading();
     final formData = FormData.fromMap({
@@ -250,6 +253,7 @@ class OrderProvider with ChangeNotifier {
     });
   }
 
+/** Get Order Status */
   Stream<GetStatusOrderState> fetchOrderStatus() async* {
     yield GetStatusOrderLoading();
 
@@ -263,6 +267,7 @@ class OrderProvider with ChangeNotifier {
     });
   }
 
+/** Get Order Details */
   Stream<GetOrderDetailState> fetchOrderDetail() async* {
     yield GetOrderDetailLoading();
 
@@ -277,6 +282,7 @@ class OrderProvider with ChangeNotifier {
     });
   }
 
+/**  Get Driver Details */
   Stream<GetDriverDetailState> fetchDriverDetail() async* {
     yield GetDriverDetailLoading();
 
@@ -291,6 +297,7 @@ class OrderProvider with ChangeNotifier {
     });
   }
 
+/** Get Driver Location */
   Stream<GetDriverLocationState> fetchDriverLocation() async* {
     yield GetDriverLocationLoading();
 
@@ -327,6 +334,7 @@ class OrderProvider with ChangeNotifier {
     )));
   }
 
+/**  Tracking Driver */
   trackingDriver(bool listenLocation) async {
     var latLong = _driverLocation!.longLat;
     var split = latLong.split(",");

@@ -1,10 +1,4 @@
-import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/button_request_taxi_widget.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/category_car_widget.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/distance_price_widget.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/payment_widget.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/widgets/button_cancel_order.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/widgets/info_driver_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -1,14 +1,9 @@
-import 'package:appkey_taxiapp_user/core/presentation/pages/splash_page.dart';
-import 'package:appkey_taxiapp_user/core/routes/route.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/otp_verification_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'core/presentation/providers/home_provider.dart';
 import 'core/presentation/providers/place_picker_provider.dart';
@@ -26,7 +21,8 @@ import 'features/profile/presentation/providers/change_password_provider.dart';
 import 'features/profile/presentation/providers/profile_edit_provider.dart';
 import 'features/profile/presentation/providers/profile_provider.dart';
 import 'dart:async';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'features/testing/pages/feedback_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -126,36 +122,38 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: locator<GlobalKey<NavigatorState>>(),
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color
-                // primary: primaryColor,
-                ),
-      ),
-      navigatorObservers: [routeObserver],
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en', ''),
-      ],
-      // Initialize routes
-      onGenerateRoute: generateRoute,
-      home: const SplashPage(),
-      // home: CreateProfilePage(),
-      debugShowCheckedModeBanner: false,
+    // return
 
-      builder: FlutterSmartDialog.init(),
-    );
+    // MaterialApp(
+    //   navigatorKey: locator<GlobalKey<NavigatorState>>(),
+    //   title: 'Flutter Demo',
+    //   theme: ThemeData(
+    //     colorScheme:
+    //         ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color
+    //             // primary: primaryColor,
+    //             ),
+    //   ),
+    //   navigatorObservers: [routeObserver],
+    //   localizationsDelegates: [
+    //     AppLocalizations.delegate,
+    //     GlobalMaterialLocalizations.delegate,
+    //     GlobalWidgetsLocalizations.delegate,
+    //     GlobalCupertinoLocalizations.delegate,
+    //   ],
+    //   supportedLocales: const [
+    //     Locale('en', ''),
+    //   ],
+    //   // Initialize routes
+    //   onGenerateRoute: generateRoute,
+    //   home: const SplashPage(),
+    //   // home: CreateProfilePage(),
+    //   debugShowCheckedModeBanner: false,
 
-    // return MaterialApp(
-    //   home: MapSample(),
+    //   builder: FlutterSmartDialog.init(),
     // );
+
+    return MaterialApp(
+      home: FeedBackScreen(),
+    );
   }
 }

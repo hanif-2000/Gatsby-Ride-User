@@ -1,9 +1,17 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../core/presentation/pages/home_page/home_page.dart';
+import '../../../../core/presentation/providers/home_provider.dart';
+import '../../../../core/static/order_status.dart';
+import '../../../../core/utility/helper.dart';
+import '../providers/update_status_order_state.dart';
 
 class ButtonCancelOrder extends StatelessWidget {
   const ButtonCancelOrder({Key? key}) : super(key: key);
@@ -26,10 +34,11 @@ class ButtonCancelOrder extends StatelessWidget {
                   ),
                 ),
                 event: () {
+                  /**  NEW CODE */
                   showModalBottomSheet(
                       isScrollControlled: true,
                       constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height * .25,
+                        maxHeight: MediaQuery.of(context).size.height * .21,
                       ),
                       context: context,
                       shape: RoundedRectangleBorder(
@@ -38,11 +47,64 @@ class ButtonCancelOrder extends StatelessWidget {
                         topLeft: Radius.circular(16.0),
                       )),
                       builder: (context) {
-                        return confirmCancel(context, _deviceSize);
+                        return confirmCancel(
+                          context: context,
+                          size: _deviceSize,
+                          onConfirm: () async {
+                            // Navigator.pop(context);
+                            // Navigator.pop(context);
+
+                            provider
+                                .submitStatusOrder(Order.cancel)
+                                .listen((event) async {
+                              if (event is UpdateStatusOrderLoading) {
+                                showLoading();
+                                log("Order Status LOADING");
+                              } else if (event is UpdateStatusOrderLoaded) {
+                                log("Order Status LOADED--------");
+
+                                var homeProvider = Provider.of<HomeProvider>(
+                                    context,
+                                    listen: false);
+                                await homeProvider.clearState();
+                                dismissLoading();
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  HomePage.routeName,
+                                  (route) => false,
+                                );
+
+//Show dialog for order canceled
+                                // showDialog(
+                                //   barrierDismissible: false,
+                                //   context: context,
+                                //   builder: (context) {
+                                //     return CustomSimpleDialog(
+                                //         text: appLoc.orderCanceled,
+                                //         onTap: () {
+                                //           Navigator.pushNamedAndRemoveUntil(
+                                //             context,
+                                //             HomePage.routeName,
+                                //             (route) => false,
+                                //           );
+                                //         });
+                                //   },
+                                // );
+                              } else if (event is UpdateStatusOrderFailure) {
+                                log("Update Order Status Failed.......");
+                                dismissLoading();
+                              }
+                            });
+                          },
+                        );
                       });
+
+/**  Old Code */
+
                   // showDialog(
                   //   context: context,
                   //   builder: (_) => CustomCancelDialog(
+                  //     // Cancel Ride: Ok
                   //     positiveAction: () async {
                   //       Navigator.pop(context);
                   //       provider
@@ -69,7 +131,6 @@ class ButtonCancelOrder extends StatelessWidget {
                   //                       HomePage.routeName,
                   //                       (route) => false,
                   //                     );
-
                   //                   });
                   //             },
                   //           );
@@ -86,7 +147,8 @@ class ButtonCancelOrder extends StatelessWidget {
     });
   }
 
-  Widget confirmCancel(BuildContext context, size) {
+  Widget confirmCancel(
+      {required BuildContext context, size, required VoidCallback onConfirm}) {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
@@ -100,7 +162,10 @@ class ButtonCancelOrder extends StatelessWidget {
           SizedBox(
             height: 10.0,
           ),
-          SvgPicture.asset('assets/icons/grey_line.svg'),
+          SvgPicture.asset(
+            'assets/icons/grey_line.svg',
+            color: grey707070Color.withOpacity(.3),
+          ),
           Padding(
             padding: EdgeInsets.only(
               top: size.height * .05,
@@ -124,8 +189,10 @@ class ButtonCancelOrder extends StatelessWidget {
                   width: size.width * .25,
                   child: CustomButton(
                     text: "Yes",
-                    event: () {},
-                    bgColor: grey707070Color,
+                    event: onConfirm,
+                    bgColor: grey707070Color.withOpacity(
+                      .4,
+                    ),
                     isRounded: true,
                   ),
                 ),
@@ -137,7 +204,9 @@ class ButtonCancelOrder extends StatelessWidget {
                   width: size.width * .25,
                   child: CustomButton(
                     text: "No",
-                    event: () {},
+                    event: () {
+                      Navigator.pop(context);
+                    },
                     bgColor: blackColor,
                     isRounded: true,
                   ),

@@ -9,6 +9,7 @@ import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_order_detail_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_status_order_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
+import 'package:appkey_taxiapp_user/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,10 +21,10 @@ import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
+import '../../domain/entities/driver_detail.dart';
 import '../providers/get_driver_detail_state.dart';
 import '../providers/update_status_order_state.dart';
 import '../widgets/depart_dialog.dart';
-import '../widgets/dialog_driver_detail.dart';
 import '../widgets/thank_you_dialog.dart';
 
 class OrderPage extends StatefulWidget {
@@ -85,6 +86,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                   if (statusOrder != sessionStatusOrder) {
                     session.setOrderStatus = state.data.status;
                     switch (statusOrder) {
+                      /** Driver Accepted the Order (Status 1) */
                       case Order.driverAccept:
                         provider.fetchOrderDetail().listen((event) async {
                           if (event is GetOrderDetailLoading) {
@@ -102,24 +104,38 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                 provider.changeOrderStatus =
                                     OrderStatus.driverAccept;
                                 dismissLoading();
-                                Timer timerDialogFoundDriver = Timer(
-                                    const Duration(milliseconds: 3000), () {
-                                  Navigator.pop(context);
-                                });
 
-                                showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (context) {
-                                    return DriverFoundDialog(
-                                      driverDetail: eventDriverDetail.data,
-                                      onTap: () {
-                                        timerDialogFoundDriver.cancel();
-                                        Navigator.pop(context);
-                                      },
-                                    );
-                                  },
-                                );
+                                Navigator.pop(context);
+
+                                // Timer timerDialogFoundDriver = Timer(
+                                //     const Duration(milliseconds: 3000), () {
+                                //   Navigator.pop(context);
+                                // });
+
+                                //Show dialog when Driver Found
+
+//New Code to show bottom sheet when Driver Found
+
+                                // showDriverFoundBottomSheet(
+                                //     context, eventDriverDetail.data);
+
+                                showDriverFoundBottomSheet(
+                                    context, eventDriverDetail.data);
+
+                                /** Old Code Showing pop when Driver found */
+                                // showDialog(
+                                //   barrierDismissible: false,
+                                //   context: context,
+                                //   builder: (context) {
+                                //     return DriverFoundDialog(
+                                //       driverDetail: eventDriverDetail.data,
+                                //       onTap: () {
+                                //         timerDialogFoundDriver.cancel();
+                                //         Navigator.pop(context);
+                                //       },
+                                //     );
+                                //   },
+                                // );
                                 trackingDriverTimer = Timer.periodic(
                                     const Duration(seconds: 5), (timer) {
                                   logMe("Tracking Driver");
@@ -132,9 +148,14 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                           }
                         });
                         break;
+
+                      /** Departure to Customer Place (Status 2) */
                       case Order.departureToCustomerplace:
                         provider.changeFirstTracking = false;
+
                         break;
+
+                      /** Arrived at Customer Place (Status 3) */
                       case Order.arriveAtCustomerPlace:
                         showDialog(
                             barrierDismissible: false,
@@ -167,6 +188,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                               );
                             });
                         break;
+
+                      /** Arrived at Destination (Status 6) */
                       case Order.arriveAtDestination:
                         timer.cancel();
                         if (trackingDriverTimer != null) {
@@ -231,60 +254,65 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         /** New code  */
-                        Container(
-                          color: whiteColor,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 6.0),
-                            child: Container(
-                                child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/icons/location.png',
-                                      height: 24.0,
-                                      width: 24.0,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    SvgPicture.asset(
-                                        'assets/icons/dotted_line.svg'),
-                                    SvgPicture.asset(
-                                      'assets/icons/destination_logo.svg',
-                                      height: 30.0,
-                                      width: 30.0,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    OriginWidget(
-                                      deviceWidth: _deviceSize.width,
-                                      isFromOrder: false,
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.zero,
-                                      width: _deviceSize.width * .8,
-                                      height: 1.0,
-                                      color: whiteEFEFEFColor,
-                                    ),
-                                    Container(
-                                      child: DestinationWidget(
-                                        deviceWidth: _deviceSize.width,
-                                        isFromOrder: false,
+
+                        provider.orderStatus != OrderStatus.lookingDriver
+                            ? SizedBox()
+                            : Container(
+                                color: whiteColor,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0),
+                                  child: Container(
+                                      child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/icons/location.png',
+                                            height: 24.0,
+                                            width: 24.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          SvgPicture.asset(
+                                              'assets/icons/dotted_line.svg'),
+                                          SvgPicture.asset(
+                                            'assets/icons/destination_logo.svg',
+                                            height: 30.0,
+                                            width: 30.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            )),
-                          ),
-                        ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          OriginWidget(
+                                            deviceWidth: _deviceSize.width,
+                                            isFromOrder: false,
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.zero,
+                                            width: _deviceSize.width * .8,
+                                            height: 1.0,
+                                            color: whiteEFEFEFColor,
+                                          ),
+                                          Container(
+                                            child: DestinationWidget(
+                                              deviceWidth: _deviceSize.width,
+                                              isFromOrder: false,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  )),
+                                ),
+                              ),
 
                         /**Old Code  */
 
@@ -335,7 +363,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                   //         )
                   //       : const SizedBox.shrink(),
                   // ),
-                ]))
+                ])),
               ],
             );
           }),
@@ -344,20 +372,53 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
 
   showSearchingVehiclesBottomSheet(BuildContext context) {
     showModalBottomSheet(
+        enableDrag: false,
         isDismissible: false,
         isScrollControlled: false,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.transparent,
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * .4,
         ),
         context: context,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16.0),
-          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(30.0),
+          topLeft: Radius.circular(30.0),
         )),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         builder: (context) {
           return SearchingRideBottomSheet();
+        });
+  }
+
+  showDriverFoundBottomSheet(BuildContext context, DriverDetail driverDetails) {
+    showModalBottomSheet(
+        isDismissible: false,
+        isScrollControlled: false,
+        backgroundColor: whiteColor,
+        // constraints: BoxConstraints(
+        //   maxHeight:
+        //       MediaQuery.of(context).size.height * .3,
+        // ),
+        context: context,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topRight: Radius.circular(20.0),
+          topLeft: Radius.circular(20.0),
+        )),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        builder: (context) {
+          return Wrap(children: [
+            DriverInfoBottomSheet(
+              category: driverDetails.model,
+              driverId: '4',
+              driverImage: '',
+              driverName: driverDetails.name,
+              platerNumber: driverDetails.plat,
+              rating: "4.5",
+              isReceiptVisible: false,
+            ),
+          ]);
         });
   }
 }

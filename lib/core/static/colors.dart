@@ -23,12 +23,16 @@ const Color bgGreyColor = Color(0xFFededed);
 const Color errorRedColor = Color(0xFFff5959);
 const Color accentColor = Color(0xFF39B0FF);
 const Color greenColor = Color(0xFF37D400);
+
+const Color green63BA6BColor = Color(0xff63BA6B);
 const Color green2DAA5FColor = Color(0xFF2daa5f);
 const Color redf52d56Color = Color(0xFFf52d56);
 
 const Color green9ADB59Color = Color(0xFF9ADB59);
 
 const Color backGroundColor = Color(0xFF666666);
+
+const Color black28272FColor = Color(0xff28272F);
 const Color black15141FColor = Color(0xFF15141F);
 const Color grey7C7C7CColor = Color(0xFF7C7C7C);
 const Color greyEBEBEBColor = Color(0xFFEBEBEB);
@@ -71,3 +75,5 @@ const Color greyEFEFEFColor = Color(0x00efefef);
 const Color greyECECECColor = Color(0xffececec);
 
 const Color grey858585Color = Color(0xff858585);
+const Color blue249DE0Color = Color(0xff249DE0);
+const Color yellowE5A829FColor = Color(0xffE5A829);
