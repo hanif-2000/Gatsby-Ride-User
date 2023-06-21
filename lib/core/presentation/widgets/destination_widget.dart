@@ -101,7 +101,7 @@ class DestinationWidget extends StatelessWidget {
                         map.displayResult(result['pickUpCoordinate'],
                             result['pickUpName'], result['addressType']);
                         if (map.selectedCategory != null) {
-                          map.fetchTotalPrice().listen((event) {});
+                          // map.fetchTotalPrice().listen((event) {});
                         }
 
                         if (result != null) {

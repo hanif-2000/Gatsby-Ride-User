@@ -27,6 +27,7 @@ class CommonText extends StatelessWidget {
         color: fontColor ?? blackColor,
         fontSize: fontSize,
       ),
+      textAlign: TextAlign.center,
     );
   }
 }

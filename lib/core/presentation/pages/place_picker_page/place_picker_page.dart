@@ -171,9 +171,9 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                   Center(
                     child: Image.asset(
                       widget.addressType == AddressType.origin
-                          ? pickupIcon
+                          ? initialPickUpIcon
                           : destinationIcon,
-                      width: 50,
+                      width: 100,
                     ),
                   ),
                   Positioned(

@@ -37,6 +37,8 @@ class _LoginFormState extends State<LoginForm> {
           break;
         case LoginFailure:
           final msg = (state as LoginFailure).failure;
+
+          // log("-------->>>>>>" + msg.toString());
           dismissLoading();
 
           showToast(message: msg);

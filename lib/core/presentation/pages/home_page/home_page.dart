@@ -5,6 +5,7 @@ import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/cust
 import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -148,28 +149,37 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     log(map.destinationLatLng.toString());
                                     log(map.distance.toString());
 
-                                    map.fetchVehicleCategory().listen((event) {
-                                      log("========>>>>>>" + event.toString());
-                                    });
-                                    showModalBottomSheet(
-                                      barrierColor: Colors.transparent,
-                                      useRootNavigator: true,
-                                      // isScrollControlled: true,
-                                      constraints: BoxConstraints(
-                                          maxHeight: _deviceSize.height * .45),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(16.0),
-                                          topRight: Radius.circular(16.0),
+                                    if (!map.originIsFilled ||
+                                        !map.destinationIsFilled) {
+                                      showToast(message: "Select Address");
+                                    } else {
+                                      map
+                                          .fetchVehicleCategory()
+                                          .listen((event) {
+                                        log("========>>>>>>" +
+                                            event.toString());
+                                      });
+                                      showModalBottomSheet(
+                                        barrierColor: Colors.transparent,
+                                        useRootNavigator: true,
+                                        // isScrollControlled: true,
+                                        constraints: BoxConstraints(
+                                            maxHeight:
+                                                _deviceSize.height * .45),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(16.0),
+                                            topRight: Radius.circular(16.0),
+                                          ),
                                         ),
-                                      ),
-                                      backgroundColor: whiteColor,
-                                      context: context,
-                                      builder: (context) {
-                                        return Container(
-                                            child: BottomSheetBookRide());
-                                      },
-                                    );
+                                        backgroundColor: whiteColor,
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                              child: BottomSheetBookRide());
+                                        },
+                                      );
+                                    }
                                   },
                                   buttonHeight: 50,
                                   isRounded: true,

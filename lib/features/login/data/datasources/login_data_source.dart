@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 
 import '../../../../core/utility/injection.dart';
@@ -5,7 +7,7 @@ import '../../../../core/utility/session_helper.dart';
 import '../models/login_response_model.dart';
 
 abstract class LoginDataSource {
-  Future<LoginDataModel?> doLogin(String email, String password);
+  Future<LoginResponseModel?> doLogin(String email, String password);
 }
 
 class LoginDataSourceImplementation implements LoginDataSource {
@@ -14,7 +16,7 @@ class LoginDataSourceImplementation implements LoginDataSource {
   LoginDataSourceImplementation({required this.dio});
 
   @override
-  Future<LoginDataModel?> doLogin(String email, String password) async {
+  Future<LoginResponseModel?> doLogin(String email, String password) async {
     String url = 'api/webservice/login';
     final session = locator<Session>();
     String fcmToken = session.sessionFcmToken;
@@ -28,12 +30,15 @@ class LoginDataSourceImplementation implements LoginDataSource {
       );
       final model = LoginResponseModel.fromJson(response.data);
       final session = locator<Session>();
+
+      log("response" + response.data.toString());
+
       if (model.data != null) {
         session.setUserId = model.data!.userId.toString();
         session.setToken = model.token!;
-        return model.data;
+        return model;
       } else {
-        return null;
+        return model;
       }
     } catch (e) {
       rethrow;

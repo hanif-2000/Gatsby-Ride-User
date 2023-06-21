@@ -7,7 +7,8 @@ import '../repositories/login_repository.dart';
 abstract class LoginUseCase<Type> {
   // return statusCode when fails
   // return token when succeed
-  Future<Either<Failure, LoginDataModel?>> call(String email, String password);
+  Future<Either<Failure, LoginResponseModel?>> call(
+      String email, String password);
 }
 
 class DoLogin implements LoginUseCase<String> {
@@ -16,7 +17,7 @@ class DoLogin implements LoginUseCase<String> {
   DoLogin({required this.repository});
 
   @override
-  Future<Either<Failure, LoginDataModel?>> call(
+  Future<Either<Failure, LoginResponseModel?>> call(
       String email, String password) async {
     final result = await repository.doLogin(email, password);
     return result.fold((l) => Left(l), (r) {

@@ -1,6 +1,7 @@
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:appkey_taxiapp_user/features/testing/pages/feedback_screen.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/circular_image_container.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/text_in_row.dart';
@@ -155,7 +156,7 @@ class ReceiptScreen extends StatelessWidget {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: greyB2B2B22Color.withOpacity(0.03),
+                    color: greyB2B2B2Color.withOpacity(0.13),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding:
@@ -194,7 +195,12 @@ class ReceiptScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  event: () {},
+                  event: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedBackScreen()));
+                  },
                   buttonHeight: 50,
                   // buttonHeight: MediaQuery.of(context).size.height * 0.080,
                   isRounded: true,

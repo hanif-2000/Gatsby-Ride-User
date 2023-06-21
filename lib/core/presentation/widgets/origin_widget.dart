@@ -113,8 +113,8 @@ class OriginWidget extends StatelessWidget {
                             ));
                         map.displayResult(result['pickUpCoordinate'],
                             result['pickUpName'], result['addressType']);
-                        if (map.destinationIsFilled) {
-                          map.fetchTotalPrice().listen((event) {});
+                        if (map.destinationIsFilled && map.originIsFilled) {
+                          // map.fetchTotalPrice().listen((event) {});
                         }
                       } else {
                         Navigator.pushNamed(context, LoginPage.routeName);

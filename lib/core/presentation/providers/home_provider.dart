@@ -57,9 +57,10 @@ class HomeProvider with ChangeNotifier {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   late LatLng originLatLng, destinationLatLng;
   late BitmapDescriptor driverMarker;
-  late BitmapDescriptor pickUpMarker, destinationMarker;
+  late BitmapDescriptor pickUpMarker, destinationMarker, initialPickMarker;
   String originAddress = '';
   bool destinationIsFilled = false;
+  bool originIsFilled = false;
   String destinationAddress = appLoc.destination;
   String distance = "0", price = "";
   late Text originText;
@@ -111,6 +112,9 @@ class HomeProvider with ChangeNotifier {
     _selectedCategory = null;
     _paymentMethod = null;
     markers.clear();
+    selectedVehicleIndex = -1;
+
+    originIsFilled = false;
     notifyListeners();
   }
 
@@ -129,11 +133,14 @@ class HomeProvider with ChangeNotifier {
     getBytesFromAsset(driverMarkerIcon, 70).then((value) {
       driverMarker = BitmapDescriptor.fromBytes(value);
     });
-    getBytesFromAsset(pickupIcon, 100).then((value) async {
+    getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
       pickUpMarker = BitmapDescriptor.fromBytes(value);
     });
     getBytesFromAsset(destinationIcon, 100).then((value) async {
       destinationMarker = BitmapDescriptor.fromBytes(value);
+    });
+    getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
+      initialPickMarker = BitmapDescriptor.fromBytes(value);
     });
   }
 
@@ -147,6 +154,7 @@ class HomeProvider with ChangeNotifier {
         .asUint8List();
   }
 
+//Set current location in map intially
   setCurrentLocation() async {
     try {
       bool serviceStatus = await locationService.serviceEnabled();
@@ -180,6 +188,7 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+//Get Current Location
   getCurrentLocation() async {
     try {
       bool serviceStatus = await locationService.serviceEnabled();
@@ -251,6 +260,7 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+// Set initial Marker in Map i.e Current Location
   setAddressFromLatLng() async {
     try {
       List<Placemark> p = await placemarkFromCoordinates(
@@ -263,7 +273,7 @@ class HomeProvider with ChangeNotifier {
         markerId: markerId,
         position: LatLng(originLatLng.latitude, originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),
-        icon: pickUpMarker,
+        icon: initialPickMarker,
         onTap: () {},
       );
 
@@ -290,6 +300,7 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+// Show marker on Map according to latlong and addresstype
   displayResult(LatLng latlng, String address, AddressType addressType) async {
     final MarkerId markerId =
         MarkerId(addressType == AddressType.origin ? "origin" : "destination");
@@ -311,6 +322,9 @@ class HomeProvider with ChangeNotifier {
           overflow: TextOverflow.ellipsis,
         );
         originLatLng = latlng;
+
+        originIsFilled = true;
+
         if (destinationIsFilled) {
           await setPolylinesDirection(originLatLng, destinationLatLng);
         }

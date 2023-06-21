@@ -53,7 +53,7 @@ class OrderProvider with ChangeNotifier {
   late LatLng originLatLng, destinationLatLng;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   late BitmapDescriptor driverMarker;
-  late BitmapDescriptor pickUpMarker, destinationMarker;
+  late BitmapDescriptor pickUpMarker, destinationMarker, initialMarker;
   String originAddress = '';
   bool isFirstTracking = true;
   bool isWithDriver = false;
@@ -90,7 +90,7 @@ class OrderProvider with ChangeNotifier {
     required this.getOrderDetail,
     required this.getDriverLocation,
   }) {
-    getBytesFromAsset(pickupIcon, 100).then((value) async {
+    getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
       pickUpMarker = BitmapDescriptor.fromBytes(value);
     });
     getBytesFromAsset(destinationIcon, 100).then((value) async {
@@ -98,6 +98,10 @@ class OrderProvider with ChangeNotifier {
     });
     getBytesFromAsset(carIconAsset, 90).then((value) {
       driverMarker = BitmapDescriptor.fromBytes(value);
+    });
+
+    getBytesFromAsset(initialPickUpIcon, 300).then((value) {
+      initialMarker = BitmapDescriptor.fromBytes(value);
     });
   }
 
@@ -145,8 +149,8 @@ class OrderProvider with ChangeNotifier {
         position: LatLng(orderDataDetail.originLatLng.latitude,
             orderDataDetail.originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),
-        icon: await getBytesFromAsset(pickupIcon, 100).then((value) {
-          return pickUpMarker = BitmapDescriptor.fromBytes(value);
+        icon: await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
+          return initialMarker = BitmapDescriptor.fromBytes(value);
         }),
         onTap: () {},
       );

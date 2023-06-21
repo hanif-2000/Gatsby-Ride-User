@@ -91,6 +91,8 @@ flutter:
           weight: 300
         - asset: fonts/hiragino_kaku_gothic_pro_W6.ttf
           weight: 600
+
+          
     - family: Hiragino Maru
       fonts:
         - asset: fonts/hiragino_maru_gothic_pro_W4.OTF

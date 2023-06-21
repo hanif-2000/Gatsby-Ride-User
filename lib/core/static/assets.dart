@@ -11,8 +11,10 @@ const String introductionIcon = 'assets/icons/user-friends.png';
 const String closeIcon = 'assets/icons/close.png';
 const String logoutIcon = 'assets/icons/log-out.png';
 const String redMarkerIcon = 'assets/icons/redMarker.png';
-const String pickupIcon = 'assets/icons/pick-up-icon.png';
+// const String pickupIcon = 'assets/icons/pick-up-icon.png';
 const String destinationIcon = 'assets/icons/destination.png';
+const String initialPickUpIcon = 'assets/icons/courier.png';
+
 const String carIcon = 'assets/icons/car-dropdown.png';
 const String driverMarkerIcon = 'assets/icons/driverMarker.png';
 const String cashIcon = 'assets/icons/cash.png';

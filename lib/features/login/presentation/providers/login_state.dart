@@ -11,7 +11,7 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {
-  final LoginDataModel? data;
+  final LoginResponseModel? data;
   LoginSuccess({required this.data});
 
   @override

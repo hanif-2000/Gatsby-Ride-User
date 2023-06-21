@@ -29,7 +29,7 @@ class DropdowndPriceCategory extends StatelessWidget {
             onChanged: (PriceCategory? item) {
               provider.setSelectedCategory = item;
               if (provider.destinationIsFilled) {
-                provider.fetchTotalPrice().listen((event) {});
+                // provider.fetchTotalPrice().listen((event) {});
               }
             },
             items: priceCategory.map((PriceCategory category) {

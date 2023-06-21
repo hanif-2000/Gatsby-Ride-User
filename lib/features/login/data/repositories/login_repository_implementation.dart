@@ -13,7 +13,7 @@ class LoginRepositoryImplementation implements LoginRepository {
   LoginRepositoryImplementation({required this.dataSource});
 
   @override
-  Future<Either<Failure, LoginDataModel?>> doLogin(
+  Future<Either<Failure, LoginResponseModel?>> doLogin(
       String email, String password) async {
     try {
       final data = await dataSource.doLogin(email, password);

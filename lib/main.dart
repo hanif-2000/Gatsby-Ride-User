@@ -3,6 +3,7 @@ import 'package:appkey_taxiapp_user/features/forgot_password/presentation/provid
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/otp_verification_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_provider.dart';
+import 'package:appkey_taxiapp_user/features/testing/pages/receipt_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/presentation/providers/home_provider.dart';
@@ -22,7 +23,7 @@ import 'features/profile/presentation/providers/profile_edit_provider.dart';
 import 'features/profile/presentation/providers/profile_provider.dart';
 import 'dart:async';
 
-import 'features/testing/pages/feedback_screen.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -122,9 +123,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // return
-
-    // MaterialApp(
+    // return MaterialApp(
     //   navigatorKey: locator<GlobalKey<NavigatorState>>(),
     //   title: 'Flutter Demo',
     //   theme: ThemeData(
@@ -153,7 +152,7 @@ class MyApp extends StatelessWidget {
     // );
 
     return MaterialApp(
-      home: FeedBackScreen(),
+      home: ReceiptScreen(),
     );
   }
 }
