@@ -20,6 +20,10 @@ class ProfileEditProvider extends FormProvider {
     emailController.text = profile?.email ?? '';
     phoneController.text = profile?.phone ?? '';
     _imageUrl = profile?.photo ?? '';
+    firstNameController.text = profile?.firstName ?? '';
+    lastNameController.text = profile?.lastName ?? '';
+    countryController.text = profile?.country ?? '';
+
     notifyListeners();
   }
 

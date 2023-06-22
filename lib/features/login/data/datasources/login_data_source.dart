@@ -7,7 +7,8 @@ import '../../../../core/utility/session_helper.dart';
 import '../models/login_response_model.dart';
 
 abstract class LoginDataSource {
-  Future<LoginResponseModel?> doLogin(String email, String password);
+  Future<LoginResponseModel?> doLogin(
+      String email, String password, String loginType);
 }
 
 class LoginDataSourceImplementation implements LoginDataSource {
@@ -16,12 +17,19 @@ class LoginDataSourceImplementation implements LoginDataSource {
   LoginDataSourceImplementation({required this.dio});
 
   @override
-  Future<LoginResponseModel?> doLogin(String email, String password) async {
+  Future<LoginResponseModel?> doLogin(
+      String email, String password, String loginType) async {
     String url = 'api/webservice/login';
     final session = locator<Session>();
     String fcmToken = session.sessionFcmToken;
-    FormData data = FormData.fromMap(
-        {'email': email, 'password': password, 'fcm_token': fcmToken});
+
+    log(fcmToken.toString());
+    FormData data = FormData.fromMap({
+      'email': email,
+      'password': password,
+      'fcm_token': fcmToken,
+      'login_type': loginType
+    });
 
     try {
       final response = await dio.post(

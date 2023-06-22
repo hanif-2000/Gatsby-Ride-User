@@ -52,6 +52,7 @@ dependencies:
   chat_bubbles: any
   pay: ^0.0.1
   percent_indicator: ^4.2.3
+  sliding_up_panel: ^2.0.0+1
 
 dependency_overrides:
   provider: ^6.0.3

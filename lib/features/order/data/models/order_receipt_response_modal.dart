@@ -1,0 +1,191 @@
+import 'package:equatable/equatable.dart';
+
+class OrderReceiptResponseModel extends Equatable {
+  final OrderReceiptDataModel? orderReceipt;
+  final int? success;
+
+  const OrderReceiptResponseModel({
+    this.success,
+    this.orderReceipt,
+  });
+
+  @override
+  List<Object?> get props => [success, orderReceipt];
+
+  factory OrderReceiptResponseModel.fromJson(Map<String, dynamic> json) =>
+      OrderReceiptResponseModel(
+        orderReceipt: json['Order receipt'] == null
+            ? null
+            : OrderReceiptDataModel.fromJson(json['Order receipt']),
+        success: json['success'] ?? 1,
+      );
+  Map<String, dynamic> toJson() => {
+        'orderReceipt': orderReceipt ?? null,
+        // 'data': data == null ? '' : data!.toJson(),
+
+        'success': success ?? '',
+      };
+}
+
+class OrderReceiptDataModel extends Equatable {
+  String id;
+  String driverId;
+  String distance;
+  int total;
+  DateTime orderTime;
+  dynamic startTime;
+  DateTime endTime;
+  String status;
+  String image;
+  String userName;
+  String userPhone;
+  int rating;
+  String plateNumber;
+  String vehicleName;
+  String carModel;
+  int paymentMethod;
+  VehicleCategory vehicleCategory;
+  String timestamp;
+
+  OrderReceiptDataModel({
+    required this.id,
+    required this.driverId,
+    required this.distance,
+    required this.total,
+    required this.orderTime,
+    this.startTime,
+    required this.endTime,
+    required this.status,
+    required this.image,
+    required this.userName,
+    required this.userPhone,
+    required this.rating,
+    required this.plateNumber,
+    required this.vehicleName,
+    required this.carModel,
+    required this.paymentMethod,
+    required this.vehicleCategory,
+    required this.timestamp,
+  });
+
+  @override
+  List<Object?> get props => [
+        id,
+        driverId,
+        distance,
+        total,
+        orderTime,
+        startTime,
+        endTime,
+        status,
+        image,
+        userName,
+        userPhone,
+        rating,
+        paymentMethod,
+        plateNumber,
+        timestamp,
+        vehicleName,
+        vehicleCategory,
+        carModel
+      ];
+
+  factory OrderReceiptDataModel.fromJson(Map<String, dynamic> json) =>
+      OrderReceiptDataModel(
+        id: json["id"],
+        driverId: json["driver_id"],
+        distance: json["distance"],
+        total: json["total"],
+        orderTime: DateTime.parse(json["order_time"]),
+        startTime: json["start_time"],
+        endTime: DateTime.parse(json["end_time"]),
+        status: json["status"],
+        image: json["image"],
+        userName: json["user_name"],
+        userPhone: json["user_phone"],
+        rating: json["rating"],
+        plateNumber: json["plate_number"],
+        vehicleName: json["vehicle_name"],
+        carModel: json["car_model"],
+        paymentMethod: json["payment_method"],
+        vehicleCategory: VehicleCategory.fromJson(json["vehicle_category"]),
+        timestamp: json["timestamp"],
+      );
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "driver_id": driverId,
+        "distance": distance,
+        "total": total,
+        "order_time": orderTime.toIso8601String(),
+        "start_time": startTime,
+        "end_time": endTime.toIso8601String(),
+        "status": status,
+        "image": image,
+        "user_name": userName,
+        "user_phone": userPhone,
+        "rating": rating,
+        "plate_number": plateNumber,
+        "vehicle_name": vehicleName,
+        "car_model": carModel,
+        "payment_method": paymentMethod,
+        "vehicle_category": vehicleCategory.toJson(),
+        "timestamp": timestamp,
+      };
+}
+
+class VehicleCategory {
+  int id;
+  String category;
+  int priceKm;
+  int distance;
+  int minKm;
+  int minPrice;
+  int extraKm;
+  int seat;
+  DateTime createdAt;
+  DateTime updatedAt;
+  dynamic deletedAt;
+
+  VehicleCategory({
+    required this.id,
+    required this.category,
+    required this.priceKm,
+    required this.distance,
+    required this.minKm,
+    required this.minPrice,
+    required this.extraKm,
+    required this.seat,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+
+  factory VehicleCategory.fromJson(Map<String, dynamic> json) =>
+      VehicleCategory(
+        id: json["id"],
+        category: json["category"],
+        priceKm: json["price_km"],
+        distance: json["distance"],
+        minKm: json["min_km"],
+        minPrice: json["min_price"],
+        extraKm: json["extra_km"],
+        seat: json["seat"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        deletedAt: json["deleted_at"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "category": category,
+        "price_km": priceKm,
+        "distance": distance,
+        "min_km": minKm,
+        "min_price": minPrice,
+        "extra_km": extraKm,
+        "seat": seat,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "deleted_at": deletedAt,
+      };
+}

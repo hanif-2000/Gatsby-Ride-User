@@ -1,7 +1,7 @@
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/testing/pages/feedback_screen.dart';
+import 'package:appkey_taxiapp_user/features/order/presentation/pages/components/feedback_screen.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/circular_image_container.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/text_in_row.dart';
@@ -16,6 +16,7 @@ class ReceiptScreen extends StatelessWidget {
     double? width = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: whiteColor,
         appBar: AppBar(
           elevation: 0.3,
           backgroundColor: whiteColor,

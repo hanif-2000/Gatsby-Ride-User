@@ -1,10 +1,11 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/utility/notification_service.dart';
 import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../firebase_options.dart';
-import 'global_function.dart';
 import 'helper.dart';
 import 'injection.dart';
 
@@ -26,6 +27,8 @@ class FirebaseHelper {
     await messaging.getToken().then((token) async {
       final session = locator<Session>();
       logMe("firebase-token: $token");
+
+      log(token.toString());
       session.setFcmToken = token!;
     });
     await incomingNotificationHandling();

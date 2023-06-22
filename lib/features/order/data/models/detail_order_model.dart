@@ -1,4 +1,3 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/price_category.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/entities/order_detail.dart';
 
 class DetailOrderModel extends OrderDetail {

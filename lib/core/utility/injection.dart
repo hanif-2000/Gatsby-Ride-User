@@ -7,6 +7,7 @@ import 'package:appkey_taxiapp_user/features/forgot_password/data/datasources/ot
 import 'package:appkey_taxiapp_user/features/forgot_password/domain/repositories/otp_verification_repository.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/domain/usecases/otp_verification.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/otp_verification_provider.dart';
+import 'package:appkey_taxiapp_user/features/order/domain/usecases/submit_ratings.dart';
 import 'package:appkey_taxiapp_user/features/profile/data/datasources/create_profile_data_source.dart';
 import 'package:appkey_taxiapp_user/features/profile/data/datasources/upload_profile_image_data_source.dart';
 import 'package:appkey_taxiapp_user/features/profile/data/repositories/upload_profile_image_repository_implementation.dart';
@@ -49,6 +50,7 @@ import '../../features/order/domain/usecases/create_oder.dart';
 import '../../features/order/domain/usecases/get_driver_detail.dart';
 import '../../features/order/domain/usecases/get_driver_location.dart';
 import '../../features/order/domain/usecases/get_order_detail.dart';
+import '../../features/order/domain/usecases/get_receipt.dart';
 import '../../features/order/domain/usecases/get_status_order.dart';
 import '../../features/order/domain/usecases/update_status_order.dart';
 import '../../features/order/presentation/providers/order_provider.dart';
@@ -278,8 +280,16 @@ Future<void> init() async {
       () => UpdateStatusOrder(repository: locator<OrderRepository>()));
   locator.registerLazySingleton<GetStatusOrder>(
       () => GetStatusOrder(repository: locator<OrderRepository>()));
+
   locator.registerLazySingleton<GetOrderDetail>(
       () => GetOrderDetail(repository: locator<OrderRepository>()));
+
+  locator.registerLazySingleton<GetOrderReceipt>(
+      () => GetOrderReceipt(repository: locator<OrderRepository>()));
+
+  locator.registerLazySingleton<SubmitRatings>(
+      () => SubmitRatings(repository: locator<OrderRepository>()));
+
   locator.registerLazySingleton<GetDriverDetail>(
       () => GetDriverDetail(repository: locator<OrderRepository>()));
   locator.registerLazySingleton<GetDriverLocation>(
@@ -310,8 +320,11 @@ Future<void> init() async {
         getDriverDetail: locator<GetDriverDetail>(),
         getDriverLocation: locator<GetDriverLocation>(),
         getOrderDetail: locator<GetOrderDetail>(),
-        getStatusOrder: locator<GetStatusOrder>()),
+        getStatusOrder: locator<GetStatusOrder>(),
+        submitRatings: locator<SubmitRatings>(),
+        orderReceipt: locator<GetOrderReceipt>()),
   );
+
   locator.registerFactory<PlacePickerProvider>(
       () => PlacePickerProvider(getGooglePlace: locator<GetGooglePlace>()));
   locator

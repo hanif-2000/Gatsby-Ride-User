@@ -9,18 +9,11 @@ class LoginProvider extends FormProvider {
 
   LoginProvider({required this.doLogin});
 
-  String failureMessage = '';
-
-  updateFailureMessage(value) {
-    failureMessage = value;
-    notifyListeners();
-  }
-
   Stream<LoginState> doLoginApi() async* {
     yield LoginLoading();
 
-    final loginResult =
-        await doLogin.call(emailController.text, passwordController.text);
+    final loginResult = await doLogin.call(
+        emailController.text, passwordController.text, "app");
 
     yield* loginResult.fold((statusCode) async* {
       log(statusCode.toString());

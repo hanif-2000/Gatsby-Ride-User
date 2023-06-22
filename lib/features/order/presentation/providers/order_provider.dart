@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ui' as ui;
 
 import 'package:appkey_taxiapp_user/core/domain/entities/order_data_detail.dart';
@@ -10,12 +11,16 @@ import 'package:appkey_taxiapp_user/features/order/domain/entities/driver_detail
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_driver_detail.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_driver_location.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_order_detail.dart';
+import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_receipt.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_status_order.dart';
+import 'package:appkey_taxiapp_user/features/order/domain/usecases/submit_ratings.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/update_status_order.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_driver_detail_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_driver_location_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_order_detail_state.dart';
+import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_receipt_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_status_order_state.dart';
+import 'package:appkey_taxiapp_user/features/order/presentation/providers/submit_ratings_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/update_status_order_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +41,8 @@ class OrderProvider with ChangeNotifier {
   final GetOrderDetail getOrderDetail;
   final GetDriverDetail getDriverDetail;
   final GetDriverLocation getDriverLocation;
+  final SubmitRatings submitRatings;
+  final GetOrderReceipt orderReceipt;
 
   //Initial
   final lctn.Location locationService = lctn.Location();
@@ -57,12 +64,19 @@ class OrderProvider with ChangeNotifier {
   String originAddress = '';
   bool isFirstTracking = true;
   bool isWithDriver = false;
-  String destinationAddress = appLoc.destination;
+  String destinationAddress = "Destination";
   late Text originText;
   late Text destinationText;
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
   final session = locator<Session>();
+
+  String orderId = '';
+
+  double ratingGiven = 10.0;
+  String commentGiven = '';
+
+  TextEditingController commentsEditingController = TextEditingController();
 
   //get
   OrderStatus get orderStatus => _orderStatus;
@@ -82,6 +96,19 @@ class OrderProvider with ChangeNotifier {
     isFirstTracking = val;
   }
 
+  //Update Order ID
+  updateOrderId(value) {
+    orderId = value;
+    notifyListeners();
+  }
+
+// Update rating and comments
+  updateRatingComment({double? rating, String? comment}) {
+    ratingGiven = rating!;
+    commentGiven = comment!;
+    notifyListeners();
+  }
+
   //constructor
   OrderProvider({
     required this.updateStatusOrder,
@@ -89,6 +116,8 @@ class OrderProvider with ChangeNotifier {
     required this.getDriverDetail,
     required this.getOrderDetail,
     required this.getDriverLocation,
+    required this.submitRatings,
+    required this.orderReceipt,
   }) {
     getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
       pickUpMarker = BitmapDescriptor.fromBytes(value);
@@ -257,6 +286,43 @@ class OrderProvider with ChangeNotifier {
     });
   }
 
+  //Submit Ratings Review
+  Stream<SubmitRatingsState> submitRatingsReview() async* {
+    log(commentGiven.toString());
+    log(ratingGiven.toString());
+
+    yield SubmitRatingsLoading();
+    final formData = FormData.fromMap({
+      "id": "Driver id",
+      "order_id": "",
+      "rating": "",
+      "review": "",
+      "type": 1
+    });
+    final result = await submitRatings.execute(formData);
+    yield* result.fold((failure) async* {
+      logMe("failure");
+      logMe(failure);
+      yield SubmitRatingsFailure(failure: failure);
+    }, (data) async* {
+      yield SubmitRatingsLoaded(data: data);
+    });
+  }
+
+  //Order Receipt
+  Stream<GetReceiptState> orderReceipApi({orderId}) async* {
+    yield GetReceiptLoading();
+    final formData = FormData.fromMap({"id": orderId});
+    final result = await orderReceipt.execute(formData);
+    yield* result.fold((failure) async* {
+      logMe("failure");
+      logMe(failure);
+      yield GetReceiptFailure(failure: failure);
+    }, (result) async* {
+      yield GetReceiptLoaded(data: result);
+    });
+  }
+
 /** Get Order Status */
   Stream<GetStatusOrderState> fetchOrderStatus() async* {
     yield GetStatusOrderLoading();
@@ -387,4 +453,6 @@ class OrderProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  submitRating() {}
 }

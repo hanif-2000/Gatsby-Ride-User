@@ -14,9 +14,9 @@ class LoginRepositoryImplementation implements LoginRepository {
 
   @override
   Future<Either<Failure, LoginResponseModel?>> doLogin(
-      String email, String password) async {
+      String email, String password, String loginType) async {
     try {
-      final data = await dataSource.doLogin(email, password);
+      final data = await dataSource.doLogin(email, password, loginType);
       return Right(data);
     } on DioError catch (e) {
       logMe("Failure login repository ${e.toString()}");

@@ -1,11 +1,13 @@
+import 'dart:async';
+import 'dart:developer';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/history/presentation/widgets/rating_widget.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-
 import '../../data/models/history_response_model.dart';
 import '../widgets/driver_profile.dart';
 
@@ -19,10 +21,66 @@ class DetailHistoryPage extends StatefulWidget {
 }
 
 class _DetailHistoryPageState extends State<DetailHistoryPage> {
+  Completer<GoogleMapController> _controller = Completer();
+  //on below line we have set the camera position
+  static final CameraPosition _kGoogle = const CameraPosition(
+    target: LatLng(19.0759837, 72.8776559),
+    zoom: 14,
+  );
+
+  final Set<Marker> _markers = {};
+  final Set<Polyline> _polyline = {};
+
+  // list of locations to display polylines
+  List<LatLng> latLen = [
+    LatLng(19.0759837, 72.8776559),
+    LatLng(28.679079, 77.069710),
+  ];
+
   @override
   void initState() {
+    log(widget.item.startCoordinate);
+    log(widget.item.endCoordinate);
+
     super.initState();
+
+    // declared for loop for various locations
+    // for (int i = 0; i < latLen.length; i++) {
+    _markers.add(
+        // added markers
+        Marker(
+      markerId: MarkerId("start"),
+      position: LatLng(
+          double.parse(widget.item.startCoordinate.split(',').first),
+          double.parse(widget.item.startCoordinate.split(',').last)),
+      icon: BitmapDescriptor.defaultMarker,
+    ));
+
+    _markers.add(
+        // added markers
+        Marker(
+      markerId: MarkerId("end"),
+      position: LatLng(double.parse(widget.item.endCoordinate.split(',').first),
+          double.parse(widget.item.endCoordinate.split(',').last)),
+      icon: BitmapDescriptor.defaultMarker,
+    ));
+
+    latLen = [
+      LatLng(double.parse(widget.item.startCoordinate.split(',').first),
+          double.parse(widget.item.startCoordinate.split(',').last)),
+      LatLng(double.parse(widget.item.endCoordinate.split(',').first),
+          double.parse(widget.item.endCoordinate.split(',').last)),
+    ];
+    setState(() {});
+    _polyline.add(Polyline(
+      polylineId: PolylineId('1'),
+      points: latLen,
+      color: blackColor,
+    ));
+
+    log(latLen.toString());
   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -126,9 +184,29 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                 ),
 
 //Show Trip Map
-                const Icon(
-                  Icons.map,
-                  size: 200,
+
+                Container(
+                  height: MediaQuery.of(context).size.height * .25,
+                  width: MediaQuery.of(context).size.width,
+                  child: GoogleMap(
+                    //given camera position
+                    initialCameraPosition: _kGoogle,
+                    // on below line we have given map type
+                    mapType: MapType.normal,
+                    // specified set of markers below
+                    markers: _markers,
+                    // on below line we have enabled location
+                    myLocationEnabled: false,
+                    myLocationButtonEnabled: false,
+                    // on below line we have enabled compass location
+                    compassEnabled: false,
+                    // on below line we have added polylines
+                    polylines: _polyline,
+                    // displayed google map
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                  ),
                 ),
 
                 /** 
@@ -144,13 +222,19 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        DriverProfileWidget(
-                          category: widget.item.category.category,
-                          driverId: widget.item.driverId,
-                          driverImage: widget.item.image,
-                          driverName: widget.item.driverName,
-                          platerNumber: widget.item.plateNumber,
-                          rating: widget.item.rating,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DriverProfileWidget(
+                            category: widget.item.category.category,
+                            driverId: widget.item.driverId,
+                            driverImage: widget.item.image == ''
+                                ? ''
+                                : "https://php.parastechnologies.in/taxi/public" +
+                                    widget.item.image,
+                            driverName: widget.item.driverName,
+                            platerNumber: widget.item.plateNumber,
+                            rating: widget.item.rating.toString(),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(

@@ -13,6 +13,11 @@ class DriverInfoBottomSheet extends StatelessWidget {
   final String platerNumber;
   final String rating;
   final bool isReceiptVisible;
+  final String driverStatusText;
+  final Function() viewReceiptEvent;
+  final Function() messageEvent;
+
+  final Function() callEvent;
 
   const DriverInfoBottomSheet(
       {Key? key,
@@ -22,6 +27,10 @@ class DriverInfoBottomSheet extends StatelessWidget {
       required this.driverName,
       required this.platerNumber,
       required this.rating,
+      required this.driverStatusText,
+      required this.viewReceiptEvent,
+      required this.callEvent,
+      required this.messageEvent,
       required this.isReceiptVisible})
       : super(key: key);
 
@@ -36,7 +45,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "Your Driver is arriving in 5 minutes",
+            driverStatusText,
             style: TextStyle(
               fontSize: 14.0,
               fontFamily: "poPPinMedium",
@@ -61,14 +70,14 @@ class DriverInfoBottomSheet extends StatelessWidget {
                 image: 'assets/icons/call_icon.svg',
                 btnWidth: _deviceSize.width * .45,
                 btnColor: green2DAA5FColor,
-                event: () {},
+                event: callEvent,
               ),
               CustomContactBtn(
                 btnText: "Message",
                 image: 'assets/icons/message_icon.svg',
                 btnWidth: _deviceSize.width * .45,
                 btnColor: blue249DE0Color,
-                event: () {},
+                event: messageEvent,
               ),
             ],
           ),
@@ -81,7 +90,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
               child: CustomButton(
                 isRounded: true,
                 text: "View Receipt",
-                event: () {},
+                event: viewReceiptEvent,
                 bgColor: blackColor,
               ),
             ),

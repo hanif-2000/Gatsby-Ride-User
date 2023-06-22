@@ -34,7 +34,50 @@ class ButtonCancelOrder extends StatelessWidget {
                   ),
                 ),
                 event: () {
-                  /**  NEW CODE */
+//Testing driver fetch bottom sheet
+
+//                   showModalBottomSheet(
+//                       isDismissible: false,
+//                       isScrollControlled: false,
+//                       backgroundColor: whiteColor,
+//                       context: context,
+//                       shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.only(
+//                         topRight: Radius.circular(20.0),
+//                         topLeft: Radius.circular(20.0),
+//                       )),
+//                       clipBehavior: Clip.antiAliasWithSaveLayer,
+//                       builder: (context) {
+//                         return Wrap(children: [
+//                           DriverInfoBottomSheet(
+//                             callEvent: () {},
+//                             messageEvent: () {},
+//                             viewReceiptEvent: () {
+//                               log("On Click on View Review");
+//                               // Navigator.push(
+//                               //   context,
+//                               //   MaterialPageRoute(
+//                               //     builder: (context) => RatingsScreen(),
+//                               //   ),
+//                               // );
+//                               // Navigat
+//                             },
+//                             driverStatusText: "driverStatusText",
+//                             category: "driverDetails.model",
+//                             driverId: '4',
+//                             driverImage: '',
+//                             driverName: "driverDetails.name",
+//                             platerNumber: "driverDetails.plat",
+//                             rating: "4.5",
+//                             isReceiptVisible:
+//                                 (provider.session.orderStatus == (6))
+//                                     ? true
+//                                     : false,
+//                           ),
+//                         ]);
+//                       });
+
+//                   /**  NEW CODE */
                   showModalBottomSheet(
                       isScrollControlled: true,
                       constraints: BoxConstraints(
@@ -51,9 +94,6 @@ class ButtonCancelOrder extends StatelessWidget {
                           context: context,
                           size: _deviceSize,
                           onConfirm: () async {
-                            // Navigator.pop(context);
-                            // Navigator.pop(context);
-
                             provider
                                 .submitStatusOrder(Order.cancel)
                                 .listen((event) async {

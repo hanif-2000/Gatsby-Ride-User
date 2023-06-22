@@ -14,6 +14,7 @@ const String redMarkerIcon = 'assets/icons/redMarker.png';
 // const String pickupIcon = 'assets/icons/pick-up-icon.png';
 const String destinationIcon = 'assets/icons/destination.png';
 const String initialPickUpIcon = 'assets/icons/courier.png';
+const String trackedIcon = 'assets/icons/tracked_icon.png';
 
 const String carIcon = 'assets/icons/car-dropdown.png';
 const String driverMarkerIcon = 'assets/icons/driverMarker.png';
