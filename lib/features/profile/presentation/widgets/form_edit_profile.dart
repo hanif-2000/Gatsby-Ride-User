@@ -1,5 +1,4 @@
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/pages/change_email_page.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/profile_edit_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -178,30 +177,32 @@ class _FormEditProfileState extends State<FormEditProfile> {
                       ).validate(),
                     ),
                     mediumVerticalSpacing(),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          ChangeEmailPage.routeName,
-                        );
-                      },
-                      child: CustomTextField(
-                        enabled: false,
-                        title: appLoc.emailAddress,
-                        controller: provider.emailController,
-                        inputType: TextInputType.emailAddress,
-                        isError: provider.emailError,
-                        fieldValidator: ValidationHelper(
-                          loc: appLoc,
-                          isError: (bool value) =>
-                              provider.setEmailError = value,
-                          typeField: TypeField.email,
-                        ).validate(),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.pushNamed(
+                    //       context,
+                    //       ChangeEmailPage.routeName,
+                    //     );
+                    //   },
+                    //   child: CustomTextField(
+                    //     enabled: false,
+                    //     title: appLoc.emailAddress,
+                    //     controller: provider.emailController,
+                    //     inputType: TextInputType.emailAddress,
+                    //     isError: provider.emailError,
+                    //     fieldValidator: ValidationHelper(
+                    //       loc: appLoc,
+                    //       isError: (bool value) =>
+                    //           provider.setEmailError = value,
+                    //       typeField: TypeField.email,
+                    //     ).validate(),
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   height: 50,
+                    // ),
+
+                    //Save Button
                     CustomButton(
                         text: Text(
                           appLoc.save,

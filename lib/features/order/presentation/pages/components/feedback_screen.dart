@@ -1,7 +1,7 @@
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/testing/pages/payment_screen.dart';
+import 'package:appkey_taxiapp_user/features/order/presentation/pages/components/payment_screen.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/circular_image_container.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
 import 'package:flutter/material.dart';

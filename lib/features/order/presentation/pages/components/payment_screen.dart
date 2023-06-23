@@ -2,8 +2,8 @@ import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../widgets/common_text.dart';
-import '../widgets/text_in_row.dart';
+import '../../../../testing/widgets/common_text.dart';
+import '../../../../testing/widgets/text_in_row.dart';
 
 class PaymentScreen extends StatelessWidget {
   const PaymentScreen({Key? key}) : super(key: key);

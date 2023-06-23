@@ -1,9 +1,7 @@
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/widgets/form_edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/presentation/widgets/custom_app_title_bar.dart';
 import '../providers/profile_edit_provider.dart';
 import '../providers/profile_provider.dart';
 import '../../../../core/utility/injection.dart';
@@ -37,13 +35,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
         builder: (context, child) => Scaffold(
             key: locator<GlobalKey<ScaffoldState>>(),
             backgroundColor: whiteColor,
-            appBar: CustomAppTtitleBar(
-              centerTitle: true,
-              canBack: true,
-              title: appLoc.profile.toUpperCase(),
-              hideShadow: true,
+            appBar: AppBar(
+              backgroundColor: whiteColor,
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: blackColor,
+                ),
+              ),
+              elevation: 0.0,
             ),
-            body: SafeArea(child: LayoutBuilder(
+            body: LayoutBuilder(
               builder: (context, constraints) {
                 return Consumer<ProfileProvider>(
                     builder: (context, provider, _) {
@@ -56,6 +61,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   }
                 });
               },
-            ))));
+            )));
   }
 }
