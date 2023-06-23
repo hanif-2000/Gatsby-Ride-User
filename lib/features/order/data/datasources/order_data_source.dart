@@ -157,7 +157,7 @@ class OrderDataSourceImplementation implements OrderDataSource {
 
   @override
   Future<OrderReceiptResponseModel> orderReceipt(FormData formData) async {
-    String url = 'api/webservice/driver/order/receipt';
+    String url = 'api/webservice/customer/order/receipt';
     dio.withToken();
     try {
       final response = await dio.post(

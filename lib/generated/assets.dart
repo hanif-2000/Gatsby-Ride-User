@@ -11,7 +11,7 @@ class Assets {
   static const String iconsApple = 'assets/icons/apple.svg';
   static const String iconsCalender = 'assets/icons/calender.svg';
   static const String iconsCarDropdown = 'assets/icons/car-dropdown.png';
-  static const String iconsCarIcon = 'assets/icons/car-icon.png';
+  static const String iconsCarIcon = 'assets/icons/car.png';
   static const String iconsCard = 'assets/icons/card.svg';
   static const String iconsCash = 'assets/icons/cash.png';
   static const String iconsClose = 'assets/icons/close.png';

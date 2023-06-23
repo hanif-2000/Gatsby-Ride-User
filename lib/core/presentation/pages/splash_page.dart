@@ -13,6 +13,7 @@ import '../../utility/injection.dart';
 import '../../utility/session_helper.dart';
 import '../providers/currency_state.dart';
 import '../providers/splash_provider.dart';
+import 'home_page/home_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -37,14 +38,20 @@ class _SplashPageState extends State<SplashPage> {
         //   await sessionClearOrder();
 
         context.read<SplashProvider>().fetchCurrency().listen((state) async {
+          final session = locator<Session>();
+          log("session token" + session.sessionToken.toString());
+          log("order id" + session.orderId.toString());
+
           switch (state.runtimeType) {
             case CurrencyLoading:
               break;
             case CurrencyLoaded:
-              Navigator.pushNamedAndRemoveUntil(
-                  context, LoginPage.routeName, (route) => false);
-              // Navigator.pushNamedAndRemoveUntil(
-              //     context, HomePage.routeName, (route) => false);
+              session.isLoggedIn
+                  ? Navigator.pushNamedAndRemoveUntil(
+                      context, HomePage.routeName, (route) => false)
+                  : Navigator.pushNamedAndRemoveUntil(
+                      context, LoginPage.routeName, (route) => false);
+
               break;
           }
         });

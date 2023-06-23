@@ -53,13 +53,13 @@ dependencies:
   pay: ^0.0.1
   percent_indicator: ^4.2.3
   sliding_up_panel: ^2.0.0+1
+  flutter_launcher_icons: ^0.11.0
 
 dependency_overrides:
   provider: ^6.0.3
   firebase_core_platform_interface: 4.5.1
 
 dev_dependencies:
-  flutter_launcher_icons: ^0.11.0
   flutter_test:
     sdk: flutter
   google_fonts: ^2.2.0
@@ -68,7 +68,7 @@ flutter_icons:
   android: "launcher_icon"
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/images/logo-splash.png"
+  image_path: "assets/icons/app_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -76,7 +76,41 @@ class OrderProvider with ChangeNotifier {
   double ratingGiven = 10.0;
   String commentGiven = '';
 
+  bool isOrderAccepted = false;
+
   TextEditingController commentsEditingController = TextEditingController();
+
+/** Driver Details */
+  String driverName = '';
+  String ratings = '';
+  String carModal = '';
+  String plateNumber = '';
+  String phoneNumber = '';
+  String driverId = '';
+  String driverImg = '';
+  String driverStatus = "Fetching Driver";
+
+  bool isReachedToDestination = false;
+
+//update Driver Details
+  updateDriverDetails({required DriverDetail data}) {
+    driverName = data.name;
+    ratings = data.rating.toString();
+    carModal = data.model;
+    plateNumber = data.plat;
+    phoneNumber = data.phone;
+    driverId = data.id.toString();
+    driverImg = data.image!;
+
+    updateDriverStatus("Driver is arriving");
+    notifyListeners();
+  }
+
+  //Update driver status
+  updateDriverStatus(value) {
+    driverStatus = value;
+    notifyListeners();
+  }
 
   //get
   OrderStatus get orderStatus => _orderStatus;
@@ -98,7 +132,19 @@ class OrderProvider with ChangeNotifier {
 
   //Update Order ID
   updateOrderId(value) {
-    orderId = value;
+    orderId = session.orderId;
+    notifyListeners();
+  }
+
+  updateOrderAccepted() {
+    isOrderAccepted = true;
+    notifyListeners();
+  }
+
+// Update isReachedToDestination
+
+  updateReachedDestination() {
+    isReachedToDestination = true;
     notifyListeners();
   }
 
@@ -236,6 +282,7 @@ class OrderProvider with ChangeNotifier {
     isWithDriver = false;
     isFirstTracking = true;
     _orderStatus = OrderStatus.lookingDriver;
+
     notifyListeners();
   }
 
@@ -245,7 +292,11 @@ class OrderProvider with ChangeNotifier {
     launchUrl(call);
   }
 
+// Set polylines Direction
   setPolylinesDirection(LatLng origin, LatLng destination) async {
+    log(origin.latitude.toString());
+    log(destination.latitude.toString());
+
     await DirectionHelper()
         .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
             destination.latitude, destination.longitude)
@@ -264,6 +315,8 @@ class OrderProvider with ChangeNotifier {
             startCap: Cap.roundCap,
             endCap: Cap.roundCap);
         polylines.add(polyline);
+
+        log(polylines.toString());
         notifyListeners();
       }
     });
@@ -293,10 +346,10 @@ class OrderProvider with ChangeNotifier {
 
     yield SubmitRatingsLoading();
     final formData = FormData.fromMap({
-      "id": "Driver id",
-      "order_id": "",
-      "rating": "",
-      "review": "",
+      "id": driverId,
+      "order_id": session.orderId,
+      "rating": ratingGiven,
+      "review": commentsEditingController.text,
       "type": 1
     });
     final result = await submitRatings.execute(formData);
@@ -310,9 +363,9 @@ class OrderProvider with ChangeNotifier {
   }
 
   //Order Receipt
-  Stream<GetReceiptState> orderReceipApi({orderId}) async* {
+  Stream<GetReceiptState> orderReceiptApi() async* {
     yield GetReceiptLoading();
-    final formData = FormData.fromMap({"id": orderId});
+    final formData = FormData.fromMap({"id": session.orderId});
     final result = await orderReceipt.execute(formData);
     yield* result.fold((failure) async* {
       logMe("failure");
@@ -321,6 +374,8 @@ class OrderProvider with ChangeNotifier {
     }, (result) async* {
       yield GetReceiptLoaded(data: result);
     });
+    updateReachedDestination();
+    notifyListeners();
   }
 
 /** Get Order Status */

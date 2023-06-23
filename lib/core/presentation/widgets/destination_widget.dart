@@ -6,7 +6,6 @@ import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../features/login/presentation/pages/login_page.dart';
 import '../../utility/global_function.dart';
 import '../pages/place_picker_page/place_picker_page.dart';
 import '../providers/home_provider.dart';
@@ -110,7 +109,7 @@ class DestinationWidget extends StatelessWidget {
 
                         // log("Result" + result.toString());
                       } else {
-                        Navigator.pushNamed(context, LoginPage.routeName);
+                        // Navigator.pushNamed(context, LoginPage.routeName);
                       }
                     });
                   },

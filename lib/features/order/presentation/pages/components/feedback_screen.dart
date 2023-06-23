@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/pages/components/payment_screen.dart';
+import 'package:appkey_taxiapp_user/features/order/presentation/pages/components/rating_submitted_screen.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/circular_image_container.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/order_provider.dart';
+import '../../providers/submit_ratings_state.dart';
 
 class FeedBackScreen extends StatelessWidget {
   const FeedBackScreen({Key? key}) : super(key: key);
@@ -173,7 +176,32 @@ class FeedBackScreen extends StatelessWidget {
                             showToast(
                                 message: "Please Give Rating Before Submit");
                           } else {
-                            // provider.submitRatingsReview();
+                            //  SubmitRatingsResponseModel data=   provider.submitRatingsReview().;
+
+                            provider
+                                .submitRatingsReview()
+                                .listen((event) async {
+                              if (event is SubmitRatingsLoading) {
+                                showLoading();
+                                log("LOADING");
+                              } else if (event is SubmitRatingsLoaded) {
+                                log("Order Status LOADED--------");
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RatingSubmittedScreen(),
+                                  ),
+                                );
+
+                                dismissLoading();
+                              } else if (event is SubmitRatingsFailure) {
+                                showToast(message: "submission falied");
+                                log("Update Order Status Failed.......");
+                                dismissLoading();
+                              }
+                            });
                           }
 
                           // Navigator.push(
@@ -200,12 +228,12 @@ class FeedBackScreen extends StatelessWidget {
                             ),
                           ),
                           event: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PaymentScreen(),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => PaymentScreen(),
+                            //   ),
+                            // );
                           },
                           bgColor: whiteColor,
                           isRounded: true,

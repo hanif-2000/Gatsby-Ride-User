@@ -6,16 +6,15 @@ import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:appkey_taxiapp_user/features/order/presentation/pages/components/receipt_screen.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_order_detail_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_status_order_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/pages/components/receipt_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/presentation/providers/home_provider.dart';
 import '../../../../core/presentation/widgets/searching_ride_bottom_sheet.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
@@ -23,7 +22,6 @@ import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
 import '../../domain/entities/driver_detail.dart';
 import '../providers/get_driver_detail_state.dart';
-import '../providers/update_status_order_state.dart';
 
 class OrderPage extends StatefulWidget {
   final OrderDataDetail location;
@@ -106,6 +104,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                   dismissLoading();
 
                                   Navigator.pop(context);
+                                  provider.updateOrderAccepted();
 
                                   // Timer timerDialogFoundDriver = Timer(
                                   //     const Duration(milliseconds: 3000), () {
@@ -119,28 +118,31 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                   // showDriverFoundBottomSheet(
                                   //     context, eventDriverDetail.data);
 
-                                  provider
-                                      .updateOrderId(eventDriverDetail.data);
+                                  // provider
+                                  //     .updateOrderId(eventDriverDetail.data);
 
-                                  showDriverFoundBottomSheet(
-                                      context: context,
-                                      driverDetails: eventDriverDetail.data,
-                                      driverStatusText: statusOrder == 1
-                                          ? "Your Driver is arriving in 5 minutes"
-                                          : statusOrder == 2
-                                              ? "Your Driver is on the way"
-                                              : statusOrder == 3
-                                                  ? "Driver has reached your location"
-                                                  : statusOrder == 4
-                                                      ? ""
-                                                      : statusOrder == 5
-                                                          ? ""
-                                                          : statusOrder == 6
-                                                              ? "You have reached your destination"
-                                                              : statusOrder == 7
-                                                                  ? ""
-                                                                  : "",
-                                      provider: provider);
+                                  provider.updateDriverDetails(
+                                      data: eventDriverDetail.data);
+
+                                  // showDriverFoundBottomSheet(
+                                  //     context: context,
+                                  //     driverDetails: eventDriverDetail.data,
+                                  //     driverStatusText: statusOrder == 1
+                                  //         ? "Your Driver is arriving in 5 minutes"
+                                  //         : statusOrder == 2
+                                  //             ? "Your Driver is on the way"
+                                  //             : statusOrder == 3
+                                  //                 ? "Driver has reached your location"
+                                  //                 : statusOrder == 4
+                                  //                     ? ""
+                                  //                     : statusOrder == 5
+                                  //                         ? ""
+                                  //                         : statusOrder == 6
+                                  //                             ? "You have reached your destination"
+                                  //                             : statusOrder == 7
+                                  //                                 ? ""
+                                  //                                 : "",
+                                  //     provider: provider);
 
                                   /** Old Code Showing pop when Driver found */
                                   // showDialog(
@@ -173,10 +175,15 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                         case Order.departureToCustomerplace:
                           provider.changeFirstTracking = false;
 
+                          provider
+                              .updateDriverStatus("Your Driver is on the way");
+
                           break;
 
                         /** Arrived at Customer Place (Status 3) */
                         case Order.arriveAtCustomerPlace:
+                          provider.updateDriverStatus(
+                              "Driver has reached your location");
 
                           // showDialog(
                           //     barrierDismissible: false,
@@ -211,54 +218,71 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
 
                           break;
 
+                        /** Departure to Destination  (Status 5)*/
+
+                        case Order.departureToDestination:
+                          provider.updateDriverStatus(
+                              "Departure to your Destination");
+                          break;
+
                         /** Arrived at Destination (Status 6) */
                         case Order.arriveAtDestination:
+                          provider.updateDriverStatus(
+                              " You have reached your destination");
+
                           timer.cancel();
+
                           if (trackingDriverTimer != null) {
                             trackingDriverTimer!.cancel();
                           }
-                          provider
-                              .submitStatusOrder(Order.complete)
-                              .listen((event) async {
-                            if (event is UpdateStatusOrderLoading) {
-                              showLoading();
-                            } else if (event is UpdateStatusOrderLoaded) {
-                              var homeProvider = Provider.of<HomeProvider>(
-                                  context,
-                                  listen: false);
-                              await homeProvider.clearState();
+//                           provider
+//                               .submitStatusOrder(Order.complete)
+//                               .listen((event) async {
+//                             if (event is UpdateStatusOrderLoading) {
+//                               showLoading();
+//                             } else if (event is UpdateStatusOrderLoaded) {
+//                               var homeProvider = Provider.of<HomeProvider>(
+//                                   context,
+//                                   listen: false);
+//                               await homeProvider.clearState();
 
-                              dismissLoading();
-                              Future.delayed(const Duration(milliseconds: 3000),
-                                  () async {
-                                // await provider.clearState();
+//                               dismissLoading();
+//                               Future.delayed(const Duration(milliseconds: 3000),
+//                                   () async {
+//                                 // await provider.clearState();
 
-                                await provider.orderReceipApi();
+//                                 await provider.orderReceiptApi();
 
-//Redirect to Receipt Screen when Ride completed
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ReceiptScreen(),
-                                  ),
-                                );
-                                // Navigator.pushNamedAndRemoveUntil(
-                                //   context,
-                                //   HomePage.routeName,
-                                //   (route) => false,
-                                // );
-                              });
-                              // showDialog(
-                              //   barrierDismissible: false,
-                              //   context: context,
-                              //   builder: (context) {
-                              //     return ThankYouDialog();
-                              //   },
-                              // );
-                            } else if (event is UpdateStatusOrderFailure) {
-                              dismissLoading();
-                            }
-                          });
+// //Redirect to Receipt Screen when Ride completed
+//                                 // Navigator.push(
+//                                 //   context,
+//                                 //   MaterialPageRoute(
+//                                 //     builder: (context) => ReceiptScreen(),
+//                                 //   ),
+//                                 // );
+//                                 // Navigator.pushNamedAndRemoveUntil(
+//                                 //   context,
+//                                 //   HomePage.routeName,
+//                                 //   (route) => false,
+//                                 // );
+//                               });
+//                               // showDialog(
+//                               //   barrierDismissible: false,
+//                               //   context: context,
+//                               //   builder: (context) {
+//                               //     return ThankYouDialog();
+//                               //   },
+//                               // );
+//                             } else if (event is UpdateStatusOrderFailure) {
+//                               dismissLoading();
+//                             }
+//                           });
+                          break;
+
+                        case Order.complete:
+                          provider.orderReceiptApi();
+
+                          provider.updateReachedDestination();
                           break;
                       }
                     }
@@ -267,10 +291,11 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
               });
               return Stack(
                 children: <Widget>[
+                  //Google Maps
                   GoogleMap(
                     mapType: MapType.normal,
                     myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
+                    zoomControlsEnabled: true,
                     initialCameraPosition: provider.kJapanCoordinate,
                     onMapCreated: (GoogleMapController controller) async {
                       provider.googleMapController = controller;
@@ -279,123 +304,138 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                     polylines: provider.polylines,
                     markers: Set<Marker>.of(provider.markers.values),
                   ),
-                  SafeArea(
-                      child: Stack(children: [
-                    Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          /** New code  */
 
-                          provider.orderStatus != OrderStatus.lookingDriver
-                              ? SizedBox()
-                              : Container(
-                                  color: whiteColor,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6.0),
-                                    child: Container(
-                                        child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/icons/location.png',
-                                              height: 24.0,
-                                              width: 24.0,
-                                              fit: BoxFit.cover,
-                                            ),
-                                            SvgPicture.asset(
-                                                'assets/icons/dotted_line.svg'),
-                                            SvgPicture.asset(
-                                              'assets/icons/destination_logo.svg',
-                                              height: 30.0,
-                                              width: 30.0,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            OriginWidget(
+                  // Address Text Fields
+                  SafeArea(
+                      child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                        /** New code  */
+
+                        provider.orderStatus != OrderStatus.lookingDriver
+                            ? SizedBox(
+                                height: 10,
+                              )
+                            : Container(
+                                color: whiteColor,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0),
+                                  child: Container(
+                                      child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/icons/location.png',
+                                            height: 24.0,
+                                            width: 24.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          SvgPicture.asset(
+                                              'assets/icons/dotted_line.svg'),
+                                          SvgPicture.asset(
+                                            'assets/icons/destination_logo.svg',
+                                            height: 30.0,
+                                            width: 30.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          OriginWidget(
+                                            deviceWidth: _deviceSize.width,
+                                            isFromOrder: false,
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.zero,
+                                            width: _deviceSize.width * .8,
+                                            height: 1.0,
+                                            color: whiteEFEFEFColor,
+                                          ),
+                                          Container(
+                                            child: DestinationWidget(
                                               deviceWidth: _deviceSize.width,
                                               isFromOrder: false,
                                             ),
-                                            Container(
-                                              margin: EdgeInsets.zero,
-                                              width: _deviceSize.width * .8,
-                                              height: 1.0,
-                                              color: whiteEFEFEFColor,
-                                            ),
-                                            Container(
-                                              child: DestinationWidget(
-                                                deviceWidth: _deviceSize.width,
-                                                isFromOrder: false,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    )),
-                                  ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  )),
                                 ),
+                              ),
 
-                          /**Old Code  */
+                        /**Old Code  */
 
-                          // OriginWidget(
-                          //   deviceWidth: _deviceSize.width,
-                          //   isFromOrder: true,
-                          // ),
-                          // DestinationWidget(
-                          //   deviceWidth: _deviceSize.width,
-                          //   isFromOrder: true,
-                          // ),
+                        // OriginWidget(
+                        //   deviceWidth: _deviceSize.width,
+                        //   isFromOrder: true,
+                        // ),
+                        // DestinationWidget(
+                        //   deviceWidth: _deviceSize.width,
+                        //   isFromOrder: true,
+                        // ),
 
-                          // // Top Section Drop And Pick up
-                          // Expanded(
-                          //     child: Column(
-                          //         crossAxisAlignment: CrossAxisAlignment.end,
-                          //         mainAxisAlignment: MainAxisAlignment.end,
-                          //         children: [
-                          //       provider.orderStatus == OrderStatus.lookingDriver
-                          //           ? const SizedBox()
-                          //           : const CurrentLocationOrderWidget(),
-                          //       const BottomContaineOrder()
-                          //     ]))
-                        ]),
+                        // // Top Section Drop And Pick up
+                        // Expanded(
+                        //     child: Column(
+                        //         crossAxisAlignment: CrossAxisAlignment.end,
+                        //         mainAxisAlignment: MainAxisAlignment.end,
+                        //         children: [
+                        //       provider.orderStatus == OrderStatus.lookingDriver
+                        //           ? const SizedBox()
+                        //           : const CurrentLocationOrderWidget(),
+                        //       const BottomContaineOrder()
+                        //     ]))
+                        Spacer(),
 
-                    // Searching Drivers
-                    // Container(
-                    //   color: Colors.black12,
-                    //   height: double.infinity,
-                    //   child: provider.orderStatus == OrderStatus.lookingDriver
-                    //       ? LayoutBuilder(
-                    //           builder: (context, constraints) {
-                    //             return Column(
-                    //               mainAxisAlignment:
-                    //                   MainAxisAlignment.spaceBetween,
-                    //               children: [
-                    //                 Padding(
-                    //                   padding: EdgeInsets.only(
-                    //                       top: App(context).appHeight(25)),
-                    //                   child: WaitingDriverDialog(
-                    //                     size: constraints,
-                    //                   ),
-                    //                 ),
-                    //                 const ButtonCancelOrder()
-                    //               ],
-                    //             );
-                    //           },
-                    //         )
-                    //       : const SizedBox.shrink(),
-                    // ),
-                  ])),
+                        Visibility(
+                          visible: provider.isOrderAccepted,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20.0),
+                                topRight: Radius.circular(20.0),
+                              ),
+                            ),
+                            child: DriverInfoBottomSheet(
+                              callEvent: () {
+                                provider.callDriver();
+                              },
+                              messageEvent: () {
+                                // Navigator.push(context,
+                                //     MaterialPageRoute(builder: (context) => ChatScreen()));
+                              },
+                              viewReceiptEvent: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ReceiptScreen(),
+                                  ),
+                                );
+                              },
+                              driverStatusText: provider.driverStatus,
+                              category: provider.carModal,
+                              driverId: provider.driverId,
+                              driverImage: provider.driverImg,
+                              driverName: provider.driverName,
+                              platerNumber: provider.plateNumber,
+                              rating: provider.ratings,
+                              isReceiptVisible: provider.isReachedToDestination,
+                            ),
+                          ),
+                        ),
+                      ])),
                 ],
               );
             }),

@@ -156,6 +156,7 @@ class HomeProvider with ChangeNotifier {
 
 //Set current location in map intially
   setCurrentLocation() async {
+    log("Get current location  called");
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
@@ -190,6 +191,8 @@ class HomeProvider with ChangeNotifier {
 
 //Get Current Location
   getCurrentLocation() async {
+    log("get current location =-===>");
+
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
@@ -254,6 +257,8 @@ class HomeProvider with ChangeNotifier {
       lat = originLatLng.latitude.toString();
       long = originLatLng.longitude.toString();
       markers[markerId] = marker;
+
+      originIsFilled = true;
       notifyListeners();
     } catch (e) {
       logMe(e);
@@ -276,6 +281,8 @@ class HomeProvider with ChangeNotifier {
         icon: initialPickMarker,
         onTap: () {},
       );
+      originIsFilled = true;
+      notifyListeners();
 
       googleMapController
           .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(

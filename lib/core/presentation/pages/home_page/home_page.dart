@@ -145,9 +145,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                   event: () {
-                                    log(map.originLatLng.toString());
-                                    log(map.destinationLatLng.toString());
+                                    log("origin" + map.originLatLng.toString());
+                                    log("destination" +
+                                        map.destinationLatLng.toString());
                                     log(map.distance.toString());
+
+                                    log(map.originIsFilled.toString());
+                                    log(map.destinationIsFilled.toString());
 
                                     if (!map.originIsFilled ||
                                         !map.destinationIsFilled) {

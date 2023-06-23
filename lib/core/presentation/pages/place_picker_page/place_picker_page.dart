@@ -213,7 +213,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                           ),
                           const SizedBox(height: 10.0),
                           SizedBox(
-                            height: queryData.size.height * 0.2,
+                            height: queryData.size.height * 0.16,
                             child: Material(
                               type: MaterialType.canvas,
                               color: whiteColor,
@@ -242,7 +242,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                                 : AutoSizeText(
                                                     provider.addressSelected,
                                                     style: const TextStyle(
-                                                        fontSize: 23),
+                                                        fontSize: 20),
                                                     minFontSize: 10,
                                                     maxLines: 3,
                                                     textAlign: TextAlign.center,
@@ -263,9 +263,10 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                               ),
                                               backgroundColor:
                                                   MaterialStateProperty.all(
-                                                      provider.isAddressLoading
-                                                          ? Colors.grey
-                                                          : primaryColor),
+                                                provider.isAddressLoading
+                                                    ? Colors.grey
+                                                    : blackColor,
+                                              ),
                                             ),
                                             onPressed: () {
                                               if (!provider.isAddressLoading) {
@@ -292,9 +293,9 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                                 Expanded(
                                                     child: Center(
                                                         child: AutoSizeText(
-                                                  appLoc.decideOnThePlace,
+                                                  "Select this place",
                                                   style: const TextStyle(
-                                                      fontSize: 24,
+                                                      fontSize: 20,
                                                       color: Colors.white),
                                                   maxLines: 1,
                                                 )))
