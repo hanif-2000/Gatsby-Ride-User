@@ -10,7 +10,6 @@ import 'package:appkey_taxiapp_user/core/presentation/providers/vehicle_category
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/app_settings.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/create_oder.dart';
 import 'package:dio/dio.dart';
@@ -38,10 +37,10 @@ class HomeProvider with ChangeNotifier {
 
   //Initial
   final lctn.Location locationService = lctn.Location();
-  CameraPosition kJapanCoordinate = const CameraPosition(
-    target: JAPAN_LATLNG,
-    zoom: 14.4746,
-  );
+  // CameraPosition kJapanCoordinate = CameraPosition(
+  //   target: LatLng(lat, long),
+  //   zoom: 14.4746,
+  // );
   TotalPriceState _stateLoadPrice = TotalPriceInitial();
 
   bool isDestinationSelected = false;
@@ -51,6 +50,16 @@ class HomeProvider with ChangeNotifier {
     isDestinationSelected = true;
     notifyListeners();
   }
+
+  bool isAccepted = false;
+
+  updateTermsAccepted(value) {
+    isAccepted = value;
+    notifyListeners();
+  }
+
+  double lat = 0.0;
+  double long = 0.0;
 
   late GoogleMapController googleMapController;
   // Completer<GoogleMapController> mapController = Completer();
@@ -142,6 +151,12 @@ class HomeProvider with ChangeNotifier {
     getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
       initialPickMarker = BitmapDescriptor.fromBytes(value);
     });
+
+    final session = locator<Session>();
+    updateLatLong(
+      latitude: double.parse(session.currentLat),
+      longitude: double.parse(session.currentLong),
+    );
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -152,6 +167,14 @@ class HomeProvider with ChangeNotifier {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
         .buffer
         .asUint8List();
+  }
+
+//updat LatLong initially
+  updateLatLong({required double latitude, required double longitude}) {
+    lat = latitude;
+
+    long = longitude;
+    notifyListeners();
   }
 
 //Set current location in map intially
@@ -224,6 +247,7 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+// Get address from lat and long
   getAddressFromLatLng() async {
     try {
       List<Placemark> p = await placemarkFromCoordinates(

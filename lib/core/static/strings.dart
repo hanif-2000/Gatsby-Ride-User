@@ -8,3 +8,5 @@ const String USER_ID = 'user_id';
 const String FCM_TOKEN = 'fcm_token';
 const String ORDER_STATUS = 'order_status';
 const String DRIVER_ID = 'driver_id';
+const String CURRENT_LAT = 'current_lat';
+const String CURRENT_LONG = 'current_long';

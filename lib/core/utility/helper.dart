@@ -173,7 +173,7 @@ String getPaymentMethod(history.HistoryOrder data) {
   if (data.paymentMethod == "1") {
     result = appLoc.cash;
   } else {
-    result = appLoc.creditDebit;
+    result = "Google Pay";
   }
   return result;
 }

@@ -24,6 +24,8 @@ class FormProvider with ChangeNotifier {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
+  final TextEditingController _contactMessageController =
+      TextEditingController();
   // final TextEditingController _otpController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -103,6 +105,9 @@ class FormProvider with ChangeNotifier {
   TextEditingController get firstNameController => _firstNameController;
   TextEditingController get lastNameController => _lastNameController;
   TextEditingController get countryController => _countryController;
+
+  TextEditingController get contactMessageController =>
+      _contactMessageController;
   // TextEditingController get otpController => _otpController;
 
   GlobalKey<FormState> get formKey => _formKey;
@@ -161,9 +166,6 @@ class FormProvider with ChangeNotifier {
         if (file!.path != "") {
           setReturnData = true;
         }
-
-//        _imagePickerError = false;
-        //return true;
       },
       failedCallBack: (error) {
         logMe(error);
@@ -171,16 +173,9 @@ class FormProvider with ChangeNotifier {
         setImageError = error;
         setImageFile = null;
         setReturnData = false;
-
-        // return false;
       },
     );
 
     log("return data+++++++>" + returnData.toString());
-
-    //  return null;
-
-    // return returnData;
-    //return null;
   }
 }

@@ -80,6 +80,9 @@ class OrderProvider with ChangeNotifier {
 
   TextEditingController commentsEditingController = TextEditingController();
 
+  double lat = 0.0;
+  double long = 0.0;
+
 /** Driver Details */
   String driverName = '';
   String ratings = '';
@@ -148,6 +151,14 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //updat LatLong initially
+  updateLatLong({required double latitude, required double longitude}) {
+    lat = latitude;
+
+    long = longitude;
+    notifyListeners();
+  }
+
 // Update rating and comments
   updateRatingComment({double? rating, String? comment}) {
     ratingGiven = rating!;
@@ -178,6 +189,11 @@ class OrderProvider with ChangeNotifier {
     getBytesFromAsset(initialPickUpIcon, 300).then((value) {
       initialMarker = BitmapDescriptor.fromBytes(value);
     });
+
+    updateLatLong(
+      latitude: double.parse(session.currentLat),
+      longitude: double.parse(session.currentLong),
+    );
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

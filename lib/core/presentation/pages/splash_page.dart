@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -29,18 +28,24 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Timer(const Duration(seconds: 2), () async {
-        if (kDebugMode) {
-          log("This text showing after 2seconds");
-          log(checkPermission().toString());
-        }
+        // if (kDebugMode) {
+        //   checkPermission().then((value) {
+        //     return log(value.toString());
+        //   });
+        //   // log("This text showing after 2seconds");
+        //   // log(checkPermission().toString());
+        // }
 
         // if (await checkPermission()) {
-        //   await sessionClearOrder();
+        // log("Check Permission value----" + checkPermission().toString());
+        // await sessionClearOrder();
 
         context.read<SplashProvider>().fetchCurrency().listen((state) async {
           final session = locator<Session>();
-          log("session token" + session.sessionToken.toString());
-          log("order id" + session.orderId.toString());
+          // log("session token" + session.sessionToken.toString());
+          // log("order id" + session.orderId.toString());
+
+          log("state runtime type:==" + state.runtimeType.toString());
 
           switch (state.runtimeType) {
             case CurrencyLoading:

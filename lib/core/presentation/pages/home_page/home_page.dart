@@ -55,7 +55,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     mapType: MapType.normal,
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,
-                    initialCameraPosition: map.kJapanCoordinate,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(map.lat, map.long),
+                      zoom: 14.4746,
+                    ),
                     onMapCreated: (GoogleMapController controller) async {
                       map.googleMapController = controller;
                       await map.setCurrentLocation();

@@ -296,7 +296,10 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                     mapType: MapType.normal,
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: true,
-                    initialCameraPosition: provider.kJapanCoordinate,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(provider.lat, provider.long),
+                      zoom: 14.4746,
+                    ),
                     onMapCreated: (GoogleMapController controller) async {
                       provider.googleMapController = controller;
                       await provider.setCurrentLocation(widget.location);

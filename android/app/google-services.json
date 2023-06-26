@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+          "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +27,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+              "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -51,7 +51,7 @@
           }
         },
         {
-          "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+          "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -64,7 +64,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+              "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -80,7 +80,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+          "client_id": "1022060321341-pfteeusq4b1jclpptokfde5skok2c8ni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "getride.driver.taxi",
+            "certificate_hash": "200036b375dbbf234bcf59a9527aab416d312c62"
+          }
+        },
+        {
+          "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -93,7 +101,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+              "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -109,6 +117,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1022060321341-dfrbmtavompt3v1rk866quosiknf05qp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "getride.user.taxi",
+            "certificate_hash": "fa0da3a5406f27d30da17b0543d6355edb117f81"
+          }
+        },
+        {
           "client_id": "1022060321341-l4jc9qifak0v6bbrfl6uiol4sc5p2pl3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -117,7 +133,15 @@
           }
         },
         {
-          "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+          "client_id": "1022060321341-lqbglgjm9qprf8kj3hk77dbvef9nihvd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "getride.user.taxi",
+            "certificate_hash": "f19b10a1ce239a1a8a23248fa0e7a0ea3e2d1981"
+          }
+        },
+        {
+          "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -130,7 +154,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1022060321341-53bev1haupufduep4vv9tq3q1ot1gvm9.apps.googleusercontent.com",
+              "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

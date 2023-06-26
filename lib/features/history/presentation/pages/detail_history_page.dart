@@ -395,13 +395,27 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    SvgPicture.asset('assets/icons/cash.svg'),
-                                    const Padding(
+                                    widget.item.paymentMethod == "1"
+                                        ? SvgPicture.asset(
+                                            'assets/icons/cash.svg',
+                                            height: 40,
+                                            width: 40,
+                                            fit: BoxFit.fill,
+                                          )
+                                        : SvgPicture.asset(
+                                            'assets/icons/google.svg',
+                                            height: 40,
+                                            width: 40,
+                                            fit: BoxFit.fill,
+                                          ),
+                                    Padding(
                                       padding: EdgeInsets.only(
                                         left: 10.0,
                                       ),
                                       child: Text(
-                                        "Cash",
+                                        widget.item.paymentMethod == "1"
+                                            ? "Cash"
+                                            : "Google Pay",
                                         style: TextStyle(
                                             fontFamily: 'poPPinMedium',
                                             fontWeight: FontWeight.w500,

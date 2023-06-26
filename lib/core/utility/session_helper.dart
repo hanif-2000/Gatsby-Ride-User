@@ -11,6 +11,8 @@ abstract class Session {
   set setOrderStatus(int orderStatus);
   set setDriverId(String driverId);
   set setUserId(String userId);
+  set setCurrentLat(String currentLat);
+  set setCurrentLong(String currentLong);
 
   bool get isLoggedIn;
   String get orderId;
@@ -20,6 +22,9 @@ abstract class Session {
   String get driverId;
   String get userId;
   int get orderStatus;
+  String get currentLat;
+  String get currentLong;
+
   Future<void> clearSession();
   Future<void> clearOrderSession();
 }
@@ -70,6 +75,16 @@ class SessionHelper implements Session {
   }
 
   @override
+  set setCurrentLat(String currentLat) {
+    pref.setString(CURRENT_LAT, currentLat);
+  }
+
+  @override
+  set setCurrentLong(String currentLong) {
+    pref.setString(CURRENT_LONG, currentLong);
+  }
+
+  @override
   bool get isLoggedIn => pref.getBool(IS_LOGGED_IN) ?? false;
 
   @override
@@ -92,6 +107,12 @@ class SessionHelper implements Session {
 
   @override
   String get orderId => pref.getString(ORDER_ID) ?? '';
+
+  @override
+  String get currentLat => pref.getString(CURRENT_LAT) ?? '';
+
+  @override
+  String get currentLong => pref.getString(CURRENT_LONG) ?? '';
 
   @override
   Future<void> clearSession() async {

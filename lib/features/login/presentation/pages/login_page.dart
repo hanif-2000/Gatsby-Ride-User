@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/dimens.dart';
 import 'package:appkey_taxiapp_user/features/register/presentation/pages/register_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../core/static/assets.dart';
@@ -15,7 +20,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return ChangeNotifierProvider<LoginProvider>(
       create: (context) => locator<LoginProvider>(),
       child: Scaffold(
         backgroundColor: whiteColor,
@@ -172,9 +177,57 @@ class LoginPage extends StatelessWidget {
                   bgColor: blue3B5998Color,
                 ),
               ),
+
               const SizedBox(
-                height: 40,
+                height: 10,
               ),
+
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: sizeMedium,
+                  right: sizeMedium,
+                  bottom: sizeMedium,
+                ),
+                child: CustomButton(
+                  text: const Text(
+                    "Sign in with Google",
+                    style: TextStyle(
+                      fontFamily: "poPPinSemiBold",
+                      fontWeight: FontWeight.w600,
+                      color: blackColor,
+                      fontSize: 15,
+                    ),
+                  ),
+                  image: SvgPicture.asset('assets/icons/google.svg'),
+                  event: () async {
+                    final FirebaseAuth auth = FirebaseAuth.instance;
+                    // Trigger the authentication flow
+                    final GoogleSignInAccount? googleUser =
+                        await GoogleSignIn().signIn();
+
+                    // Obtain the auth details from the request
+                    final GoogleSignInAuthentication? googleAuth =
+                        await googleUser?.authentication;
+
+                    log("Google auth" + googleAuth.toString());
+
+                    // Create a new credential
+                    final credential = GoogleAuthProvider.credential(
+                      accessToken: googleAuth?.accessToken,
+                      idToken: googleAuth?.idToken,
+                    );
+                    log("Credential" + credential.toString());
+
+                    // Once signed in, return the UserCredential
+                    return await auth.signInWithCredential(credential);
+                  },
+                  buttonHeight: 50,
+                  // buttonHeight: MediaQuery.of(context).size.height * 0.080,
+                  isRounded: true,
+                  bgColor: greyC8C7CCColor,
+                ),
+              ),
+
               // Center(
               //   child: InkWell(
               //     onTap: () {

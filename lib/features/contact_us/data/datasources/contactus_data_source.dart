@@ -1,3 +1,4 @@
+import 'package:appkey_taxiapp_user/core/static/enums.dart';
 import 'package:appkey_taxiapp_user/features/contact_us/data/models/contactus_response_modal.dart';
 import 'package:dio/dio.dart';
 
@@ -12,10 +13,8 @@ class ContactUsDataSourceImplementation implements ContactUsDataSource {
 
   @override
   Future<ContactUsResponseModel> doContactUs(FormData formData) async {
-    String url = 'api/webservice/password/forgot';
-    // String url = 'api/webservice/reset-password-user';
-
-    // String url = 'api/webservice/customer/password/reset';
+    String url = 'api/webservice/contactUs';
+    dio.withToken();
 
     try {
       final response = await dio.post(

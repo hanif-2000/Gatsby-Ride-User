@@ -1,7 +1,13 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/domain/usecases/get_currency.dart';
 import 'package:appkey_taxiapp_user/core/presentation/providers/currency_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as lctn;
 
+import '../../utility/helper.dart';
 import '../../utility/injection.dart';
 import '../../utility/session_helper.dart';
 
@@ -10,12 +16,16 @@ class SplashProvider with ChangeNotifier {
 
   SplashProvider({required this.getCurrency});
 
+  final lctn.Location locationService = lctn.Location();
+
   Stream<CurrencyState> fetchCurrency() async* {
+    getCurrentLocation();
     // enter loading state
     yield CurrencyLoading();
 
     // getting data
     final result = await getCurrency();
+
     yield* result.fold(
       (failure) async* {
         // enter failure state
@@ -27,5 +37,49 @@ class SplashProvider with ChangeNotifier {
         yield CurrencyLoaded(data: data);
       },
     );
+  }
+
+  //Get Current Location
+  getCurrentLocation() async {
+    final session = locator<Session>();
+    log("get current location =-===>");
+
+    try {
+      bool serviceStatus = await locationService.serviceEnabled();
+      if (serviceStatus) {
+        lctn.LocationData locationData = await locationService.getLocation();
+        logMe("locationData");
+        logMe(locationData);
+        var initialLatLong =
+            LatLng(locationData.latitude!, locationData.longitude!);
+
+        log("Initial lat long:---->>> $initialLatLong");
+
+        session.setCurrentLat = locationData.latitude.toString();
+        session.setCurrentLong = locationData.longitude.toString();
+
+        log("Driver id is=====>>>>" + session.orderId.toString());
+
+        // getAddressFromLatLng();
+        //onlocation change
+        locationService.onLocationChanged.listen((event) {});
+      } else {
+        try {
+          bool serviceStatusResult = await locationService.requestService();
+          logMe("Service status activated after request: $serviceStatusResult");
+          if (serviceStatusResult) {
+            getCurrentLocation();
+          }
+        } catch (e) {
+          logMe(e.toString());
+        }
+      }
+    } on PlatformException catch (e) {
+      if (e.toString() == 'PERMISSION_DENIED') {
+        logMe(e.toString());
+      } else if (e.code == 'SERVICE_STATUS_ERROR') {
+        logMe(e.message);
+      }
+    }
   }
 }

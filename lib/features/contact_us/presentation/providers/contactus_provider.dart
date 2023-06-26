@@ -12,13 +12,14 @@ class ContactusProvider extends FormProvider {
 
   ContactusProvider({required this.doContactus});
 
-  Stream<ContactusState> doContactusApi({required String email}) async* {
+  Stream<ContactusState> doContactusApi({
+    required String email,
+    required String message,
+  }) async* {
     // saveEmailToLocal();
     yield ContactusLoading();
-    final formData = FormData.fromMap({
-      'email': email,
-      'type': "Customer",
-    });
+    final formData =
+        FormData.fromMap({'email': email, 'type': 1, 'message': message});
     final result = await doContactus.call(formData);
     yield* result.fold((statusCode) async* {
       yield ContactusFailure(failure: statusCode.message);
