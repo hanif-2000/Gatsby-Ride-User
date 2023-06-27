@@ -1,6 +1,7 @@
 import 'package:appkey_taxiapp_user/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/otp_verification_provider.dart';
+import 'package:appkey_taxiapp_user/features/login/presentation/providers/login_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,9 @@ Future<void> main() async {
             ),
             ChangeNotifierProvider<ContactusProvider>(
               create: (context) => locator<ContactusProvider>(),
+            ),
+            ChangeNotifierProvider<LoginProvider>(
+              create: (context) => locator<LoginProvider>(),
             ),
           ],
           builder: (context, _) => const MyApp(),

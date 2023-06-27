@@ -6,6 +6,7 @@ abstract class Session {
   set setLoggedIn(bool login);
   set setOrderId(String orderId);
   set setToken(String token);
+  set setChatToken(int token);
   set setFcmToken(String fcmToken);
   set setCurrency(String currency);
   set setOrderStatus(int orderStatus);
@@ -13,9 +14,11 @@ abstract class Session {
   set setUserId(String userId);
   set setCurrentLat(String currentLat);
   set setCurrentLong(String currentLong);
+  set setDeviceType(String device);
 
   bool get isLoggedIn;
   String get orderId;
+  int get chatToken;
   String get sessionToken;
   String get sessionFcmToken;
   String get currency;
@@ -24,6 +27,7 @@ abstract class Session {
   int get orderStatus;
   String get currentLat;
   String get currentLong;
+  String get device;
 
   Future<void> clearSession();
   Future<void> clearOrderSession();
@@ -85,7 +89,20 @@ class SessionHelper implements Session {
   }
 
   @override
+  set setChatToken(int token) {
+    pref.setInt(CHAT_TOKEN, token);
+  }
+
+  @override
+  set setDeviceType(String device) {
+    pref.setString(DEVICE, device);
+  }
+
+  @override
   bool get isLoggedIn => pref.getBool(IS_LOGGED_IN) ?? false;
+
+  @override
+  int get chatToken => pref.getInt(CHAT_TOKEN) ?? 0;
 
   @override
   String get sessionToken => pref.getString(SESSION_TOKEN) ?? '';
@@ -125,4 +142,7 @@ class SessionHelper implements Session {
     await pref.remove(ORDER_STATUS);
     await pref.remove(DRIVER_ID);
   }
+
+  @override
+  String get device => pref.getString(DEVICE) ?? '';
 }

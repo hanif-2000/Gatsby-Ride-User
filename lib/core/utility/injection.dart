@@ -327,8 +327,10 @@ Future<void> init() async {
 
   locator.registerFactory<PlacePickerProvider>(
       () => PlacePickerProvider(getGooglePlace: locator<GetGooglePlace>()));
-  locator
-      .registerFactory<LoginProvider>(() => LoginProvider(doLogin: locator()));
+  locator.registerFactory<LoginProvider>(() => LoginProvider(
+        doLogin: locator<DoLogin>(),
+        doLoginSocial: locator<DoLogin>(),
+      ));
   locator.registerFactory<ForgotPasswordProvider>(
       () => ForgotPasswordProvider(doForgotPassword: locator()));
   locator.registerFactory<RegisterProvider>(

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:appkey_taxiapp_user/core/domain/usecases/get_currency.dart';
 import 'package:appkey_taxiapp_user/core/presentation/providers/currency_state.dart';
@@ -18,8 +19,14 @@ class SplashProvider with ChangeNotifier {
 
   final lctn.Location locationService = lctn.Location();
 
+  String deviceType = '';
+
+  var session = locator<Session>();
+
   Stream<CurrencyState> fetchCurrency() async* {
     getCurrentLocation();
+
+    getDeviceType();
     // enter loading state
     yield CurrencyLoading();
 
@@ -81,5 +88,19 @@ class SplashProvider with ChangeNotifier {
         logMe(e.message);
       }
     }
+  }
+
+  //Get Device Type
+  getDeviceType() {
+    if (Platform.isAndroid) {
+      deviceType = "android";
+
+      session.setDeviceType = 'android';
+    } else if (Platform.isIOS) {
+      deviceType = "ios";
+      session.setDeviceType = 'ios';
+    }
+
+    notifyListeners();
   }
 }

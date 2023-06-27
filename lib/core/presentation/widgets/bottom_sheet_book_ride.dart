@@ -251,6 +251,9 @@ class BottomSheetBookRide extends StatelessWidget {
                                                             .originAddress,
                                                         destinationAddress: provider
                                                             .destinationAddress);
+
+                                                // provider.sendRequest();
+
                                                 Navigator
                                                     .pushNamedAndRemoveUntil(
                                                         context,
@@ -265,10 +268,6 @@ class BottomSheetBookRide extends StatelessWidget {
                                             });
                                           }
 
-                                          // provider.submitOrder();
-
-                                          //                                        log(provider.txtLatLngOrigin.toString());
-                                          // log(txtLatLngDestination.toString());
                                           log(provider.originAddress
                                               .toString());
                                           log(provider.destinationAddress

@@ -19,6 +19,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart' as lctn;
+import 'package:web_socket_client/web_socket_client.dart';
 import '../../domain/entities/price_category.dart';
 import '../../domain/usecases/get_price_category.dart';
 import '../../domain/usecases/get_vehicle_catagory.dart';
@@ -49,6 +50,47 @@ class HomeProvider with ChangeNotifier {
   toggleIsDestinationSelected() {
     isDestinationSelected = true;
     notifyListeners();
+  }
+
+  var session = locator<Session>();
+
+//Socket
+
+  WebSocket? socket;
+
+  //Connec to Socket
+  connectToSocket() {
+    logMe('============= chat Token : ${session.chatToken} ================');
+    logMe('============= User Id Token :  ${session.userId} ================');
+
+    socket = WebSocket(Uri.parse(
+
+        // 'ws://shakti.parastechnologies.in:8051?token=597011984&room=0&userID=1'
+        'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}'));
+
+    logMe('============= Connecting to Socket ================');
+    socket!.connection.listen((event) {
+      logMe('Socket on Listen ---> ${event.toString()}');
+
+      if (event is Connected) {
+        // listenRequests();
+        // sendRequest();
+
+        log("=====event======>>>>> " + event.toString());
+      } else if (event is Disconnected) {
+        log("=== Event is Disconnected ===");
+        log("=== reason ${event.reason}");
+      }
+    });
+  }
+
+  //send request to socket
+
+  sendRequest() {
+    socket!
+        .send("serviceType: UserBookDriver, id: ${session.userId.toString()}");
+
+    log("send request");
   }
 
   bool isAccepted = false;
@@ -157,6 +199,8 @@ class HomeProvider with ChangeNotifier {
       latitude: double.parse(session.currentLat),
       longitude: double.parse(session.currentLong),
     );
+
+    connectToSocket();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

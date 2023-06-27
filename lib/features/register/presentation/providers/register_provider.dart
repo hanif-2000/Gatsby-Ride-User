@@ -1,4 +1,5 @@
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:appkey_taxiapp_user/core/utility/injection.dart';
 import 'package:dio/dio.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';
@@ -21,6 +22,7 @@ class RegisterProvider extends FormProvider {
       // 'phone': phone,
       'email': email,
       'password': password,
+      'device_type': sessionHelper.device,
     });
     final result = await doRegister.call(formData);
     logMe('result123---');

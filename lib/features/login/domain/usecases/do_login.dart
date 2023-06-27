@@ -8,7 +8,19 @@ abstract class LoginUseCase<Type> {
   // return statusCode when fails
   // return token when succeed
   Future<Either<Failure, LoginResponseModel?>> call(
-      String email, String password, String loginType);
+    String email,
+    String password,
+    String loginType,
+    String deviceType,
+  );
+
+  Future<Either<Failure, LoginResponseModel?>> callSocial(
+    String email,
+    String firstName,
+    String lastName,
+    String loginType,
+    String deviceType,
+  );
 }
 
 class DoLogin implements LoginUseCase<String> {
@@ -18,8 +30,37 @@ class DoLogin implements LoginUseCase<String> {
 
   @override
   Future<Either<Failure, LoginResponseModel?>> call(
-      String email, String password, String loginType) async {
-    final result = await repository.doLogin(email, password, loginType);
+    String email,
+    String password,
+    String loginType,
+    String deviceType,
+  ) async {
+    final result = await repository.doLogin(
+      email,
+      password,
+      loginType,
+      deviceType,
+    );
+    return result.fold((l) => Left(l), (r) {
+      return Right(r);
+    });
+  }
+
+  @override
+  Future<Either<Failure, LoginResponseModel?>> callSocial(
+    String email,
+    String firstName,
+    String lastName,
+    String loginType,
+    String deviceType,
+  ) async {
+    final result = await repository.doLoginSocial(
+      email,
+      firstName,
+      lastName,
+      loginType,
+      deviceType,
+    );
     return result.fold((l) => Left(l), (r) {
       return Right(r);
     });

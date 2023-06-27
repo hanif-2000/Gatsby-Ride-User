@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/presentation/providers/home_provider.dart';
 import '../../../../core/presentation/widgets/searching_ride_bottom_sheet.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
@@ -40,6 +41,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    Provider.of<HomeProvider>(context, listen: false).sendRequest();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showSearchingVehiclesBottomSheet(context);

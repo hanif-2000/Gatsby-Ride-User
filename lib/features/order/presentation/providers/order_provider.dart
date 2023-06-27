@@ -5,7 +5,6 @@ import 'dart:ui' as ui;
 import 'package:appkey_taxiapp_user/core/domain/entities/order_data_detail.dart';
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/app_settings.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/entities/driver_detail.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/get_driver_detail.dart';
@@ -28,6 +27,7 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lctn;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 import '../../../../core/utility/direction_helper.dart';
 import '../../../../core/utility/injection.dart';
@@ -46,10 +46,15 @@ class OrderProvider with ChangeNotifier {
 
   //Initial
   final lctn.Location locationService = lctn.Location();
-  CameraPosition kJapanCoordinate = const CameraPosition(
-    target: JAPAN_LATLNG,
-    zoom: 14.4746,
-  );
+  // CameraPosition kJapanCoordinate = const CameraPosition(
+  //   target: JAPAN_LATLNG,
+  //   zoom: 14.4746,
+  // );
+
+  //Web Socket
+
+  WebSocket? _socket;
+
   DriverLocationResponseModel? _driverLocation;
   DriverDetail? _driverDetail;
   double _driverLat = 0.0;
@@ -525,5 +530,19 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  submitRating() {}
+  // Web Socket Client
+
+  //  connectToSocket() {
+  //   logMe('============= Chat Token ${session.chatToken} ================');
+  //   _socket = WebSocket(Uri.parse(
+  //       'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.driverId}'));
+
+  //   logMe('============= Connecting to Socket ================');
+  //   _socket!.connection.listen((event) {
+  //     logMe('Socket on Listen ---> ${event.toString()}');
+  //     if (event is Connected) {
+  //       listenRequests();
+  //     }
+  //   });
+  // }
 }

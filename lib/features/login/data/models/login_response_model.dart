@@ -42,6 +42,7 @@ class LoginDataModel extends Equatable {
   final String fcmToken;
   final int status;
   final String image;
+  final int? chatToken;
 
   const LoginDataModel(
       {required this.userId,
@@ -50,11 +51,12 @@ class LoginDataModel extends Equatable {
       required this.phoneNumber,
       required this.fcmToken,
       required this.status,
+      required this.chatToken,
       required this.image});
 
   @override
   List<Object?> get props =>
-      [userId, name, email, phoneNumber, fcmToken, status, image];
+      [userId, name, email, phoneNumber, fcmToken, status, image, chatToken];
 
   factory LoginDataModel.fromJson(Map<String, dynamic> json) => LoginDataModel(
       userId: json['id'],
@@ -63,7 +65,9 @@ class LoginDataModel extends Equatable {
       phoneNumber: json['phone'] ?? '',
       fcmToken: json['fcm_token'] ?? '',
       image: json['image'] ?? '',
-      status: json['status']);
+      status: json['status'] ?? 0,
+      chatToken: json['chat_token'] ?? 0);
+
   Map<String, dynamic> toJson() => {
         'id': userId,
         'nama_user': name,
@@ -72,5 +76,6 @@ class LoginDataModel extends Equatable {
         'fcm_token': fcmToken,
         'image': image,
         'status': status,
+        'chat_token': chatToken,
       };
 }

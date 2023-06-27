@@ -50,12 +50,13 @@ dependencies:
   flutter_facebook_keyhash: ^0.0.4
   flutter_rating_bar: ^4.0.1
   chat_bubbles: any
-  pay: ^0.0.1
+
   percent_indicator: ^4.2.3
   sliding_up_panel: ^2.0.0+1
   flutter_launcher_icons: ^0.11.0
   google_sign_in: ^6.1.4
   firebase_auth: ^3.11.2
+  web_socket_client: ^0.1.0-dev.3
 
 dependency_overrides:
   provider: ^6.0.3

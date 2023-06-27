@@ -1,31 +1,30 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:appkey_taxiapp_user/core/utility/notification_service.dart';
 import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import '../../firebase_options.dart';
 import 'helper.dart';
 import 'injection.dart';
 
 class FirebaseHelper {
   static late FirebaseMessaging messaging;
   static Future<void> init() async {
-    if (Platform.isAndroid) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-        // messaging = FirebaseMessaging.instance;
-        // await permissionHandler().then((authorized) async {
-        //   if (authorized) {
-        //     await setupMessaging();
-        //   }
-        // });
-      );
-    } else if (Platform.isIOS) {
-      await Firebase.initializeApp();
-    }
+    await Firebase.initializeApp();
+    // if (Platform.isAndroid) {
+    //   await Firebase.initializeApp(
+    //     options: DefaultFirebaseOptions.currentPlatform,
+    //     // messaging = FirebaseMessaging.instance;
+    //     // await permissionHandler().then((authorized) async {
+    //     //   if (authorized) {
+    //     //     await setupMessaging();
+    //     //   }
+    //     // });
+    //   );
+    // } else if (Platform.isIOS) {
+    //   await Firebase.initializeApp();
+    // }
     logMe("Firebasee helperrrr");
     // await Firebase.initializeApp(
     //     options: DefaultFirebaseOptions.currentPlatform);

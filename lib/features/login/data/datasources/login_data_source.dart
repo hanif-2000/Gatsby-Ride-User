@@ -8,7 +8,19 @@ import '../models/login_response_model.dart';
 
 abstract class LoginDataSource {
   Future<LoginResponseModel?> doLogin(
-      String email, String password, String loginType);
+    String email,
+    String password,
+    String loginType,
+    String deviceType,
+  );
+
+  Future<LoginResponseModel?> doLoginSocial(
+    String email,
+    String firstName,
+    String lastName,
+    String loginType,
+    String deviceType,
+  );
 }
 
 class LoginDataSourceImplementation implements LoginDataSource {
@@ -18,7 +30,11 @@ class LoginDataSourceImplementation implements LoginDataSource {
 
   @override
   Future<LoginResponseModel?> doLogin(
-      String email, String password, String loginType) async {
+    String email,
+    String password,
+    String loginType,
+    String deviceType,
+  ) async {
     String url = 'api/webservice/login';
     final session = locator<Session>();
     String fcmToken = session.sessionFcmToken;
@@ -28,7 +44,8 @@ class LoginDataSourceImplementation implements LoginDataSource {
       'email': email,
       'password': password,
       'fcm_token': fcmToken,
-      'login_type': loginType
+      'login_type': loginType,
+      'device_type': deviceType
     });
 
     try {
@@ -44,6 +61,56 @@ class LoginDataSourceImplementation implements LoginDataSource {
       if (model.data != null) {
         session.setUserId = model.data!.userId.toString();
         session.setToken = model.token!;
+        session.setChatToken = model.data!.chatToken!;
+        return model;
+      } else {
+        return model;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //Social Login
+
+  @override
+  Future<LoginResponseModel?> doLoginSocial(
+    String email,
+    String firstName,
+    String lastName,
+    String loginType,
+    String deviceType,
+  ) async {
+    String url = 'api/webservice/login';
+    final session = locator<Session>();
+    String fcmToken = session.sessionFcmToken;
+
+    log(fcmToken.toString());
+    FormData data = FormData.fromMap({
+      'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
+      'fcm_token': fcmToken,
+      'login_type': loginType,
+      'device_type': deviceType
+    });
+
+    log("----Social login ----> ${data.fields}");
+
+    try {
+      final response = await dio.post(
+        url,
+        data: data,
+      );
+      final model = LoginResponseModel.fromJson(response.data);
+      final session = locator<Session>();
+
+      log("response" + response.data.toString());
+
+      if (model.data != null) {
+        session.setUserId = model.data!.userId.toString();
+        session.setToken = model.token!;
+        session.setChatToken = model.data!.chatToken!;
         return model;
       } else {
         return model;

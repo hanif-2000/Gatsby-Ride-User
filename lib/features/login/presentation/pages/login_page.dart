@@ -1,17 +1,20 @@
 import 'dart:developer';
-
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/dimens.dart';
-import 'package:appkey_taxiapp_user/features/register/presentation/pages/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../core/static/assets.dart';
+import '../../../../core/static/colors.dart';
+import '../../../../core/static/dimens.dart';
+import '../../../../core/utility/helper.dart';
 import '../../../../core/utility/injection.dart';
+import '../../../../core/utility/session_helper.dart';
+import '../../../register/presentation/pages/register_page.dart';
 import '../providers/login_provider.dart';
+import '../providers/login_state.dart';
 import '../widgets/login_form.dart';
 
 class LoginPage extends StatelessWidget {
@@ -21,7 +24,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LoginProvider>(
-      create: (context) => locator<LoginProvider>(),
+      create: (ctx) => locator<LoginProvider>(),
       child: Scaffold(
         backgroundColor: whiteColor,
         // appBar: CustomAppTtitleBar(
@@ -219,7 +222,47 @@ class LoginPage extends StatelessWidget {
                     log("Credential" + credential.toString());
 
                     // Once signed in, return the UserCredential
-                    return await auth.signInWithCredential(credential);
+                    await auth.signInWithCredential(credential).then((value) {
+                      var provider =
+                          Provider.of<LoginProvider>(context, listen: false);
+                      provider
+                          .updateSocialLoginData(
+                        userEmail: value.user!.email!,
+                        name: value.user!.displayName!,
+                        id: value.user!.uid,
+                      )
+                          .then((value) {
+                        provider.doLoginApiSocial().listen((state) async {
+                          log(state.toString());
+                          switch (state.runtimeType) {
+                            case LoginLoading:
+                              showLoading();
+
+                              break;
+                            case LoginFailure:
+                              final msg = (state as LoginFailure).failure;
+
+                              // log("-------->>>>>>" + msg.toString());
+                              dismissLoading();
+
+                              showToast(message: msg);
+                              break;
+                            case LoginSuccess:
+                              dismissLoading();
+
+                              final session = locator<Session>();
+                              session.setLoggedIn = true;
+                              showToast(message: appLoc.success);
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  HomePage.routeName, (route) => false);
+                              logMe(
+                                  "Authorization Token: ${session.sessionToken}");
+                              break;
+                          }
+                        });
+                      });
+                      log("value" + value.toString());
+                    });
                   },
                   buttonHeight: 50,
                   // buttonHeight: MediaQuery.of(context).size.height * 0.080,
