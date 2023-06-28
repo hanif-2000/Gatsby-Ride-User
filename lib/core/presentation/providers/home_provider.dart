@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui' as ui;
 
@@ -88,7 +89,13 @@ class HomeProvider with ChangeNotifier {
 
   sendRequest() {
     socket!
-        .send("serviceType: UserBookDriver, id: ${session.userId.toString()}");
+        // .send("serviceType: UserBookDriver, id: ${session.userId.toString()}");
+        .send(jsonEncode({
+      "serviceType": "UserBookDriver",
+      "UserID": "${session.userId.toString()}"
+    }));
+
+    socket!.connection.listen((state) => print('state: "$state"'));
 
     log("send request");
   }

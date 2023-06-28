@@ -1,4 +1,3 @@
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../../features/profile/presentation/providers/profile_provider.dart';
 import '../../../features/profile/presentation/providers/profile_state.dart';
+import '../../static/assets.dart';
 import '../../utility/helper.dart';
 
 class ProfileInformationDrawer extends StatelessWidget {
@@ -16,6 +16,7 @@ class ProfileInformationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
+
     return StreamBuilder<ProfileState>(
         stream: context.read<ProfileProvider>().fetchProfile(),
         builder: (context, state) {
@@ -33,8 +34,26 @@ class ProfileInformationDrawer extends StatelessWidget {
               final data = (state.data as ProfileLoaded).data;
               return Column(
                 children: [
+                  // data.photo == ''
+                  //     ? CachedNetworkImage(
+                  //         imageUrl: mergePhotoUrl(data.photo),
+                  //         placeholder: (context, url) => const CircleAvatar(
+                  //           backgroundColor: Colors.transparent,
+                  //           // backgroundColor: Colors.amber,
+                  //           radius: 60,
+                  //         ),
+                  //         imageBuilder: (context, image) => CircleAvatar(
+                  //           backgroundColor: Colors.transparent,
+                  //           backgroundImage: image,
+                  //           radius: 60,
+                  //         ),
+                  //       )
+                  //     : CircleAvatar(
+                  //         radius: 60.0,
+                  //         backgroundImage: AssetImage(userAvatarImage),
+                  //       ),
                   Container(
-                    child: data.photo == null
+                    child: data.photo == ''
                         ? const CircleAvatar(
                             radius: 60,
                             backgroundImage: AssetImage(userAvatarImage),

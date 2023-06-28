@@ -6,7 +6,6 @@ import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/pages/components/receipt_screen.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_order_detail_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_status_order_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
@@ -23,6 +22,8 @@ import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
 import '../../domain/entities/driver_detail.dart';
 import '../providers/get_driver_detail_state.dart';
+import 'components/chat_screen.dart';
+import 'components/receipt_screen.dart';
 
 class OrderPage extends StatefulWidget {
   final OrderDataDetail location;
@@ -405,7 +406,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                         Spacer(),
 
                         Visibility(
-                          visible: provider.isOrderAccepted,
+                          // visible: provider.isOrderAccepted,
+                          visible: true,
                           child: Container(
                             decoration: BoxDecoration(
                               color: whiteColor,
@@ -419,10 +421,25 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                 provider.callDriver();
                               },
                               messageEvent: () {
-                                // Navigator.push(context,
-                                //     MaterialPageRoute(builder: (context) => ChatScreen()));
+                                log("OnClick on MESSAGE event");
+
+                                // showBottomSheet(
+                                //   context: context,
+                                //   builder: (context) {
+                                //     return Text("asdfs");
+                                //   },
+                                // );
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatScreen()));
                               },
                               viewReceiptEvent: () {
+                                log("On Click on view receipt");
+                                // provider.orderReceiptApi().listen((event) {
+                                //   // log("Event :----------s  " +
+                                //   //     event.);
+                                // });
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -438,6 +455,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                               platerNumber: provider.plateNumber,
                               rating: provider.ratings,
                               isReceiptVisible: provider.isReachedToDestination,
+                              // isReceiptVisible: true,
                             ),
                           ),
                         ),
@@ -493,8 +511,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                 provider.callDriver();
               },
               messageEvent: () {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => ChatScreen()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatScreen()));
               },
               viewReceiptEvent: () {},
               driverStatusText: driverStatusText,

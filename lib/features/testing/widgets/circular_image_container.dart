@@ -1,9 +1,12 @@
+import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 
 class CommonCircularImageContainer extends StatelessWidget {
   final double? height;
   final double? width;
-  const CommonCircularImageContainer({Key? key, this.width, this.height})
+  final String? image;
+  const CommonCircularImageContainer(
+      {Key? key, this.width, this.height, this.image})
       : super(key: key);
 
   @override
@@ -14,7 +17,9 @@ class CommonCircularImageContainer extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         image: DecorationImage(
-            image: NetworkImage('https://googleflutter.com/sample_image.jpg'),
+            image: image == ''
+                ? NetworkImage('https://googleflutter.com/sample_image.jpg')
+                : NetworkImage(mergePhotoUrl(image!)),
             fit: BoxFit.fill),
       ),
     );

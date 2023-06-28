@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class OrderReceiptResponseModel extends Equatable {
-  final OrderReceiptDataModel? orderReceipt;
+  final List<OrderReceiptDataModel>? orderReceipt;
   final int? success;
 
   const OrderReceiptResponseModel({
@@ -14,17 +14,32 @@ class OrderReceiptResponseModel extends Equatable {
 
   factory OrderReceiptResponseModel.fromJson(Map<String, dynamic> json) =>
       OrderReceiptResponseModel(
-        orderReceipt: json['Order receipt'] == null
-            ? null
-            : OrderReceiptDataModel.fromJson(json['Order receipt']),
-        success: json['success'] ?? 1,
+        success: json["success"],
+        orderReceipt: json["Order receipt"] == null
+            ? []
+            : List<OrderReceiptDataModel>.from(json["Order receipt"]
+                .map((x) => OrderReceiptDataModel.fromJson(x))),
       );
-  Map<String, dynamic> toJson() => {
-        'orderReceipt': orderReceipt ?? null,
-        // 'data': data == null ? '' : data!.toJson(),
 
-        'success': success ?? '',
+  Map<String, dynamic> toJson() => {
+        "success": success,
+        "orderReceipt":
+            List<dynamic>.from(orderReceipt!.map((x) => x.toJson())),
       };
+
+  // factory OrderReceiptResponseModel.fromJson(Map<String, dynamic> json) =>
+  //     OrderReceiptResponseModel(
+  //       orderReceipt: json['Order receipt'] == null
+  //           ? null
+  //           : OrderReceiptDataModel.fromJson(json['Order receipt']),
+  //       success: json['success'] ?? 1,
+  //     );
+  // Map<String, dynamic> toJson() => {
+  //       'orderReceipt': orderReceipt ?? null,
+  //       // 'data': data == null ? '' : data!.toJson(),
+
+  //       'success': success ?? '',
+  //     };
 }
 
 class OrderReceiptDataModel extends Equatable {

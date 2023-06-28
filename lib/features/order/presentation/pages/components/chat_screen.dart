@@ -28,6 +28,7 @@ class ChatScreen extends StatelessWidget {
                       CommonCircularImageContainer(
                         height: 45,
                         width: 45,
+                        image: '',
                       ),
                       SizedBox(
                         width: 11,
@@ -58,7 +59,9 @@ class ChatScreen extends StatelessWidget {
                       Icons.arrow_back,
                       color: blackColor,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
               ],

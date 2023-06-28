@@ -2,6 +2,7 @@ import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../core/utility/helper.dart';
 import '../../../order/presentation/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +54,7 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                 CircleAvatar(
                   backgroundImage: NetworkImage(widget.driverImage == ''
                       ? 'https://picsum.photos/250?image=9'
-                      : widget.driverImage),
+                      : mergePhotoUrl(widget.driverImage)),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: _deviceSize.width * .02),

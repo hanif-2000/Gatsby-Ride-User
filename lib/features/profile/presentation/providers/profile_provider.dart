@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';
@@ -19,6 +21,13 @@ class ProfileProvider extends FormProvider {
     notifyListeners();
   }
 
+  bool isProfileEdit = false;
+
+  toggleIsProfileEdit() {
+    isProfileEdit = !isProfileEdit;
+    notifyListeners();
+  }
+
   ProfileProvider({required this.getProfile});
 
   Stream<ProfileState> fetchProfile() async* {
@@ -32,6 +41,8 @@ class ProfileProvider extends FormProvider {
       yield ProfileFailure(failure: failure.message);
     }, (data) async* {
       logMe("loadedddd");
+
+      log("Data.photo :===> ${data.photo}");
       yield ProfileLoaded(data: data);
     });
   }
