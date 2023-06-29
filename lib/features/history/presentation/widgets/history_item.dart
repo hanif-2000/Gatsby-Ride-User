@@ -1,12 +1,14 @@
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/history/data/models/history_response_model.dart';
+import 'package:appkey_taxiapp_user/features/history/presentation/providers/history_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 import '../pages/detail_history_page.dart';
+import 'package:provider/provider.dart';
 
 class HistoryItem extends StatefulWidget {
   final HistoryOrder data;
@@ -27,6 +29,12 @@ class _HistoryItemState extends State<HistoryItem> {
 
     return GestureDetector(
         onTap: () {
+          Provider.of<HistoryProvider>(context, listen: false).updateLatLong(
+            latOrigin: widget.data.startCoordinate.split(',').first,
+            longOrigin: widget.data.startCoordinate.split(',').last,
+            latDestination: widget.data.endCoordinate.split(',').first,
+            langDestination: widget.data.endCoordinate.split(',').last,
+          );
           Navigator.pushNamed(context, DetailHistoryPage.routeName,
               arguments: widget.data);
         },

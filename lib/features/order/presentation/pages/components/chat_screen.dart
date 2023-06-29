@@ -4,17 +4,20 @@ import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/chat_bubble.dart';
+import '../../widgets/send_message_textfield.dart';
 
 class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        extendBody: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: greyF9F9F9Color,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
+          preferredSize: Size.fromHeight(80.0),
           child: Card(
-            elevation: 1,
+            elevation: 0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -68,51 +71,50 @@ class ChatScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: Padding(
-            padding: EdgeInsets.only(right: 10, left: 10),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    child: ListView.builder(
-                      // physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Bubble(
-                          message: 'I will be there in a few mins',
-                          isMe: true,
-                        );
-                      },
-                    ),
-                  ),
-                  // TextField()
-                ],
-              ),
-            )
+        body: SafeArea(
+          child: Padding(
+              padding: EdgeInsets.only(right: 10, left: 10),
+              child: ListView.builder(
+                itemCount: 10,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Bubble(
+                    message: 'I will be there in a few mins',
+                    isMe: true,
+                  );
+                },
+              )
 
-            //  Column(
-            //   crossAxisAlignment: CrossAxisAlignment.stretch,
-            //   children: <Widget>[
-            //     Bubble(
-            //       message: 'Hello, are you nearby?',
-            //       isMe: false,
-            //     ),
-            //     Bubble(
-            //       message: 'I will be there in a few mins',
-            //       isMe: true,
-            //     ),
-            //     Bubble(
-            //       message: 'Okay, I am waiting at my location',
-            //       isMe: false,
-            //     ),
-            //     Bubble(
-            //       message:
-            //           'Sorry, I am stuck in traffic. Please give me a more time',
-            //       isMe: true,
-            //     ),
-            //   ],
-            // ),
-            ),
+              //  Column(
+              //   crossAxisAlignment: CrossAxisAlignment.stretch,
+              //   children: <Widget>[
+              //     Bubble(
+              //       message: 'Hello, are you nearby?',
+              //       isMe: false,
+              //     ),
+              //     Bubble(
+              //       message: 'I will be there in a few mins',
+              //       isMe: true,
+              //     ),
+              //     Bubble(
+              //       message: 'Okay, I am waiting at my location',
+              //       isMe: false,
+              //     ),
+              //     Bubble(
+              //       message:
+              //           'Sorry, I am stuck in traffic. Please give me a more time',
+              //       isMe: true,
+              //     ),
+              //   ],
+              // ),
+              ),
+        ),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
+          child: SendMessageTextField(),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       ),
     );
   }

@@ -14,6 +14,8 @@ class DriverProfileWidget extends StatefulWidget {
   final String rating;
   final String platerNumber;
 
+  final VoidCallback? onClickOnReview;
+
   const DriverProfileWidget({
     Key? key,
     required this.category,
@@ -22,6 +24,7 @@ class DriverProfileWidget extends StatefulWidget {
     required this.driverImage,
     required this.rating,
     required this.platerNumber,
+    this.onClickOnReview,
   }) : super(key: key);
 
   @override
@@ -82,13 +85,16 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                               ),
                             ),
                           ),
-                          const Text(
-                            "Reviews",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w500,
-                              color: yellowE6B045Color,
+                          InkWell(
+                            onTap: widget.onClickOnReview,
+                            child: const Text(
+                              "Reviews",
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500,
+                                color: yellowE6B045Color,
+                              ),
                             ),
                           )
                         ],

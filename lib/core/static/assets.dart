@@ -22,6 +22,7 @@ const String cashIcon = 'assets/icons/cash.png';
 const String creditIcon = 'assets/icons/credit.png';
 const String userAvatarImage = 'assets/images/user_avatar.png';
 const String destination_logo = 'assets/icons/Courier.png';
+const String sendIcon = 'assets/icons/send_icon.svg';
 
 const String passwordLockIcon = 'assets/icons/password_lock_icon.png';
 const String dividerIcon = 'assets/images/divider_image.png';

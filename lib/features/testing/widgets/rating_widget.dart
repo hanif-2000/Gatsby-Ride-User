@@ -25,7 +25,7 @@ class RatingWidget extends StatelessWidget {
               flex: 2,
               child: Row(
                 children: [
-                  CommonCircularImageContainer(),
+                  CommonCircularImageContainer(image: ''),
                   Column(
                     children: [
                       CommonText(

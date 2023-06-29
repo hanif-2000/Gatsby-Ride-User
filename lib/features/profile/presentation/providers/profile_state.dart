@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/error/failure.dart';
 import '../../data/models/edit_profile_response_model.dart';
 import '../../data/models/profile_response_model.dart';
 

@@ -27,7 +27,6 @@ import 'features/profile/presentation/providers/change_password_provider.dart';
 import 'features/profile/presentation/providers/profile_edit_provider.dart';
 import 'features/profile/presentation/providers/profile_provider.dart';
 import 'dart:async';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
@@ -161,7 +160,7 @@ class MyApp extends StatelessWidget {
     );
 
     // return MaterialApp(
-    //   home: ReceiptScreen(),
+    //   home: ChatScreen(),
     // );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/error/failure.dart';
 import '../../data/models/register_response_model.dart';
 
 abstract class RegisterState extends Equatable {

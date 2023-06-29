@@ -54,6 +54,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0),
             child: DriverProfileWidget(
+              onClickOnReview: () {},
               category: category,
               driverId: driverId,
               driverImage: driverImage,

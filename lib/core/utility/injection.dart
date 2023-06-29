@@ -7,6 +7,7 @@ import 'package:appkey_taxiapp_user/features/forgot_password/data/datasources/ot
 import 'package:appkey_taxiapp_user/features/forgot_password/domain/repositories/otp_verification_repository.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/domain/usecases/otp_verification.dart';
 import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/otp_verification_provider.dart';
+import 'package:appkey_taxiapp_user/features/history/domain/usecases/get_ratings.dart';
 import 'package:appkey_taxiapp_user/features/order/domain/usecases/submit_ratings.dart';
 import 'package:appkey_taxiapp_user/features/profile/data/datasources/create_profile_data_source.dart';
 import 'package:appkey_taxiapp_user/features/profile/data/datasources/upload_profile_image_data_source.dart';
@@ -264,6 +265,9 @@ Future<void> init() async {
       () => GetProfile(repository: locator<ProfileRepository>()));
   locator.registerLazySingleton<GetHistory>(
       () => GetHistory(repository: locator<HistoryRepository>()));
+
+  locator.registerLazySingleton<GetRating>(
+      () => GetRating(repository: locator<HistoryRepository>()));
   locator.registerLazySingleton<UpdateProfile>(
       () => UpdateProfile(repository: locator<ProfileRepository>()));
   locator.registerLazySingleton<UpdateEmail>(
@@ -340,7 +344,11 @@ Future<void> init() async {
   locator.registerFactory<ProfileProvider>(
       () => ProfileProvider(getProfile: locator()));
   locator.registerFactory<HistoryProvider>(
-      () => HistoryProvider(getHistory: locator()));
+    () => HistoryProvider(
+      getHistory: locator(),
+      getRatings: locator(),
+    ),
+  );
   locator.registerFactory<ProfileEditProvider>(
       () => ProfileEditProvider(updateProfile: locator()));
   locator.registerFactory<ChangeEmailProvider>(
