@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:appkey_taxiapp_user/features/order/presentation/pages/order_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/login/presentation/pages/login_page.dart';
+import '../../domain/entities/order_data_detail.dart';
 import '../../static/assets.dart';
 import '../../utility/helper.dart';
 import '../../utility/injection.dart';
@@ -51,11 +54,46 @@ class _SplashPageState extends State<SplashPage> {
             case CurrencyLoading:
               break;
             case CurrencyLoaded:
-              session.isLoggedIn
-                  ? Navigator.pushNamedAndRemoveUntil(
-                      context, HomePage.routeName, (route) => false)
-                  : Navigator.pushNamedAndRemoveUntil(
-                      context, LoginPage.routeName, (route) => false);
+              if (session.isLoggedIn) {
+                if (session.orderStatus != 100) {
+                  // OrderDataDetail(destinationAddress: session.destinationAddress,originAddress: session.originAddress,
+                  //   originLatLng: LatLng(session.originLat, session.originLong),destinationLatLng: LatLng(session.destinationLat, session.destinationLong
+
+                  // Navigator.pushNamedAndRemoveUntil(
+                  //     context, OrderPage.routeName, (route) => false);
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OrderPage(
+                              location: OrderDataDetail(
+                                  destinationAddress:
+                                      session.destinationAddress,
+                                  originAddress: session.originAddress,
+                                  originLatLng: LatLng(
+                                      session.originLat, session.originLong),
+                                  destinationLatLng: LatLng(
+                                      session.destinationLat,
+                                      session.destinationLong)))));
+                } else {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, HomePage.routeName, (route) => false);
+                }
+              } else {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, LoginPage.routeName, (route) => false);
+              }
+
+              // if(session.isLoggedIn){
+              //   if(session.orderStatus=)
+              // Navigator.pushNamedAndRemoveUntil(
+              //     context, OrderPage.routeName, (route) => false);
+              // }
+              // session.isLoggedIn
+              //     ? Navigator.pushNamedAndRemoveUntil(
+              //         context, HomePage.routeName, (route) => false)
+              //     : Navigator.pushNamedAndRemoveUntil(
+              //         context, LoginPage.routeName, (route) => false);
 
               break;
           }

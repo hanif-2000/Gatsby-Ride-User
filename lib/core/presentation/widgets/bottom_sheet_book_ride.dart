@@ -4,6 +4,8 @@ import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.da
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_vehicle_info.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/payment_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:appkey_taxiapp_user/core/utility/injection.dart';
+import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -130,18 +132,38 @@ class BottomSheetBookRide extends StatelessWidget {
                               onTap: () {
                                 provider.setPaymentMethod = PaymentMethod.cash;
 
+                                showModalBottomSheet(
+                                  barrierColor: Colors.transparent,
+                                  useRootNavigator: true,
+                                  isScrollControlled: true,
+                                  useSafeArea: true,
+                                  // constraints: BoxConstraints(
+                                  //     maxHeight: _deviceSize.height * .45),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16.0),
+                                      topRight: Radius.circular(16.0),
+                                    ),
+                                  ),
+                                  backgroundColor: whiteColor,
+                                  context: context,
+                                  builder: (context) {
+                                    return Container(child: PaymentOption());
+                                  },
+                                );
+
                                 //  selected: provider.paymentMethod == null
                                 //           ? false
                                 //           : provider.paymentMethod == PaymentMethod.cash
                                 //               ? true
                                 //               : false,
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const PaymentOption(),
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => const PaymentOption(),
+                                //   ),
+                                // );
                               },
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
@@ -253,6 +275,22 @@ class BottomSheetBookRide extends StatelessWidget {
                                                             .destinationAddress);
 
                                                 // provider.sendRequest();
+                                                var session =
+                                                    locator<Session>();
+                                                session.setOriginAddress =
+                                                    provider.originAddress;
+                                                session.setDestinationAddress =
+                                                    provider.destinationAddress;
+                                                session.setOriginLat = provider
+                                                    .originLatLng.latitude;
+                                                session.setOriginLong = provider
+                                                    .originLatLng.longitude;
+                                                session.setDestinationLat =
+                                                    provider.destinationLatLng
+                                                        .latitude;
+                                                session.setDestinationLong =
+                                                    provider.destinationLatLng
+                                                        .longitude;
 
                                                 Navigator
                                                     .pushNamedAndRemoveUntil(

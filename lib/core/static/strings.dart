@@ -12,3 +12,10 @@ const String DRIVER_ID = 'driver_id';
 const String CURRENT_LAT = 'current_lat';
 const String CURRENT_LONG = 'current_long';
 const String DEVICE = 'device';
+
+const String ORIGIN_ADDRESS = 'origin_address';
+const String DESTINATION_ADDRESS = 'destination_address';
+const String ORIGIN_LAT = 'origin_lat';
+const String ORIGIN_LONG = 'origin_long';
+const String DESTINATION_LAT = 'destination_lat';
+const String DESTINATION_LONG = 'destination_long';

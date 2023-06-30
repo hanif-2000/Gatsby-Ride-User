@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utility/helper.dart';
 import '../../../order/presentation/pages/components/ratings.dart';
+import '../../../testing/widgets/rating_widget.dart';
 import '../../data/models/history_response_model.dart';
 import 'package:provider/provider.dart';
 
@@ -127,7 +128,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                     ),
                   ),
 
-//Show Trip Map
+                  //Show Trip Map
 
                   Container(
                     height: MediaQuery.of(context).size.height * .25,
@@ -538,13 +539,84 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       ),
                     ),
                   ),
-                  // const RatingWidget(
-                  //   name: "Name",
+
+                  // (getHistoryStatus(widget.item.status) == "Cancelled")
+                  //     ? Padding(
+                  //         padding: const EdgeInsets.all(16.0),
+                  //         child: RateNowWidget(),
+                  //       )
+                  //     : SizedBox(),
+
+                  //Rating Given by Customer ---->>> Driver
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: widget.item.ratingList.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            widget.item.ratingList[index].type == 1
+                                ? Text(
+                                    appLoc.ratingGiven,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontFamily: 'poPPinMedium',
+                                        color: grey7D7979Color),
+                                  )
+                                : Text(
+                                    appLoc.ratingReceived,
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontFamily: 'poPPinMedium',
+                                        color: grey7D7979Color),
+                                  ),
+                            RatingWidget(
+                              ratingDate: "Date",
+                              rating: double.parse(
+                                  widget.item.ratingList[index].rating),
+                              review: widget.item.ratingList[index].review,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  // Text(
+                  //   appLoc.ratingGiven,
+                  //   style: TextStyle(
+                  //       fontSize: 16.0,
+                  //       fontFamily: 'poPPinMedium',
+                  //       color: grey7D7979Color),
+                  // ),
+
+                  // RatingWidget(
                   //   ratingDate: "Date",
                   //   rating: 5.0,
                   //   review: "sdf",
+                  // ),
+                  // SizedBox(
+                  //   height: 10.0,
+                  // ),
 
-                  // )
+                  // //Rating Given by Driver  ---->>>> customer
+                  // Text(
+                  //   appLoc.ratingReceived,
+                  //   style: TextStyle(
+                  //       fontSize: 16.0,
+                  //       fontFamily: 'poPPinMedium',
+                  //       color: grey7D7979Color),
+                  // ),
+
+                  // RatingWidget(
+                  //   ratingDate: "Date",
+                  //   rating: 5.0,
+                  //   review: "sdf",
+                  // ),
                 ],
               ),
             ),

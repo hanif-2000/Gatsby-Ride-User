@@ -55,6 +55,7 @@ class HistoryOrder {
     required this.taxiType,
     required this.timestamp,
     required this.category,
+    required this.ratingList,
   });
 
   String id;
@@ -77,6 +78,7 @@ class HistoryOrder {
   String taxiType;
   String timestamp;
   CategoryClass category;
+  List<RatingList> ratingList;
 
   factory HistoryOrder.fromJson(Map<String, dynamic> json) => HistoryOrder(
         id: json["id"],
@@ -99,6 +101,8 @@ class HistoryOrder {
         taxiType: json["taxi_type"],
         timestamp: json["timestamp"],
         category: CategoryClass.fromJson(json["category"]),
+        ratingList: List<RatingList>.from(
+            json["rating_list"].map((x) => RatingList.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -122,6 +126,7 @@ class HistoryOrder {
         "taxi_type": taxiType,
         "timestamp": timestamp,
         "category": category.toJson(),
+        "rating_list": List<dynamic>.from(ratingList.map((x) => x.toJson())),
       };
 }
 
@@ -178,5 +183,57 @@ class CategoryClass {
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
         "deleted_at": deletedAt,
+      };
+}
+
+class RatingList {
+  int id;
+  int senderId;
+  int receiverId;
+  int orderId;
+  String rating;
+  String review;
+  int type;
+  int status;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  RatingList({
+    required this.id,
+    required this.senderId,
+    required this.receiverId,
+    required this.orderId,
+    required this.rating,
+    required this.review,
+    required this.type,
+    required this.status,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory RatingList.fromJson(Map<String, dynamic> json) => RatingList(
+        id: json["id"],
+        senderId: json["sender_id"],
+        receiverId: json["receiver_id"],
+        orderId: json["order_id"],
+        rating: json["rating"],
+        review: json["review"],
+        type: json["type"],
+        status: json["status"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "sender_id": senderId,
+        "receiver_id": receiverId,
+        "order_id": orderId,
+        "rating": rating,
+        "review": review,
+        "type": type,
+        "status": status,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
       };
 }

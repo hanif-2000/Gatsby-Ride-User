@@ -1,3 +1,4 @@
+import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,7 +26,7 @@ class PaymentScreen extends StatelessWidget {
         shadowColor: whiteColor.withOpacity(0.5),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -93,7 +94,56 @@ class PaymentScreen extends StatelessWidget {
                   ),
                 )
               ],
-            )
+            ),
+            Spacer(),
+            CustomButton(
+              text: "Pay Now",
+              isRounded: true,
+              event: () {},
+              bgColor: blackColor,
+            ),
+
+            // GooglePayButton(
+            //   paymentConfigurationAsset: 'google_pay_config.json',
+            //   paymentItems: _paymentItems,
+            //   style: GooglePayButtonStyle.black,
+            //   type: GooglePayButtonType.pay,
+            //   margin: const EdgeInsets.only(top: 15.0),
+            //   onPaymentResult: onGooglePayResult,
+            //   loadingIndicator: const Center(
+            //     child: CircularProgressIndicator(),
+            //   ),
+            // )
+
+            // // Example pay button configured using an asset
+            // FutureBuilder<PaymentConfiguration>(
+            //     future: _googlePayConfigFuture,
+            //     builder: (context, snapshot) => snapshot.hasData
+            //         ? GooglePayButton(
+            //             paymentConfiguration: snapshot.data!,
+            //             paymentItems: _paymentItems,
+            //             type: GooglePayButtonType.buy,
+            //             margin: const EdgeInsets.only(top: 15.0),
+            //             onPaymentResult: onGooglePayResult,
+            //             loadingIndicator: const Center(
+            //               child: CircularProgressIndicator(),
+            //             ),
+            //           )
+            //         : const SizedBox.shrink()),
+            // // Example pay button configured using a string
+            // ApplePayButton(
+            //   paymentConfiguration: PaymentConfiguration.fromJsonString(
+            //       payment_configurations.defaultApplePay),
+            //   paymentItems: _paymentItems,
+            //   style: ApplePayButtonStyle.black,
+            //   type: ApplePayButtonType.buy,
+            //   margin: const EdgeInsets.only(top: 15.0),
+            //   onPaymentResult: onApplePayResult,
+            //   loadingIndicator: const Center(
+            //     child: CircularProgressIndicator(),
+            //   ),
+            // ),
+            // const SizedBox(height: 15)
           ],
         ),
       ),

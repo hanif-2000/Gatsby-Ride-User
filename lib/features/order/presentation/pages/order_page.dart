@@ -63,6 +63,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     final session = locator<Session>();
     var _deviceSize = MediaQuery.of(context).size;
 
+    log("location in order page:--->>${widget.location}");
+
     return WillPopScope(
         onWillPop: () {
           return Future.value(false);

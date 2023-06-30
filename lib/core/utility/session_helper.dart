@@ -16,6 +16,13 @@ abstract class Session {
   set setCurrentLong(String currentLong);
   set setDeviceType(String device);
 
+  set setOriginAddress(String originAddress);
+  set setDestinationAddress(String destinationAddress);
+  set setOriginLat(double originLat);
+  set setOriginLong(double originLong);
+  set setDestinationLat(double destinationLat);
+  set setDestinationLong(double destinationLong);
+
   bool get isLoggedIn;
   String get orderId;
   int get chatToken;
@@ -28,6 +35,14 @@ abstract class Session {
   String get currentLat;
   String get currentLong;
   String get device;
+
+  String get originAddress;
+  String get destinationAddress;
+  double get originLat;
+  double get originLong;
+
+  double get destinationLat;
+  double get destinationLong;
 
   Future<void> clearSession();
   Future<void> clearOrderSession();
@@ -99,6 +114,34 @@ class SessionHelper implements Session {
   }
 
   @override
+  set setOriginAddress(String originAddress) {
+    pref.setString(ORIGIN_ADDRESS, originAddress);
+  }
+
+  @override
+  set setDestinationAddress(String destinationAddress) {
+    pref.setString(DESTINATION_ADDRESS, destinationAddress);
+  }
+
+  @override
+  set setOriginLat(double originLat) {
+    pref.setDouble(ORIGIN_LAT, originLat);
+  }
+
+  @override
+  set setOriginLong(double originLong) {
+    pref.setDouble(ORIGIN_LONG, originLong);
+  }
+
+  set setDestinationLat(double destinationLat) {
+    pref.setDouble(DESTINATION_LAT, destinationLat);
+  }
+
+  set setDestinationLong(double destinationLong) {
+    pref.setDouble(DESTINATION_LONG, destinationLong);
+  }
+
+  @override
   bool get isLoggedIn => pref.getBool(IS_LOGGED_IN) ?? false;
 
   @override
@@ -145,4 +188,22 @@ class SessionHelper implements Session {
 
   @override
   String get device => pref.getString(DEVICE) ?? '';
+
+  @override
+  String get destinationAddress => pref.getString(DESTINATION_ADDRESS) ?? '';
+
+  @override
+  double get destinationLat => pref.getDouble(DESTINATION_LAT) ?? 0.0;
+
+  @override
+  double get destinationLong => pref.getDouble(DESTINATION_LONG) ?? 0.0;
+
+  @override
+  String get originAddress => pref.getString(ORIGIN_ADDRESS) ?? '';
+
+  @override
+  double get originLat => pref.getDouble(ORIGIN_LAT) ?? 0.0;
+
+  @override
+  double get originLong => pref.getDouble(ORIGIN_LAT) ?? 0.0;
 }

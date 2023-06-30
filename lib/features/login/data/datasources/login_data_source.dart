@@ -39,7 +39,7 @@ class LoginDataSourceImplementation implements LoginDataSource {
     final session = locator<Session>();
     String fcmToken = session.sessionFcmToken;
 
-    log(fcmToken.toString());
+    log("fcm token : " + fcmToken.toString());
     FormData data = FormData.fromMap({
       'email': email,
       'password': password,

@@ -23,10 +23,26 @@ class SplashProvider with ChangeNotifier {
 
   var session = locator<Session>();
 
+  // Fetch all data from session
+  getSessionData() {
+    log("Is Login : " + session.isLoggedIn.toString());
+    log("Order Id : " + session.orderId.toString());
+    log("Chat Token : " + session.chatToken.toString());
+    log("Session Token : " + session.sessionToken.toString());
+    log("Session Fcm Token : " + session.sessionFcmToken.toString());
+    log("Currency: " + session.currency.toString());
+    log("Driver ID : " + session.driverId.toString());
+    log("User ID : " + session.userId.toString());
+    log("Order Status : " + session.orderStatus.toString());
+    log("Current Lat : " + session.currentLat.toString());
+    log("Current Long : " + session.currentLong.toString());
+  }
+
   Stream<CurrencyState> fetchCurrency() async* {
     getCurrentLocation();
 
     getDeviceType();
+
     // enter loading state
     yield CurrencyLoading();
 
@@ -44,6 +60,8 @@ class SplashProvider with ChangeNotifier {
         yield CurrencyLoaded(data: data);
       },
     );
+
+    getSessionData();
   }
 
   //Get Current Location

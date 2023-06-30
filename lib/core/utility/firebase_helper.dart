@@ -4,44 +4,32 @@ import 'package:appkey_taxiapp_user/core/utility/notification_service.dart';
 import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import '../../firebase_options.dart';
 import 'helper.dart';
 import 'injection.dart';
 
 class FirebaseHelper {
   static late FirebaseMessaging messaging;
+
   static Future<void> init() async {
-    await Firebase.initializeApp();
-    // if (Platform.isAndroid) {
-    //   await Firebase.initializeApp(
-    //     options: DefaultFirebaseOptions.currentPlatform,
-    //     // messaging = FirebaseMessaging.instance;
-    //     // await permissionHandler().then((authorized) async {
-    //     //   if (authorized) {
-    //     //     await setupMessaging();
-    //     //   }
-    //     // });
-    //   );
-    // } else if (Platform.isIOS) {
-    //   await Firebase.initializeApp();
-    // }
     logMe("Firebasee helperrrr");
-    // await Firebase.initializeApp(
-    //     options: DefaultFirebaseOptions.currentPlatform);
-    // messaging = FirebaseMessaging.instance;
-    // await permissionHandler().then((authorized) async {
-    //   if (authorized) {
-    //     await setupMessaging();
-    //   }
-    // });
+    await Firebase.initializeApp(
+        name: 'Gatsby RideShare',
+        options: DefaultFirebaseOptions.currentPlatform);
+    messaging = FirebaseMessaging.instance;
+
+    await permissionHandler().then((authorized) async {
+      log("IS AUTHORIZED:  $authorized");
+      if (authorized) {
+        await setupMessaging();
+      }
+    });
   }
 
   static Future<void> setupMessaging() async {
     await messaging.getToken().then((token) async {
       final session = locator<Session>();
       logMe("firebase-token: $token");
-
-      log(token.toString());
       session.setFcmToken = token!;
     });
     await incomingNotificationHandling();
@@ -74,11 +62,9 @@ class FirebaseHelper {
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  // await Firebase.initializeApp(
-  //     // options: DefaultFirebaseOptions.currentPlatform,
-  //     );
+  // await Firebase.initializeApp();
 
-  log("Firebase helper called");
+  log("Message _____ " + message.data.toString());
 
   logMe("Handling a background message: ${message.messageId}");
 }

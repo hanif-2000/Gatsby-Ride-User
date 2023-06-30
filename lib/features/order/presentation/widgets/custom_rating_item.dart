@@ -1,3 +1,4 @@
+import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -24,7 +25,7 @@ class CustomRatingItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        child: Column(children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -74,12 +75,19 @@ class CustomRatingItem extends StatelessWidget {
               )
             ],
           ),
-          Text(
-            reviews!,
-            style: TextStyle(
-              fontFamily: "poPPinRegular",
-              fontSize: 12.0,
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Text(
+              reviews!,
+              style: TextStyle(
+                fontFamily: "poPPinRegular",
+                fontSize: 12.0,
+              ),
             ),
+          ),
+          Divider(
+            thickness: 1.0,
+            color: greyECECECColor,
           )
         ]),
       ),
