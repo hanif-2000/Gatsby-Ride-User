@@ -513,8 +513,12 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                 provider.callDriver();
               },
               messageEvent: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ChatScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatScreen(),
+                  ),
+                );
               },
               viewReceiptEvent: () {},
               driverStatusText: driverStatusText,

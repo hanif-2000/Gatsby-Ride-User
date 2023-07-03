@@ -58,6 +58,9 @@ dependencies:
   firebase_auth: ^3.11.2
   web_socket_client: ^0.1.0-dev.3
   pay: ^0.0.1
+  upi_india: ^3.0.1
+  # upi_pay: ^1.0.1
+  # flutter_pay: ^1.0.2
 
 dependency_overrides:
   provider: ^6.0.3

@@ -6,6 +6,7 @@ import 'package:appkey_taxiapp_user/features/privacy_policy/privacy_policy_page.
 import 'package:appkey_taxiapp_user/features/terms_and_conditions/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
 
+import '../../../features/testing/pages/payment_testing_screen.dart';
 import '../../utility/helper.dart';
 import '../widgets/close_button.dart';
 import '../widgets/custom_dialog_logout.dart';
@@ -49,10 +50,11 @@ class HomeDrawerPage extends StatelessWidget {
                       DrawerButtonItemWidget(
                         title: appLoc.history,
                         onTap: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            HistoryPage.routeName,
-                          );
+                          Navigator.pushNamed(context, HistoryPage.routeName);
+                          // Navigator.pushReplacementNamed(
+                          //   context,
+                          //   HistoryPage.routeName,
+                          // );
                         },
                       ),
 
@@ -71,10 +73,11 @@ class HomeDrawerPage extends StatelessWidget {
                       DrawerButtonItemWidget(
                         title: "Contact Us",
                         onTap: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            ContactUsPage.routeName,
-                          );
+                          Navigator.pushNamed(context, ContactUsPage.routeName);
+                          // Navigator.pushReplacementNamed(
+                          //   context,
+                          //   ContactUsPage.routeName,
+                          // );
                         },
                       ),
 
@@ -101,6 +104,20 @@ class HomeDrawerPage extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) =>
                                   const TermsAndConditionsPage(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      //Testing Button for payment
+
+                      DrawerButtonItemWidget(
+                        title: "Testing Payment",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PaymentHomePage(),
                             ),
                           );
                         },

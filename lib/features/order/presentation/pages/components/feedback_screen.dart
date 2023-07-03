@@ -9,7 +9,6 @@ import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart' as rating;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
 import 'package:provider/provider.dart';
 
 import '../../providers/order_provider.dart';
@@ -52,7 +51,7 @@ class FeedBackScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(100.0),
                               color: green63BA6BColor.withOpacity(.15)),
-                          height: 140,
+                          height: 140.0,
                           width: 140.0,
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -90,7 +89,7 @@ class FeedBackScreen extends StatelessWidget {
                         height: _deviceSize.height * .015,
                       ),
                       CommonText(
-                        text: "How was your ride?",
+                        text: appLoc.howWasYourRide,
                         fontWeight: FontWeight.w500,
                         fontColor: blackColor,
                         fontFamily: "poPPinMedium",
@@ -101,8 +100,7 @@ class FeedBackScreen extends StatelessWidget {
                             horizontal: _deviceSize.width * .15,
                             vertical: 10.0),
                         child: CommonText(
-                          text:
-                              "Your feedback will help improve driving experience",
+                          text: appLoc.yourFeedbackImproveExperience,
                           fontWeight: FontWeight.w400,
                           fontColor: grey8A8A8FColor,
                           fontFamily: "poPPinMedium",

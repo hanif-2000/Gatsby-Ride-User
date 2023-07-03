@@ -121,5 +121,7 @@
   "textLogout": "Are you sure\nyou want to log out of this account ?",
   "ratingGiven":"Rating Given",
   "ratingReceived":"Rating Received",
-  "paymentInformation":"Payment Information"
+  "paymentInformation":"Payment Information",
+  "howWasYourRide":"How was your ride?",
+  "yourFeedbackImproveExperience":"Your feedback will help improve driving experience"
 }

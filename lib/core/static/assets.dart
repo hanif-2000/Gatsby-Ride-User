@@ -33,3 +33,6 @@ const String pickGalleryImage = "assets/images/add_gallery_image.png";
 const String userImage = "assets/images/user.png";
 const String starImage = "assets/images/star.png";
 const String cardImage = "assets/images/card.png";
+const String dottedLine = "assets/icons/dotted_line.svg";
+const String destinationSvgIcon = 'assets/icons/destination_logo.svg';
+const String locationPngIcon = 'assets/icons/location.png';

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,33 +34,18 @@ class ProfileInformationDrawer extends StatelessWidget {
             case ProfileLoaded:
               logMe("loaded");
               final data = (state.data as ProfileLoaded).data;
+              log("photo data----->>>>>" + data.photo.toString());
               return Column(
                 children: [
-                  // data.photo == ''
-                  //     ? CachedNetworkImage(
-                  //         imageUrl: mergePhotoUrl(data.photo),
-                  //         placeholder: (context, url) => const CircleAvatar(
-                  //           backgroundColor: Colors.transparent,
-                  //           // backgroundColor: Colors.amber,
-                  //           radius: 60,
-                  //         ),
-                  //         imageBuilder: (context, image) => CircleAvatar(
-                  //           backgroundColor: Colors.transparent,
-                  //           backgroundImage: image,
-                  //           radius: 60,
-                  //         ),
-                  //       )
-                  //     : CircleAvatar(
-                  //         radius: 60.0,
-                  //         backgroundImage: AssetImage(userAvatarImage),
-                  //       ),
                   Container(
-                    child: data.photo == ''
+                    child: (data.photo == '') || (data.photo == null)
                         ? const CircleAvatar(
+                            backgroundColor: transparentColor,
                             radius: 60,
                             backgroundImage: AssetImage(userAvatarImage),
                           )
                         : CircleAvatar(
+                            backgroundColor: transparentColor,
                             radius: 60,
                             backgroundImage: NetworkImage(
                               mergePhotoUrl(data.photo),

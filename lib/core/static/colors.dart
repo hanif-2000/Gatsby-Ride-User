@@ -82,3 +82,4 @@ const Color greyEFEFF2Color = Color(0xffEFEFF2);
 const Color grey858585Color = Color(0xff858585);
 const Color blue249DE0Color = Color(0xff249DE0);
 const Color yellowE5A829FColor = Color(0xffE5A829);
+const Color transparentColor = Colors.transparent;

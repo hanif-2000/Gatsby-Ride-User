@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget.dart';
 import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
+import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:flutter/material.dart';
@@ -89,15 +90,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                           MainAxisAlignment.center,
                                       children: [
                                         Image.asset(
-                                          'assets/icons/location.png',
+                                          locationPngIcon,
                                           height: 24.0,
                                           width: 24.0,
                                           fit: BoxFit.cover,
                                         ),
+                                        SvgPicture.asset(dottedLine),
                                         SvgPicture.asset(
-                                            'assets/icons/dotted_line.svg'),
-                                        SvgPicture.asset(
-                                          'assets/icons/destination_logo.svg',
+                                          destinationSvgIcon,
                                           height: 30.0,
                                           width: 30.0,
                                           fit: BoxFit.cover,

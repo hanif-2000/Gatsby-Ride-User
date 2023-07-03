@@ -63,18 +63,20 @@ class _SplashPageState extends State<SplashPage> {
                   //     context, OrderPage.routeName, (route) => false);
 
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OrderPage(
-                              location: OrderDataDetail(
-                                  destinationAddress:
-                                      session.destinationAddress,
-                                  originAddress: session.originAddress,
-                                  originLatLng: LatLng(
-                                      session.originLat, session.originLong),
-                                  destinationLatLng: LatLng(
-                                      session.destinationLat,
-                                      session.destinationLong)))));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPage(
+                        location: OrderDataDetail(
+                          destinationAddress: session.destinationAddress,
+                          originAddress: session.originAddress,
+                          originLatLng:
+                              LatLng(session.originLat, session.originLong),
+                          destinationLatLng: LatLng(
+                              session.destinationLat, session.destinationLong),
+                        ),
+                      ),
+                    ),
+                  );
                 } else {
                   Navigator.pushNamedAndRemoveUntil(
                       context, HomePage.routeName, (route) => false);
