@@ -35,7 +35,7 @@ class RatingsScreen extends StatelessWidget {
               ),
               centerTitle: true,
               title: CommonText(
-                text: "Ratings",
+                text: appLoc.ratings,
                 fontWeight: FontWeight.w500,
                 fontColor: blackColor,
                 fontFamily: "poPPinMedium",
@@ -44,7 +44,7 @@ class RatingsScreen extends StatelessWidget {
             ),
             body: (driverId.isEmpty)
                 ? Center(
-                    child: Text("No Rating Available"),
+                    child: Text(appLoc.noRatingAvailable),
                   )
                 : StreamBuilder<GetRatingState>(
                     // stream: Provider.of<HistoryProvider>(context)

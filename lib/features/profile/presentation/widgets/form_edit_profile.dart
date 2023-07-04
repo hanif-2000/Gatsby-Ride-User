@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/profile_edit_provider.dart';
 import 'package:country_picker/country_picker.dart';
@@ -159,16 +160,17 @@ class _FormEditProfileState extends State<FormEditProfile> {
                     // ),
 
                     Text(
-                      "First Name",
+                      appLoc.firstName,
                       style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: "poPPinRegular",
                           color: greyA2A0A8Color),
                     ),
                     CustomTextField(
-                      readOnly:
-                          !Provider.of<ProfileProvider>(context, listen: true)
-                              .isProfileEdit,
+                      readOnly: !Provider.of<ProfileProvider>(
+                        context,
+                        listen: true,
+                      ).isProfileEdit,
                       placeholder: appLoc.name,
                       title: appLoc.name,
                       controller: provider.firstNameController,
@@ -183,7 +185,7 @@ class _FormEditProfileState extends State<FormEditProfile> {
                     mediumVerticalSpacing(),
 
                     Text(
-                      "Last Name",
+                      appLoc.lastName,
                       style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: "poPPinRegular",
@@ -207,7 +209,7 @@ class _FormEditProfileState extends State<FormEditProfile> {
                     mediumVerticalSpacing(),
 
                     Text(
-                      "Mobile Number",
+                      appLoc.mobileNo,
                       style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: "poPPinRegular",
@@ -230,7 +232,7 @@ class _FormEditProfileState extends State<FormEditProfile> {
                     ),
                     mediumVerticalSpacing(),
                     Text(
-                      "Country",
+                      appLoc.country,
                       style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: "poPPinRegular",
@@ -340,7 +342,7 @@ class _FormEditProfileState extends State<FormEditProfile> {
                                   );
                                 }
                               : () {},
-                          child: Image.asset('assets/icons/dropdown.png')),
+                          child: Image.asset(dropdownIcon)),
                       fieldValidator: (val) {
                         // if (val == '') {
                         //   return appLoc.mustNotEmpty;
@@ -381,7 +383,7 @@ class _FormEditProfileState extends State<FormEditProfile> {
                               .isProfileEdit,
                       child: CustomButton(
                         text: Text(
-                          "Save Details",
+                          appLoc.saveDetails,
                           style: txtButtonStyle,
                         ),
                         buttonHeight:

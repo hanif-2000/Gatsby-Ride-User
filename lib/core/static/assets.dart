@@ -36,3 +36,5 @@ const String cardImage = "assets/images/card.png";
 const String dottedLine = "assets/icons/dotted_line.svg";
 const String destinationSvgIcon = 'assets/icons/destination_logo.svg';
 const String locationPngIcon = 'assets/icons/location.png';
+const String dropdownIcon = "assets/icons/dropdown.png";
+const String checkIconSvg = "assets/icons/check.svg";

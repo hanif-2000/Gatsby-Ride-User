@@ -16,6 +16,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/providers/home_provider.dart';
 import '../../../../core/presentation/widgets/searching_ride_bottom_sheet.dart';
+import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
 import '../../../../core/utility/injection.dart';
@@ -72,9 +73,6 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
         child: SafeArea(
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            // appBar: const CustomAppBar(
-            //   centerTitle: false,
-            // ),
             body: Consumer<OrderProvider>(builder: (context, provider, _) {
               if (checkOrderStatusTimer != null) {
                 checkOrderStatusTimer!.cancel();
@@ -182,14 +180,14 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                           provider.changeFirstTracking = false;
 
                           provider
-                              .updateDriverStatus("Your Driver is on the way");
+                              .updateDriverStatus(appLoc.yourDriverIsOnTheWay);
 
                           break;
 
                         /** Arrived at Customer Place (Status 3) */
                         case Order.arriveAtCustomerPlace:
                           provider.updateDriverStatus(
-                              "Driver has reached your location");
+                              appLoc.driverReachYourLocation);
 
                           // showDialog(
                           //     barrierDismissible: false,
@@ -228,13 +226,13 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
 
                         case Order.departureToDestination:
                           provider.updateDriverStatus(
-                              "Departure to your Destination");
+                              appLoc.departureToYourDestination);
                           break;
 
                         /** Arrived at Destination (Status 6) */
                         case Order.arriveAtDestination:
                           provider.updateDriverStatus(
-                              " You have reached your destination");
+                              appLoc.youHaveReachedYourDestination);
 
                           timer.cancel();
 
@@ -341,15 +339,14 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                             MainAxisAlignment.center,
                                         children: [
                                           Image.asset(
-                                            'assets/icons/location.png',
+                                            locationPngIcon,
                                             height: 24.0,
                                             width: 24.0,
                                             fit: BoxFit.cover,
                                           ),
+                                          SvgPicture.asset(dottedLine),
                                           SvgPicture.asset(
-                                              'assets/icons/dotted_line.svg'),
-                                          SvgPicture.asset(
-                                            'assets/icons/destination_logo.svg',
+                                            destinationSvgIcon,
                                             height: 30.0,
                                             width: 30.0,
                                             fit: BoxFit.cover,
@@ -408,8 +405,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                         Spacer(),
 
                         Visibility(
-                          // visible: provider.isOrderAccepted,
-                          visible: true,
+                          visible: provider.isOrderAccepted,
+                          // visible: true,
                           child: Container(
                             decoration: BoxDecoration(
                               color: whiteColor,

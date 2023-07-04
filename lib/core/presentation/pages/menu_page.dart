@@ -5,8 +5,8 @@ import 'package:appkey_taxiapp_user/features/history/presentation/pages/history_
 import 'package:appkey_taxiapp_user/features/privacy_policy/privacy_policy_page.dart';
 import 'package:appkey_taxiapp_user/features/terms_and_conditions/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../../features/testing/pages/payment_testing_screen.dart';
 import '../../utility/helper.dart';
 import '../widgets/close_button.dart';
 import '../widgets/custom_dialog_logout.dart';
@@ -114,12 +114,13 @@ class HomeDrawerPage extends StatelessWidget {
                       DrawerButtonItemWidget(
                         title: "Testing Payment",
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PaymentHomePage(),
-                            ),
-                          );
+                          sendPayment();
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => PaymentHomePage(),
+                          //   ),
+                          // );
                         },
                       ),
 
@@ -186,5 +187,11 @@ class HomeDrawerPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void sendPayment() async {
+    String upiurl =
+        'upi://pay?pa=user@hdfgbank&pn=SenderName&tn=TestingGpay&am=100&cu=INR';
+    await launchUrl(Uri.parse(upiurl));
   }
 }

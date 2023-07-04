@@ -31,7 +31,7 @@ class ReceiptScreen extends StatelessWidget {
               backgroundColor: whiteColor,
               centerTitle: true,
               title: CommonText(
-                text: "Receipt",
+                text: appLoc.receipt,
                 fontWeight: FontWeight.w600,
                 fontColor: blackColor,
                 fontFamily: "poPPinMedium",
@@ -142,20 +142,20 @@ class ReceiptScreen extends StatelessWidget {
                               ],
                             ),
                             CommonText(
-                              text: "Fare Breakdown",
+                              text: appLoc.fareBreakdown,
                               fontWeight: FontWeight.w600,
                               fontColor: blackColor,
                               fontFamily: "poPPinMedium",
                               fontSize: 16,
                             ),
                             TextInRow(
-                              firstText: 'Date',
+                              firstText: appLoc.date,
                               secondText: DateFormat('dd MMM yyyy')
                                   .format(data.orderReceipt![0].orderTime)
                                   .toString(),
                             ),
                             TextInRow(
-                              firstText: 'Time',
+                              firstText: appLoc.time,
                               secondText: DateFormat('h:mma')
                                   .format(data.orderReceipt![0].orderTime)
                                   .toString(),
@@ -263,10 +263,11 @@ class ReceiptScreen extends StatelessWidget {
                               ),
                               event: () async {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            FeedBackScreen()));
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FeedBackScreen(),
+                                  ),
+                                );
                               },
                               buttonHeight: 50,
                               // buttonHeight: MediaQuery.of(context).size.height * 0.080,

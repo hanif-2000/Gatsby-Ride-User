@@ -1,5 +1,6 @@
 import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../../core/presentation/providers/home_provider.dart';
+import '../../../../../core/static/assets.dart';
 
 class RatingSubmittedScreen extends StatelessWidget {
   const RatingSubmittedScreen({Key? key}) : super(key: key);
@@ -41,17 +43,17 @@ class RatingSubmittedScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset('assets/icons/check.svg'),
+                    SvgPicture.asset(checkIconSvg),
                     Padding(
                       padding: EdgeInsets.only(
                           top: size.height * .05, bottom: size.height * .01),
-                      child: Text("Rating Submitted",
+                      child: Text(appLoc.ratingSubmitted,
                           style: TextStyle(
                             fontSize: 24.0,
                             fontFamily: "poPPinSemiBold",
                           )),
                     ),
-                    Text("your rating has been submitted",
+                    Text(appLoc.yourRatingHasBeenSubmitted,
                         style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: "poPPinRegular",
@@ -62,7 +64,7 @@ class RatingSubmittedScreen extends StatelessWidget {
                     ),
                     CustomButton(
                       isRounded: true,
-                      text: "Done",
+                      text: appLoc.done,
                       event: () async {
                         // orderProvider.submitRatingsReview();
                         var homeProvider =

@@ -123,5 +123,36 @@
   "ratingReceived":"Rating Received",
   "paymentInformation":"Payment Information",
   "howWasYourRide":"How was your ride?",
-  "yourFeedbackImproveExperience":"Your feedback will help improve driving experience"
+  "yourFeedbackImproveExperience":"Your feedback will help improve driving experience",
+  "yourDriverIsOnTheWay":"Your driver is on the way",
+  "driverReachYourLocation":"Driver reach your location",
+  "departureToYourDestination":"Depart to your Destination",
+  "youHaveReachedYourDestination":"You have reached your destination",
+  "firstName":"First Name",
+  "lastName":"Last Name",
+  "emailAddress":"Email Address",
+  "mobileNo":"Mobile Number",
+  "country":"Country",
+  "createProfileSuccessfully":"Create profile Successfully",
+  "profileImageUploadSuccess":"Profile Image upload success",
+  "saveDetails":"Save Details",
+  "atLeast8CharactersAndLetters":"At least 8 characters, with uppercase and lowercase letters",
+  "resetYourPassword":"Reset your password",
+  "confirmPassword":"Confirm Password",
+  "submit":"Submit",
+  "skip":"Skip",
+  "additionalComments":"Additional comments...",
+  "ratingSubmitted":"Rating Submitted",
+  "yourRatingHasBeenSubmitted":"Your rating has been submitted",
+  "done":"Done",
+  "pleaseGiveRating":"Please Give Rating Before Submit",
+  "ratings":"Ratings",
+
+  "noRatingAvailable":"No Rating Available",
+  "fareBreakdown":"Fare Breakdown",
+  "date":"Date",
+  "time":"Time",
+  "receipt":"Receipt"
+
+
 }

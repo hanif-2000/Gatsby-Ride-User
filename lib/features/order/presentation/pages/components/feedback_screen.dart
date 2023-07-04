@@ -160,8 +160,8 @@ class FeedBackScreen extends StatelessWidget {
                         height: _deviceSize.height * .05,
                       ),
                       CustomButton(
-                        text: const Text(
-                          "Submit",
+                        text: Text(
+                          appLoc.submit,
                           // appLoc.login.toUpperCase(),
                           style: TextStyle(
                             fontFamily: 'poPPinSemiBold',
@@ -171,8 +171,7 @@ class FeedBackScreen extends StatelessWidget {
                         ),
                         event: () {
                           if (provider.ratingGiven == 10.0) {
-                            showToast(
-                                message: "Please Give Rating Before Submit");
+                            showToast(message: appLoc.pleaseGiveRating);
                           } else {
                             //  SubmitRatingsResponseModel data=   provider.submitRatingsReview().;
 
@@ -220,7 +219,7 @@ class FeedBackScreen extends StatelessWidget {
                         child: CustomButton(
                           buttonHeight: 50.0,
                           text: Text(
-                            "Skip",
+                            appLoc.skip,
                             style: TextStyle(
                               color: blackColor,
                             ),

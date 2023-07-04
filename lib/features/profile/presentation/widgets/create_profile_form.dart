@@ -11,6 +11,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
+import '../../../../core/static/assets.dart';
 import '../../../../core/utility/helper.dart';
 
 class CreateProfileForm extends StatefulWidget {
@@ -41,7 +42,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
             log(data.fileName.toString());
 
             saveDetails(data.fileName);
-            showToast(message: "Profile Image upload success");
+            showToast(message: appLoc.profileImageUploadSuccess);
             // saveDetails();
             // Navigator.pushNamedAndRemoveUntil(
             //     context, HomePage.routeName, (route) => false);
@@ -75,7 +76,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
           final data = (state as CreateProfileSuccess).data;
           dismissLoading();
           if (data.success == 1) {
-            showToast(message: "Create profile Successfully");
+            showToast(message: appLoc.createProfileSuccessfully);
             Navigator.pushNamedAndRemoveUntil(
                 context, HomePage.routeName, (route) => false);
           } else {
@@ -102,7 +103,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
               height: 40,
             ),
             CustomTextField(
-              placeholder: "First Name",
+              placeholder: appLoc.firstName,
               controller: Provider.of<CreateProfileProvider>(context)
                   .firstNameController,
               fieldValidator: (val) {
@@ -113,7 +114,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
               },
             ),
             CustomTextField(
-              placeholder: "Last Name",
+              placeholder: appLoc.lastName,
               controller: Provider.of<CreateProfileProvider>(context)
                   .lastNameController,
               fieldValidator: (val) {
@@ -136,54 +137,10 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
               },
             ),
             InkWell(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return const Text("This is the text showing ");
-                  },
-                );
-              },
+              onTap: () {},
               child: CustomTextField(
-                // onTap: () {
-                //   showCountryPicker(
-                //     context: context,
-                //     //Optional.  Can be used to exclude(remove) one ore more country from the countries list (optional).
-                //     exclude: <String>['KN', 'MF'],
-                //     favorite: <String>['SE'],
-                //     //Optional. Shows phone code before the country name.
-                //     showPhoneCode: true,
-                //     onSelect: (Country country) {
-                //       print('Select country: ${country.displayName}');
-                //     },
-                //     // Optional. Sets the theme for the country list picker.
-                //     countryListTheme: CountryListThemeData(
-                //       // Optional. Sets the border radius for the bottomsheet.
-                //       borderRadius: const BorderRadius.only(
-                //         topLeft: Radius.circular(40.0),
-                //         topRight: Radius.circular(40.0),
-                //       ),
-                //       // Optional. Styles the search field.
-                //       inputDecoration: InputDecoration(
-                //         labelText: 'Search',
-                //         hintText: 'Start typing to search',
-                //         prefixIcon: const Icon(Icons.search),
-                //         border: OutlineInputBorder(
-                //           borderSide: BorderSide(
-                //             color: const Color(0xFF8C98A8).withOpacity(0.2),
-                //           ),
-                //         ),
-                //       ),
-                //       // Optional. Styles the text in the search field
-                //       searchTextStyle: const TextStyle(
-                //         color: Colors.blue,
-                //         fontSize: 18,
-                //       ),
-                //     ),
-                //   );
-                // },
                 readOnly: true,
-                placeholder: "Country",
+                placeholder: appLoc.country,
                 controller: provider.selectedCountry,
                 suffixWidget: InkWell(
                     onTap: () {
@@ -222,7 +179,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
                         ),
                       );
                     },
-                    child: Image.asset('assets/icons/dropdown.png')),
+                    child: Image.asset(dropdownIcon)),
                 fieldValidator: (val) {
                   if (val == '') {
                     return appLoc.mustNotEmpty;
@@ -235,8 +192,8 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
               height: 40,
             ),
             CustomButton(
-              text: const Text(
-                "Save Details",
+              text: Text(
+                appLoc.saveDetails,
                 style: TextStyle(
                   fontFamily: 'poPPinSemiBold',
                   fontWeight: FontWeight.w600,
