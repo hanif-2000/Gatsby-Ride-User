@@ -4,6 +4,9 @@ import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../socket/socket_provider.dart';
+import 'package:provider/provider.dart';
+
 class SendMessageTextField extends StatelessWidget {
   final VoidCallback onTap;
   const SendMessageTextField({Key? key, required this.onTap}) : super(key: key);
@@ -31,7 +34,8 @@ class SendMessageTextField extends StatelessWidget {
           children: [
             Expanded(
                 child: TextField(
-              // controller: msgController,
+              controller: Provider.of<SocketProvider>(context, listen: true)
+                  .msgEditingController,
               decoration: InputDecoration(
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,

@@ -44,7 +44,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    Provider.of<SocketProvider>(context, listen: false).sendRequest();
+    Provider.of<SocketProvider>(context, listen: false).connectToSocket();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showSearchingVehiclesBottomSheet(context);
@@ -67,9 +67,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     log("location in order page:--->>${widget.location}");
 
     return WillPopScope(
-        onWillPop: () {
-          return Future.value(false);
-        },
+        onWillPop: () async => false,
         child: SafeArea(
           child: Scaffold(
             resizeToAvoidBottomInset: false,

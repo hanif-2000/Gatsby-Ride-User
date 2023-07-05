@@ -8,6 +8,7 @@ import '../../../features/login/presentation/pages/login_page.dart';
 import '../../static/colors.dart';
 import '../../static/enums.dart';
 import '../../utility/global_function.dart';
+import '../../utility/helper.dart';
 import '../providers/home_provider.dart';
 
 class OriginWidget extends StatelessWidget {
@@ -48,7 +49,7 @@ class OriginWidget extends StatelessWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  "Pick up",
+                                  appLoc.pickUp,
                                   style: TextStyle(
                                       fontFamily: "poPPinRegular",
                                       fontSize: 13.0,
@@ -136,7 +137,7 @@ class OriginWidget extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Text(
-                                  "Pick up",
+                                  appLoc.pickUp,
                                   style: TextStyle(
                                       fontFamily: "poPPinRegular",
                                       fontSize: 13.0,

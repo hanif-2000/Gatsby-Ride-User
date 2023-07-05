@@ -159,7 +159,18 @@
   "activeNow":"Active Now",
   "contactUs":"Contact Us",
   "privacyPolicy":"Privacy Policy",
-  "termAndConditions":"Term and Conditions"
+  "termAndConditions":"Term and Conditions",
+  "pickUp":"Pick up",
+  "dropOff":"Drop Off",
+  "totalDistance":"Total Distance",
+  "googlePay":"Google Pay",
+  "timeTaken":"time taken",
+  "totalPrice":"Total Price",
+  "servicePrice":"Service Price",
+  "price":"Price",
+  "weAreSearchingNearByDriver":"we are searching for nearby driver for you",
+  "pleaseWait": "Please wait..."
+
 
 
 }

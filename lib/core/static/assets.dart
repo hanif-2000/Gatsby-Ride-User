@@ -38,3 +38,6 @@ const String destinationSvgIcon = 'assets/icons/destination_logo.svg';
 const String locationPngIcon = 'assets/icons/location.png';
 const String dropdownIcon = "assets/icons/dropdown.png";
 const String checkIconSvg = "assets/icons/check.svg";
+const String cashIconSvg = "assets/icons/cash.svg";
+const String googleIconSvg = "assets/icons/google.svg";
+const String searchingRideSvg = "assets/images/searching_ride.svg";

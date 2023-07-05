@@ -161,15 +161,15 @@ class ReceiptScreen extends StatelessWidget {
                                   .toString(),
                             ),
                             TextInRow(
-                              firstText: 'Total Distance',
+                              firstText: appLoc.totalDistance,
                               secondText: data.orderReceipt![0].distance + "Km",
                             ),
                             TextInRow(
-                              firstText: 'time taken',
+                              firstText: appLoc.timeTaken,
                               secondText: '30 min',
                             ),
                             CommonText(
-                              text: "Payment Information",
+                              text: appLoc.paymentInformation,
                               fontWeight: FontWeight.w600,
                               fontColor: blackColor,
                               fontFamily: "poPPinMedium",
@@ -179,7 +179,7 @@ class ReceiptScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CommonText(
-                                  text: "Payment Information",
+                                  text: appLoc.paymentInformation,
                                   fontWeight: FontWeight.w500,
                                   fontColor: grey7D7979Color,
                                   fontFamily: "poPPinMedium",
@@ -189,13 +189,13 @@ class ReceiptScreen extends StatelessWidget {
                                   children: [
                                     data.orderReceipt![0].paymentMethod == 1
                                         ? SvgPicture.asset(
-                                            'assets/icons/cash.svg',
+                                            cashIconSvg,
                                             height: 30,
                                             width: 30,
                                             fit: BoxFit.fill,
                                           )
                                         : SvgPicture.asset(
-                                            'assets/icons/google.svg',
+                                            googleIconSvg,
                                             height: 30,
                                             width: 30,
                                             fit: BoxFit.fill,
@@ -207,8 +207,8 @@ class ReceiptScreen extends StatelessWidget {
                                       text:
                                           data.orderReceipt![0].paymentMethod ==
                                                   1
-                                              ? "Cash"
-                                              : "Google Pay",
+                                              ? appLoc.cash
+                                              : appLoc.googlePay,
                                       fontWeight: FontWeight.w400,
                                       fontColor: grey7D7979Color,
                                       fontFamily: "poPPinMedium",
@@ -228,7 +228,7 @@ class ReceiptScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   TextInRow(
-                                    firstText: 'Price',
+                                    firstText: appLoc.price,
                                     secondText:
                                         r"$" + "${data.orderReceipt![0].total}",
                                   ),
@@ -236,7 +236,7 @@ class ReceiptScreen extends StatelessWidget {
                                     color: whiteAccentColor,
                                   ),
                                   TextInRow(
-                                    firstText: 'Service Price',
+                                    firstText: appLoc.servicePrice,
                                     secondText: r'$0.00',
                                   ),
                                   Divider(
@@ -244,7 +244,7 @@ class ReceiptScreen extends StatelessWidget {
                                   ),
                                   TextInRow(
                                     secondTextweight: FontWeight.w700,
-                                    firstText: 'Total Price',
+                                    firstText: appLoc.totalPrice,
                                     secondText:
                                         r"$" + "${data.orderReceipt![0].total}",
                                   ),
@@ -252,7 +252,7 @@ class ReceiptScreen extends StatelessWidget {
                               ),
                             ),
                             CustomButton(
-                              text: const Text(
+                              text: Text(
                                 "Continue",
                                 // appLoc.login.toUpperCase(),
                                 style: TextStyle(

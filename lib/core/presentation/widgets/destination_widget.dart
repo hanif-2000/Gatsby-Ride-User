@@ -40,7 +40,7 @@ class DestinationWidget extends StatelessWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  "Drop Off",
+                                  appLoc.dropOff,
                                   style: TextStyle(
                                       fontFamily: "poPPinRegular",
                                       fontSize: 13.0,
@@ -126,7 +126,7 @@ class DestinationWidget extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Drop Off",
+                                  appLoc.dropOff,
                                   style: TextStyle(
                                       fontFamily: "poPPinRegular",
                                       fontSize: 13.0,

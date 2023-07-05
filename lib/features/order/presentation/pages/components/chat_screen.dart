@@ -1,4 +1,9 @@
+import 'dart:developer';
+
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:appkey_taxiapp_user/core/utility/injection.dart';
+import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
+import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/circular_image_container.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
 import 'package:appkey_taxiapp_user/socket/socket_provider.dart';
@@ -8,130 +13,138 @@ import '../../../../../core/utility/helper.dart';
 import '../../widgets/chat_bubble.dart';
 import '../../widgets/send_message_textfield.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final socketProvider = locator<SocketProvider>();
+  final orderProvider = locator<OrderProvider>();
+
+  final session = locator<Session>();
+  @override
+  void initState() {
+    super.initState();
+    socketProvider.joinExitRoom(receiverId: 1);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    socketProvider.joinExitRoom(
+        type: 'UnJoin', receiverId: int.parse(session.driverId));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        extendBody: false,
-        resizeToAvoidBottomInset: true,
-        backgroundColor: greyF9F9F9Color,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
-          child: Card(
-            elevation: 0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AppBar(
-                  elevation: 0,
-                  automaticallyImplyLeading: false,
-                  centerTitle: true,
-                  backgroundColor: transparentColor,
-                  title: Row(
-                    children: [
-                      CommonCircularImageContainer(
-                        height: 45,
-                        width: 45,
-                        image: '',
-                      ),
-                      SizedBox(
-                        width: 11,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CommonText(
-                            text: "Alex Robin",
-                            fontWeight: FontWeight.w500,
-                            fontColor: blackColor,
-                            fontFamily: "poPPinMedium",
-                            fontSize: 16,
-                          ),
-                          CommonText(
-                            text: appLoc.activeNow,
-                            fontWeight: FontWeight.w400,
-                            fontColor: blackColor,
-                            fontFamily: "poPPinMedium",
-                            fontSize: 10,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: blackColor,
+    return SafeArea(child: Consumer<OrderProvider>(
+      builder: (context, OrderProvider orderProvider, child) {
+        return Scaffold(
+          extendBody: false,
+          resizeToAvoidBottomInset: true,
+          backgroundColor: greyF9F9F9Color,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(80.0),
+            child: Card(
+              elevation: 0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppBar(
+                    elevation: 0,
+                    automaticallyImplyLeading: false,
+                    centerTitle: true,
+                    backgroundColor: transparentColor,
+                    title: Row(
+                      children: [
+                        CommonCircularImageContainer(
+                          height: 45,
+                          width: 45,
+                          image: orderProvider.driverImg,
+                        ),
+                        SizedBox(
+                          width: 11,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CommonText(
+                              text: orderProvider.driverName,
+                              fontWeight: FontWeight.w500,
+                              fontColor: blackColor,
+                              fontFamily: "poPPinMedium",
+                              fontSize: 16,
+                            ),
+                            CommonText(
+                              text: appLoc.activeNow,
+                              fontWeight: FontWeight.w400,
+                              fontColor: blackColor,
+                              fontFamily: "poPPinMedium",
+                              fontSize: 10,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: blackColor,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 10.0,
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 10.0,
+              ),
+              child: StreamBuilder(
+                stream: Provider.of<SocketProvider>(context, listen: true)
+                    .listenRequests(),
+                builder: (context, snapshot) {
+                  log("Snapshot ===>>>> ${snapshot}");
+                  return snapshot.hasData
+                      ? ListView.builder(
+                          itemCount: 10,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return Bubble(
+                              message: 'I will be there in a few mins',
+                              isMe: true,
+                            );
+                          },
+                        )
+                      : Text(appLoc.startConversation);
+                },
+              ),
             ),
-            child: StreamBuilder(
-              stream: Provider.of<SocketProvider>(context, listen: true)
-                  .sendRequest(),
-              builder: (context, snapshot) {
-                return snapshot.hasData
-                    ? ListView.builder(
-                        itemCount: 10,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Bubble(
-                            message: 'I will be there in a few mins',
-                            isMe: true,
-                          );
-                        },
-                      )
-                    : Text(appLoc.startConversation);
+          ),
+          floatingActionButton: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
+            child: SendMessageTextField(
+              onTap: () {
+                var msg = socketProvider.msgEditingController.text;
+                log("---------msg------  " + msg);
+
+                socketProvider.sendChatMessage(message: msg, receiverId: 1);
+                // Provider.of<SocketProvider>(context, listen: true)
+                //     .sendChatMessage(message: msg);
               },
             ),
-
-            //  Column(
-            //   crossAxisAlignment: CrossAxisAlignment.stretch,
-            //   children: <Widget>[
-            //     Bubble(
-            //       message: 'Hello, are you nearby?',
-            //       isMe: false,
-            //     ),
-            //     Bubble(
-            //       message: 'I will be there in a few mins',
-            //       isMe: true,
-            //     ),
-            //     Bubble(
-            //       message: 'Okay, I am waiting at my location',
-            //       isMe: false,
-            //     ),
-            //     Bubble(
-            //       message:
-            //           'Sorry, I am stuck in traffic. Please give me a more time',
-            //       isMe: true,
-            //     ),
-            //   ],
-            // ),
           ),
-        ),
-        floatingActionButton: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
-          child: SendMessageTextField(
-            onTap: () {
-              // Provider.of<SocketProvider>(context,listen: true).chatRequest(msg: );
-            },
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      ),
-    );
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+        );
+      },
+    ));
   }
 }

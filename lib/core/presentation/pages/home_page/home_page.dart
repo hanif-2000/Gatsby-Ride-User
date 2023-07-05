@@ -77,58 +77,66 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           children: <Widget>[
                             Container(
                               color: whiteColor,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 6.0),
-                                child: Container(
-                                    child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          locationPngIcon,
-                                          height: 24.0,
-                                          width: 24.0,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        SvgPicture.asset(dottedLine),
-                                        SvgPicture.asset(
-                                          destinationSvgIcon,
-                                          height: 30.0,
-                                          width: 30.0,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        OriginWidget(
-                                          deviceWidth: _deviceSize.width,
-                                          isFromOrder: false,
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.zero,
-                                          width: _deviceSize.width * .8,
-                                          height: 1.0,
-                                          color: whiteEFEFEFColor,
-                                        ),
-                                        Container(
-                                          child: DestinationWidget(
-                                            deviceWidth: _deviceSize.width,
-                                            isFromOrder: false,
+                              child: map.originAddress == ''
+                                  ? Center(
+                                      child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 20.0),
+                                      child: CircularProgressIndicator(),
+                                    ))
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6.0),
+                                      child: Container(
+                                          child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                locationPngIcon,
+                                                height: 24.0,
+                                                width: 24.0,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              SvgPicture.asset(dottedLine),
+                                              SvgPicture.asset(
+                                                destinationSvgIcon,
+                                                height: 30.0,
+                                                width: 30.0,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                )),
-                              ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              OriginWidget(
+                                                deviceWidth: _deviceSize.width,
+                                                isFromOrder: false,
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.zero,
+                                                width: _deviceSize.width * .8,
+                                                height: 1.0,
+                                                color: whiteEFEFEFColor,
+                                              ),
+                                              Container(
+                                                child: DestinationWidget(
+                                                  deviceWidth:
+                                                      _deviceSize.width,
+                                                  isFromOrder: false,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )),
+                                    ),
                             ),
 
                             /** Below is the new UI*/

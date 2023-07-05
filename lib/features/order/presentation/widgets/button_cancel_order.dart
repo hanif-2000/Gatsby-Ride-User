@@ -11,6 +11,7 @@ import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/providers/home_provider.dart';
 import '../../../../core/static/order_status.dart';
 import '../../../../core/utility/helper.dart';
+import '../pages/components/chat_screen.dart';
 import '../providers/update_status_order_state.dart';
 
 class ButtonCancelOrder extends StatelessWidget {
@@ -245,7 +246,11 @@ class ButtonCancelOrder extends StatelessWidget {
                   child: CustomButton(
                     text: "No",
                     event: () {
-                      Navigator.pop(context);
+                      // Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChatScreen()));
                     },
                     bgColor: blackColor,
                     isRounded: true,

@@ -1,8 +1,10 @@
 import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
+import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../../features/order/presentation/widgets/button_cancel_order.dart';
+import '../../static/assets.dart';
 import '../../static/colors.dart';
 
 class SearchingRideBottomSheet extends StatelessWidget {
@@ -19,7 +21,7 @@ class SearchingRideBottomSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.asset('assets/images/searching_ride.svg'),
+              SvgPicture.asset(searchingRideSvg),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: ClipRRect(
@@ -32,7 +34,7 @@ class SearchingRideBottomSheet extends StatelessWidget {
                 ),
               ),
               Text(
-                "Please wait...",
+                appLoc.pleaseWait,
                 style: TextStyle(
                     fontFamily: "poPPinRegular",
                     fontSize: 15.0,
@@ -45,7 +47,7 @@ class SearchingRideBottomSheet extends StatelessWidget {
                   horizontal: 30.0,
                 ),
                 child: Text(
-                  "we are searching for nearby driver for you",
+                  appLoc.weAreSearchingNearByDriver,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: "poPPinRegular",
