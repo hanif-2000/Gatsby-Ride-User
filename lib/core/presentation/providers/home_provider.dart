@@ -207,7 +207,7 @@ class HomeProvider with ChangeNotifier {
       longitude: double.parse(session.currentLong),
     );
 
-    connectToSocket();
+    // connectToSocket();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

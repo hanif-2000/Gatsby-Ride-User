@@ -1,8 +1,10 @@
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/circular_image_container.dart';
 import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
+import 'package:appkey_taxiapp_user/socket/socket_provider.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import '../../../../../core/utility/helper.dart';
 import '../../widgets/chat_bubble.dart';
 import '../../widgets/send_message_textfield.dart';
 
@@ -25,7 +27,7 @@ class ChatScreen extends StatelessWidget {
                   elevation: 0,
                   automaticallyImplyLeading: false,
                   centerTitle: true,
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: transparentColor,
                   title: Row(
                     children: [
                       CommonCircularImageContainer(
@@ -47,7 +49,7 @@ class ChatScreen extends StatelessWidget {
                             fontSize: 16,
                           ),
                           CommonText(
-                            text: "Active now",
+                            text: appLoc.activeNow,
                             fontWeight: FontWeight.w400,
                             fontColor: blackColor,
                             fontFamily: "poPPinMedium",
@@ -73,45 +75,59 @@ class ChatScreen extends StatelessWidget {
         ),
         body: SafeArea(
           child: Padding(
-              padding: EdgeInsets.only(right: 10, left: 10),
-              child: ListView.builder(
-                itemCount: 10,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Bubble(
-                    message: 'I will be there in a few mins',
-                    isMe: true,
-                  );
-                },
-              )
+            padding: EdgeInsets.symmetric(
+              horizontal: 10.0,
+            ),
+            child: StreamBuilder(
+              stream: Provider.of<SocketProvider>(context, listen: true)
+                  .sendRequest(),
+              builder: (context, snapshot) {
+                return snapshot.hasData
+                    ? ListView.builder(
+                        itemCount: 10,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Bubble(
+                            message: 'I will be there in a few mins',
+                            isMe: true,
+                          );
+                        },
+                      )
+                    : Text(appLoc.startConversation);
+              },
+            ),
 
-              //  Column(
-              //   crossAxisAlignment: CrossAxisAlignment.stretch,
-              //   children: <Widget>[
-              //     Bubble(
-              //       message: 'Hello, are you nearby?',
-              //       isMe: false,
-              //     ),
-              //     Bubble(
-              //       message: 'I will be there in a few mins',
-              //       isMe: true,
-              //     ),
-              //     Bubble(
-              //       message: 'Okay, I am waiting at my location',
-              //       isMe: false,
-              //     ),
-              //     Bubble(
-              //       message:
-              //           'Sorry, I am stuck in traffic. Please give me a more time',
-              //       isMe: true,
-              //     ),
-              //   ],
-              // ),
-              ),
+            //  Column(
+            //   crossAxisAlignment: CrossAxisAlignment.stretch,
+            //   children: <Widget>[
+            //     Bubble(
+            //       message: 'Hello, are you nearby?',
+            //       isMe: false,
+            //     ),
+            //     Bubble(
+            //       message: 'I will be there in a few mins',
+            //       isMe: true,
+            //     ),
+            //     Bubble(
+            //       message: 'Okay, I am waiting at my location',
+            //       isMe: false,
+            //     ),
+            //     Bubble(
+            //       message:
+            //           'Sorry, I am stuck in traffic. Please give me a more time',
+            //       isMe: true,
+            //     ),
+            //   ],
+            // ),
+          ),
         ),
         floatingActionButton: Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
-          child: SendMessageTextField(),
+          child: SendMessageTextField(
+            onTap: () {
+              // Provider.of<SocketProvider>(context,listen: true).chatRequest(msg: );
+            },
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,

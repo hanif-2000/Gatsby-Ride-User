@@ -152,7 +152,14 @@
   "fareBreakdown":"Fare Breakdown",
   "date":"Date",
   "time":"Time",
-  "receipt":"Receipt"
+  "receipt":"Receipt",
+  "confirm":"Confirm",
+  "enterMessage":"Enter message...",
+  "startConversation":"Start Conversation",
+  "activeNow":"Active Now",
+  "contactUs":"Contact Us",
+  "privacyPolicy":"Privacy Policy",
+  "termAndConditions":"Term and Conditions"
 
 
 }

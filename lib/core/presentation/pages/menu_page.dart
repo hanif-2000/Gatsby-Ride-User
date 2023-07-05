@@ -4,8 +4,8 @@ import 'package:appkey_taxiapp_user/features/contact_us/presentation/pages/conta
 import 'package:appkey_taxiapp_user/features/history/presentation/pages/history_page.dart';
 import 'package:appkey_taxiapp_user/features/privacy_policy/privacy_policy_page.dart';
 import 'package:appkey_taxiapp_user/features/terms_and_conditions/terms_and_conditions.dart';
+import 'package:easy_upi_payment/easy_upi_payment.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../utility/helper.dart';
 import '../widgets/close_button.dart';
@@ -71,7 +71,7 @@ class HomeDrawerPage extends StatelessWidget {
 
                       //Contact Us
                       DrawerButtonItemWidget(
-                        title: "Contact Us",
+                        title: appLoc.contactUs,
                         onTap: () {
                           Navigator.pushNamed(context, ContactUsPage.routeName);
                           // Navigator.pushReplacementNamed(
@@ -83,7 +83,7 @@ class HomeDrawerPage extends StatelessWidget {
 
 //Privacy Policy
                       DrawerButtonItemWidget(
-                        title: "Privacy Policy",
+                        title: appLoc.privacyPolicy,
                         onTap: () {
                           Navigator.push(
                             context,
@@ -97,7 +97,7 @@ class HomeDrawerPage extends StatelessWidget {
                       //Terms and Conditions
 
                       DrawerButtonItemWidget(
-                        title: "Term and Conditions",
+                        title: appLoc.termAndConditions,
                         onTap: () {
                           Navigator.push(
                             context,
@@ -169,10 +169,10 @@ class HomeDrawerPage extends StatelessWidget {
                       ),
                     );
                   },
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      "Log Out",
+                      appLoc.logout,
                       style: TextStyle(
                         color: grey858585Color,
                         fontSize: 17.0,
@@ -190,8 +190,24 @@ class HomeDrawerPage extends StatelessWidget {
   }
 
   void sendPayment() async {
-    String upiurl =
-        'upi://pay?pa=user@hdfgbank&pn=SenderName&tn=TestingGpay&am=100&cu=INR';
-    await launchUrl(Uri.parse(upiurl));
+    // String upiurl =
+    //     'upi://pay?pa=user@hdfgbank&pn=SenderName&tn=TestingGpay&am=100&cu=INR';
+    // await launchUrl(Uri.parse(upiurl));
+
+    final res = await EasyUpiPaymentPlatform.instance.startPayment(
+      EasyUpiPaymentModel(
+        payeeVpa: 'amitbahadur@aubank',
+        payeeName: 'Amit Bahadur',
+        amount: 10.0,
+        description: 'Testing payment',
+      ),
+    );
+    // TODO: add your success logic here
+    print(res);
   }
+
+  //   on EasyUpiPaymentException {
+  //     // TODO: add your exception logic here
+  //   }
+  // }
 }

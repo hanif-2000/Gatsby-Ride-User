@@ -1,10 +1,12 @@
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:appkey_taxiapp_user/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SendMessageTextField extends StatelessWidget {
-  const SendMessageTextField({Key? key}) : super(key: key);
+  final VoidCallback onTap;
+  const SendMessageTextField({Key? key, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +31,22 @@ class SendMessageTextField extends StatelessWidget {
           children: [
             Expanded(
                 child: TextField(
+              // controller: msgController,
               decoration: InputDecoration(
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: "Enter message...",
+                hintText: appLoc.enterMessage,
                 hintStyle: TextStyle(
                     color: blackColor,
                     fontFamily: 'poPPinRegular',
                     fontSize: 14.0),
               ),
             )),
-            SvgPicture.asset(
-              sendIcon,
+            InkWell(
+              onTap: onTap,
+              child: SvgPicture.asset(
+                sendIcon,
+              ),
             )
           ],
         ),

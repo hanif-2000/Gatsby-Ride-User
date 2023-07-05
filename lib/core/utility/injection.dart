@@ -17,12 +17,12 @@ import 'package:appkey_taxiapp_user/features/profile/domain/usecases/create_prof
 import 'package:appkey_taxiapp_user/features/profile/domain/usecases/upload_profile_image.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_provider.dart';
+import 'package:appkey_taxiapp_user/socket/socket_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../features/about_us/data/datasources/aboutus_data_source.dart';
 import '../../features/about_us/data/repositories/aboutus_repository_implementation.dart';
 import '../../features/about_us/domain/repositories/aboutus_repository.dart';
@@ -207,6 +207,7 @@ Future<void> init() async {
       dataSource: locator<ContactUsDataSource>(),
     ),
   );
+  // locator.registerLazySingleton<SocketProvider>(() => SocketProvider());
 
   //datasource
   locator.registerLazySingleton<CurrencyDataSource>(
@@ -306,7 +307,7 @@ Future<void> init() async {
   locator.registerLazySingleton<DoContactUs>(
       () => DoContactUs(repository: locator<ContactUsRepository>()));
 
-  //providers
+  /**             providers             **/
   locator.registerFactory(
     () => SplashProvider(getCurrency: locator<GetCurrency>()),
   );
@@ -365,4 +366,6 @@ Future<void> init() async {
 
   locator.registerFactory<ContactusProvider>(
       () => ContactusProvider(doContactus: locator()));
+
+  locator.registerFactory<SocketProvider>(() => SocketProvider());
 }

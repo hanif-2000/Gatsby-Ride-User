@@ -6,6 +6,7 @@ import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart
 import 'package:appkey_taxiapp_user/core/static/assets.dart';
 import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:appkey_taxiapp_user/socket/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    Provider.of<SocketProvider>(context, listen: false).connectToSocket();
   }
 
   @override
@@ -137,8 +139,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: CustomButton(
-                                  text: const Text(
-                                    "Confirm",
+                                  text: Text(
+                                    appLoc.confirm,
                                     style: TextStyle(
                                       fontFamily: 'poPPinSemiBold',
                                       fontWeight: FontWeight.w600,

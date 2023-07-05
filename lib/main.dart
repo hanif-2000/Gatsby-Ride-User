@@ -4,6 +4,7 @@ import 'package:appkey_taxiapp_user/features/forgot_password/presentation/provid
 import 'package:appkey_taxiapp_user/features/login/presentation/providers/login_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_provider.dart';
+import 'package:appkey_taxiapp_user/socket/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -89,6 +90,9 @@ Future<void> main() async {
             ),
             ChangeNotifierProvider<LoginProvider>(
               create: (context) => locator<LoginProvider>(),
+            ),
+            ChangeNotifierProvider<SocketProvider>(
+              create: (context) => locator<SocketProvider>(),
             ),
           ],
           builder: (context, _) => const MyApp(),

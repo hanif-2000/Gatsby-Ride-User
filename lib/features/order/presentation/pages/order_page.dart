@@ -10,11 +10,11 @@ import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_or
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_status_order_state.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
 import 'package:appkey_taxiapp_user/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
+import 'package:appkey_taxiapp_user/socket/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/presentation/providers/home_provider.dart';
 import '../../../../core/presentation/widgets/searching_ride_bottom_sheet.dart';
 import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
@@ -44,7 +44,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    Provider.of<HomeProvider>(context, listen: false).sendRequest();
+    Provider.of<SocketProvider>(context, listen: false).sendRequest();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showSearchingVehiclesBottomSheet(context);
