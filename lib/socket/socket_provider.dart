@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+
 
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -32,18 +34,21 @@ class SocketProvider with ChangeNotifier {
     _socket!.connection.listen((event) {
       logMe('Socket on Listen ---> ${event.toString()}');
       if (event is Connected) {
+
+        log("Event connected" +event.toString());
         listenRequests();
       }
+
     });
   }
 
-  listenRequests() {
-    logMe('============= Listening to requests ================');
-    _socket!.messages.listen((event) {
-      logMe('Data in socket');
-      logMe('Request list data socket-----> ${event.toString()}');
-    });
-  }
+  // listenRequests() {
+  //   logMe('============= Listening to requests ================');
+  //   _socket!.messages.listen((event) {
+  //     logMe('Data in socket');
+  //     logMe('Request list data socket-----> ${event.toString()}');
+  //   });
+  // }
 
   // rejectRequestSocket() {
   //   final map = {
@@ -65,6 +70,7 @@ class SocketProvider with ChangeNotifier {
 
   joinExitRoom({int? receiverId, String type = 'Join'}) {
     final map = {
+      'type':'Customer',
       'serviceType': type,
       'UserID': session.userId,
       'roomID': (int.parse(session.userId) > receiverId!)
@@ -73,6 +79,8 @@ class SocketProvider with ChangeNotifier {
     };
     logMe('Join Exit room socket -- > ${map.toString()}');
     _socket!.send(jsonEncode(map));
+
+    listenRequests();
   }
 
   sendChatMessage({
@@ -106,6 +114,35 @@ class SocketProvider with ChangeNotifier {
     //   ),
     // );
   }
+
+
+
+  listenRequests() {
+    logMe('============= Listening to requests ================');
+    _socket!.messages.listen((event) {
+      final response = jsonDecode(event);
+      if (response['type'] == 'MessageList') {
+
+        log("response   --->>>>"  +response.toString());
+        logMe('Message list data-----> ${response['data']}');
+        // chatProvider.addChatAll(
+        //   List<ChatModel>.from(
+        //     response["data"].map(
+        //           (x) => ChatModel.fromMap(x),
+        //     ),
+        //   ),
+        // );
+      }
+      if (response['type'] == 'Chat') {
+        // chatProvider.addSingleChat(
+        //   ChatModel.fromMap(
+        //     response['data'],
+        //   ),
+        // );
+      }
+    });
+  }
+
 
   // markMessageAsRead({
   //   int? receiverId,

@@ -24,6 +24,7 @@ import '../../../../core/utility/session_helper.dart';
 import '../../domain/entities/driver_detail.dart';
 import '../providers/get_driver_detail_state.dart';
 import 'components/chat_screen.dart';
+import 'components/ratings.dart';
 import 'components/receipt_screen.dart';
 
 class OrderPage extends StatefulWidget {
@@ -432,6 +433,15 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                         builder: (context) => ChatScreen()));
                               },
                               viewReceiptEvent: () {
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RatingsScreen(
+                                      driverId:session.driverId,
+                                    ),
+                                  ),
+                                );
                                 log("On Click on view receipt");
                                 // provider.orderReceiptApi().listen((event) {
                                 //   // log("Event :----------s  " +

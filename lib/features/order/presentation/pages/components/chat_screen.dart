@@ -33,7 +33,9 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     super.dispose();
     socketProvider.joinExitRoom(
-        type: 'UnJoin', receiverId: int.parse(session.driverId));
+        type: 'UnJoin', receiverId: int.parse(session.driverId),
+
+    );
   }
 
   @override

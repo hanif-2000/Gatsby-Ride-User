@@ -163,16 +163,19 @@ class HomeProvider with ChangeNotifier {
   //clear state
   clearState() async {
     await sessionClearOrder();
+    session.setOrderStatus=100;
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";
     price = "0";
     _selectedCategory = null;
     _paymentMethod = null;
+
     markers.clear();
     selectedVehicleIndex = -1;
 
     originIsFilled = false;
+
     notifyListeners();
   }
 

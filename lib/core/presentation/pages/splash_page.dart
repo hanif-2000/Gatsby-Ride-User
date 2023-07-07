@@ -55,7 +55,7 @@ class _SplashPageState extends State<SplashPage> {
               break;
             case CurrencyLoaded:
               if (session.isLoggedIn) {
-                if (session.orderStatus != 100) {
+                if (session.orderStatus != 100 || session.orderStatus==8) {
                   // OrderDataDetail(destinationAddress: session.destinationAddress,originAddress: session.originAddress,
                   //   originLatLng: LatLng(session.originLat, session.originLong),destinationLatLng: LatLng(session.destinationLat, session.destinationLong
 
