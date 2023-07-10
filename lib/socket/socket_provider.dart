@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-
-
+import 'package:appkey_taxiapp_user/features/order/data/models/chat_response_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -23,6 +22,8 @@ class SocketProvider with ChangeNotifier {
 
   TextEditingController msgEditingController = TextEditingController();
 
+  List<Object>chatList=[];
+
   connectToSocket() {
     logMe('============= Chat Token ${session.chatToken} ================');
     logMe(
@@ -41,6 +42,8 @@ class SocketProvider with ChangeNotifier {
 
     });
   }
+
+  late ChatResponseModal data;
 
   // listenRequests() {
   //   logMe('============= Listening to requests ================');
@@ -121,10 +124,20 @@ class SocketProvider with ChangeNotifier {
     logMe('============= Listening to requests ================');
     _socket!.messages.listen((event) {
       final response = jsonDecode(event);
+
+      log("res  "+response.toString());
       if (response['type'] == 'MessageList') {
+
+       data=ChatResponseModal.fromJson(response);
+      log("Message Length is==>> "+data.data.length.toString());
+
+
 
         log("response   --->>>>"  +response.toString());
         logMe('Message list data-----> ${response['data']}');
+
+        chatList.add({"msg":data.message});
+
         // chatProvider.addChatAll(
         //   List<ChatModel>.from(
         //     response["data"].map(

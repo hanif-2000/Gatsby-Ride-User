@@ -108,25 +108,21 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: EdgeInsets.symmetric(
                 horizontal: 10.0,
               ),
-              child: StreamBuilder(
-                stream: Provider.of<SocketProvider>(context, listen: true)
-                    .listenRequests(),
-                builder: (context, snapshot) {
-                  log("Snapshot ===>>>> ${snapshot}");
-                  return snapshot.hasData
-                      ? ListView.builder(
-                          itemCount: 10,
+              child: 
+                       ListView.builder(
+                          itemCount:socketProvider.data.data.length,
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             return Bubble(
-                              message: 'I will be there in a few mins',
-                              isMe: true,
+                              message: socketProvider.data.data[index].message,
+                              isMe: socketProvider.data.data[index].senderType=='Customer'?false:true,
                             );
                           },
                         )
-                      : Text(appLoc.startConversation);
-                },
-              ),
+          
+          
+           
+        
             ),
           ),
           floatingActionButton: Padding(
