@@ -40,6 +40,8 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
   Timer? checkOrderStatusTimer, trackingDriverTimer;
 
+  final session = locator<Session>();
+
   @override
   void initState() {
     super.initState();
@@ -47,10 +49,25 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
 
     Provider.of<SocketProvider>(context, listen: false).connectToSocket();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showSearchingVehiclesBottomSheet(context);
+    var orderProvider = Provider.of<OrderProvider>(context, listen: false);
+
+    if(session.orderStatus!=0){
+        orderProvider.fetchDriverDetail().listen((eventDriverDetail) async {
+      if (eventDriverDetail is GetDriverDetailLoaded) {
+        orderProvider.updateDriverDetails(data: eventDriverDetail.data);
+      }
+    });
+    
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (session.orderStatus == 0) {
+        showSearchingVehiclesBottomSheet(context);
+      }
     });
   }
+
+
 
   @override
   void dispose() {
@@ -404,7 +421,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                         Spacer(),
 
                         Visibility(
-                          visible: provider.isOrderAccepted,
+                          visible: (provider.isOrderAccepted) ||
+                              (session.orderStatus != 0),
                           // visible: true,
                           child: Container(
                             decoration: BoxDecoration(
@@ -433,12 +451,11 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                         builder: (context) => ChatScreen()));
                               },
                               viewReceiptEvent: () {
-
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => RatingsScreen(
-                                      driverId:session.driverId,
+                                      driverId: session.driverId,
                                     ),
                                   ),
                                 );
@@ -492,7 +509,9 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         builder: (context) {
           return SearchingRideBottomSheet();
-        });
+        }).whenComplete(() {
+      log("THis is called after open Bottom sheet");
+    });
   }
 
   showDriverFoundBottomSheet(

@@ -43,7 +43,7 @@ class SocketProvider with ChangeNotifier {
     });
   }
 
-  late ChatResponseModal data;
+   ChatResponseModal? data;
 
   // listenRequests() {
   //   logMe('============= Listening to requests ================');
@@ -72,11 +72,14 @@ class SocketProvider with ChangeNotifier {
   // }
 
   joinExitRoom({int? receiverId, String type = 'Join'}) {
+  receiverId=1;
+
+  log(receiverId.toString());
     final map = {
       'type':'Customer',
       'serviceType': type,
       'UserID': session.userId,
-      'roomID': (int.parse(session.userId) > receiverId!)
+      'roomID': (int.parse(session.userId) > receiverId)
           ? '$receiverId-${session.userId}'
           : '${session.userId}-$receiverId',
     };
@@ -107,6 +110,7 @@ class SocketProvider with ChangeNotifier {
     };
     print('Message send ---> ${map.toString()}');
     _socket!.send(jsonEncode(map));
+    listenRequests();
 
     // chatProvider.addSingleChat(
     //   ChatDataModel(
@@ -123,20 +127,25 @@ class SocketProvider with ChangeNotifier {
   listenRequests() {
     logMe('============= Listening to requests ================');
     _socket!.messages.listen((event) {
+    log(event.toString());
       final response = jsonDecode(event);
 
       log("res  "+response.toString());
       if (response['type'] == 'MessageList') {
 
        data=ChatResponseModal.fromJson(response);
-      log("Message Length is==>> "+data.data.length.toString());
+      log("Message Length is==>> "+data!.data.length.toString());
 
 
 
         log("response   --->>>>"  +response.toString());
         logMe('Message list data-----> ${response['data']}');
 
-        chatList.add({"msg":data.message});
+        
+
+        chatList.add({"msg":data!.message});
+
+        notifyListeners();
 
         // chatProvider.addChatAll(
         //   List<ChatModel>.from(
@@ -154,6 +163,8 @@ class SocketProvider with ChangeNotifier {
         // );
       }
     });
+
+    notifyListeners();
   }
 
 

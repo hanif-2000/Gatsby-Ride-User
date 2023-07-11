@@ -33,8 +33,8 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     super.dispose();
     socketProvider.joinExitRoom(
-        type: 'UnJoin', receiverId: int.parse(session.driverId),
-
+      type: 'UnJoin',
+      receiverId: 1,
     );
   }
 
@@ -105,25 +105,32 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           body: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 10.0,
-              ),
-              child: 
-                       ListView.builder(
-                          itemCount:socketProvider.data.data.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return Bubble(
-                              message: socketProvider.data.data[index].message,
-                              isMe: socketProvider.data.data[index].senderType=='Customer'?false:true,
-                            );
-                          },
-                        )
-          
-          
-           
-        
-            ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        reverse: true,
+                        itemCount: socketProvider.data!.data.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Bubble(
+                            message: socketProvider.data!.data[index].message,
+                            isMe: socketProvider.data!.data[index].senderType ==
+                                    'Customer'
+                                ? false
+                                : true,
+                          );
+                        },
+                      ),
+
+                      SizedBox(height: 90,)
+                    ],
+                  ),
+                )),
           ),
           floatingActionButton: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
