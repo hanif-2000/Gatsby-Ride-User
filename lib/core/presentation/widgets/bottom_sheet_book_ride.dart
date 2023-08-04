@@ -87,12 +87,6 @@ class BottomSheetBookRide extends StatelessWidget {
                                                 .categoryId
                                                 .toString());
 
-                                        log(index.toString());
-                                        log(data[index].totalFare.toString());
-                                        log(data[index].categoryCar.toString());
-                                        log(data[index].seat.toString());
-                                        log(data[index].categoryId.toString());
-
                                         provider.updateSelectedVehicleIndex(
                                             index: index);
                                       },

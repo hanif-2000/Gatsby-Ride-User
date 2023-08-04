@@ -60,6 +60,7 @@ dependencies:
   pay: ^0.0.1
   upi_india: ^3.0.1
   easy_upi_payment: ^0.1.4
+  flutter_stripe: ^9.3.0
   # upi_pay: ^1.0.1
   # flutter_pay: ^1.0.2
 

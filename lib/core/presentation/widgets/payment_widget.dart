@@ -3,6 +3,7 @@ import 'package:appkey_taxiapp_user/core/static/colors.dart';
 import 'package:appkey_taxiapp_user/core/static/enums.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import 'package:provider/provider.dart';
 
 import '../providers/home_provider.dart';
@@ -198,8 +199,29 @@ class PaymentOption extends StatelessWidget {
                                     color: whiteColor,
                                   ),
                                 ),
-                                event: () {
-                                  Navigator.pop(context);
+                                event: () async {
+                                  try {
+                                    await stripe.Stripe.instance
+                                        .initPaymentSheet(
+                                            paymentSheetParameters: const stripe
+                                                .SetupPaymentSheetParameters(
+                                      customFlow: true,
+                                      merchantDisplayName:
+                                          'Flutter Stripe Demo',
+                                      paymentIntentClientSecret: "",
+                                      customerEphemeralKeySecret: "",
+                                      customerId: "",
+                                      setupIntentClientSecret: "",
+                                      style: ThemeMode.light,
+                                    ));
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Error: $e')),
+                                    );
+                                    rethrow;
+                                  }
+
+                                  // Navigator.pop(context);
                                 },
                                 buttonHeight: 50,
                                 isRounded: true,
