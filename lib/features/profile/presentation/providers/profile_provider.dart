@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';
 import '../../data/models/profile_response_model.dart';

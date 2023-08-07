@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:appkey_taxiapp_user/core/domain/usecases/get_google_place.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/domain/usecases/get_google_place.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';

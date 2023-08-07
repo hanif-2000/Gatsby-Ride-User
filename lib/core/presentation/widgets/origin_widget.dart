@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/presentation/pages/menu_page.dart';
-import 'package:appkey_taxiapp_user/core/presentation/pages/place_picker_page/place_picker_page.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/core/presentation/pages/menu_page.dart';
+import 'package:GetsbyRideshare/core/presentation/pages/place_picker_page/place_picker_page.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';

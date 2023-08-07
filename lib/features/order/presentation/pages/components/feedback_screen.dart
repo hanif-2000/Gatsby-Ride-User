@@ -1,11 +1,11 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/pages/components/rating_submitted_screen.dart';
-import 'package:appkey_taxiapp_user/features/testing/widgets/circular_image_container.dart';
-import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/components/rating_submitted_screen.dart';
+import 'package:GetsbyRideshare/features/testing/widgets/circular_image_container.dart';
+import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart' as rating;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

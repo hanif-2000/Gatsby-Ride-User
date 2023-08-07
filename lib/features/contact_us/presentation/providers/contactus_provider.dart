@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/features/contact_us/domain/usecases/get_contactus.dart';
-import 'package:appkey_taxiapp_user/features/contact_us/presentation/providers/contactus_state.dart';
+import 'package:GetsbyRideshare/features/contact_us/domain/usecases/get_contactus.dart';
+import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_state.dart';
 import 'package:dio/dio.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';

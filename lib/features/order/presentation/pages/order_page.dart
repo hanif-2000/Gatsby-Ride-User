@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/domain/entities/order_data_detail.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_order_detail_state.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/providers/get_status_order_state.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
-import 'package:appkey_taxiapp_user/socket/socket_provider.dart';
+import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/origin_widget.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/get_order_detail_state.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/get_status_order_state.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
+import 'package:GetsbyRideshare/socket/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -51,13 +51,12 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
 
     var orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
-    if(session.orderStatus!=0){
-        orderProvider.fetchDriverDetail().listen((eventDriverDetail) async {
-      if (eventDriverDetail is GetDriverDetailLoaded) {
-        orderProvider.updateDriverDetails(data: eventDriverDetail.data);
-      }
-    });
-    
+    if (session.orderStatus != 0) {
+      orderProvider.fetchDriverDetail().listen((eventDriverDetail) async {
+        if (eventDriverDetail is GetDriverDetailLoaded) {
+          orderProvider.updateDriverDetails(data: eventDriverDetail.data);
+        }
+      });
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -66,8 +65,6 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
       }
     });
   }
-
-
 
   @override
   void dispose() {

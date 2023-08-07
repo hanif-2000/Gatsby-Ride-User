@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/data/models/total_price_model.dart';
+import 'package:GetsbyRideshare/core/data/models/total_price_model.dart';
 import 'package:dio/dio.dart';
 
 abstract class TotalPriceDataSource {

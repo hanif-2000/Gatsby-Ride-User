@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';

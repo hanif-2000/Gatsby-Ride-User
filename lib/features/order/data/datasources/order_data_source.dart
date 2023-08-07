@@ -1,9 +1,9 @@
-import 'package:appkey_taxiapp_user/core/utility/extension.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/detail_driver_response.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/detail_order_response_model.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/order_receipt_response_modal.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/entities/driver_detail.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/entities/order_detail.dart';
+import 'package:GetsbyRideshare/core/utility/extension.dart';
+import 'package:GetsbyRideshare/features/order/data/models/detail_driver_response.dart';
+import 'package:GetsbyRideshare/features/order/data/models/detail_order_response_model.dart';
+import 'package:GetsbyRideshare/features/order/data/models/order_receipt_response_modal.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/driver_detail.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/order_detail.dart';
 import 'package:dio/dio.dart';
 
 import '../../../../core/utility/injection.dart';

@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/utility/extension.dart';
-import 'package:appkey_taxiapp_user/features/profile/data/models/edit_profile_response_model.dart';
+import 'package:GetsbyRideshare/core/utility/extension.dart';
+import 'package:GetsbyRideshare/features/profile/data/models/edit_profile_response_model.dart';
 import 'package:dio/dio.dart';
 
 import '../models/profile_response_model.dart';

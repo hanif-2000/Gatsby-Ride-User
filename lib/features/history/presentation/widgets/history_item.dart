@@ -1,7 +1,7 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/history/data/models/history_response_model.dart';
-import 'package:appkey_taxiapp_user/features/history/presentation/providers/history_provider.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/history/data/models/history_response_model.dart';
+import 'package:GetsbyRideshare/features/history/presentation/providers/history_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

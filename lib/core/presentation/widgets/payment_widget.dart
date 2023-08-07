@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
@@ -14,6 +14,12 @@ class PaymentOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
+
+    var secret_key =
+        'sk_test_51NbHA8L2KkuOUsISb7LUBs3SVvCSJO5fNUgfc0YqzZlnKUdF6nFECHw75PMkYAxHPopJToObrFXu1z445rC7jI6P00H8ZXzRRz';
+    var publishing_key =
+        'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
+
     return SafeArea(
       child: Consumer<HomeProvider>(
         builder: (context, provider, _) {
@@ -203,12 +209,12 @@ class PaymentOption extends StatelessWidget {
                                   try {
                                     await stripe.Stripe.instance
                                         .initPaymentSheet(
-                                            paymentSheetParameters: const stripe
+                                            paymentSheetParameters: stripe
                                                 .SetupPaymentSheetParameters(
                                       customFlow: true,
                                       merchantDisplayName:
                                           'Flutter Stripe Demo',
-                                      paymentIntentClientSecret: "",
+                                      paymentIntentClientSecret: secret_key,
                                       customerEphemeralKeySecret: "",
                                       customerId: "",
                                       setupIntentClientSecret: "",

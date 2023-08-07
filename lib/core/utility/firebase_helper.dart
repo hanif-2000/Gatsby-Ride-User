@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/utility/notification_service.dart';
-import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/core/utility/notification_service.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../firebase_options.dart';

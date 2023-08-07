@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/injection.dart';
-import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
-import 'package:appkey_taxiapp_user/features/testing/widgets/circular_image_container.dart';
-import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
-import 'package:appkey_taxiapp_user/socket/socket_provider.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/features/testing/widgets/circular_image_container.dart';
+import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
+import 'package:GetsbyRideshare/socket/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/utility/helper.dart';
@@ -126,8 +126,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           );
                         },
                       ),
-
-                      SizedBox(height: 90,)
+                      SizedBox(
+                        height: 90,
+                      )
                     ],
                   ),
                 )),

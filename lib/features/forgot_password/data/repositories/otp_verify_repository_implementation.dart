@@ -1,8 +1,8 @@
-import 'package:appkey_taxiapp_user/core/error/failure.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/data/datasources/otp_verification_data_source.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/data/models/otp_verification_response_modal.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/domain/repositories/otp_verification_repository.dart';
+import 'package:GetsbyRideshare/core/error/failure.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/forgot_password/data/datasources/otp_verification_data_source.dart';
+import 'package:GetsbyRideshare/features/forgot_password/data/models/otp_verification_response_modal.dart';
+import 'package:GetsbyRideshare/features/forgot_password/domain/repositories/otp_verification_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

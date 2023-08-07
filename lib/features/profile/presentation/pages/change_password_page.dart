@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/widgets/form_change_password.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/widgets/form_change_password.dart';
 import 'package:flutter/material.dart';
 
 class ChangePasswordPage extends StatefulWidget {

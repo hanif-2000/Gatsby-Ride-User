@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:appkey_taxiapp_user/core/domain/usecases/get_currency.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/currency_state.dart';
+import 'package:GetsbyRideshare/core/domain/usecases/get_currency.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/currency_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

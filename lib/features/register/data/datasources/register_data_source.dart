@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/utility/injection.dart';
-import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:dio/dio.dart';
 
 import '../models/register_response_model.dart';

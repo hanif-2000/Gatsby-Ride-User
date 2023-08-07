@@ -1,9 +1,9 @@
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/static/assets.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
 
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';

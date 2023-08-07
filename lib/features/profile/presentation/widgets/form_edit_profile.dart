@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/profile_edit_provider.dart';
+import 'package:GetsbyRideshare/core/static/assets.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/profile_edit_provider.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/features/about_us/presentation/pages/aboutus_page.dart';
-import 'package:appkey_taxiapp_user/features/history/presentation/pages/history_page.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/pages/profile_page.dart';
+import 'package:GetsbyRideshare/features/about_us/presentation/pages/aboutus_page.dart';
+import 'package:GetsbyRideshare/features/history/presentation/pages/history_page.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../features/login/presentation/pages/login_page.dart';

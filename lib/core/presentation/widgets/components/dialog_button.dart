@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/extension.dart';
+import 'package:GetsbyRideshare/core/utility/extension.dart';
 
 import '../../../utility/helper.dart';
 

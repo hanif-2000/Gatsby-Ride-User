@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/features/order/domain/entities/driver_detail.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/driver_detail.dart';
 
 class DriverDetailModel extends DriverDetail {
   DriverDetailModel({

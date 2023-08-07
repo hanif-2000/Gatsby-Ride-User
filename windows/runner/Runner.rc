@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "appkey_taxiapp_user" "\0"
+            VALUE "FileDescription", "GetsbyRideshare" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "appkey_taxiapp_user" "\0"
+            VALUE "InternalName", "GetsbyRideshare" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "appkey_taxiapp_user.exe" "\0"
-            VALUE "ProductName", "appkey_taxiapp_user" "\0"
+            VALUE "OriginalFilename", "GetsbyRideshare.exe" "\0"
+            VALUE "ProductName", "GetsbyRideshare" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

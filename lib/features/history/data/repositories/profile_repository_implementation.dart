@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

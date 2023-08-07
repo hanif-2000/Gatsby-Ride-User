@@ -1,7 +1,7 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/pages/change_password_page.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/pages/edit_profile_page.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/profile_provider.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/pages/change_password_page.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/pages/edit_profile_page.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/profile_provider.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/presentation/pages/splash_page.dart';

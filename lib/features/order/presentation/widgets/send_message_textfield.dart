@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/static/assets.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 

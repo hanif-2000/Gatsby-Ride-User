@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui' as ui;
 
-import 'package:appkey_taxiapp_user/core/domain/entities/vehicles_category.dart';
-import 'package:appkey_taxiapp_user/core/domain/usecases/get_total_price.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/price_category_state.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/total_price_state.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/vehicle_category_state.dart';
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/usecases/create_oder.dart';
+import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
+import 'package:GetsbyRideshare/core/domain/usecases/get_total_price.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/price_category_state.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/total_price_state.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/vehicle_category_state.dart';
+import 'package:GetsbyRideshare/core/static/assets.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/domain/usecases/create_oder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -163,7 +163,7 @@ class HomeProvider with ChangeNotifier {
   //clear state
   clearState() async {
     await sessionClearOrder();
-    session.setOrderStatus=100;
+    session.setOrderStatus = 100;
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";

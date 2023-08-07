@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/vehicles_category.dart';
+import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
 import 'package:equatable/equatable.dart';
 
 class VehiclesCategoryList extends Equatable {

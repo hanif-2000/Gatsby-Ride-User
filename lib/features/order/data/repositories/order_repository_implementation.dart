@@ -1,8 +1,8 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/create_order_response_model.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/get_status_response.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/order_receipt_response_modal.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/status_oder_response_model.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/data/models/create_order_response_model.dart';
+import 'package:GetsbyRideshare/features/order/data/models/get_status_response.dart';
+import 'package:GetsbyRideshare/features/order/data/models/order_receipt_response_modal.dart';
+import 'package:GetsbyRideshare/features/order/data/models/status_oder_response_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

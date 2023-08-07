@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/features/order/data/models/get_status_response.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/order_receipt_response_modal.dart';
+import 'package:GetsbyRideshare/features/order/data/models/get_status_response.dart';
+import 'package:GetsbyRideshare/features/order/data/models/order_receipt_response_modal.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

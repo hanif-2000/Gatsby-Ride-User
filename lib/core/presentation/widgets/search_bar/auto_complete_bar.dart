@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/presentation/providers/place_picker_provider.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/place_picker_provider.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

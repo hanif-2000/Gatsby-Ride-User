@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/static/styles.dart';
+import 'package:GetsbyRideshare/core/static/styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {

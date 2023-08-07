@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/history/presentation/providers/history_provider.dart';
-import 'package:appkey_taxiapp_user/features/testing/widgets/common_text.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/features/history/presentation/providers/history_provider.dart';
+import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';

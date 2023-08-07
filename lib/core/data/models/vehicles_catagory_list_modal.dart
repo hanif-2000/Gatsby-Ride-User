@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/data/models/vehicles_category_modal.dart';
-import 'package:appkey_taxiapp_user/core/domain/entities/vehicles_category.dart';
+import 'package:GetsbyRideshare/core/data/models/vehicles_category_modal.dart';
+import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
 
 import '../../domain/entities/vehcles_category_list.dart';
 

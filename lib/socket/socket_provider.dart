@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:appkey_taxiapp_user/features/order/data/models/chat_response_modal.dart';
+import 'package:GetsbyRideshare/features/order/data/models/chat_response_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -22,7 +22,7 @@ class SocketProvider with ChangeNotifier {
 
   TextEditingController msgEditingController = TextEditingController();
 
-  List<Object>chatList=[];
+  List<Object> chatList = [];
 
   connectToSocket() {
     logMe('============= Chat Token ${session.chatToken} ================');
@@ -35,15 +35,13 @@ class SocketProvider with ChangeNotifier {
     _socket!.connection.listen((event) {
       logMe('Socket on Listen ---> ${event.toString()}');
       if (event is Connected) {
-
-        log("Event connected" +event.toString());
+        log("Event connected" + event.toString());
         listenRequests();
       }
-
     });
   }
 
-   ChatResponseModal? data;
+  ChatResponseModal? data;
 
   // listenRequests() {
   //   logMe('============= Listening to requests ================');
@@ -72,11 +70,11 @@ class SocketProvider with ChangeNotifier {
   // }
 
   joinExitRoom({int? receiverId, String type = 'Join'}) {
-  receiverId=1;
+    receiverId = 1;
 
-  log(receiverId.toString());
+    log(receiverId.toString());
     final map = {
-      'type':'Customer',
+      'type': 'Customer',
       'serviceType': type,
       'UserID': session.userId,
       'roomID': (int.parse(session.userId) > receiverId)
@@ -122,28 +120,21 @@ class SocketProvider with ChangeNotifier {
     // );
   }
 
-
-
   listenRequests() {
     logMe('============= Listening to requests ================');
     _socket!.messages.listen((event) {
-    log(event.toString());
+      log(event.toString());
       final response = jsonDecode(event);
 
-      log("res  "+response.toString());
+      log("res  " + response.toString());
       if (response['type'] == 'MessageList') {
+        data = ChatResponseModal.fromJson(response);
+        log("Message Length is==>> " + data!.data.length.toString());
 
-       data=ChatResponseModal.fromJson(response);
-      log("Message Length is==>> "+data!.data.length.toString());
-
-
-
-        log("response   --->>>>"  +response.toString());
+        log("response   --->>>>" + response.toString());
         logMe('Message list data-----> ${response['data']}');
 
-        
-
-        chatList.add({"msg":data!.message});
+        chatList.add({"msg": data!.message});
 
         notifyListeners();
 
@@ -166,7 +157,6 @@ class SocketProvider with ChangeNotifier {
 
     notifyListeners();
   }
-
 
   // markMessageAsRead({
   //   int? receiverId,

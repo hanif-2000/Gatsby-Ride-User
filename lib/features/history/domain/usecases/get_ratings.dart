@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/features/history/domain/repositories/profile_repository.dart';
+import 'package:GetsbyRideshare/features/history/domain/repositories/profile_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

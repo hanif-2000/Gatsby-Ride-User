@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/data/datasources/vehicles_category_datasource.dart';
-import 'package:appkey_taxiapp_user/core/domain/entities/vehcles_category_list.dart';
-import 'package:appkey_taxiapp_user/core/domain/repositories/vehicle_catagory_repository.dart';
+import 'package:GetsbyRideshare/core/data/datasources/vehicles_category_datasource.dart';
+import 'package:GetsbyRideshare/core/domain/entities/vehcles_category_list.dart';
+import 'package:GetsbyRideshare/core/domain/repositories/vehicle_catagory_repository.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../error/failure.dart';

@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/widgets/form_edit_profile.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/widgets/form_edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/profile_edit_provider.dart';

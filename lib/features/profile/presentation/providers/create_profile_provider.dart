@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/features/profile/domain/usecases/create_profile.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_state.dart';
+import 'package:GetsbyRideshare/features/profile/domain/usecases/create_profile.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 

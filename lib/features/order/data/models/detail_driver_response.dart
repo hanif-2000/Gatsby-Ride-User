@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/features/order/data/models/driver_detail_model.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/entities/driver_detail.dart';
+import 'package:GetsbyRideshare/features/order/data/models/driver_detail_model.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/driver_detail.dart';
 
 import '../../domain/entities/driver_detail_response.dart';
 

@@ -1,8 +1,8 @@
-import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/add_new_card_popup.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/credit_card_tile_wisget.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/add_new_card_popup.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/credit_card_tile_wisget.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

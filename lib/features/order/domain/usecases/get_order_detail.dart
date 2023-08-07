@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/features/order/domain/entities/order_detail.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/repositories/order_repository.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/order_detail.dart';
+import 'package:GetsbyRideshare/features/order/domain/repositories/order_repository.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failure.dart';

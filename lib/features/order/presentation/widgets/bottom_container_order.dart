@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/features/order/presentation/providers/order_provider.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/widgets/info_driver_widget.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/features/order/presentation/widgets/info_driver_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

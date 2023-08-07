@@ -1,11 +1,11 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_vehicle_info.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/payment_widget.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/injection.dart';
-import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/custom_vehicle_info.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/payment_widget.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

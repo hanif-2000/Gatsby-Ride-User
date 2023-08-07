@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/features/order/domain/entities/order_detail.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/order_detail.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/error/failure.dart';

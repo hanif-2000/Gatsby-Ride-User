@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/presentation/pages/home_page/home_page.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_text_field.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_state.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_provider.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_state.dart';
+import 'package:GetsbyRideshare/core/presentation/pages/home_page/home_page.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/custom_text_field.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_state.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_state.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

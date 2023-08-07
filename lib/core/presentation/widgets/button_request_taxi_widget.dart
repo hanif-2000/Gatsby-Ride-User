@@ -1,9 +1,9 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/order_data_detail.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/create_order_state.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/presentation/pages/order_page.dart';
+import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/create_order_state.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

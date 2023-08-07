@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';

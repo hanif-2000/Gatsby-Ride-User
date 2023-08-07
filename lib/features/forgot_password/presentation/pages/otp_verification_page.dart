@@ -1,7 +1,7 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/core/utility/injection.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/forgot_password_provider.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/presentation/widgets/pinput.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
+import 'package:GetsbyRideshare/features/forgot_password/presentation/widgets/pinput.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

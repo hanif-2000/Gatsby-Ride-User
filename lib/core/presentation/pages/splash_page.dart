@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/features/order/presentation/pages/order_page.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -55,7 +55,7 @@ class _SplashPageState extends State<SplashPage> {
               break;
             case CurrencyLoaded:
               if (session.isLoggedIn) {
-                if (session.orderStatus != 100 || session.orderStatus==8) {
+                if (session.orderStatus != 100 || session.orderStatus == 8) {
                   // OrderDataDetail(destinationAddress: session.destinationAddress,originAddress: session.originAddress,
                   //   originLatLng: LatLng(session.originLat, session.originLong),destinationLatLng: LatLng(session.destinationLat, session.destinationLong
 

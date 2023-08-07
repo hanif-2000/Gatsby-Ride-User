@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 
 class CommonCircularImageContainer extends StatelessWidget {

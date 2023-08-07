@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 

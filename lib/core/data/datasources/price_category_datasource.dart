@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/domain/entities/price_category_list.dart';
+import 'package:GetsbyRideshare/core/domain/entities/price_category_list.dart';
 import 'package:dio/dio.dart';
 
 import '../models/price_category_list_model.dart';

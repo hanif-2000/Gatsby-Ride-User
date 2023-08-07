@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/features/forgot_password/data/models/otp_verification_response_modal.dart';
+import 'package:GetsbyRideshare/features/forgot_password/data/models/otp_verification_response_modal.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class OtpVerificationState extends Equatable {

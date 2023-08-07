@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/presentation/widgets/app_bar_widget.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/app_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class MenuAppBar extends StatelessWidget {

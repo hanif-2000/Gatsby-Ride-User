@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/profile/domain/usecases/update_profile.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/profile_state.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/profile/domain/usecases/update_profile.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/profile_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';

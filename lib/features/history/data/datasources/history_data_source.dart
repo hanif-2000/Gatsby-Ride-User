@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/utility/extension.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/extension.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:dio/dio.dart';
 
 import '../models/history_response_model.dart';
