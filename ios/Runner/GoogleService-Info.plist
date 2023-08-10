@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>492474005876-cge78i2u9tghqfeb9fpmusr9hd11qkii.apps.googleusercontent.com</string>
+	<string>1022060321341-0c5f614tgu3358is65esg6v6kat912mn.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.492474005876-cge78i2u9tghqfeb9fpmusr9hd11qkii</string>
+	<string>com.googleusercontent.apps.1022060321341-0c5f614tgu3358is65esg6v6kat912mn</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1022060321341-a480lq87svbk3m48oqice5v9ujbgn8nj.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBpF_fGIG8_URW8NFE8o0V52kR-BwCjG48</string>
+	<string>AIzaSyCfjn2yfjBGo4armn1iI7l_LPwzh7uVOEk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>492474005876</string>
+	<string>1022060321341</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>appkey.user.taxi</string>
+	<string>getride.user.taxi</string>
 	<key>PROJECT_ID</key>
-	<string>appkey-taxi-app</string>
+	<string>gatsbyrideshare</string>
 	<key>STORAGE_BUCKET</key>
-	<string>appkey-taxi-app.appspot.com</string>
+	<string>gatsbyrideshare.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:492474005876:ios:6f0fcf0589b4287d7c5421</string>
+	<string>1:1022060321341:ios:e95ca84594193133122854</string>
 </dict>
 </plist>

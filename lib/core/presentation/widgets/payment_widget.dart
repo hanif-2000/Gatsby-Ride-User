@@ -1,9 +1,9 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
-import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart' as enums;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/home_provider.dart';
@@ -97,11 +97,13 @@ class PaymentOption extends StatelessWidget {
                               title: "Cash",
                               assets: 'assets/icons/cash.svg',
                               onTap: () {
-                                provider.setPaymentMethod = PaymentMethod.cash;
+                                provider.setPaymentMethod =
+                                    enums.PaymentMethod.cash;
                               },
                               selected: provider.paymentMethod == null
                                   ? false
-                                  : provider.paymentMethod == PaymentMethod.cash
+                                  : provider.paymentMethod ==
+                                          enums.PaymentMethod.cash
                                       ? true
                                       : false,
                             )),
@@ -164,13 +166,13 @@ class PaymentOption extends StatelessWidget {
                               assets: 'assets/icons/apple.svg',
                               onTap: () {
                                 provider.setPaymentMethod =
-                                    PaymentMethod.applePay;
+                                    enums.PaymentMethod.applePay;
                                 // Navigator.pop(context);
                               },
                               selected: provider.paymentMethod == null
                                   ? false
                                   : provider.paymentMethod ==
-                                          PaymentMethod.applePay
+                                          enums.PaymentMethod.applePay
                                       ? true
                                       : false,
                             )),
@@ -180,13 +182,13 @@ class PaymentOption extends StatelessWidget {
                               assets: 'assets/icons/google.svg',
                               onTap: () {
                                 provider.setPaymentMethod =
-                                    PaymentMethod.googlePay;
+                                    enums.PaymentMethod.googlePay;
                                 // Navigator.pop(context);
                               },
                               selected: provider.paymentMethod == null
                                   ? false
                                   : provider.paymentMethod ==
-                                          PaymentMethod.googlePay
+                                          enums.PaymentMethod.googlePay
                                       ? true
                                       : false,
                             )),
@@ -207,28 +209,115 @@ class PaymentOption extends StatelessWidget {
                                 ),
                                 event: () async {
                                   try {
-                                    await stripe.Stripe.instance
-                                        .initPaymentSheet(
-                                            paymentSheetParameters: stripe
-                                                .SetupPaymentSheetParameters(
-                                      customFlow: true,
-                                      merchantDisplayName:
-                                          'Flutter Stripe Demo',
-                                      paymentIntentClientSecret: secret_key,
-                                      customerEphemeralKeySecret: "",
-                                      customerId: "",
-                                      setupIntentClientSecret: "",
-                                      style: ThemeMode.light,
-                                    ));
+                                    Stripe.instance.createPaymentMethod(
+                                        params: PaymentMethodParams.card(
+                                            paymentMethodData:
+                                                PaymentMethodData()));
+
+                                    // final cardDetails = CardDetails(
+                                    //   number: "42424242424242424242",
+                                    //   expirationMonth: 12,
+                                    //   expirationYear: 30,
+                                    //   cvc: "123",
+                                    // );
+                                    // Stripe.instance
+                                    //     .dangerouslyUpdateCardDetails(
+                                    //         cardDetails);
+
+                                    // final billingDetails = BillingDetails(
+                                    //   email: "john@doe.com",
+                                    //   name: "John Doe",
+                                    //   address: Address(
+                                    //     city: "my city",
+                                    //     country: "USA",
+                                    //     line1: "address",
+                                    //     line2: '',
+                                    //     state: "NY",
+                                    //     postalCode: "53535",
+                                    //   ),
+                                    // );
+
+                                    // /// create payment method
+                                    // final paymentMethod = await Stripe.instance
+                                    //     .createToken(
+                                    //         CreateTokenParams.fromJson({
+                                    //   "number": "42424242424242424242",
+                                    //   "expirationMonth": 12,
+                                    //   "expirationYear": 30,
+                                    //   "cvc": "123",
+                                    // }));
+
+// createPaymentMethod(
+//           PaymentMethodParams.card(
+//               paymentMethodData: PaymentMethodData(billingDetails: billingDetails),
+//           ),
+                                    // );
+
+                                    // print(paymentMethod.id);
+
+                                    // // 1. create payment intent on the server
+                                    // final data = {
+                                    //   "paymentIntent": "asd",
+                                    //   "ephemeralKey": secret_key,
+                                    //   "customer": "ibu"
+                                    // };
+
+                                    // // 2. initialize the payment sheet
+                                    // await Stripe.instance.initPaymentSheet(
+                                    //   paymentSheetParameters:
+                                    //       SetupPaymentSheetParameters(
+                                    //     // Enable custom flow
+                                    //     customFlow: true,
+                                    //     // Main params
+                                    //     merchantDisplayName:
+                                    //         'Flutter Stripe Store Demo',
+                                    //     paymentIntentClientSecret:
+                                    //         data['paymentIntent'],
+                                    //     // Customer keys
+                                    //     customerEphemeralKeySecret:
+                                    //         data['ephemeralKey'],
+                                    //     customerId: data['customer'],
+                                    //     // Extra options
+                                    //     // testEnv: true,
+                                    //     // applePay: true,
+                                    //     // googlePay: true,
+                                    //     style: ThemeMode.dark,
+                                    //     // merchantCountryCode: 'DE',
+                                    //   ),
+                                    // );
+                                    // // setState(() {
+                                    // //   _ready = true;
+                                    // // });
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text('Error: $e')),
                                     );
                                     rethrow;
                                   }
+                                }
+                                // await stripe.Stripe.instance
+                                //     .initPaymentSheet(
+                                //         paymentSheetParameters: stripe
+                                //             .SetupPaymentSheetParameters(
+                                //   customFlow: true,
+                                //   merchantDisplayName:
+                                //       'Flutter Stripe Demo',
+                                //   paymentIntentClientSecret: secret_key,
+                                //   customerEphemeralKeySecret: "",
+                                //   customerId: "",
+                                //   setupIntentClientSecret: "",
+                                //   style: ThemeMode.light,
+                                // ));
+                                // } catch (e) {
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //     SnackBar(content: Text('Error: $e')),
+                                //   );
+                                //   rethrow;
+                                // }
 
-                                  // Navigator.pop(context);
-                                },
+                                // Navigator.pop(context);
+                                // },
+                                ,
                                 buttonHeight: 50,
                                 isRounded: true,
                                 bgColor: black080809Color,

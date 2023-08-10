@@ -38,19 +38,20 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>プロフィールを更新し、チャットで画像を送信するには、アプリがデバイスのカメラとギャラリーにアクセスする権限を必要とします</string>
+	<string>This app need access to camera to capture profile picture</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>ルート案内機能およびその他の地図/GPS 関連パーツのユーザー位置を特定するには、位置情報の許可が必要です。</string>
+	<string>This app need access to location of user for navigation</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>ルート案内機能およびその他の地図/GPS 関連パーツのユーザー位置を特定するには、位置情報の許可が必要です。</string>
+	<string>This app need access to location of user for navigation</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>ルート案内機能およびその他の地図/GPS 関連パーツのユーザー位置を特定するには、位置情報の許可が必要です。</string>
+	<string>This app need access to location of user for navigation</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>プロフィールを更新し、チャットで画像を送信するには、アプリがデバイスのカメラとギャラリーにアクセスする権限を必要とします</string>
+	<string>This app need access to photo library to change profile picture</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
 		<string>location</string>
+		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -72,5 +73,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

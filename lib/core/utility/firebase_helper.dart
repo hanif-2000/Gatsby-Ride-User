@@ -14,7 +14,7 @@ class FirebaseHelper {
   static Future<void> init() async {
     logMe("Firebasee helperrrr");
     await Firebase.initializeApp(
-        name: 'Gatsby RideShare',
+        name: 'gatsbyRideShare',
         options: DefaultFirebaseOptions.currentPlatform);
     messaging = FirebaseMessaging.instance;
 
