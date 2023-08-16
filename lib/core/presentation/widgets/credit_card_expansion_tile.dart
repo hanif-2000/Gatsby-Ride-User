@@ -106,8 +106,15 @@ class CreditCardExpansionTile extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         showDialog(
-                            context: context,
-                            builder: (_) => const AddNewCardPopUp());
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(32.0))),
+                                content: AddNewCardPopUp());
+                          },
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(

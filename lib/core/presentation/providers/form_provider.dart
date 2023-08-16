@@ -26,6 +26,13 @@ class FormProvider with ChangeNotifier {
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _contactMessageController =
       TextEditingController();
+
+  final TextEditingController _cardNumberController = TextEditingController();
+  final TextEditingController _cardCvvController = TextEditingController();
+  final TextEditingController _accountHolderController =
+      TextEditingController();
+  final TextEditingController _expiryController = TextEditingController();
+
   // final TextEditingController _otpController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -105,6 +112,10 @@ class FormProvider with ChangeNotifier {
   TextEditingController get firstNameController => _firstNameController;
   TextEditingController get lastNameController => _lastNameController;
   TextEditingController get countryController => _countryController;
+  TextEditingController get cardNumberController => _cardNumberController;
+  TextEditingController get cardCvvController => _cardCvvController;
+  TextEditingController get accountHolderController => _accountHolderController;
+  TextEditingController get expiryController => _expiryController;
 
   TextEditingController get contactMessageController =>
       _contactMessageController;

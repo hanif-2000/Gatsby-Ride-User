@@ -225,6 +225,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.20"
+  credit_card:
+    dependency: "direct main"
+    description:
+      name: credit_card
+      sha256: f01a40340c1971cbcc995f03fe14d12d41e1f404919aa4043855cb75223e3c3a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.8"
   cross_file:
     dependency: transitive
     description:

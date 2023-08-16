@@ -1,12 +1,14 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/stripe_payment_screen.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart' as enums;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 
+import '../../static/enums.dart';
 import '../providers/home_provider.dart';
+import 'credit_card_expansion_tile.dart';
 import 'payment_tile_widget.dart';
 
 class PaymentOption extends StatelessWidget {
@@ -67,263 +69,196 @@ class PaymentOption extends StatelessWidget {
                     ),
                     body: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: SizedBox(
-                        height: _deviceSize.height,
-                        child: Column(
-                          children: [
-                            // SizedBox(
-                            //   // height: constaints.maxHeight * 0.25,
-                            //   child: Padding(
-                            //       padding: const EdgeInsets.only(
-                            //           top: 8.0, left: 15.0, bottom: 0.0),
-                            //       child: Row(
-                            //         children: const [
-                            //           Icon(Icons.arrow_back),
-                            //           Text(
-                            //             "Payment Method",
+                      child: SingleChildScrollView(
+                        child: SizedBox(
+                          height: _deviceSize.height,
+                          child: Column(
+                            children: [
+                              // SizedBox(
+                              //   // height: constaints.maxHeight * 0.25,
+                              //   child: Padding(
+                              //       padding: const EdgeInsets.only(
+                              //           top: 8.0, left: 15.0, bottom: 0.0),
+                              //       child: Row(
+                              //         children: const [
+                              //           Icon(Icons.arrow_back),
+                              //           Text(
+                              //             "Payment Method",
 
-                            //           )
-                            //         ],
-                            //       )
+                              //           )
+                              //         ],
+                              //       )
 
-                            //       //  Text(
-                            //       //   appLoc.selectPaymentMethod,
-                            //       //   style: selectPamyemntStyle,
-                            //       // ),
-                            //       ),
-                            // ),
-                            SizedBox(
-                                child: PaymentTile(
-                              title: "Cash",
-                              assets: 'assets/icons/cash.svg',
-                              onTap: () {
-                                provider.setPaymentMethod =
-                                    enums.PaymentMethod.cash;
-                              },
-                              selected: provider.paymentMethod == null
-                                  ? false
-                                  : provider.paymentMethod ==
-                                          enums.PaymentMethod.cash
-                                      ? true
-                                      : false,
-                            )),
+                              //       //  Text(
+                              //       //   appLoc.selectPaymentMethod,
+                              //       //   style: selectPamyemntStyle,
+                              //       // ),
+                              //       ),
+                              // ),
+                              SizedBox(
+                                  child: PaymentTile(
+                                title: "Cash",
+                                assets: 'assets/icons/cash.svg',
+                                onTap: () {
+                                  provider.setPaymentMethod =
+                                      enums.PaymentMethod.cash;
+                                },
+                                selected: provider.paymentMethod == null
+                                    ? false
+                                    : provider.paymentMethod ==
+                                            enums.PaymentMethod.cash
+                                        ? true
+                                        : false,
+                              )),
 
-                            // SizedBox(
-                            //     child: CreditCardExpansionTile(
-                            //   title: "Debit/Credit Card",
-                            //   assets: 'assets/icons/mastercard.svg',
-                            //   onTap: () {
-                            //     provider.setPaymentMethod =
-                            //         PaymentMethod.creditCard;
-                            //     // Navigator.pop(context);
-                            //   },
-                            //   selected: provider.paymentMethod == null
-                            //       ? false
-                            //       : provider.paymentMethod ==
-                            //               PaymentMethod.creditCard
-                            //           ? true
-                            //           : false,
-                            //   provider: provider,
-                            // )),
-                            // SizedBox(
-                            //     child: PaymentTile(
-                            //   title: "Debit/Credit Card",
-                            //   assets: 'assets/icons/mastercard.svg',
-                            //   onTap: () {
-                            //     provider.setPaymentMethod =
-                            //         PaymentMethod.creditCard;
-                            //     // Navigator.pop(context);
-                            //   },
-                            //   selected: provider.paymentMethod == null
-                            //       ? false
-                            //       : provider.paymentMethod ==
-                            //               PaymentMethod.creditCard
-                            //           ? true
-                            //           : false,
-                            // )),
+                              SizedBox(
+                                  child: CreditCardExpansionTile(
+                                title: "Debit/Credit Card",
+                                assets: 'assets/icons/mastercard.svg',
+                                onTap: () {
+                                  provider.setPaymentMethod =
+                                      PaymentMethod.creditCard;
+                                  // Navigator.pop(context);
+                                },
+                                selected: provider.paymentMethod == null
+                                    ? false
+                                    : provider.paymentMethod ==
+                                            PaymentMethod.creditCard
+                                        ? true
+                                        : false,
+                                provider: provider,
+                              )),
+                              // SizedBox(
+                              //     child: PaymentTile(
+                              //   title: "Debit/Credit Card",
+                              //   assets: 'assets/icons/mastercard.svg',
+                              //   onTap: () {
+                              //     provider.setPaymentMethod =
+                              //         PaymentMethod.creditCard;
+                              //     // Navigator.pop(context);
+                              //   },
+                              //   selected: provider.paymentMethod == null
+                              //       ? false
+                              //       : provider.paymentMethod ==
+                              //               PaymentMethod.creditCard
+                              //           ? true
+                              //           : false,
+                              // )),
 
-                            // SizedBox(
-                            //     child: CreditCardTile(
-                            //   title: "*** *** *** 14 15 25",
-                            //   assets:
-                            //       'assets/icons/logos_mastercard.svg',
-                            //   onTap: () {
-                            //     provider.setPaymentMethod =
-                            //         PaymentMethod.creditCard;
-                            //     // Navigator.pop(context);
-                            //   },
-                            //   selected: provider.paymentMethod == null
-                            //       ? false
-                            //       : provider.paymentMethod ==
-                            //               PaymentMethod.creditCard
-                            //           ? true
-                            //           : false,
-                            // )),
+                              // SizedBox(
+                              //     child: CreditCardTile(
+                              //   title: "*** *** *** 14 15 25",
+                              //   assets: 'assets/icons/logos_mastercard.svg',
+                              //   onTap: () {
+                              //     provider.setPaymentMethod =
+                              //         PaymentMethod.creditCard;
+                              //     // Navigator.pop(context);
+                              //   },
+                              //   selected: provider.paymentMethod == null
+                              //       ? false
+                              //       : provider.paymentMethod ==
+                              //               PaymentMethod.creditCard
+                              //           ? true
+                              //           : false,
+                              // )),
 
-                            SizedBox(
-                                child: PaymentTile(
-                              title: "Apple Pay",
-                              assets: 'assets/icons/apple.svg',
-                              onTap: () {
-                                provider.setPaymentMethod =
-                                    enums.PaymentMethod.applePay;
-                                // Navigator.pop(context);
-                              },
-                              selected: provider.paymentMethod == null
-                                  ? false
-                                  : provider.paymentMethod ==
-                                          enums.PaymentMethod.applePay
-                                      ? true
-                                      : false,
-                            )),
-                            SizedBox(
-                                child: PaymentTile(
-                              title: "Google Pay",
-                              assets: 'assets/icons/google.svg',
-                              onTap: () {
-                                provider.setPaymentMethod =
-                                    enums.PaymentMethod.googlePay;
-                                // Navigator.pop(context);
-                              },
-                              selected: provider.paymentMethod == null
-                                  ? false
-                                  : provider.paymentMethod ==
-                                          enums.PaymentMethod.googlePay
-                                      ? true
-                                      : false,
-                            )),
+                              SizedBox(
+                                  child: PaymentTile(
+                                title: "Apple Pay",
+                                assets: 'assets/icons/apple.svg',
+                                onTap: () {
+                                  provider.setPaymentMethod =
+                                      enums.PaymentMethod.applePay;
+                                  // Navigator.pop(context);
+                                },
+                                selected: provider.paymentMethod == null
+                                    ? false
+                                    : provider.paymentMethod ==
+                                            enums.PaymentMethod.applePay
+                                        ? true
+                                        : false,
+                              )),
+                              SizedBox(
+                                  child: PaymentTile(
+                                title: "Google Pay",
+                                assets: 'assets/icons/google.svg',
+                                onTap: () {
+                                  provider.setPaymentMethod =
+                                      enums.PaymentMethod.googlePay;
+                                  // Navigator.pop(context);
+                                },
+                                selected: provider.paymentMethod == null
+                                    ? false
+                                    : provider.paymentMethod ==
+                                            enums.PaymentMethod.googlePay
+                                        ? true
+                                        : false,
+                              )),
 
-                            const Spacer(),
+                              const Spacer(),
 
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: _deviceSize.width * .05),
-                              child: CustomButton(
-                                text: const Text(
-                                  "Done",
-                                  style: TextStyle(
-                                    fontFamily: 'poPPinSemiBold',
-                                    fontWeight: FontWeight.w600,
-                                    color: whiteColor,
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: _deviceSize.width * .05),
+                                child: CustomButton(
+                                  text: const Text(
+                                    "Done",
+                                    style: TextStyle(
+                                      fontFamily: 'poPPinSemiBold',
+                                      fontWeight: FontWeight.w600,
+                                      color: whiteColor,
+                                    ),
                                   ),
-                                ),
-                                event: () async {
-                                  try {
-                                    Stripe.instance.createPaymentMethod(
-                                        params: PaymentMethodParams.card(
-                                            paymentMethodData:
-                                                PaymentMethodData()));
-
-                                    // final cardDetails = CardDetails(
-                                    //   number: "42424242424242424242",
-                                    //   expirationMonth: 12,
-                                    //   expirationYear: 30,
-                                    //   cvc: "123",
-                                    // );
-                                    // Stripe.instance
-                                    //     .dangerouslyUpdateCardDetails(
-                                    //         cardDetails);
-
-                                    // final billingDetails = BillingDetails(
-                                    //   email: "john@doe.com",
-                                    //   name: "John Doe",
-                                    //   address: Address(
-                                    //     city: "my city",
-                                    //     country: "USA",
-                                    //     line1: "address",
-                                    //     line2: '',
-                                    //     state: "NY",
-                                    //     postalCode: "53535",
-                                    //   ),
-                                    // );
-
-                                    // /// create payment method
-                                    // final paymentMethod = await Stripe.instance
-                                    //     .createToken(
-                                    //         CreateTokenParams.fromJson({
-                                    //   "number": "42424242424242424242",
-                                    //   "expirationMonth": 12,
-                                    //   "expirationYear": 30,
-                                    //   "cvc": "123",
-                                    // }));
-
-// createPaymentMethod(
-//           PaymentMethodParams.card(
-//               paymentMethodData: PaymentMethodData(billingDetails: billingDetails),
-//           ),
-                                    // );
-
-                                    // print(paymentMethod.id);
-
-                                    // // 1. create payment intent on the server
-                                    // final data = {
-                                    //   "paymentIntent": "asd",
-                                    //   "ephemeralKey": secret_key,
-                                    //   "customer": "ibu"
-                                    // };
-
-                                    // // 2. initialize the payment sheet
-                                    // await Stripe.instance.initPaymentSheet(
-                                    //   paymentSheetParameters:
-                                    //       SetupPaymentSheetParameters(
-                                    //     // Enable custom flow
-                                    //     customFlow: true,
-                                    //     // Main params
-                                    //     merchantDisplayName:
-                                    //         'Flutter Stripe Store Demo',
-                                    //     paymentIntentClientSecret:
-                                    //         data['paymentIntent'],
-                                    //     // Customer keys
-                                    //     customerEphemeralKeySecret:
-                                    //         data['ephemeralKey'],
-                                    //     customerId: data['customer'],
-                                    //     // Extra options
-                                    //     // testEnv: true,
-                                    //     // applePay: true,
-                                    //     // googlePay: true,
-                                    //     style: ThemeMode.dark,
-                                    //     // merchantCountryCode: 'DE',
-                                    //   ),
-                                    // );
-                                    // // setState(() {
-                                    // //   _ready = true;
-                                    // // });
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Error: $e')),
-                                    );
-                                    rethrow;
+                                  event: () async {
+                                    try {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                NewPaymentScreen(),
+                                          ));
+                                      // Stripe.instance.createPaymentMethod(
+                                      //     params: PaymentMethodParams.card(
+                                      //         paymentMethodData:
+                                      //             PaymentMethodData()));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text('Error: $e')),
+                                      );
+                                      rethrow;
+                                    }
                                   }
-                                }
-                                // await stripe.Stripe.instance
-                                //     .initPaymentSheet(
-                                //         paymentSheetParameters: stripe
-                                //             .SetupPaymentSheetParameters(
-                                //   customFlow: true,
-                                //   merchantDisplayName:
-                                //       'Flutter Stripe Demo',
-                                //   paymentIntentClientSecret: secret_key,
-                                //   customerEphemeralKeySecret: "",
-                                //   customerId: "",
-                                //   setupIntentClientSecret: "",
-                                //   style: ThemeMode.light,
-                                // ));
-                                // } catch (e) {
-                                //   ScaffoldMessenger.of(context).showSnackBar(
-                                //     SnackBar(content: Text('Error: $e')),
-                                //   );
-                                //   rethrow;
-                                // }
+                                  // await stripe.Stripe.instance
+                                  //     .initPaymentSheet(
+                                  //         paymentSheetParameters: stripe
+                                  //             .SetupPaymentSheetParameters(
+                                  //   customFlow: true,
+                                  //   merchantDisplayName:
+                                  //       'Flutter Stripe Demo',
+                                  //   paymentIntentClientSecret: secret_key,
+                                  //   customerEphemeralKeySecret: "",
+                                  //   customerId: "",
+                                  //   setupIntentClientSecret: "",
+                                  //   style: ThemeMode.light,
+                                  // ));
+                                  // } catch (e) {
+                                  //   ScaffoldMessenger.of(context).showSnackBar(
+                                  //     SnackBar(content: Text('Error: $e')),
+                                  //   );
+                                  //   rethrow;
+                                  // }
 
-                                // Navigator.pop(context);
-                                // },
-                                ,
-                                buttonHeight: 50,
-                                isRounded: true,
-                                bgColor: black080809Color,
+                                  // Navigator.pop(context);
+                                  // },
+                                  ,
+                                  buttonHeight: 50,
+                                  isRounded: true,
+                                  bgColor: black080809Color,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
