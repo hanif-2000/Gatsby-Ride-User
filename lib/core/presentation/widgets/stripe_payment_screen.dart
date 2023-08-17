@@ -35,7 +35,7 @@ class _NewPaymentScreenState extends State<NewPaymentScreen> {
               color: Colors.teal,
               margin: const EdgeInsets.all(10),
               child: TextButton(
-                onPressed: () => makePayment(),
+                onPressed: () => createCardToken(),
                 child: const Text(
                   'Pay',
                   style: TextStyle(color: Colors.white),
@@ -151,4 +151,118 @@ class _NewPaymentScreenState extends State<NewPaymentScreen> {
       log('$e');
     }
   }
+
+  /** New stripe */
+
+  Future<void> createCardToken() async {
+    // Replace with your actual secret API key
+
+    var publishableKey =
+        'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
+    final String apiKey =
+        'sk_test_51NbHA8L2KkuOUsISb7LUBs3SVvCSJO5fNUgfc0YqzZlnKUdF6nFECHw75PMkYAxHPopJToObrFXu1z445rC7jI6P00H8ZXzRRz';
+
+    // Set the API endpoint
+    final String apiUrl = 'https://api.stripe.com/v1/tokens';
+
+    // Replace with actual card details
+    final Map<String, dynamic> cardDetails = {
+      'card': {
+        'number': '4242424242424242',
+        'exp_month': 8,
+        'exp_year': 2024,
+        'cvc': '314',
+      },
+    };
+
+    // Encode card details to JSON
+    final String cardJson = jsonEncode(cardDetails);
+
+    // Create headers with the Stripe API key
+    final Map<String, String> headers = {
+      'Authorization': 'Bearer $apiKey',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(apiUrl),
+        headers: headers,
+        body: {
+          'card[number]': '4242424242424242',
+          'card[exp_month]': '08',
+          'card[exp_year]': '2030',
+          'card[cvc]': '315'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final String token = responseData['id'];
+        print('Card Token: $token');
+      } else {
+        print('Error creating card token. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (error) {
+      print('Error creating card token: $error');
+    }
+  }
+
+  createCardTokenNew() async {
+// CreateTokenParams createTokenParams ={
+//             'number': '4242424242424242',
+//                 'exp_month': 8,
+//                 'exp_year': 2024,
+//                 'cvc': '314',
+// };
+    var publishableKey =
+        'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
+    final String apiKey =
+        'sk_test_51NbHA8L2KkuOUsISb7LUBs3SVvCSJO5fNUgfc0YqzZlnKUdF6nFECHw75PMkYAxHPopJToObrFXu1z445rC7jI6P00H8ZXzRRz';
+
+    Stripe.stripeAccountId = apiKey;
+    Stripe.publishableKey = publishableKey;
+
+    var token = await Stripe.instance
+        .createToken(
+      CreateTokenParams.card(
+        params: CardTokenParams.fromJson({
+          'number': '4242424242424242',
+          'exp_month': 11,
+          'exp_year': 2024,
+          'cvc': '314',
+        }),
+      ),
+    )
+        .then((value) {
+      log(value.toString());
+    });
+
+    //  await Stripe.tokens.create({
+    //   card: {
+    //     number: '4242424242424242',
+    //     exp_month: 8,
+    //     exp_year: 2024,
+    //     cvc: '314',
+    //   },
+    // });
+  }
+
+  // Future<void> onGooglePayResult(paymentResult) async {
+  //   final response = await fetchPaymentIntentClientSecret();
+  //   final clientSecret = response['clientSecret'];
+  //   final token =
+  //       paymentResult['paymentMethodData']['tokenizationData']['token'];
+  //   final tokenJson = Map.castFrom(json.decode(token));
+
+  //   final params = PaymentMethodParams.cardFromToken(
+  //     token: tokenJson['id'],
+  //   );
+  //   // Confirm Google pay payment method
+  //   await Stripe.instance.confirmPayment(
+  //     clientSecret,
+  //     params,
+  //   );
+  // }
 }
