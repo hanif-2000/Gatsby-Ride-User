@@ -180,7 +180,7 @@ class _NewPaymentScreenState extends State<NewPaymentScreen> {
 
     // Create headers with the Stripe API key
     final Map<String, String> headers = {
-      'Authorization': 'Bearer $apiKey',
+      'Authorization': 'Basic c2tfdGVzdF80ZUMzOUhxTHlqV0Rhcmp0VDF6ZHA3ZGM6',
       'Content-Type': 'application/x-www-form-urlencoded',
     };
 
