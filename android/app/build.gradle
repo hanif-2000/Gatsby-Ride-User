@@ -74,5 +74,6 @@ dependencies {
     implementation "com.google.android.gms:play-services-wallet:19.2.0"
     implementation "dev.shreyaspatil.EasyUpiPayment:EasyUpiPayment:3.0.3"
     implementation 'com.stripe:stripe-android:20.28.2'
+    implementation 'com.stripe:stripe-android:17.1.1'
 
 }

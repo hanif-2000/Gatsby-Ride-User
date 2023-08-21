@@ -1,12 +1,12 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
-import 'package:GetsbyRideshare/core/presentation/widgets/stripe_payment_screen.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/pay_plugin%20_test.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart' as enums;
+import 'package:GetsbyRideshare/core/static/enums.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../static/enums.dart';
 import '../providers/home_provider.dart';
 import 'credit_card_expansion_tile.dart';
 import 'payment_tile_widget.dart';
@@ -211,12 +211,46 @@ class PaymentOption extends StatelessWidget {
                                   ),
                                   event: () async {
                                     try {
+                                      // log("asdfasd");
+                                      // stripe.Stripe.instance.initPaymentSheet(
+                                      //   paymentSheetParameters:
+                                      //       stripe.SetupPaymentSheetParameters(
+                                      //     merchantDisplayName:
+                                      //         'Flutter Stripe Store Demo',
+                                      //     customerId: '120',
+
+                                      //     googlePay:
+                                      //         stripe.PaymentSheetGooglePay(
+                                      //             merchantCountryCode: 'US',
+                                      //             testEnv: true,
+                                      //             currencyCode: 'USD'),
+                                      //     //...
+                                      //     // testEnv: true,
+                                      //     // merchantCountryCode: "US",
+                                      //   ),
+                                      // );
+                                      // Future<void> onGooglePayResult(
+                                      //     paymentResult) async {
+                                      //   // final response = await fetchPaymentIntentClientSecret();
+                                      //   // final clientSecret = response['clientSecret'];
+                                      //   // final token = paymentResult['paymentMethodData']['tokenizationData']['token'];
+                                      //   // final tokenJson = Map.castFrom(json.decode(token));
+
+                                      //   // final params = PaymentMethodParams.cardFromToken(
+                                      //   //   token: tokenJson['id'],
+                                      //   // );
+                                      //   // // Confirm Google pay payment method
+                                      //   // await Stripe.instance.confirmPayment(
+                                      //   //   clientSecret,
+                                      //   //   params,
+                                      //   // );
+                                      // }
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                NewPaymentScreen(),
-                                          ));
+                                              builder: (context) =>
+                                                  // NewPaymentScreen(),
+                                                  PayMaterialApp()));
                                       // Stripe.instance.createPaymentMethod(
                                       //     params: PaymentMethodParams.card(
                                       //         paymentMethodData:
