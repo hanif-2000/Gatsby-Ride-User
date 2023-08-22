@@ -96,7 +96,9 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/
+    - assets/default_google_pay_config.json
+    - assets/default_apple_pay_config.json
+
 
 
   fonts:

@@ -1,14 +1,14 @@
+import 'dart:io';
+
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/pay_plugin%20_test.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart' as enums;
-import 'package:GetsbyRideshare/core/static/enums.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/home_provider.dart';
-import 'credit_card_expansion_tile.dart';
 import 'payment_tile_widget.dart';
 
 class PaymentOption extends StatelessWidget {
@@ -25,22 +25,7 @@ class PaymentOption extends StatelessWidget {
     return SafeArea(
       child: Consumer<HomeProvider>(
         builder: (context, provider, _) {
-          return
-
-              // Padding(
-              //     padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
-              //     child: GestureDetector(
-              //       onTap: () {
-              //         showModalBottomSheet(
-              //             useRootNavigator: true,
-              //             isScrollControlled: true,
-              //             useSafeArea: true,
-              //             context: context,
-              //             builder: (BuildContext context) {
-              //               return
-
-              SizedBox(
-            // height: _deviceSize.height,
+          return SizedBox(
             child: LayoutBuilder(builder: (context, constaints) {
               return Padding(
                   padding: const EdgeInsets.all(0.0),
@@ -95,6 +80,8 @@ class PaymentOption extends StatelessWidget {
                               //       // ),
                               //       ),
                               // ),
+
+                              //Cash Payment
                               SizedBox(
                                   child: PaymentTile(
                                 title: "Cash",
@@ -111,23 +98,23 @@ class PaymentOption extends StatelessWidget {
                                         : false,
                               )),
 
-                              SizedBox(
-                                  child: CreditCardExpansionTile(
-                                title: "Debit/Credit Card",
-                                assets: 'assets/icons/mastercard.svg',
-                                onTap: () {
-                                  provider.setPaymentMethod =
-                                      PaymentMethod.creditCard;
-                                  // Navigator.pop(context);
-                                },
-                                selected: provider.paymentMethod == null
-                                    ? false
-                                    : provider.paymentMethod ==
-                                            PaymentMethod.creditCard
-                                        ? true
-                                        : false,
-                                provider: provider,
-                              )),
+                              // SizedBox(
+                              //     child: CreditCardExpansionTile(
+                              //   title: "Debit/Credit Card",
+                              //   assets: 'assets/icons/mastercard.svg',
+                              //   onTap: () {
+                              //     provider.setPaymentMethod =
+                              //         PaymentMethod.creditCard;
+                              //     // Navigator.pop(context);
+                              //   },
+                              //   selected: provider.paymentMethod == null
+                              //       ? false
+                              //       : provider.paymentMethod ==
+                              //               PaymentMethod.creditCard
+                              //           ? true
+                              //           : false,
+                              //   provider: provider,
+                              // )),
                               // SizedBox(
                               //     child: PaymentTile(
                               //   title: "Debit/Credit Card",
@@ -162,22 +149,28 @@ class PaymentOption extends StatelessWidget {
                               //           : false,
                               // )),
 
-                              SizedBox(
-                                  child: PaymentTile(
-                                title: "Apple Pay",
-                                assets: 'assets/icons/apple.svg',
-                                onTap: () {
-                                  provider.setPaymentMethod =
-                                      enums.PaymentMethod.applePay;
-                                  // Navigator.pop(context);
-                                },
-                                selected: provider.paymentMethod == null
-                                    ? false
-                                    : provider.paymentMethod ==
-                                            enums.PaymentMethod.applePay
-                                        ? true
-                                        : false,
-                              )),
+                              //Apple PAY
+
+                              (Platform.isIOS)
+                                  ? SizedBox(
+                                      child: PaymentTile(
+                                      title: "Apple Pay",
+                                      assets: 'assets/icons/apple.svg',
+                                      onTap: () {
+                                        provider.setPaymentMethod =
+                                            enums.PaymentMethod.applePay;
+                                        // Navigator.pop(context);
+                                      },
+                                      selected: provider.paymentMethod == null
+                                          ? false
+                                          : provider.paymentMethod ==
+                                                  enums.PaymentMethod.applePay
+                                              ? true
+                                              : false,
+                                    ))
+                                  : SizedBox(),
+
+                              //Google pay button
                               SizedBox(
                                   child: PaymentTile(
                                 title: "Google Pay",
@@ -195,7 +188,11 @@ class PaymentOption extends StatelessWidget {
                                         : false,
                               )),
 
-                              const Spacer(),
+                              SizedBox(
+                                height: _deviceSize.height * .5,
+                              ),
+
+                              // const Spacer(),
 
                               Padding(
                                 padding: EdgeInsets.symmetric(
@@ -211,81 +208,24 @@ class PaymentOption extends StatelessWidget {
                                   ),
                                   event: () async {
                                     try {
-                                      // log("asdfasd");
-                                      // stripe.Stripe.instance.initPaymentSheet(
-                                      //   paymentSheetParameters:
-                                      //       stripe.SetupPaymentSheetParameters(
-                                      //     merchantDisplayName:
-                                      //         'Flutter Stripe Store Demo',
-                                      //     customerId: '120',
-
-                                      //     googlePay:
-                                      //         stripe.PaymentSheetGooglePay(
-                                      //             merchantCountryCode: 'US',
-                                      //             testEnv: true,
-                                      //             currencyCode: 'USD'),
-                                      //     //...
-                                      //     // testEnv: true,
-                                      //     // merchantCountryCode: "US",
-                                      //   ),
-                                      // );
-                                      // Future<void> onGooglePayResult(
-                                      //     paymentResult) async {
-                                      //   // final response = await fetchPaymentIntentClientSecret();
-                                      //   // final clientSecret = response['clientSecret'];
-                                      //   // final token = paymentResult['paymentMethodData']['tokenizationData']['token'];
-                                      //   // final tokenJson = Map.castFrom(json.decode(token));
-
-                                      //   // final params = PaymentMethodParams.cardFromToken(
-                                      //   //   token: tokenJson['id'],
-                                      //   // );
-                                      //   // // Confirm Google pay payment method
-                                      //   // await Stripe.instance.confirmPayment(
-                                      //   //   clientSecret,
-                                      //   //   params,
-                                      //   // );
-                                      // }
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  // NewPaymentScreen(),
-                                                  PayMaterialApp()));
-                                      // Stripe.instance.createPaymentMethod(
-                                      //     params: PaymentMethodParams.card(
-                                      //         paymentMethodData:
-                                      //             PaymentMethodData()));
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              // NewPaymentScreen(),
+                                              PayMaterialApp(),
+                                        ),
+                                      );
                                     } catch (e) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
-                                        SnackBar(content: Text('Error: $e')),
+                                        SnackBar(
+                                          content: Text('Error: $e'),
+                                        ),
                                       );
                                       rethrow;
                                     }
-                                  }
-                                  // await stripe.Stripe.instance
-                                  //     .initPaymentSheet(
-                                  //         paymentSheetParameters: stripe
-                                  //             .SetupPaymentSheetParameters(
-                                  //   customFlow: true,
-                                  //   merchantDisplayName:
-                                  //       'Flutter Stripe Demo',
-                                  //   paymentIntentClientSecret: secret_key,
-                                  //   customerEphemeralKeySecret: "",
-                                  //   customerId: "",
-                                  //   setupIntentClientSecret: "",
-                                  //   style: ThemeMode.light,
-                                  // ));
-                                  // } catch (e) {
-                                  //   ScaffoldMessenger.of(context).showSnackBar(
-                                  //     SnackBar(content: Text('Error: $e')),
-                                  //   );
-                                  //   rethrow;
-                                  // }
-
-                                  // Navigator.pop(context);
-                                  // },
-                                  ,
+                                  },
                                   buttonHeight: 50,
                                   isRounded: true,
                                   bgColor: black080809Color,

@@ -12,6 +12,8 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pay/pay.dart';
@@ -71,9 +73,25 @@ class _PaySampleAppState extends State<PaySampleApp> {
         PaymentConfiguration.fromAsset('default_google_pay_config.json');
   }
 
-  void onGooglePayResult(paymentResult) {
-    debugPrint(paymentResult.toString());
+  // void onGooglePayResult(paymentResult) {
+
+  Future<void> onGooglePayResult(paymentResult) async {
+    // final response = await fetchPaymentIntentClientSecret();
+    // final clientSecret = response['clientSecret'];
+    // final token = paymentResult['paymentMethodData']['tokenizationData']['token'];
+    // final tokenJson = Map.castFrom(json.decode(token));
+
+    // final params = PaymentMethodParams.cardFromToken(
+    //   token: tokenJson['id'],
+    // );
+    // // Confirm Google pay payment method
+    // await Stripe.instance.confirmPayment(
+    //   clientSecret,
+    //   params,
+    // );
   }
+  //   debugPrint(paymentResult.toString());
+  // }
 
   void onApplePayResult(paymentResult) {
     debugPrint(paymentResult.toString());
@@ -134,12 +152,24 @@ class _PaySampleAppState extends State<PaySampleApp> {
               future: _googlePayConfigFuture,
               builder: (context, snapshot) => snapshot.hasData
                   ? GooglePayButton(
-                      // paymentConfigurationAsset: 'assets/icons/destination.png',
                       paymentConfiguration: snapshot.data!,
                       paymentItems: _paymentItems,
                       type: GooglePayButtonType.buy,
                       margin: const EdgeInsets.only(top: 15.0),
-                      onPaymentResult: onGooglePayResult,
+                      onPaymentResult: (result) {
+                        log("result is: $result");
+
+                        log(snapshot.data.toString());
+
+                        // Map<String, dynamic> tokenizationDataMap =
+                        //     Map<String, dynamic>.from(
+                        //         result['tokenizationData']);
+                        // String token = tokenizationDataMap['token'];
+
+                        String token = result['paymentMethodData']
+                            ['tokenizationData']['token'];
+                        log("token is-->>>$token");
+                      },
                       loadingIndicator: const Center(
                         child: CircularProgressIndicator(),
                       ),
