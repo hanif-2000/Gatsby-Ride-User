@@ -16,6 +16,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
   final String driverStatusText;
   final Function() viewReceiptEvent;
   final Function() messageEvent;
+  final Function() reviewEvent;
 
   final Function() callEvent;
 
@@ -31,6 +32,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
       required this.viewReceiptEvent,
       required this.callEvent,
       required this.messageEvent,
+      required this.reviewEvent,
       required this.isReceiptVisible})
       : super(key: key);
 
@@ -54,7 +56,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0),
             child: DriverProfileWidget(
-              onClickOnReview: () {},
+              onClickOnReview: reviewEvent,
               category: category,
               driverId: driverId,
               driverImage: driverImage,

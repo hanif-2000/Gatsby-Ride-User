@@ -42,6 +42,7 @@ class OrderReceiptResponseModel extends Equatable {
   //     };
 }
 
+// ignore: must_be_immutable
 class OrderReceiptDataModel extends Equatable {
   String id;
   String driverId;
@@ -118,7 +119,7 @@ class OrderReceiptDataModel extends Equatable {
         image: json["image"],
         userName: json["user_name"],
         userPhone: json["user_phone"],
-        rating: json["rating"],
+        rating: json["rating"] ?? 5,
         plateNumber: json["plate_number"],
         vehicleName: json["vehicle_name"],
         carModel: json["car_model"],

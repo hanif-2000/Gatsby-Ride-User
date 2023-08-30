@@ -6,6 +6,7 @@ import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dar
 import 'package:GetsbyRideshare/core/presentation/widgets/origin_widget.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/get_order_detail_state.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/get_status_order_state.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
@@ -24,7 +25,6 @@ import '../../../../core/utility/session_helper.dart';
 import '../../domain/entities/driver_detail.dart';
 import '../providers/get_driver_detail_state.dart';
 import 'components/chat_screen.dart';
-import 'components/ratings.dart';
 import 'components/receipt_screen.dart';
 
 class OrderPage extends StatefulWidget {
@@ -430,6 +430,14 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                               ),
                             ),
                             child: DriverInfoBottomSheet(
+                              reviewEvent: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => RatingsScreen(
+                                            driverId: session.driverId)));
+                              },
+
                               callEvent: () {
                                 provider.callDriver();
                               },
@@ -448,14 +456,14 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                         builder: (context) => ChatScreen()));
                               },
                               viewReceiptEvent: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => RatingsScreen(
-                                      driverId: session.driverId,
-                                    ),
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => RatingsScreen(
+                                //       driverId: session.driverId,
+                                //     ),
+                                //   ),
+                                // );
                                 log("On Click on view receipt");
                                 // provider.orderReceiptApi().listen((event) {
                                 //   // log("Event :----------s  " +
@@ -530,6 +538,13 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
         builder: (context) {
           return Wrap(children: [
             DriverInfoBottomSheet(
+              reviewEvent: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            RatingsScreen(driverId: session.driverId)));
+              },
               callEvent: () {
                 provider.callDriver();
               },
@@ -541,7 +556,14 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                   ),
                 );
               },
-              viewReceiptEvent: () {},
+              viewReceiptEvent: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReceiptScreen(),
+                  ),
+                );
+              },
               driverStatusText: driverStatusText,
               category: driverDetails.model,
               driverId: '4',

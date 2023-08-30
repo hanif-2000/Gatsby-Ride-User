@@ -15,7 +15,18 @@ import '../../providers/order_provider.dart';
 import '../../providers/submit_ratings_state.dart';
 
 class FeedBackScreen extends StatelessWidget {
-  const FeedBackScreen({Key? key}) : super(key: key);
+  final String name;
+  final String img;
+  final String carModal;
+  final String carNo;
+
+  const FeedBackScreen(
+      {Key? key,
+      required this.name,
+      required this.img,
+      required this.carModal,
+      required this.carNo})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +66,12 @@ class FeedBackScreen extends StatelessWidget {
                           width: 140.0,
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CommonCircularImageContainer(),
+                            child: CommonCircularImageContainer(image: img),
                           ),
                         ),
                       ),
                       CommonText(
-                        text: "Alex Robin",
+                        text: name,
                         fontWeight: FontWeight.w500,
                         fontColor: blackColor,
                         fontFamily: "poPPinMedium",
@@ -70,14 +81,14 @@ class FeedBackScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CommonText(
-                            text: "Sedan  - ",
+                            text: carModal,
                             fontWeight: FontWeight.w400,
                             fontColor: grey585858Color,
                             fontFamily: "poPPinMedium",
                             fontSize: 12,
                           ),
                           CommonText(
-                            text: "GJZ 0196",
+                            text: " $carNo",
                             fontWeight: FontWeight.w500,
                             fontColor: blackColor,
                             fontFamily: "poPPinMedium",

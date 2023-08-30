@@ -191,6 +191,7 @@ class _PaySampleAppState extends State<PaySampleApp> {
               child: CircularProgressIndicator(),
             ),
           ),
+
           const SizedBox(height: 15)
         ],
       ),
