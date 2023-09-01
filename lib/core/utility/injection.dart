@@ -189,6 +189,11 @@ Future<void> init() async {
       dataSource: locator<OrderDataSource>(),
     ),
   );
+  //   locator.registerLazySingleton<OrderRepository>(
+  //   () => OrderRepositoryImplementation(
+  //     dataSource: locator<OrderDataSource>(),
+  //   ),
+  // );
 
   locator.registerLazySingleton<CreateProfileRepository>(
     () => CreateProfileRepositoryImplementation(

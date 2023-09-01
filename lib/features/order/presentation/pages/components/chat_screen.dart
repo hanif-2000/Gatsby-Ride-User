@@ -26,7 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    socketProvider.joinExitRoom(receiverId: 1);
+    socketProvider.joinExitRoom(receiverId: int.parse(session.driverId));
   }
 
   @override
@@ -34,7 +34,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
     socketProvider.joinExitRoom(
       type: 'UnJoin',
-      receiverId: 1,
+      receiverId: int.parse(session.driverId),
     );
   }
 

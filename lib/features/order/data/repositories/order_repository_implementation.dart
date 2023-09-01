@@ -101,6 +101,7 @@ class OrderRepositoryImplementation implements OrderRepository {
     }
   }
 
+//Order receipt
   @override
   Future<Either<Failure, OrderReceiptResponseModel>> orderReceipt(
       FormData formData) async {
@@ -112,4 +113,17 @@ class OrderRepositoryImplementation implements OrderRepository {
       return Left(ServerFailure(message: e.message));
     }
   }
+
+  // //Payment
+  // @override
+  // Future<Either<Failure, OrderPaymentResponseModal>> orderPayment(
+  //     FormData formData) async {
+  //   try {
+  //     final data = await dataSource.orderPayment(formData);
+  //     return Right(data);
+  //   } on DioError catch (e) {
+  //     logMe("Failure Submit Ratings repository ${e.toString()}");
+  //     return Left(ServerFailure(message: e.message));
+  //   }
+  // }
 }

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +13,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../../core/static/assets.dart';
+import '../../../../../core/utility/injection.dart';
+import '../../../../../core/utility/session_helper.dart';
 import '../../../../testing/widgets/circular_image_container.dart';
 import '../../../../testing/widgets/text_in_row.dart';
 import '../../providers/get_receipt_state.dart';
@@ -27,6 +31,8 @@ class ReceiptScreen extends StatefulWidget {
 
 class _ReceiptScreenState extends State<ReceiptScreen> {
   late final Future<PaymentConfiguration> _googlePayConfigFuture;
+
+  var sessionToken = locator<Session>().sessionToken;
 
   var _paymentItems = [
     PaymentItem(
@@ -64,6 +70,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     _googlePayConfigFuture =
         PaymentConfiguration.fromAsset('default_google_pay_config.json');
   }
+
+  var dio = Dio();
 
   @override
   Widget build(BuildContext context) {
@@ -116,12 +124,15 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
                 DateTime dt1 = DateTime.parse(data.orderReceipt![0].startTime);
                 DateTime dt2 = data.orderReceipt![0].endTime;
-                Duration timeTaken = dt2.difference(dt1);
+                int timeTaken = dt2.difference(dt1).inMinutes;
 
-                log(timeTaken.toString());
-                log(timeTaken.inHours.toString());
-                log(timeTaken.inMinutes.toString());
-                log(timeTaken.inSeconds.toString());
+                // int time =
+                // (order.endTime!.difference(order.startTime!).inMinutes);
+
+                // log(timeTaken.toString());
+                // log(timeTaken.inHours.toString());
+                // log(timeTaken.inMinutes.toString());
+                // log(timeTaken.inSeconds.toString());
 
                 return Container(
                   height: height,
@@ -220,7 +231,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                         ),
                         TextInRow(
                           firstText: appLoc.timeTaken,
-                          secondText: '30 min',
+                          secondText: '${timeTaken ?? 0} min',
                         ),
                         CommonText(
                           text: appLoc.paymentInformation,
@@ -341,7 +352,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                     paymentItems: _paymentItems,
                                     type: GooglePayButtonType.buy,
                                     margin: const EdgeInsets.only(top: 15.0),
-                                    onPaymentResult: (result) {
+                                    onPaymentResult: (result) async {
                                       log("result is: $result");
 
                                       log(snapshot.data.toString());
@@ -354,6 +365,53 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                       String token = result['paymentMethodData']
                                           ['tokenizationData']['token'];
                                       log("token is-->>>$token");
+
+                                      final tokenJson =
+                                          Map.castFrom(json.decode(token));
+
+                                      log("token json is ${tokenJson['id']}");
+
+                                      var cardToken = tokenJson['id'];
+
+                                      var body = {
+                                        'token': cardToken,
+                                        'order_id': data.orderReceipt![0].id,
+                                        "driver_id":
+                                            data.orderReceipt![0].driverId,
+                                        "amount": data.orderReceipt![0].total
+                                      };
+
+                                      log(body.toString());
+
+                                      var response = await dio.post(
+                                        'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                                        data: body,
+                                        options: Options(headers: {
+                                          "Authorization":
+                                              "Bearer $sessionToken"
+                                        }),
+                                      );
+
+                                      if (response.data["success"] == 1) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: const Text("Ride Payment"),
+                                            content: const Text(
+                                                "Payment successfull"),
+                                          ),
+                                        );
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: const Text(
+                                                "Payment unsuccessfull"),
+                                            content:
+                                                Text(response.data["message"]),
+                                          ),
+                                        );
+                                      }
                                     },
                                     loadingIndicator: const Center(
                                       child: CircularProgressIndicator(),

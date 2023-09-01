@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
-import 'package:GetsbyRideshare/core/presentation/widgets/pay_plugin%20_test.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart' as enums;
 
@@ -206,25 +205,26 @@ class PaymentOption extends StatelessWidget {
                                       color: whiteColor,
                                     ),
                                   ),
-                                  event: () async {
-                                    try {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              // NewPaymentScreen(),
-                                              PayMaterialApp(),
-                                        ),
-                                      );
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text('Error: $e'),
-                                        ),
-                                      );
-                                      rethrow;
-                                    }
+                                  event: () {
+                                    Navigator.pop(context);
+                                    // try {
+                                    //   // Navigator.push(
+                                    //   //   context,
+                                    //   //   MaterialPageRoute(
+                                    //   //     builder: (context) =>
+                                    //   //         // NewPaymentScreen(),
+                                    //   //         PayMaterialApp(),
+                                    //   //   ),
+                                    //   // );
+                                    // } catch (e) {
+                                    //   ScaffoldMessenger.of(context)
+                                    //       .showSnackBar(
+                                    //     SnackBar(
+                                    //       content: Text('Error: $e'),
+                                    //     ),
+                                    //   );
+                                    //   rethrow;
+                                    // }
                                   },
                                   buttonHeight: 50,
                                   isRounded: true,

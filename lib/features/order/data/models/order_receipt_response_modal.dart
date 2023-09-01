@@ -108,10 +108,10 @@ class OrderReceiptDataModel extends Equatable {
 
   factory OrderReceiptDataModel.fromJson(Map<String, dynamic> json) =>
       OrderReceiptDataModel(
-        id: json["id"],
-        driverId: json["driver_id"],
-        distance: json["distance"],
-        total: json["total"],
+        id: json["id"] ?? "",
+        driverId: json["driver_id"] ?? "",
+        distance: json["distance"] ?? '',
+        total: json["total"] ?? 0,
         orderTime: DateTime.parse(json["order_time"]),
         startTime: json["start_time"],
         endTime: DateTime.parse(json["end_time"]),
@@ -120,9 +120,9 @@ class OrderReceiptDataModel extends Equatable {
         userName: json["user_name"],
         userPhone: json["user_phone"],
         rating: json["rating"] ?? 5,
-        plateNumber: json["plate_number"],
-        vehicleName: json["vehicle_name"],
-        carModel: json["car_model"],
+        plateNumber: json["plate_number"] ?? '',
+        vehicleName: json["vehicle_name"] ?? "",
+        carModel: json["car_model"] ?? "",
         paymentMethod: json["payment_method"],
         vehicleCategory: VehicleCategory.fromJson(json["vehicle_category"]),
         timestamp: json["timestamp"],

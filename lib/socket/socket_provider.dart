@@ -70,7 +70,7 @@ class SocketProvider with ChangeNotifier {
   // }
 
   joinExitRoom({int? receiverId, String type = 'Join'}) {
-    receiverId = 1;
+    receiverId = int.parse(session.driverId);
 
     log(receiverId.toString());
     final map = {

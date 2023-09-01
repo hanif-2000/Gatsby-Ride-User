@@ -24,6 +24,7 @@ abstract class OrderDataSource {
   Future<OrderDetail> getDetailOrder();
   Future<DriverDetail> getDriverDetail();
   Future<DriverLocationResponseModel> getDriverLocation();
+  // Future<OrderPaymentResponseModal> orderPayment();
 }
 
 class OrderDataSourceImplementation implements OrderDataSource {
@@ -170,4 +171,38 @@ class OrderDataSourceImplementation implements OrderDataSource {
       rethrow;
     }
   }
+
+//   @override
+//   Future<OrderPaymentResponseModal> orderPayment(FormData formData) async {
+//       String url = 'api/webservice/customer/order/receipt';
+//     dio.withToken();
+//     try {
+//       final response = await dio.post(
+//         url,
+//         data: formData,
+//       );
+//       final model = OrderPaymentResponseModal.fromJson(response.data);
+//  return model;
+//  } catch (e) {
+//       rethrow;
+//     }
+//   }
+
+  // // payment order
+
+  // @override
+  // Future<OrderPaymentResponseModal> orderPayment(FormData formData) async {
+  //   String url = 'api/webservice/payment';
+  //   dio.withToken();
+  //   try {
+  //     final response = await dio.post(
+  //       url,
+  //       data: formData,
+  //     );
+  //     final model = OrderPaymentResponseModal.fromJson(response.data);
+  //     return model;
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 }
