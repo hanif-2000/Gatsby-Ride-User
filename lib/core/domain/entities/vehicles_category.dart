@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 class VehiclesCategory extends Equatable {
-  final num categoryId, priceMin, seat, drivers, totalFare, extraKm;
-  final String categoryCar;
+  final num categoryId, priceMin, seat, drivers, extraKm;
+  final String categoryCar, totalFare;
 
   final dynamic time;
 

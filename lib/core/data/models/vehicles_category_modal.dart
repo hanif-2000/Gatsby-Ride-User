@@ -2,14 +2,28 @@ import '../../domain/entities/vehicles_category.dart';
 
 class VehiclesCategoryModel extends VehiclesCategory {
   const VehiclesCategoryModel({
-    required num categoryId,
-    required String categoryCar,
-    required num priceMin,
-    required num seat,
-    required num extraKm,
-    required num drivers,
-    required dynamic time,
-    required num totalFare,
+    // required num categoryId,
+    // required String categoryCar,
+    // required num priceMin,
+    // required num seat,
+    // required num extraKm,
+    // required num drivers,
+    // required dynamic time,
+    // required String totalFare,
+
+
+
+        int ? id;
+String? category;
+ double? priceKm;
+double ?minKm;
+ int ?minPrice;
+  String? seat;
+    int? extraKm;
+    String? totalFair;
+    int? drivers;
+    String? time;
+
   }) : super(
           categoryId: categoryId,
           categoryCar: categoryCar,
