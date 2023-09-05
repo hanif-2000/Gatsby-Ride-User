@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart' as enums;
+import 'package:GetsbyRideshare/core/static/enums.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/home_provider.dart';
+import 'credit_card_expansion_tile.dart';
 import 'payment_tile_widget.dart';
 
 class PaymentOption extends StatelessWidget {
@@ -15,11 +17,6 @@ class PaymentOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
-
-    var secret_key =
-        'sk_test_51NbHA8L2KkuOUsISb7LUBs3SVvCSJO5fNUgfc0YqzZlnKUdF6nFECHw75PMkYAxHPopJToObrFXu1z445rC7jI6P00H8ZXzRRz';
-    var publishing_key =
-        'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
 
     return SafeArea(
       child: Consumer<HomeProvider>(
@@ -97,23 +94,25 @@ class PaymentOption extends StatelessWidget {
                                         : false,
                               )),
 
-                              // SizedBox(
-                              //     child: CreditCardExpansionTile(
-                              //   title: "Debit/Credit Card",
-                              //   assets: 'assets/icons/mastercard.svg',
-                              //   onTap: () {
-                              //     provider.setPaymentMethod =
-                              //         PaymentMethod.creditCard;
-                              //     // Navigator.pop(context);
-                              //   },
-                              //   selected: provider.paymentMethod == null
-                              //       ? false
-                              //       : provider.paymentMethod ==
-                              //               PaymentMethod.creditCard
-                              //           ? true
-                              //           : false,
-                              //   provider: provider,
-                              // )),
+                              ///// Card payment ////
+
+                              SizedBox(
+                                  child: CreditCardExpansionTile(
+                                title: "Debit/Credit Card",
+                                assets: 'assets/icons/mastercard.svg',
+                                onTap: () {
+                                  provider.setPaymentMethod =
+                                      PaymentMethod.creditCard;
+                                  // Navigator.pop(context);
+                                },
+                                selected: provider.paymentMethod == null
+                                    ? false
+                                    : provider.paymentMethod ==
+                                            PaymentMethod.creditCard
+                                        ? true
+                                        : false,
+                                provider: provider,
+                              )),
                               // SizedBox(
                               //     child: PaymentTile(
                               //   title: "Debit/Credit Card",
@@ -146,7 +145,8 @@ class PaymentOption extends StatelessWidget {
                               //               PaymentMethod.creditCard
                               //           ? true
                               //           : false,
-                              // )),
+                              // )
+                              // ),
 
                               //Apple PAY
 

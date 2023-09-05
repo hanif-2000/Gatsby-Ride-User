@@ -64,15 +64,42 @@ class CustomVehicleInfo extends StatelessWidget {
                               fontSize: 16.0,
                               color: black080808Color),
                         ),
+                        SizedBox(
+                          width: _deviceSize.width * .05,
+                        ),
 
                         //Vehicle's capacity
-                        Text(
-                          " (${capacity!} Person)",
-                          style: const TextStyle(
-                              fontFamily: 'poPPinRegular',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16.0,
-                              color: black080808Color),
+                        Row(
+                          children: [
+                            Text(" ("),
+                            Text(
+                              "${capacity!}",
+                              style: const TextStyle(
+                                  fontFamily: 'poPPinRegular',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16.0,
+                                  color: black080808Color),
+                            ),
+                            Image.asset(
+                              'assets/icons/car_seat.png',
+                              height: 15,
+                              width: 15,
+                            ),
+                            Text(
+                              "    2",
+                              style: const TextStyle(
+                                  fontFamily: 'poPPinRegular',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16.0,
+                                  color: black080808Color),
+                            ),
+                            Image.asset(
+                              'assets/icons/luggage.png',
+                              height: 15,
+                              width: 15,
+                            ),
+                            Text(")"),
+                          ],
                         ),
                       ],
                     ),
@@ -91,13 +118,22 @@ class CustomVehicleInfo extends StatelessWidget {
               ),
 
               //Price
-              Text(
-                price!,
-                style: const TextStyle(
-                    fontFamily: 'poPPinRegular',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.0,
-                    color: black080808Color),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/icons/cad_crncy.png',
+                    height: 40,
+                    width: 40,
+                  ),
+                  Text(
+                    price!,
+                    style: const TextStyle(
+                        fontFamily: 'poPPinRegular',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.0,
+                        color: black080808Color),
+                  ),
+                ],
               ),
             ],
           ),

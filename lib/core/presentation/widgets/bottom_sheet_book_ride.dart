@@ -93,7 +93,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                       child: CustomVehicleInfo(
                                         index: index,
                                         vehicleImage:
-                                            'assets/icons/car-dropdown.png',
+                                            "${provider.carsImageList[index]}",
                                         time: "${data[index].time} Min",
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
@@ -214,6 +214,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                     SizedBox(
                                       height: _deviceSize.height * .03,
                                     ),
+
+                                    //Book Now Button
                                     CustomButton(
                                       text: const Text(
                                         "Book Now",

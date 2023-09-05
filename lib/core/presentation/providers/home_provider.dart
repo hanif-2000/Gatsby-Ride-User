@@ -185,6 +185,12 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  List carsImageList = [
+    "assets/icons/economy_car.png",
+    "assets/icons/xl_car.png",
+    "assets/icons/tesla_car.png"
+  ];
+
   //constructor
   HomeProvider(
       {required this.getTotalPrice,

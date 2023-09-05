@@ -6,6 +6,8 @@ import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../utility/dummy_data.dart';
+
 class CreditCardExpansionTile extends StatelessWidget {
   final String assets;
   final String title;
@@ -84,10 +86,11 @@ class CreditCardExpansionTile extends StatelessWidget {
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 2,
+                      itemCount: DummyData.dummyCardList.length,
                       itemBuilder: (context, index) {
                         return CreditCardTile(
-                          title: "*** *** *** 14 15 25",
+                          title:
+                              "*** *** *** ${DummyData.dummyCardList[index]["cardNumber"]}",
                           assets: 'assets/icons/logos_mastercard.svg',
                           onTap: () {
                             provider.setPaymentMethod =
