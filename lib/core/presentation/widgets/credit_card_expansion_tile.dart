@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/add_new_card_popup.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/credit_card_tile_wisget.dart';
@@ -42,6 +44,13 @@ class CreditCardExpansionTile extends StatelessWidget {
               ),
             ]),
         child: ExpansionTile(
+          onExpansionChanged: (value) {
+            log("on expansion chaenged===>>>  $value");
+
+            if (value) {
+              provider.getListOfCard();
+            }
+          },
           childrenPadding: EdgeInsets.zero,
           shape: const Border(),
           collapsedShape:

@@ -2,6 +2,7 @@ import 'package:GetsbyRideshare/features/contact_us/presentation/providers/conta
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
 import 'package:GetsbyRideshare/features/login/presentation/providers/login_provider.dart';
+import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:GetsbyRideshare/socket/socket_provider.dart';
@@ -96,6 +97,9 @@ Future<void> main() async {
             ),
             ChangeNotifierProvider<SocketProvider>(
               create: (context) => locator<SocketProvider>(),
+            ),
+            ChangeNotifierProvider<PaymentProvider>(
+              create: (context) => locator<PaymentProvider>(),
             ),
           ],
           builder: (context, _) => const MyApp(),

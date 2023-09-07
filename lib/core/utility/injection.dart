@@ -8,6 +8,10 @@ import 'package:GetsbyRideshare/features/forgot_password/domain/repositories/otp
 import 'package:GetsbyRideshare/features/forgot_password/domain/usecases/otp_verification.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
 import 'package:GetsbyRideshare/features/history/domain/usecases/get_ratings.dart';
+import 'package:GetsbyRideshare/features/new_card_payment/data/datasources/payment_data_source.dart';
+import 'package:GetsbyRideshare/features/new_card_payment/domain/repositories/payment_repository.dart';
+import 'package:GetsbyRideshare/features/new_card_payment/domain/usecases/payment_usercases.dart';
+import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:GetsbyRideshare/features/order/domain/usecases/submit_ratings.dart';
 import 'package:GetsbyRideshare/features/profile/data/datasources/create_profile_data_source.dart';
 import 'package:GetsbyRideshare/features/profile/data/datasources/upload_profile_image_data_source.dart';
@@ -44,6 +48,7 @@ import '../../features/login/data/repositories/login_repository_implementation.d
 import '../../features/login/domain/repositories/login_repository.dart';
 import '../../features/login/domain/usecases/do_login.dart';
 import '../../features/login/presentation/providers/login_provider.dart';
+import '../../features/new_card_payment/data/repositories/payment_repository_implementation.dart';
 import '../../features/order/data/datasources/order_data_source.dart';
 import '../../features/order/data/repositories/order_repository_implementation.dart';
 import '../../features/order/domain/repositories/order_repository.dart';
@@ -212,6 +217,18 @@ Future<void> init() async {
       dataSource: locator<ContactUsDataSource>(),
     ),
   );
+
+  locator.registerLazySingleton<PaymentRepository>(
+    () => PaymentRepositoryImplementation(
+      dataSource: locator<PaymentDataSource>(),
+    ),
+  );
+
+  // locator.registerLazySingleton<PaymentRepository>(
+  //   () => PaymentRepositoryImplementation(
+  //     dataSource: locator<PaymentDataSource>(),
+  //   ),
+  // );
   // locator.registerLazySingleton<SocketProvider>(() => SocketProvider());
 
   //datasource
@@ -249,6 +266,9 @@ Future<void> init() async {
       () => UploadProfileImageDataSourceImplementation(dio: locator<Dio>()));
   locator.registerLazySingleton<ContactUsDataSource>(
       () => ContactUsDataSourceImplementation(dio: locator<Dio>()));
+
+  locator.registerLazySingleton<PaymentDataSource>(
+      () => PaymentDataSourceImplementation(dio: locator<Dio>()));
 
   //usecase
   locator.registerLazySingleton<GetCurrency>(
@@ -312,6 +332,12 @@ Future<void> init() async {
   locator.registerLazySingleton<DoContactUs>(
       () => DoContactUs(repository: locator<ContactUsRepository>()));
 
+  locator.registerLazySingleton<PaymentCard>(
+      () => PaymentCard(repository: locator<PaymentRepository>()));
+
+  //   locator.registerLazySingleton<DoCardList>(
+  // () => DoCardList(repository: locator<CardListRepository>()));
+
   /**             providers             **/
   locator.registerFactory(
     () => SplashProvider(getCurrency: locator<GetCurrency>()),
@@ -371,6 +397,8 @@ Future<void> init() async {
 
   locator.registerFactory<ContactusProvider>(
       () => ContactusProvider(doContactus: locator()));
+  locator.registerFactory<PaymentProvider>(
+      () => PaymentProvider(paymentCard: locator()));
 
   locator.registerFactory<SocketProvider>(() => SocketProvider());
 }

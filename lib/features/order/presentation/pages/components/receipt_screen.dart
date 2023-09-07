@@ -231,7 +231,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                         ),
                         TextInRow(
                           firstText: appLoc.timeTaken,
-                          secondText: '${timeTaken ?? 0} min',
+                          secondText: '${timeTaken} min',
                         ),
                         CommonText(
                           text: appLoc.paymentInformation,
@@ -329,12 +329,10 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => FeedBackScreen(
-                                  name: data.orderReceipt![0].userName ?? "",
-                                  img: data.orderReceipt![0].image ?? "",
-                                  carModal:
-                                      data.orderReceipt![0].carModel ?? "",
-                                  carNo:
-                                      data.orderReceipt![0].plateNumber ?? '',
+                                  name: data.orderReceipt![0].userName,
+                                  img: data.orderReceipt![0].image,
+                                  carModal: data.orderReceipt![0].carModel,
+                                  carNo: data.orderReceipt![0].plateNumber,
                                 ),
                               ),
                             );

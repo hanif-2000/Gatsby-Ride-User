@@ -2,11 +2,12 @@ import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_b
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_text_field.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+
+import '../../../features/new_card_payment/presentation/providers/add_card_state.dart';
+import '../../../features/new_card_payment/presentation/providers/payment_provider.dart';
 
 class AddNewCardPopUp extends StatelessWidget {
   // final Function positiveAction;
@@ -14,7 +15,7 @@ class AddNewCardPopUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ContactusProvider>(builder: (context, provider, _) {
+    return Consumer<PaymentProvider>(builder: (context, provider, _) {
       return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
@@ -50,8 +51,8 @@ class AddNewCardPopUp extends StatelessWidget {
                   padding: const EdgeInsets.all(10.0),
                   child: SvgPicture.asset('assets/icons/card.svg'),
                 ),
-                controller: Provider.of<ContactusProvider>(context)
-                    .cardNumberController,
+                controller:
+                    Provider.of<PaymentProvider>(context).cardNumberController,
                 fieldValidator: (val) {
                   if (val == '') {
                     return appLoc.mustNotEmpty;
@@ -74,7 +75,7 @@ class AddNewCardPopUp extends StatelessWidget {
                   child: SvgPicture.asset('assets/icons/card.svg'),
                 ),
                 controller:
-                    Provider.of<ContactusProvider>(context).cardCvvController,
+                    Provider.of<PaymentProvider>(context).cardCvvController,
                 fieldValidator: (val) {
                   if (val == '') {
                     return appLoc.mustNotEmpty;
@@ -98,7 +99,7 @@ class AddNewCardPopUp extends StatelessWidget {
                     'assets/icons/user.svg',
                   ),
                 ),
-                controller: Provider.of<ContactusProvider>(context)
+                controller: Provider.of<PaymentProvider>(context)
                     .accountHolderController,
                 fieldValidator: (val) {
                   if (val == '') {
@@ -127,7 +128,7 @@ class AddNewCardPopUp extends StatelessWidget {
                   ),
                 ),
                 controller:
-                    Provider.of<ContactusProvider>(context).expiryController,
+                    Provider.of<PaymentProvider>(context).expiryController,
                 fieldValidator: (val) {
                   if (val == '') {
                     return appLoc.mustNotEmpty;
@@ -152,20 +153,50 @@ class AddNewCardPopUp extends StatelessWidget {
                 buttonHeight: 50,
                 isRounded: true,
                 event: () {
-                  Stripe.instance.createToken(
-                    CreateTokenParams.card(
-                      params: CardTokenParams(
-                          type: TokenType.Card,
-                          address: Address(
-                              city: "mohali",
-                              country: "India",
-                              line1: "line1",
-                              line2: "line2",
-                              postalCode: "140603",
-                              state: "Mohali"),
-                          currency: 'IN'),
-                    ),
-                  );
+                  final provider = context.read<PaymentProvider>();
+                  provider.addCardDetails().listen((state) async {
+                    switch (state.runtimeType) {
+                      case AddCardLoading:
+                        showLoading();
+                        break;
+                      case AddCardFailure:
+                        final msg = (state as AddCardFailure).failure;
+                        dismissLoading();
+                        showToast(message: msg);
+                        break;
+                      case AddCardSuccess:
+                        final data = (state as AddCardSuccess).data;
+                        dismissLoading();
+                        if (data.success == 1) {
+                          showToast(message: "add card success");
+                          // Navigator.pushNamedAndRemoveUntil(
+                          //     context, HomePage.routeName, (route) => false);
+                        } else {
+                          if (data.message == '1') {
+                            showToast(message: appLoc.registrationFailed);
+                          } else {
+                            showToast(message: appLoc.registrationFailed);
+                          }
+                        }
+
+                        break;
+                    }
+                  });
+
+                  // Stripe.instance.createToken(
+                  //   CreateTokenParams.card(
+                  //     params: CardTokenParams(
+                  //         type: TokenType.Card,
+                  //         address: Address(
+                  //             city: "mohali",
+                  //             country: "India",
+                  //             line1: "line1",
+                  //             line2: "line2",
+                  //             postalCode: "140603",
+                  //             state: "Mohali"),
+                  //         currency: 'IN'),
+                  //   ),
+                  // );
                 },
                 bgColor: black080809Color,
               ),

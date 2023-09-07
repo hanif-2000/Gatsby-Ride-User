@@ -31,6 +31,8 @@ import '../../utility/session_helper.dart';
 import 'create_order_state.dart';
 
 class HomeProvider with ChangeNotifier {
+  var dio = Dio();
+  //  var sessionToken = locator<Session>().sessionToken;
   //Constructor
   final GetTotalPrice getTotalPrice;
   final GetPriceCategory getPriceCategory;
@@ -53,7 +55,7 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  var session = locator<Session>();
+  Session session = locator<Session>();
 
 //Socket
 
@@ -609,4 +611,22 @@ class HomeProvider with ChangeNotifier {
       yield CreateOrderLoaded(data: data);
     });
   }
+
+// Get List of credit cards
+  getListOfCard() async {
+    var url =
+        'https://php.parastechnologies.in/taxi/public/api/webservice/card/list';
+
+    var res = await dio.get(
+      url,
+      options:
+          Options(headers: {"Authorization": "Bearer ${session.sessionToken}"}),
+    );
+
+    log("list of card are====>>>" + res.toString());
+  }
+
+  //Add credit card
+
+  addCreditCard() {}
 }

@@ -8,8 +8,8 @@ import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../features/new_card_payment/presentation/pages/card_payment_page.dart';
 import '../providers/home_provider.dart';
-import 'credit_card_expansion_tile.dart';
 import 'payment_tile_widget.dart';
 
 class PaymentOption extends StatelessWidget {
@@ -97,7 +97,7 @@ class PaymentOption extends StatelessWidget {
                               ///// Card payment ////
 
                               SizedBox(
-                                  child: CreditCardExpansionTile(
+                                  child: CardPaymentExpansionTile(
                                 title: "Debit/Credit Card",
                                 assets: 'assets/icons/mastercard.svg',
                                 onTap: () {
@@ -187,9 +187,9 @@ class PaymentOption extends StatelessWidget {
                                         : false,
                               )),
 
-                              SizedBox(
-                                height: _deviceSize.height * .5,
-                              ),
+                              // SizedBox(
+                              //   height: _deviceSize.height * .5,
+                              // ),
 
                               // const Spacer(),
 
