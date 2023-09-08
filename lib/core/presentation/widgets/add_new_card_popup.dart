@@ -169,6 +169,7 @@ class AddNewCardPopUp extends StatelessWidget {
                         dismissLoading();
                         if (data.success == 1) {
                           showToast(message: "add card success");
+                          Navigator.pop(context);
                           // Navigator.pushNamedAndRemoveUntil(
                           //     context, HomePage.routeName, (route) => false);
                         } else {

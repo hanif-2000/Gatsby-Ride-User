@@ -10,11 +10,28 @@ import 'card_list_state.dart';
 
 class PaymentProvider extends FormProvider {
   final PaymentCard paymentCard;
+
   // final DoOtpVerify doOtpVerify;
 
   // String otp = '';
 
   PaymentProvider({required this.paymentCard});
+
+  late int selectedCardId = 0;
+
+  String selectedCardNumber = '';
+  String selectedCardExpiry = '';
+
+  updateSelectedCard({cardNo, expiry}) {
+    selectedCardNumber = cardNo;
+    selectedCardExpiry = expiry;
+    notifyListeners();
+  }
+
+  updateSelectedCardId(cardId) {
+    selectedCardId = cardId;
+    notifyListeners();
+  }
 
   Stream<CardListState> fetchCardListData() async* {
     logMe("loading");

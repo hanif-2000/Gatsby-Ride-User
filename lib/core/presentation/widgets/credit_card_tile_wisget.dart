@@ -7,9 +7,9 @@ class CreditCardTile extends StatelessWidget {
   final String assets;
   final String title;
   final Function onTap;
-  final bool selected;
+  bool selected;
 
-  const CreditCardTile(
+  CreditCardTile(
       {Key? key,
       required this.assets,
       required this.title,

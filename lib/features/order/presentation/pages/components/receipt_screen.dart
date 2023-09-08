@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/components/payment_screen.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
 import 'package:dio/dio.dart';
@@ -18,9 +18,7 @@ import '../../../../../core/utility/session_helper.dart';
 import '../../../../testing/widgets/circular_image_container.dart';
 import '../../../../testing/widgets/text_in_row.dart';
 import '../../providers/get_receipt_state.dart';
-import 'feedback_screen.dart';
 import 'package:pay/pay.dart';
-import 'payment_configurations.dart' as payment_configurations;
 
 class ReceiptScreen extends StatefulWidget {
   const ReceiptScreen({Key? key}) : super(key: key);
@@ -271,7 +269,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                 CommonText(
                                   text: data.orderReceipt![0].paymentMethod == 1
                                       ? appLoc.cash
-                                      : appLoc.googlePay,
+                                      : "Online",
                                   fontWeight: FontWeight.w400,
                                   fontColor: grey7D7979Color,
                                   fontFamily: "poPPinMedium",
@@ -326,117 +324,145 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           ),
                           event: () async {
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FeedBackScreen(
-                                  name: data.orderReceipt![0].userName,
-                                  img: data.orderReceipt![0].image,
-                                  carModal: data.orderReceipt![0].carModel,
-                                  carNo: data.orderReceipt![0].plateNumber,
-                                ),
-                              ),
-                            );
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentScreen(
+                                    name: data.orderReceipt![0].userName,
+                                    img: data.orderReceipt![0].image,
+                                    carModal: data.orderReceipt![0].carModel,
+                                    carNo: data.orderReceipt![0].plateNumber,
+                                    totalPrice: data.orderReceipt![0].total,
+                                    paymentMode:
+                                        data.orderReceipt![0].paymentMethod,
+                                    driverId: data.orderReceipt![0].driverId,
+                                    orderId: data.orderReceipt![0].id,
+                                  ),
+                                ));
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => FeedBackScreen(
+                            //       name: data.orderReceipt![0].userName,
+                            //       img: data.orderReceipt![0].image,
+                            //       carModal: data.orderReceipt![0].carModel,
+                            //       carNo: data.orderReceipt![0].plateNumber,
+                            //     ),
+                            //   ),
+                            // );
                           },
                           buttonHeight: 50,
                           // buttonHeight: MediaQuery.of(context).size.height * 0.080,
                           isRounded: true,
                           bgColor: black080809Color,
                         ),
-                        FutureBuilder<PaymentConfiguration>(
-                            future: _googlePayConfigFuture,
-                            builder: (context, snapshot) => snapshot.hasData
-                                ? GooglePayButton(
-                                    paymentConfiguration: snapshot.data!,
-                                    paymentItems: _paymentItems,
-                                    type: GooglePayButtonType.buy,
-                                    margin: const EdgeInsets.only(top: 15.0),
-                                    onPaymentResult: (result) async {
-                                      log("result is: $result");
 
-                                      log(snapshot.data.toString());
+                        // FutureBuilder<PaymentConfiguration>(
+                        //     future: _googlePayConfigFuture,
+                        //     builder: (context, snapshot) => snapshot.hasData
+                        //         ? (Platform.isAndroid)
+                        //             ? data.orderReceipt![0].paymentMethod != 1
+                        //                 ? GooglePayButton(
+                        //                     paymentConfiguration:
+                        //                         snapshot.data!,
+                        //                     paymentItems: _paymentItems,
+                        //                     type: GooglePayButtonType.buy,
+                        //                     margin: const EdgeInsets.only(
+                        //                         top: 15.0),
+                        //                     onPaymentResult: (result) async {
+                        //                       log("result is: $result");
 
-                                      // Map<String, dynamic> tokenizationDataMap =
-                                      //     Map<String, dynamic>.from(
-                                      //         result['tokenizationData']);
-                                      // String token = tokenizationDataMap['token'];
+                        //                       log(snapshot.data.toString());
 
-                                      String token = result['paymentMethodData']
-                                          ['tokenizationData']['token'];
-                                      log("token is-->>>$token");
+                        //                       String token =
+                        //                           result['paymentMethodData']
+                        //                                   ['tokenizationData']
+                        //                               ['token'];
+                        //                       log("token is-->>>$token");
 
-                                      final tokenJson =
-                                          Map.castFrom(json.decode(token));
+                        //                       final tokenJson = Map.castFrom(
+                        //                           json.decode(token));
 
-                                      log("token json is ${tokenJson['id']}");
+                        //                       log("token json is ${tokenJson['id']}");
 
-                                      var cardToken = tokenJson['id'];
+                        //                       var cardToken = tokenJson['id'];
 
-                                      var body = {
-                                        'token': cardToken,
-                                        'order_id': data.orderReceipt![0].id,
-                                        "driver_id":
-                                            data.orderReceipt![0].driverId,
-                                        "amount": data.orderReceipt![0].total
-                                      };
+                        //                       var body = {
+                        //                         'token': cardToken,
+                        //                         'order_id':
+                        //                             data.orderReceipt![0].id,
+                        //                         "driver_id": data
+                        //                             .orderReceipt![0].driverId,
+                        //                         "amount":
+                        //                             data.orderReceipt![0].total
+                        //                       };
 
-                                      log(body.toString());
+                        //                       log(body.toString());
 
-                                      var response = await dio.post(
-                                        'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
-                                        data: body,
-                                        options: Options(headers: {
-                                          "Authorization":
-                                              "Bearer $sessionToken"
-                                        }),
-                                      );
+                        //                       var response = await dio.post(
+                        //                         'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                        //                         data: body,
+                        //                         options: Options(headers: {
+                        //                           "Authorization":
+                        //                               "Bearer $sessionToken"
+                        //                         }),
+                        //                       );
 
-                                      if (response.data["success"] == 1) {
-                                        showDialog(
-                                          context: context,
-                                          builder: (ctx) => AlertDialog(
-                                            title: const Text("Ride Payment"),
-                                            content: const Text(
-                                                "Payment successfull"),
-                                          ),
-                                        );
-                                      } else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (ctx) => AlertDialog(
-                                            title: const Text(
-                                                "Payment unsuccessfull"),
-                                            content:
-                                                Text(response.data["message"]),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    loadingIndicator: const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  )
-                                : const SizedBox.shrink()),
-                        // Example pay button configured using a string
+                        //                       if (response.data["success"] ==
+                        //                           1) {
+                        //                         showDialog(
+                        //                           context: context,
+                        //                           builder: (ctx) => AlertDialog(
+                        //                             title: const Text(
+                        //                                 "Ride Payment"),
+                        //                             content: const Text(
+                        //                                 "Payment successfull"),
+                        //                           ),
+                        //                         );
+                        //                       } else {
+                        //                         showDialog(
+                        //                           context: context,
+                        //                           builder: (ctx) => AlertDialog(
+                        //                             title: const Text(
+                        //                                 "Payment unsuccessfull"),
+                        //                             content: Text(response
+                        //                                 .data["message"]),
+                        //                           ),
+                        //                         );
+                        //                       }
+                        //                     },
+                        //                     loadingIndicator: const Center(
+                        //                       child:
+                        //                           CircularProgressIndicator(),
+                        //                     ),
+                        //                   )
+                        //                 : SizedBox()
+                        //             : SizedBox()
+                        //         : const SizedBox.shrink()),
+                        // // Example pay button configured using a string
+                        // (Platform.isIOS)
+                        //     ? data.orderReceipt![0].paymentMethod != 1
+                        //         ? ApplePayButton(
+                        //             // paymentConfigurationAsset: 'assets/icons/car.png',
+                        //             paymentConfiguration:
+                        //                 PaymentConfiguration.fromJsonString(
+                        //                     payment_configurations
+                        //                         .defaultApplePay),
+                        //             paymentItems: _paymentItems,
 
-                        ApplePayButton(
-                          // paymentConfigurationAsset: 'assets/icons/car.png',
-                          paymentConfiguration:
-                              PaymentConfiguration.fromJsonString(
-                                  payment_configurations.defaultApplePay),
-                          paymentItems: _paymentItems,
+                        //             style: ApplePayButtonStyle.black,
+                        //             type: ApplePayButtonType.buy,
+                        //             margin: const EdgeInsets.only(top: 15.0),
+                        //             onPaymentResult: onApplePayResult,
+                        //             loadingIndicator: const Center(
+                        //               child: CircularProgressIndicator(),
+                        //             ),
+                        //           )
+                        //         : SizedBox()
+                        //     : SizedBox(),
 
-                          style: ApplePayButtonStyle.black,
-                          type: ApplePayButtonType.buy,
-                          margin: const EdgeInsets.only(top: 15.0),
-                          onPaymentResult: onApplePayResult,
-                          loadingIndicator: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-
-                        SizedBox(
-                          height: 0,
-                        )
+                        // SizedBox(
+                        //   height: 0,
+                        // )
                       ],
                     ),
                   ),

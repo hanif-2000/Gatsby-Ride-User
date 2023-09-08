@@ -98,11 +98,11 @@ class PaymentOption extends StatelessWidget {
 
                               SizedBox(
                                   child: CardPaymentExpansionTile(
-                                title: "Debit/Credit Card ASDF",
+                                title: "Debit/Credit Card",
                                 assets: 'assets/icons/mastercard.svg',
                                 onTap: () {
-                                  provider.setPaymentMethod =
-                                      PaymentMethod.creditCard;
+                                  // provider.setPaymentMethod =
+                                  //     PaymentMethod.creditCard;
                                   // Navigator.pop(context);
                                 },
                                 selected: provider.paymentMethod == null

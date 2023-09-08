@@ -152,12 +152,14 @@ class OrderReceiptDataModel extends Equatable {
 class VehicleCategory {
   int id;
   String category;
-  int priceKm;
+  double priceKm;
+  int techFee;
+  int baseFare;
   int distance;
-  int minKm;
+  double minKm;
   int minPrice;
   int extraKm;
-  int seat;
+  String seat;
   DateTime createdAt;
   DateTime updatedAt;
   dynamic deletedAt;
@@ -166,6 +168,8 @@ class VehicleCategory {
     required this.id,
     required this.category,
     required this.priceKm,
+    required this.techFee,
+    required this.baseFare,
     required this.distance,
     required this.minKm,
     required this.minPrice,
@@ -173,16 +177,18 @@ class VehicleCategory {
     required this.seat,
     required this.createdAt,
     required this.updatedAt,
-    this.deletedAt,
+    required this.deletedAt,
   });
 
   factory VehicleCategory.fromJson(Map<String, dynamic> json) =>
       VehicleCategory(
         id: json["id"],
         category: json["category"],
-        priceKm: json["price_km"],
+        priceKm: json["price_km"]?.toDouble(),
+        techFee: json["tech_fee"],
+        baseFare: json["base_fare"],
         distance: json["distance"],
-        minKm: json["min_km"],
+        minKm: json["min_km"]?.toDouble(),
         minPrice: json["min_price"],
         extraKm: json["extra_km"],
         seat: json["seat"],
@@ -195,6 +201,8 @@ class VehicleCategory {
         "id": id,
         "category": category,
         "price_km": priceKm,
+        "tech_fee": techFee,
+        "base_fare": baseFare,
         "distance": distance,
         "min_km": minKm,
         "min_price": minPrice,
@@ -205,3 +213,61 @@ class VehicleCategory {
         "deleted_at": deletedAt,
       };
 }
+
+
+// class VehicleCategory {
+//   int id;
+//   String category;
+//   int priceKm;
+//   int distance;
+//   int minKm;
+//   int minPrice;
+//   int extraKm;
+//   int seat;
+//   DateTime createdAt;
+//   DateTime updatedAt;
+//   dynamic deletedAt;
+
+//   VehicleCategory({
+//     required this.id,
+//     required this.category,
+//     required this.priceKm,
+//     required this.distance,
+//     required this.minKm,
+//     required this.minPrice,
+//     required this.extraKm,
+//     required this.seat,
+//     required this.createdAt,
+//     required this.updatedAt,
+//     this.deletedAt,
+//   });
+
+//   factory VehicleCategory.fromJson(Map<String, dynamic> json) =>
+//       VehicleCategory(
+//         id: json["id"],
+//         category: json["category"],
+//         priceKm: json["price_km"],
+//         distance: json["distance"],
+//         minKm: json["min_km"],
+//         minPrice: json["min_price"],
+//         extraKm: json["extra_km"],
+//         seat: json["seat"],
+//         createdAt: DateTime.parse(json["created_at"]),
+//         updatedAt: DateTime.parse(json["updated_at"]),
+//         deletedAt: json["deleted_at"],
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "id": id,
+//         "category": category,
+//         "price_km": priceKm,
+//         "distance": distance,
+//         "min_km": minKm,
+//         "min_price": minPrice,
+//         "extra_km": extraKm,
+//         "seat": seat,
+//         "created_at": createdAt.toIso8601String(),
+//         "updated_at": updatedAt.toIso8601String(),
+//         "deleted_at": deletedAt,
+//       };
+// }
