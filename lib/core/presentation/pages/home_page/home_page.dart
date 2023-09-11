@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/origin_widget.dart';
@@ -155,7 +156,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       color: whiteColor,
                                     ),
                                   ),
-                                  event: () {
+                                  event: () async {
                                     log("origin" + map.originLatLng.toString());
                                     log("destination" +
                                         map.destinationLatLng.toString());
@@ -168,12 +169,25 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         !map.destinationIsFilled) {
                                       showToast(message: "Select Address");
                                     } else {
+                                      // try {
+                                      //   // Get real distance
+                                      //   var response = await Dio().get(
+                                      //       'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${map.destinationLatLng.latitude},${map.destinationLatLng.longitude}&origins=${map.originLatLng.latitude},${map.originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
+                                      //   log(" response of real distance:--->>> ${response.data}");
+
+                                      //   var data = routeModal
+                                      //           .GoogleRouteDistanceResponseModal
+                                      //       .fromJson(response.data);
+                                      // } catch (e) {
+                                      //   print(e);
+                                      // }
                                       map
                                           .fetchVehicleCategory()
                                           .listen((event) {
                                         log("========>>>>>>" +
                                             event.toString());
                                       });
+
                                       showModalBottomSheet(
                                         barrierColor: Colors.transparent,
                                         useRootNavigator: true,

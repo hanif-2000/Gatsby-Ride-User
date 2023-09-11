@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui' as ui;
-
 import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
 import 'package:GetsbyRideshare/core/domain/usecases/get_total_price.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/price_category_state.dart';
@@ -21,6 +20,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart' as lctn;
 import 'package:web_socket_client/web_socket_client.dart';
+import '../../data/models/google_route_response_modal.dart';
 import '../../domain/entities/price_category.dart';
 import '../../domain/usecases/get_price_category.dart';
 import '../../domain/usecases/get_vehicle_catagory.dart';
@@ -276,7 +276,7 @@ class HomeProvider with ChangeNotifier {
 
 //Get Current Location
   getCurrentLocation() async {
-    log("get current location =-===>");
+    log("get current location home provider =-===>");
 
     try {
       bool serviceStatus = await locationService.serviceEnabled();
@@ -464,28 +464,48 @@ class HomeProvider with ChangeNotifier {
             startCap: Cap.roundCap,
             endCap: Cap.roundCap);
         polylines.add(polyline);
-        setPriceAndDistance();
+        // setPriceAndDistance();
+        setActualDistance();
         notifyListeners();
       }
     });
   }
 
-  setPriceAndDistance() async {
-    final double distanceInDouble =
-        await getDistance(originLatLng, destinationLatLng);
-    var distanceKm =
-        ((distanceInDouble) / 1000.roundToDouble()).toStringAsFixed(2);
-    distance = distanceKm;
-    notifyListeners();
+  setActualDistance() async {
+    try {
+      // Get real distance
+      var response = await Dio().get(
+          'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destinationLatLng.latitude},${destinationLatLng.longitude}&origins=${originLatLng.latitude},${originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
+      log(" response of real distance:--->>> ${response.data}");
+
+      var data = GoogleRouteDistanceResponseModal.fromJson(response.data);
+      distance = data.rows[0].elements[0].distance.text;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
   }
+
+  // setPriceAndDistance() async {
+  //   final double distanceInDouble =
+  //       await getDistance(originLatLng, destinationLatLng);
+  //   var distanceKm =
+  //       ((distanceInDouble) / 1000.roundToDouble()).toStringAsFixed(2);
+  //   distance = distanceKm;
+  //   notifyListeners();
+  // }
 
   Stream<TotalPriceState> fetchTotalPrice() async* {
     showLoading();
-    final double distanceInDouble =
-        await getDistance(originLatLng, destinationLatLng);
-    var distanceKm =
-        ((distanceInDouble) / 1000.roundToDouble()).toStringAsFixed(2);
-    var distanceMeter = double.parse(distanceKm) * 1000;
+    // final double distanceInDouble =
+    //     await getDistance(originLatLng, destinationLatLng);
+    // var distanceKm =
+    //     ((distanceInDouble) / 1000.roundToDouble()).toStringAsFixed(2);
+    // var distanceMeter = double.parse(distanceKm) * 1000;
+
+    var distanceMeter = double.parse(distance);
+
+    log("Distance meter is;;;->>$distanceMeter");
     newState = TotalPriceLoading();
     DateFormat dateFormat = DateFormat.Hm();
     DateTime now = DateTime.now();
@@ -527,10 +547,13 @@ class HomeProvider with ChangeNotifier {
 
 //Get all the Vehicles Catagories
   Stream<VehiclesCategoryState> fetchVehicleCategory() async* {
+    log("-->>> distance privce --->>>>   $distance");
+
+    String dist = distance.split(' ').first;
     yield VehiclesCategoryLoading();
 
     final result = await getVehicleCatagory(
-        distance, "0", "${originLatLng.latitude},${originLatLng.longitude}");
+        dist, "0", "${originLatLng.latitude},${originLatLng.longitude}");
     yield* result.fold(
       (failure) async* {
         yield VehiclesCategoryFailure(failure: failure);

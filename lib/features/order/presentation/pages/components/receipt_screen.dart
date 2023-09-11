@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/payment_screen.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../../core/static/assets.dart';
 import '../../../../../core/utility/injection.dart';

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +16,8 @@ import '../../../../../core/utility/session_helper.dart';
 import '../../../../testing/widgets/common_text.dart';
 import '../../../../testing/widgets/text_in_row.dart';
 import 'package:pay/pay.dart';
-import 'payment_configurations.dart' as payment_configurations;
 import 'feedback_screen.dart';
+import 'payment_configurations.dart' as payment_configurations;
 
 class PaymentScreen extends StatefulWidget {
   final String name;
@@ -208,37 +209,113 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               CustomButton(
                                   text: "Pay",
                                   event: () async {
-                                    var body = {
-                                      "card[number]":
-                                          Provider.of<PaymentProvider>(context,
-                                                  listen: false)
-                                              .selectedCardNumber,
-                                      "card[exp_month]":
-                                          Provider.of<PaymentProvider>(context,
-                                                  listen: false)
-                                              .selectedCardExpiry
-                                              .split('/')
-                                              .first,
-                                      "card[exp_year]":
-                                          Provider.of<PaymentProvider>(context,
-                                                  listen: false)
-                                              .selectedCardExpiry
-                                              .split('/')
-                                              .last,
-                                      "card[cvc]":
-                                          int.parse(textEditingController.text)
+                                    showLoading();
+                                    var headers = {
+                                      'Content-Type':
+                                          'application/x-www-form-urlencoded',
+                                      'Authorization':
+                                          'Bearer pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U',
                                     };
+                                    try {
+                                      var body = {
+                                        "card[number]":
+                                            Provider.of<PaymentProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .selectedCardNumber,
+                                        "card[exp_month]":
+                                            Provider.of<PaymentProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .selectedCardExpiry
+                                                .split('/')
+                                                .last,
+                                        "card[exp_year]":
+                                            Provider.of<PaymentProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .selectedCardExpiry
+                                                .split('/')
+                                                .first,
+                                        "card[cvc]": int.parse(
+                                            textEditingController.text)
+                                      };
 
-                                    var res = await dio.post(
+                                      log("card token body :===>> $body");
+                                      var res = await dio.request(
                                         'https://api.stripe.com/v1/tokens',
+                                        options: Options(
+                                          method: 'POST',
+                                          headers: headers,
+                                        ),
                                         data: body,
-                                        options: Options(headers: {
-                                          "Authorization": "Bearer $pkToken"
-                                        }));
+                                      );
 
-                                    log(res.toString());
+                                      if (res.statusCode == 200) {
+                                        log(res.data.toString());
+                                        log('token response :-->>${res.data["id"]}');
+
+                                        String cardToken = res.data["id"];
+
+                                        var body = {
+                                          'token': cardToken,
+                                          'order_id': int.parse(widget.orderId),
+                                          "driver_id":
+                                              int.parse(widget.driverId),
+                                          "amount": widget.totalPrice
+                                        };
+
+                                        log(body.toString());
+
+                                        var response = await dio.post(
+                                          'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                                          data: body,
+                                          options: Options(headers: {
+                                            "Authorization":
+                                                "Bearer $sessionToken"
+                                          }),
+                                        );
+
+                                        if (response.data["success"] == 1) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (ctx) => AlertDialog(
+                                              title: const Text("Ride Payment"),
+                                              content: const Text(
+                                                  "Payment successfull"),
+                                            ),
+                                          );
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (ctx) => AlertDialog(
+                                              title: const Text(
+                                                  "Payment unsuccessfull"),
+                                              content: Text(
+                                                  response.data["message"]),
+                                            ),
+                                          );
+                                        }
+                                      }
+
+                                      if (res.statusCode == 402) {
+                                        dismissLoading();
+                                        log("card details incorrect");
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content:
+                                              Text("Card details Incorrect"),
+                                        ));
+                                      } else {
+                                        dismissLoading();
+                                        log(res.toString());
+                                      }
+                                    } catch (e) {
+                                      dismissLoading();
+                                      log(e.toString());
+                                    }
                                   },
-                                  bgColor: bgGreyColor)
+                                  bgColor: black080808Color)
                             ],
                           );
                         },
@@ -286,7 +363,65 @@ class _PaymentScreenState extends State<PaymentScreen> {
             CustomButton(
               text: "Pay Now",
               isRounded: true,
-              event: () {
+              event: () async {
+                // var headers = {
+                //   'Content-Type': 'application/x-www-form-urlencoded',
+                //   'Authorization':
+                //       'Bearer pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U',
+                // };
+                // var data = {
+                //   'card[number]': '4242424242424242',
+                //   'card[exp_month]': '5',
+                //   'card[exp_year]': '25',
+                //   'card[cvc]': '123'
+                // };
+                // var response = await dio.request(
+                //   'https://api.stripe.com/v1/tokens',
+                //   options: Options(
+                //     method: 'POST',
+                //     headers: headers,
+                //   ),
+                //   data: data,
+                // );
+
+                // if (response.statusCode == 200) {
+                //   print(json.encode(response.data));
+                // } else {
+                //   print(response.statusMessage);
+                // }
+
+                // try {
+                //   dio.options.headers['content-Type'] =
+                //       'application/x-www-form-urlencoded';
+                //   dio.options.headers["Authorization"] = "Bearer +$pkToken";
+                //   var body = {
+                //     "card[number]": "4242424242424242",
+                //     "card[exp_month]": int.parse(
+                //         Provider.of<PaymentProvider>(context, listen: false)
+                //             .selectedCardExpiry
+                //             .split('/')
+                //             .last),
+                //     "card[exp_year]": int.parse(
+                //         Provider.of<PaymentProvider>(context, listen: false)
+                //             .selectedCardExpiry
+                //             .split('/')
+                //             .first),
+                //     "card[cvc]": int.parse(textEditingController.text)
+                //   };
+
+                //   log("card token body :===>> $body");
+
+                //   var res = await dio.post(
+                //     'https://api.stripe.com/v1/tokens',
+                //     data: body,
+                //   );
+
+                //   log(res.toString());
+                // } catch (e) {
+                //   log(e.toString());
+                // }
+                ;
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -310,7 +445,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             ? GooglePayButton(
                                 paymentConfiguration: snapshot.data!,
                                 paymentItems: _paymentItems,
-                                type: GooglePayButtonType.buy,
+                                type: GooglePayButtonType.pay,
+                                width: _deviceSize.width,
                                 margin: const EdgeInsets.only(top: 15.0),
                                 onPaymentResult: (result) async {
                                   log("result is: $result");

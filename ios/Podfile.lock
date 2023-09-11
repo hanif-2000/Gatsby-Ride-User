@@ -138,6 +138,10 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - pay_ios (0.0.1):
+    - Flutter
+  - permission_handler_apple (9.1.1):
+    - Flutter
   - PromisesObjC (2.3.1)
   - ReachabilitySwift (5.0.0)
   - shared_preferences_foundation (0.0.1):
@@ -148,50 +152,44 @@ PODS:
   - sqflite (0.0.3):
     - Flutter
     - FMDB (>= 2.7.5)
-  - Stripe (23.8.0):
-    - StripeApplePay (= 23.8.0)
-    - StripeCore (= 23.8.0)
-    - StripePayments (= 23.8.0)
-    - StripePaymentsUI (= 23.8.0)
-    - StripeUICore (= 23.8.0)
+  - Stripe (23.12.0):
+    - StripeApplePay (= 23.12.0)
+    - StripeCore (= 23.12.0)
+    - StripePayments (= 23.12.0)
+    - StripePaymentsUI (= 23.12.0)
+    - StripeUICore (= 23.12.0)
   - stripe_ios (0.0.1):
     - Flutter
-    - Stripe (~> 23.8.0)
-    - StripeApplePay (~> 23.8.0)
-    - StripeFinancialConnections (~> 23.8.0)
-    - StripePayments (~> 23.8.0)
-    - StripePaymentSheet (~> 23.8.0)
-    - StripePaymentsUI (~> 23.8.0)
-  - StripeApplePay (23.8.0):
-    - StripeCore (= 23.8.0)
-  - StripeCore (23.8.0)
-  - StripeFinancialConnections (23.8.0):
-    - StripeCore (= 23.8.0)
-    - StripeUICore (= 23.8.0)
-  - StripePayments (23.8.0):
-    - StripeCore (= 23.8.0)
-    - StripePayments/Stripe3DS2 (= 23.8.0)
-  - StripePayments/Stripe3DS2 (23.8.0):
-    - StripeCore (= 23.8.0)
-  - StripePaymentSheet (23.8.0):
-    - StripeApplePay (= 23.8.0)
-    - StripeCore (= 23.8.0)
-    - StripePayments (= 23.8.0)
-    - StripePaymentsUI (= 23.8.0)
-  - StripePaymentsUI (23.8.0):
-    - StripeCore (= 23.8.0)
-    - StripePayments (= 23.8.0)
-    - StripeUICore (= 23.8.0)
-  - StripeUICore (23.8.0):
-    - StripeCore (= 23.8.0)
+    - Stripe (~> 23.12.0)
+    - StripeApplePay (~> 23.12.0)
+    - StripeFinancialConnections (~> 23.12.0)
+    - StripePayments (~> 23.12.0)
+    - StripePaymentSheet (~> 23.12.0)
+    - StripePaymentsUI (~> 23.12.0)
+  - StripeApplePay (23.12.0):
+    - StripeCore (= 23.12.0)
+  - StripeCore (23.12.0)
+  - StripeFinancialConnections (23.12.0):
+    - StripeCore (= 23.12.0)
+    - StripeUICore (= 23.12.0)
+  - StripePayments (23.12.0):
+    - StripeCore (= 23.12.0)
+    - StripePayments/Stripe3DS2 (= 23.12.0)
+  - StripePayments/Stripe3DS2 (23.12.0):
+    - StripeCore (= 23.12.0)
+  - StripePaymentSheet (23.12.0):
+    - StripeApplePay (= 23.12.0)
+    - StripeCore (= 23.12.0)
+    - StripePayments (= 23.12.0)
+    - StripePaymentsUI (= 23.12.0)
+  - StripePaymentsUI (23.12.0):
+    - StripeCore (= 23.12.0)
+    - StripePayments (= 23.12.0)
+    - StripeUICore (= 23.12.0)
+  - StripeUICore (23.12.0):
+    - StripeCore (= 23.12.0)
   - Toast (4.0.0)
   - url_launcher_ios (0.0.1):
-    - Flutter
-  - video_player_avfoundation (0.0.1):
-    - Flutter
-  - wakelock (0.0.1):
-    - Flutter
-  - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -212,14 +210,13 @@ DEPENDENCIES:
   - location (from `.symlinks/plugins/location/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
+  - pay_ios (from `.symlinks/plugins/pay_ios/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
   - smart_auth (from `.symlinks/plugins/smart_auth/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
-  - wakelock (from `.symlinks/plugins/wakelock/ios`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
@@ -290,6 +287,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/ios"
+  pay_ios:
+    :path: ".symlinks/plugins/pay_ios/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/ios"
   smart_auth:
@@ -300,12 +301,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/stripe_ios/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
-  video_player_avfoundation:
-    :path: ".symlinks/plugins/video_player_avfoundation/ios"
-  wakelock:
-    :path: ".symlinks/plugins/wakelock/ios"
-  webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
@@ -344,27 +339,26 @@ SPEC CHECKSUMS:
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
+  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
+  pay_ios: 8c7beb9c61d885f3f51b61f75f8793023fc8843a
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   smart_auth: 4bedbc118723912d0e45a07e8ab34039c19e04f2
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
-  Stripe: 5432fbab660595a3bee937235dd71a99028ac68c
-  stripe_ios: c731dafb26f3736baebde37ba45db708943d5229
-  StripeApplePay: 5e686f50ee07c439b79b907dffeb144135e601c9
-  StripeCore: 91164d69b8593f44df9ee93e56a00355592068b6
-  StripeFinancialConnections: b30a494579271f33f38d9a934288c2ad617bfc26
-  StripePayments: c19d94c55723894e1f47dadb40a6f1bfa7fac214
-  StripePaymentSheet: 1fef5afa050bfd684e84553cba613041a2b3d7b7
-  StripePaymentsUI: 7d2fc8fe17c3fdc63508bc54df2b7cc3f45c8ef7
-  StripeUICore: 1dc4d2f9afcd908db85190e9091dfe260a1861fe
+  Stripe: 15fad81ffb8d553d77ff504a6d50d47b9028bed0
+  stripe_ios: 872ce75ce051b4070d061a185c8b7b67323c9f30
+  StripeApplePay: 871274acfa7a96650ea8a697c288c54b8288fb6e
+  StripeCore: 7b08fd286e8f8f5336eb725bc7ed1d2a4705cdc4
+  StripeFinancialConnections: 561831507db3d383be3933a3979f1b9d287a15e7
+  StripePayments: 081e01e73762852ccf3e662202d5dd4107634058
+  StripePaymentSheet: ec04397e9223c86a87be8b348cdbcf2075dd7a16
+  StripePaymentsUI: 3dae7fed9b148b2749dff622ece45f9b441b88ce
+  StripeUICore: 4a76fa59cab679e1b2fe1ad37d6b08c5bf2ada54
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
-  video_player_avfoundation: 81e49bb3d9fb63dccf9fa0f6d877dc3ddbeac126
-  wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
-  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-PODFILE CHECKSUM: ae13e8fc3255e16a1fa8673196f9cfbcecfac3fc
+PODFILE CHECKSUM: 723d7217d34a6985a8beaf81655a8ef1d9c1a451
 
 COCOAPODS: 1.12.1

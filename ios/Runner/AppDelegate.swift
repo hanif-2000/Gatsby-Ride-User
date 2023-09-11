@@ -11,7 +11,7 @@ import Firebase
   ) -> Bool {
     FirebaseApp.configure()
     GeneratedPluginRegistrant.register(with: self)
-    GMSServices.provideAPIKey("use_your_google_api_key")
+    GMSServices.provideAPIKey("AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs")
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]

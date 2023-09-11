@@ -49,8 +49,6 @@ class HistoryOrder {
     required this.total,
     required this.orderTime,
     required this.status,
-    required this.timeSchool,
-    required this.timeAfterSchool,
     required this.paymentMethod,
     required this.taxiType,
     required this.timestamp,
@@ -72,8 +70,7 @@ class HistoryOrder {
   String total;
   DateTime orderTime;
   int status;
-  String timeSchool;
-  String timeAfterSchool;
+
   String paymentMethod;
   String taxiType;
   String timestamp;
@@ -81,24 +78,22 @@ class HistoryOrder {
   List<RatingList> ratingList;
 
   factory HistoryOrder.fromJson(Map<String, dynamic> json) => HistoryOrder(
-        id: json["id"],
-        driverId: json["driver_id"],
+        id: json["id"] ?? '',
+        driverId: json["driver_id"] ?? "",
         driverName: json["driver_name"] ?? '',
         image: json["image"] ?? '',
         plateNumber: json["plate_number"] ?? '',
         rating: json["rating"] ?? '',
-        startCoordinate: json["start_coordinate"],
-        endCoordinate: json["end_coordinate"],
-        startAddress: json["start_address"],
-        endAddress: json["end_address"],
-        distance: json["distance"],
-        total: json["total"],
+        startCoordinate: json["start_coordinate"] ?? "",
+        endCoordinate: json["end_coordinate"] ?? "",
+        startAddress: json["start_address"] ?? '',
+        endAddress: json["end_address"] ?? "",
+        distance: json["distance"] ?? "",
+        total: json["total"] ?? '',
         orderTime: DateTime.parse(json["order_time"]),
-        status: json["status"],
-        timeSchool: json["time_school"],
-        timeAfterSchool: json["time_after_school"],
-        paymentMethod: json["payment_method"],
-        taxiType: json["taxi_type"],
+        status: json["status"] ?? 0,
+        paymentMethod: json["payment_method"] ?? "1",
+        taxiType: json["taxi_type"] ?? '',
         timestamp: json["timestamp"],
         category: CategoryClass.fromJson(json["category"]),
         ratingList: List<RatingList>.from(
@@ -120,8 +115,6 @@ class HistoryOrder {
         "total": total,
         "order_time": orderTime,
         "status": status,
-        "time_school": timeSchool,
-        "time_after_school": timeAfterSchool,
         "payment_method": paymentMethod,
         "taxi_type": taxiType,
         "timestamp": timestamp,
@@ -160,7 +153,7 @@ class CategoryClass {
   factory CategoryClass.fromJson(Map<String, dynamic> json) => CategoryClass(
         id: json["id"],
         category: json["category"],
-        priceKm: json["price_km"],
+        priceKm: json["price_km"] ?? 0,
         distance: json["distance"],
         minKm: json["min_km"],
         minPrice: json["min_price"],

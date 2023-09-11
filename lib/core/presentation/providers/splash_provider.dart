@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lctn;
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../utility/helper.dart';
 import '../../utility/injection.dart';
@@ -39,7 +40,8 @@ class SplashProvider with ChangeNotifier {
   }
 
   Stream<CurrencyState> fetchCurrency() async* {
-    getCurrentLocation();
+    getLocationPermission();
+    await getCurrentLocation();
 
     getDeviceType();
 
@@ -62,6 +64,104 @@ class SplashProvider with ChangeNotifier {
     );
 
     getSessionData();
+  }
+
+// Using permission_handler for both platforms
+  void getLocationPermission() async {
+    var status = await Permission.locationWhenInUse.status;
+    if (!status.isGranted) {
+      var status = await Permission.locationWhenInUse.request();
+      if (status.isGranted) {
+        var status = await Permission.locationAlways.request();
+        if (status.isGranted) {
+          //Do some stuff
+        } else {
+          //Do another stuff
+        }
+      } else {
+        //The user deny the permission
+      }
+      if (status.isPermanentlyDenied) {
+        //When the user previously rejected the permission and select never ask again
+        //Open the screen of settings
+
+        var check = await Permission.locationWhenInUse.request();
+        log("cehck -->> ${check.isGranted}");
+
+        if (check.isGranted) {
+          log("granted success");
+          getCurrentLocation();
+        }
+        // bool res = await openAppSettings();
+      }
+    } else {
+      //In use is available, check the always in use
+      var status = await Permission.locationAlways.status;
+      if (!status.isGranted) {
+        var status = await Permission.locationAlways.request();
+        if (status.isGranted) {
+          //Do some stuff
+        } else {
+          //Do another stuff
+        }
+      } else {
+        //previously available, do some stuff or nothing
+      }
+    }
+
+    // print('\n\nLocationRepository.getLocationPermission() started\n\n');
+    // late String permission;
+    // permission = await Permission.locationWhenInUse.status.then((value) {
+    //   print(
+    //       '\n\n LocationRepository.getLocationPermission Permission.locationWhenInUse.status is ${value.name}');
+
+    //   // permission = await Permission.location.status.then((value) {
+    //   //   print(
+    //   //       '\n\n LocationRepository.getLocationPermission Permission.location.status is ${value.name}');
+    //   switch (value) {
+    //     case PermissionStatus.denied:
+    //       return 'denied';
+    //     case PermissionStatus.permanentlyDenied:
+    //       return 'deniedForever';
+    //     case PermissionStatus.limited:
+    //       return 'limited';
+    //     case PermissionStatus.granted:
+    //       return 'granted';
+    //     case PermissionStatus.restricted:
+    //       return 'restricted';
+    //   }
+    //   return permission;
+    // });
+    // return permission;
+  }
+
+  Future<String> requestLocationPermission() async {
+    print('LocationRepository.requestLocationPermission started');
+    late String permission;
+    // general location doesn't open the popup
+    // var status = await Permission.location.status;
+    // print('Permission.location.status is $status');
+    var status = await Permission.locationWhenInUse.status;
+    print('Permission.locationWhenInUse.status is $status');
+
+    /// NOT Granted
+    if (!status.isGranted) {
+      // var status = await Permission.location.request();
+      // print('Permission.location.request() status is $status');
+      var status = await Permission.locationWhenInUse.request();
+      print('Permission.locationWhenInUse.request() status is $status');
+      if (status.isGranted) {
+        permission = 'granted';
+      } else {
+        permission = 'denied';
+      }
+    }
+
+    /// Granted
+    else {
+      permission = 'granted';
+    }
+    return permission;
   }
 
   //Get Current Location
