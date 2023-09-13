@@ -612,7 +612,7 @@ class HomeProvider with ChangeNotifier {
       'end_coordinate': txtLatLngDestination,
       'start_address': originAddress,
       'end_address': destinationAddress,
-      'distance': distance,
+      'distance': distance.split(' ').first,
       'total': price,
       'payment_method': _paymentMethod == PaymentMethod.cash ? "1" : "2",
       'vehicle_category_id': selectedVehicleId.toString(),
@@ -627,9 +627,9 @@ class HomeProvider with ChangeNotifier {
       logMe(failure);
       yield CreateOrderFailure(failure: failure);
     }, (data) async* {
-      logMe("Order Created ${data.orderId}");
+      logMe("Order Created ${data.id}");
       final session = locator<Session>();
-      session.setOrderId = data.orderId.toString();
+      session.setOrderId = data.id.toString();
       session.setOrderStatus = Order.lookingDriver;
       yield CreateOrderLoaded(data: data);
     });

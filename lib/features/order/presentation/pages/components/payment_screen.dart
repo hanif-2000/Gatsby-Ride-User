@@ -82,7 +82,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   // }
 
   void onApplePayResult(paymentResult) {
-    debugPrint(paymentResult.toString());
+    log(paymentResult.toString());
   }
 
   @override
@@ -512,6 +512,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             (Platform.isIOS)
                 ? widget.paymentMode != 1
                     ? ApplePayButton(
+                        width: _deviceSize.width,
                         // paymentConfigurationAsset: 'assets/icons/car.png',
                         paymentConfiguration:
                             PaymentConfiguration.fromJsonString(
@@ -519,7 +520,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         paymentItems: _paymentItems,
 
                         style: ApplePayButtonStyle.black,
-                        type: ApplePayButtonType.buy,
+                        type: ApplePayButtonType.checkout,
                         margin: const EdgeInsets.only(top: 15.0),
                         onPaymentResult: onApplePayResult,
                         loadingIndicator: const Center(

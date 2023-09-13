@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/utility/extension.dart';
 import 'package:GetsbyRideshare/features/order/data/models/detail_driver_response.dart';
 import 'package:GetsbyRideshare/features/order/data/models/detail_order_response_model.dart';
@@ -35,6 +37,8 @@ class OrderDataSourceImplementation implements OrderDataSource {
   @override
   Future<CreateOrderResponseModel> createOrder(FormData formData) async {
     String url = 'api/webservice/send_order';
+
+    log(formData.fields.toString());
     dio.withToken();
     try {
       final response = await dio.post(
