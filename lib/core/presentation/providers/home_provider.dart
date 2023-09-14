@@ -55,6 +55,8 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  String estimatedTimeToShow = '';
+
   Session session = locator<Session>();
 
 //Socket
@@ -123,6 +125,7 @@ class HomeProvider with ChangeNotifier {
   bool originIsFilled = false;
   String destinationAddress = appLoc.destination;
   String distance = "0", price = "";
+  int estimatedTime = 0;
   late Text originText;
   late Text destinationText;
   List<LatLng> polylineCoordinates = [];
@@ -147,6 +150,12 @@ class HomeProvider with ChangeNotifier {
   //setter
   set setSelectedCategory(val) {
     _selectedCategory = val;
+    notifyListeners();
+  }
+
+  //Update Estimated Time
+  updateEstimatedTime(val) {
+    estimatedTime = val;
     notifyListeners();
   }
 
@@ -480,6 +489,8 @@ class HomeProvider with ChangeNotifier {
 
       var data = GoogleRouteDistanceResponseModal.fromJson(response.data);
       distance = data.rows[0].elements[0].distance.text;
+      estimatedTime = data.rows[0].elements[0].duration.value;
+      estimatedTimeToShow = data.rows[0].elements[0].duration.text;
       notifyListeners();
     } catch (e) {
       print(e);
@@ -614,7 +625,14 @@ class HomeProvider with ChangeNotifier {
       'end_address': destinationAddress,
       'distance': distance.split(' ').first,
       'total': price,
-      'payment_method': _paymentMethod == PaymentMethod.cash ? "1" : "2",
+      'estimated_time': estimatedTime,
+      'payment_method': (_paymentMethod == PaymentMethod.cash)
+          ? "1"
+          : (_paymentMethod == PaymentMethod.creditCard)
+              ? "2"
+              : (_paymentMethod == PaymentMethod.googlePay)
+                  ? "3"
+                  : "4",
       'vehicle_category_id': selectedVehicleId.toString(),
     });
 

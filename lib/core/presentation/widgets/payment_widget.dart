@@ -170,22 +170,25 @@ class PaymentOption extends StatelessWidget {
                                   : SizedBox(),
 
                               //Google pay button
-                              SizedBox(
-                                  child: PaymentTile(
-                                title: "Google Pay",
-                                assets: 'assets/icons/google.svg',
-                                onTap: () {
-                                  provider.setPaymentMethod =
-                                      enums.PaymentMethod.googlePay;
-                                  // Navigator.pop(context);
-                                },
-                                selected: provider.paymentMethod == null
-                                    ? false
-                                    : provider.paymentMethod ==
-                                            enums.PaymentMethod.googlePay
-                                        ? true
-                                        : false,
-                              )),
+
+                              Platform.isAndroid
+                                  ? SizedBox(
+                                      child: PaymentTile(
+                                      title: "Google Pay",
+                                      assets: 'assets/icons/google.svg',
+                                      onTap: () {
+                                        provider.setPaymentMethod =
+                                            enums.PaymentMethod.googlePay;
+                                        // Navigator.pop(context);
+                                      },
+                                      selected: provider.paymentMethod == null
+                                          ? false
+                                          : provider.paymentMethod ==
+                                                  enums.PaymentMethod.googlePay
+                                              ? true
+                                              : false,
+                                    ))
+                                  : SizedBox(),
 
                               // SizedBox(
                               //   height: _deviceSize.height * .5,

@@ -44,15 +44,18 @@ class CustomButton extends StatelessWidget {
             ? text is String
                 ? Text(text, style: txtButtonStyle)
                 : text
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  image!,
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  text is String ? Text(text, style: txtButtonStyle) : text,
-                ],
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    image!,
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    text is String ? Text(text, style: txtButtonStyle) : text,
+                  ],
+                ),
               ));
   }
 }

@@ -70,7 +70,6 @@ class HistoryOrder {
   String total;
   DateTime orderTime;
   int status;
-
   String paymentMethod;
   String taxiType;
   String timestamp;

@@ -47,6 +47,19 @@
 	<string>This app need access to location of user for navigation</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app need access to photo library to change profile picture</string>
+
+
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1022060321341-0c5f614tgu3358is65esg6v6kat912mn</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

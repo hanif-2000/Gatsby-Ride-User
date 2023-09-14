@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/presentation/pages/home_page/home_page.dart';
+import '../../../../../core/presentation/providers/home_provider.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/submit_ratings_state.dart';
 
@@ -235,7 +237,19 @@ class FeedBackScreen extends StatelessWidget {
                               color: blackColor,
                             ),
                           ),
-                          event: () {
+                          event: () async {
+                            var homeProvider = Provider.of<HomeProvider>(
+                                context,
+                                listen: false);
+
+                            var orderProvider = Provider.of<OrderProvider>(
+                                context,
+                                listen: false);
+                            await homeProvider.clearState();
+                            await orderProvider.clearState();
+
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, HomePage.routeName, (route) => false);
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(

@@ -1,9 +1,12 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../core/static/assets.dart';
@@ -270,6 +273,210 @@ class LoginPage extends StatelessWidget {
                   bgColor: greyC8C7CCColor,
                 ),
               ),
+
+// Sign in with apple
+
+              Platform.isIOS
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                        left: sizeMedium,
+                        right: sizeMedium,
+                        bottom: sizeMedium,
+                      ),
+                      child: CustomButton(
+                        text: const Text(
+                          "Sign in with Apple",
+                          style: TextStyle(
+                            fontFamily: "poPPinSemiBold",
+                            fontWeight: FontWeight.w600,
+                            color: whiteColor,
+                            fontSize: 15,
+                          ),
+                        ),
+                        image: SvgPicture.asset('assets/icons/apple.svg'),
+                        event: () async {
+                          final FirebaseAuth auth = FirebaseAuth.instance;
+
+                          final credential =
+                              await SignInWithApple.getAppleIDCredential(
+                            scopes: [
+                              AppleIDAuthorizationScopes.email,
+                              AppleIDAuthorizationScopes.fullName,
+                            ],
+                          );
+                          final oauthCredential =
+                              OAuthProvider("apple.com").credential(
+                            idToken: credential.identityToken,
+                          );
+
+                          Navigator.pop(context);
+                          log('Email - ${credential.email}');
+                          log('Name - ${credential.givenName}');
+                          log('Code - ${credential.authorizationCode}');
+                          log('userIdentifier - ${credential.userIdentifier}');
+                          log('Token - ${credential.identityToken}');
+
+                          log("apple credentials: $credential");
+
+                          if (credential.email == null ||
+                              credential.email == '') {
+                            var value = await FlutterKeychain.get(
+                                key: "${credential.userIdentifier}");
+                            if (value != null) {
+                              log('User detail --> $value');
+                              String name =
+                                  value.split(':').first.split('/').first;
+                              String lastName =
+                                  value.split(':').first.split('/').last;
+                              String email = value.split(':').last;
+
+                              final oauthCredential =
+                                  OAuthProvider("apple.com").credential(
+                                idToken: credential.identityToken,
+                              );
+
+                              //  AuthCredential savedCredential= AuthorizationAppleID(000364.a2aa5cb11a3a4f288b26927d0f28fb1e.0445, apps, Davaloper, appsdeveloper22@gmail.com, null)
+
+                              log('name - $name');
+                              log('Email - $email');
+                              log('lastname-$lastName');
+
+                              // auth.signInWithCredential(oauthCredential).then((value) {
+                              //   log("value $value");
+
+                              //   loginApi(
+                              //       socialId: value.user!.uid,
+                              //       loginType: Constants.apple,
+                              //       firstName: name,
+                              //       lastName: lastName,
+                              //       profilePic: '');
+                              // });
+
+                              await auth
+                                  .signInWithCredential(oauthCredential)
+                                  .then((value) {
+                                var provider = Provider.of<LoginProvider>(
+                                    context,
+                                    listen: false);
+                                provider
+                                    .updateSocialLoginData(
+                                  userEmail: value.user!.email!,
+                                  name: value.user!.displayName!,
+                                  id: value.user!.uid,
+                                )
+                                    .then((value) {
+                                  provider
+                                      .doLoginApiSocial()
+                                      .listen((state) async {
+                                    log(state.toString());
+                                    switch (state.runtimeType) {
+                                      case LoginLoading:
+                                        showLoading();
+
+                                        break;
+                                      case LoginFailure:
+                                        final msg =
+                                            (state as LoginFailure).failure;
+
+                                        // log("-------->>>>>>" + msg.toString());
+                                        dismissLoading();
+
+                                        showToast(message: msg);
+                                        break;
+                                      case LoginSuccess:
+                                        dismissLoading();
+
+                                        final session = locator<Session>();
+                                        session.setLoggedIn = true;
+                                        showToast(message: appLoc.success);
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            HomePage.routeName,
+                                            (route) => false);
+                                        logMe(
+                                            "Authorization Token: ${session.sessionToken}");
+                                        break;
+                                    }
+                                  });
+                                });
+                                log("value" + value.toString());
+                              });
+
+                              return true;
+                            } else {
+                              return true;
+                            }
+                          } else {
+                            await FlutterKeychain.put(
+                                key: credential.userIdentifier!,
+                                value:
+                                    "${credential.givenName}/${credential.familyName}:${credential.email}");
+                            log('Saved in Keychain.....');
+
+                            log("oauthcredential: $oauthCredential");
+                            await auth
+                                .signInWithCredential(oauthCredential)
+                                .then((value) {
+                              var provider = Provider.of<LoginProvider>(context,
+                                  listen: false);
+                              provider
+                                  .updateSocialLoginData(
+                                userEmail: value.user!.email!,
+                                name: value.user!.displayName!,
+                                id: value.user!.uid,
+                              )
+                                  .then((value) {
+                                provider
+                                    .doLoginApiSocial()
+                                    .listen((state) async {
+                                  log(state.toString());
+                                  switch (state.runtimeType) {
+                                    case LoginLoading:
+                                      showLoading();
+
+                                      break;
+                                    case LoginFailure:
+                                      final msg =
+                                          (state as LoginFailure).failure;
+
+                                      // log("-------->>>>>>" + msg.toString());
+                                      dismissLoading();
+
+                                      showToast(message: msg);
+                                      break;
+                                    case LoginSuccess:
+                                      dismissLoading();
+
+                                      final session = locator<Session>();
+                                      session.setLoggedIn = true;
+                                      showToast(message: appLoc.success);
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          HomePage.routeName, (route) => false);
+                                      logMe(
+                                          "Authorization Token: ${session.sessionToken}");
+                                      break;
+                                  }
+                                });
+                              });
+                              log("value" + value.toString());
+                            });
+
+                            // userModel = SocialUserModel(
+                            //   credential.givenName,
+                            //   credential.userIdentifier,
+                            //   credential.email,
+                            //   '',
+                            // );
+                            return true;
+                          }
+                        },
+                        buttonHeight: 50,
+                        // buttonHeight: MediaQuery.of(context).size.height * 0.080,
+                        isRounded: true,
+                        bgColor: black080808Color,
+                      ),
+                    )
+                  : SizedBox(),
 
               // Center(
               //   child: InkWell(

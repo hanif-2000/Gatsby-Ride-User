@@ -255,19 +255,40 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                         width: 30,
                                         fit: BoxFit.fill,
                                       )
-                                    : SvgPicture.asset(
-                                        googleIconSvg,
-                                        height: 30,
-                                        width: 30,
-                                        fit: BoxFit.fill,
-                                      ),
+                                    : data.orderReceipt![0].paymentMethod == 2
+                                        ? SvgPicture.asset(
+                                            creditIcon,
+                                            height: 30,
+                                            width: 30,
+                                            fit: BoxFit.fill,
+                                          )
+                                        : data.orderReceipt![0].paymentMethod ==
+                                                3
+                                            ? SvgPicture.asset(
+                                                googleIconSvg,
+                                                height: 30,
+                                                width: 30,
+                                                fit: BoxFit.fill,
+                                              )
+                                            : SvgPicture.asset(
+                                                "assets/icons/apple.svg",
+                                                height: 30,
+                                                width: 30,
+                                                fit: BoxFit.fill,
+                                              ),
                                 SizedBox(
                                   width: 10.0,
                                 ),
                                 CommonText(
                                   text: data.orderReceipt![0].paymentMethod == 1
                                       ? appLoc.cash
-                                      : "Online",
+                                      : data.orderReceipt![0].paymentMethod == 2
+                                          ? "Credit Card"
+                                          : data.orderReceipt![0]
+                                                      .paymentMethod ==
+                                                  3
+                                              ? "Google Pay"
+                                              : "Online",
                                   fontWeight: FontWeight.w400,
                                   fontColor: grey7D7979Color,
                                   fontFamily: "poPPinMedium",

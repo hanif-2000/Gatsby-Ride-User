@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import 'package:provider/provider.dart';
-
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:dio/dio.dart';
@@ -24,7 +23,7 @@ class PaymentScreen extends StatefulWidget {
   final String img;
   final String carModal;
   final String carNo;
-  final int totalPrice;
+  final double totalPrice;
   final int paymentMode;
   final String orderId;
   final String driverId;
@@ -49,6 +48,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
   late final Future<PaymentConfiguration> _googlePayConfigFuture;
 
   var sessionToken = locator<Session>().sessionToken;
+
+  bool isPaymentSuccess = false;
+
+  updatePaymentSuccess() {
+    setState(() {
+      isPaymentSuccess = true;
+    });
+  }
 
   var _paymentItems = [
     PaymentItem(
@@ -76,12 +83,68 @@ class _PaymentScreenState extends State<PaymentScreen> {
     // await Stripe.instance.confirmPayment(
     //   clientSecret,
     //   params,
-    // );
+    // );-
   }
   //   debugPrint(paymentResult.toString());
   // }
 
-  void onApplePayResult(paymentResult) {
+  void onApplePayResult(paymentResult) async {
+    final token =
+        await stripe.Stripe.instance.createApplePayToken(paymentResult);
+    log("-->>> Token id is <<<<-----" + token.id);
+
+    var body = {
+      'token': token.id,
+      'order_id': int.parse(widget.orderId),
+      "driver_id": int.parse(widget.driverId),
+      "amount": widget.totalPrice
+    };
+
+    log("apple card body is-->>  " + body.toString());
+
+    var response = await dio.post(
+      'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+      data: body,
+      options: Options(headers: {"Authorization": "Bearer $sessionToken"}),
+    );
+
+    if (response.data["success"] == 1) {
+      updatePaymentSuccess();
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Ride Payment Status "),
+          content: const Text("Payment successfull"),
+          actions: [
+            CustomButton(
+                isRounded: true,
+                text: "Ok",
+                event: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FeedBackScreen(
+                        name: widget.name,
+                        img: widget.img,
+                        carModal: widget.carModal,
+                        carNo: widget.carNo,
+                      ),
+                    ),
+                  );
+                },
+                bgColor: black080808Color)
+          ],
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Payment unsuccessfull"),
+          content: Text(response.data["message"]),
+        ),
+      );
+    }
     log(paymentResult.toString());
   }
 
@@ -165,12 +228,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             Row(
               children: [
-                SvgPicture.asset('assets/icons/cash.svg'),
+                widget.paymentMode == 1
+                    ? SvgPicture.asset('assets/icons/cash.svg')
+                    : widget.paymentMode == 2
+                        ? SvgPicture.asset('assets/icons/card.svg')
+                        : widget.paymentMode == 3
+                            ? SvgPicture.asset('assets/icons/google.svg')
+                            : SvgPicture.asset('assets/icons/apple.svg'),
                 SizedBox(
                   width: 10.0,
                 ),
                 Text(
-                  widget.paymentMode == 0 ? "Cash" : "Online",
+                  widget.paymentMode == 1
+                      ? "Cash"
+                      : widget.paymentMode == 2
+                          ? "Credit Card"
+                          : widget.paymentMode == 3
+                              ? "Google Pay"
+                              : "Apple Pay",
                   style: TextStyle(
                     fontFamily: "poPPinRegular",
                     fontSize: 16.0,
@@ -180,7 +255,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ],
             ),
 
-            widget.paymentMode != 1
+            widget.paymentMode == 2
                 ? CustomButton(
                     borderColor: black080808Color,
                     text: "Pay With Card *******" +
@@ -277,12 +352,35 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         );
 
                                         if (response.data["success"] == 1) {
+                                          updatePaymentSuccess();
                                           showDialog(
                                             context: context,
                                             builder: (ctx) => AlertDialog(
-                                              title: const Text("Ride Payment"),
+                                              title: const Text(
+                                                  "Ride Payment Status"),
                                               content: const Text(
-                                                  "Payment successfull"),
+                                                  "Payment successful"),
+                                              actions: [
+                                                CustomButton(
+                                                    isRounded: true,
+                                                    text: "Ok",
+                                                    event: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              FeedBackScreen(
+                                                            name: widget.name,
+                                                            img: widget.img,
+                                                            carModal:
+                                                                widget.carModal,
+                                                            carNo: widget.carNo,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    bgColor: black080808Color)
+                                              ],
                                             ),
                                           );
                                         } else {
@@ -360,83 +458,104 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 : SizedBox(),
 
             Spacer(),
-            CustomButton(
-              text: "Pay Now",
-              isRounded: true,
-              event: () async {
-                // var headers = {
-                //   'Content-Type': 'application/x-www-form-urlencoded',
-                //   'Authorization':
-                //       'Bearer pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U',
-                // };
-                // var data = {
-                //   'card[number]': '4242424242424242',
-                //   'card[exp_month]': '5',
-                //   'card[exp_year]': '25',
-                //   'card[cvc]': '123'
-                // };
-                // var response = await dio.request(
-                //   'https://api.stripe.com/v1/tokens',
-                //   options: Options(
-                //     method: 'POST',
-                //     headers: headers,
-                //   ),
-                //   data: data,
-                // );
 
-                // if (response.statusCode == 200) {
-                //   print(json.encode(response.data));
-                // } else {
-                //   print(response.statusMessage);
-                // }
+            widget.paymentMode == 1
+                ? CustomButton(
+                    text: "Pay With Cash",
+                    isRounded: true,
+                    event: () async {
+                      // var headers = {
+                      //   'Content-Type': 'application/x-www-form-urlencoded',
+                      //   'Authorization':
+                      //       'Bearer pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U',
+                      // };
+                      // var data = {
+                      //   'card[number]': '4242424242424242',
+                      //   'card[exp_month]': '5',
+                      //   'card[exp_year]': '25',
+                      //   'card[cvc]': '123'
+                      // };
+                      // var response = await dio.request(
+                      //   'https://api.stripe.com/v1/tokens',
+                      //   options: Options(
+                      //     method: 'POST',
+                      //     headers: headers,
+                      //   ),
+                      //   data: data,
+                      // );
 
-                // try {
-                //   dio.options.headers['content-Type'] =
-                //       'application/x-www-form-urlencoded';
-                //   dio.options.headers["Authorization"] = "Bearer +$pkToken";
-                //   var body = {
-                //     "card[number]": "4242424242424242",
-                //     "card[exp_month]": int.parse(
-                //         Provider.of<PaymentProvider>(context, listen: false)
-                //             .selectedCardExpiry
-                //             .split('/')
-                //             .last),
-                //     "card[exp_year]": int.parse(
-                //         Provider.of<PaymentProvider>(context, listen: false)
-                //             .selectedCardExpiry
-                //             .split('/')
-                //             .first),
-                //     "card[cvc]": int.parse(textEditingController.text)
-                //   };
+                      // if (response.statusCode == 200) {
+                      //   print(json.encode(response.data));
+                      // } else {
+                      //   print(response.statusMessage);
+                      // }
 
-                //   log("card token body :===>> $body");
+                      // try {
+                      //   dio.options.headers['content-Type'] =
+                      //       'application/x-www-form-urlencoded';
+                      //   dio.options.headers["Authorization"] = "Bearer +$pkToken";
+                      //   var body = {
+                      //     "card[number]": "4242424242424242",
+                      //     "card[exp_month]": int.parse(
+                      //         Provider.of<PaymentProvider>(context, listen: false)
+                      //             .selectedCardExpiry
+                      //             .split('/')
+                      //             .last),
+                      //     "card[exp_year]": int.parse(
+                      //         Provider.of<PaymentProvider>(context, listen: false)
+                      //             .selectedCardExpiry
+                      //             .split('/')
+                      //             .first),
+                      //     "card[cvc]": int.parse(textEditingController.text)
+                      //   };
 
-                //   var res = await dio.post(
-                //     'https://api.stripe.com/v1/tokens',
-                //     data: body,
-                //   );
+                      //   log("card token body :===>> $body");
 
-                //   log(res.toString());
-                // } catch (e) {
-                //   log(e.toString());
-                // }
-                ;
+                      //   var res = await dio.post(
+                      //     'https://api.stripe.com/v1/tokens',
+                      //     data: body,
+                      //   );
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FeedBackScreen(
-                      name: widget.name,
-                      img: widget.img,
-                      carModal: widget.carModal,
-                      carNo: widget.carNo,
-                    ),
-                  ),
-                );
-              },
-              bgColor: blackColor,
-            ),
+                      //   log(res.toString());
+                      // } catch (e) {
+                      //   log(e.toString());
+                      // }
+                      ;
 
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FeedBackScreen(
+                            name: widget.name,
+                            img: widget.img,
+                            carModal: widget.carModal,
+                            carNo: widget.carNo,
+                          ),
+                        ),
+                      );
+                    },
+                    bgColor: blackColor,
+                  )
+                : SizedBox(),
+
+            isPaymentSuccess == true
+                ? CustomButton(
+                    text: "Give Feedback",
+                    event: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FeedBackScreen(
+                            name: widget.name,
+                            img: widget.img,
+                            carModal: widget.carModal,
+                            carNo: widget.carNo,
+                          ),
+                        ),
+                      );
+                    },
+                    bgColor: black080808Color)
+                : SizedBox(),
             FutureBuilder<PaymentConfiguration>(
                 future: _googlePayConfigFuture,
                 builder: (context, snapshot) => snapshot.hasData
@@ -482,12 +601,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   );
 
                                   if (response.data["success"] == 1) {
+                                    updatePaymentSuccess();
                                     showDialog(
                                       context: context,
                                       builder: (ctx) => AlertDialog(
-                                        title: const Text("Ride Payment"),
+                                        title:
+                                            const Text("Ride Payment Status"),
                                         content:
                                             const Text("Payment successfull"),
+                                        actions: [
+                                          CustomButton(
+                                              isRounded: true,
+                                              text: "Ok",
+                                              event: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        FeedBackScreen(
+                                                      name: widget.name,
+                                                      img: widget.img,
+                                                      carModal: widget.carModal,
+                                                      carNo: widget.carNo,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              bgColor: black080808Color)
+                                        ],
                                       ),
                                     );
                                   } else {
@@ -513,6 +654,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ? widget.paymentMode != 1
                     ? ApplePayButton(
                         width: _deviceSize.width,
+                        height: 50,
+
                         // paymentConfigurationAsset: 'assets/icons/car.png',
                         paymentConfiguration:
                             PaymentConfiguration.fromJsonString(
@@ -531,7 +674,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 : SizedBox(),
 
             SizedBox(
-              height: 0,
+              height: _deviceSize.height * .1,
             )
 
             // GooglePayButton(

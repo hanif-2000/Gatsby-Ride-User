@@ -94,7 +94,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                         index: index,
                                         vehicleImage:
                                             "${provider.carsImageList[index]}",
-                                        time: "${data[index].time} Min",
+                                        time: "${provider.estimatedTimeToShow}",
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
                                         capacity: data[index].seat.toString(),

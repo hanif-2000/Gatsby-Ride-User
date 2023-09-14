@@ -47,7 +47,7 @@ class OrderReceiptDataModel extends Equatable {
   String id;
   String driverId;
   String distance;
-  int total;
+  dynamic total;
   DateTime orderTime;
   dynamic startTime;
   DateTime endTime;
@@ -111,7 +111,7 @@ class OrderReceiptDataModel extends Equatable {
         id: json["id"] ?? "",
         driverId: json["driver_id"] ?? "",
         distance: json["distance"] ?? '',
-        total: json["total"] ?? 0,
+        total: json["total"] ?? 0.0,
         orderTime: DateTime.parse(json["order_time"]),
         startTime: json["start_time"],
         endTime: DateTime.parse(json["end_time"]),
@@ -119,7 +119,7 @@ class OrderReceiptDataModel extends Equatable {
         image: json["image"],
         userName: json["user_name"],
         userPhone: json["user_phone"],
-        rating: json["rating"] ?? 5,
+        rating: json["rating"] ?? 0,
         plateNumber: json["plate_number"] ?? '',
         vehicleName: json["vehicle_name"] ?? "",
         carModel: json["car_model"] ?? "",
@@ -153,9 +153,9 @@ class VehicleCategory {
   int id;
   String category;
   double priceKm;
-  int techFee;
-  int baseFare;
-  int distance;
+  dynamic techFee;
+  dynamic baseFare;
+  dynamic distance;
   double minKm;
   int minPrice;
   int extraKm;

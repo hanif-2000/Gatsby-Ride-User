@@ -5,7 +5,7 @@ class DetailOrderModel extends OrderDetail {
     required int orderId,
     required int driverId,
     required int userId,
-    required int totalPrice,
+    required dynamic totalPrice,
     required String startCoordinate,
     required String endCoordinate,
     required String startAddress,

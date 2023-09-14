@@ -63,6 +63,9 @@ dependencies:
   flutter_stripe: ^9.3.0
   google_directions_api: ^0.9.1
   permission_handler: ^11.0.0
+
+  flutter_keychain: ^2.3.0
+  sign_in_with_apple: ^4.3.0
   # credit_card: ^0.1.8
   # upi_pay: ^1.0.1
   # flutter_pay: ^1.0.2

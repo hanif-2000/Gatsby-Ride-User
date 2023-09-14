@@ -49,7 +49,7 @@ class CustomVehicleInfo extends StatelessWidget {
               ),
 
               Container(
-                width: _deviceSize.width * .6,
+                width: _deviceSize.width * .55,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -86,7 +86,7 @@ class CustomVehicleInfo extends StatelessWidget {
                               width: 15,
                             ),
                             Text(
-                              "    2",
+                              "   2",
                               style: const TextStyle(
                                   fontFamily: 'poPPinRegular',
                                   fontWeight: FontWeight.w400,
