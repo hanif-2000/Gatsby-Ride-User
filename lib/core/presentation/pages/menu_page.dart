@@ -111,18 +111,18 @@ class HomeDrawerPage extends StatelessWidget {
 
                       //Testing Button for payment
 
-                      DrawerButtonItemWidget(
-                        title: "Testing Payment",
-                        onTap: () {
-                          sendPayment();
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => PaymentHomePage(),
-                          //   ),
-                          // );
-                        },
-                      ),
+                      // DrawerButtonItemWidget(
+                      //   title: "Testing Payment",
+                      //   onTap: () {
+                      //     sendPayment();
+                      //     // Navigator.push(
+                      //     //   context,
+                      //     //   MaterialPageRoute(
+                      //     //     builder: (context) => PaymentHomePage(),
+                      //     //   ),
+                      //     // );
+                      //   },
+                      // ),
 
                       //ABOUT US
                       // DrawerButtonItemWidget(

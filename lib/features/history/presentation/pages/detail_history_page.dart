@@ -88,7 +88,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  (getHistoryStatus(widget.item.status) ==
+                                  (getHistoryStatus(widget.item.status!) ==
                                           "Cancelled")
                                       ? SvgPicture.asset(
                                           'assets/icons/red_dot.svg')
@@ -99,13 +99,13 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                   ),
 
                                   AutoSizeText(
-                                    getHistoryStatus(widget.item.status),
+                                    getHistoryStatus(widget.item.status!),
                                     textAlign: TextAlign.end,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                     style: TextStyle(
                                       color: (getHistoryStatus(
-                                                  widget.item.status) ==
+                                                  widget.item.status!) ==
                                               "Cancelled")
                                           ? redf52d56Color
                                           : green2DAA5FColor,
@@ -181,18 +181,18 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => RatingsScreen(
-                                      driverId: widget.item.driverId,
+                                      driverId: widget.item.driverId!,
                                     ),
                                   ),
                                 );
                               },
-                              category: widget.item.category.category,
-                              driverId: widget.item.driverId,
-                              driverImage: widget.item.image == ''
+                              category: widget.item.category.category!,
+                              driverId: widget.item.driverId!,
+                              driverImage: widget.item.image! == ''
                                   ? ''
-                                  : widget.item.image,
-                              driverName: widget.item.driverName,
-                              platerNumber: widget.item.plateNumber,
+                                  : widget.item.image!,
+                              driverName: widget.item.driverName!,
+                              platerNumber: widget.item.plateNumber!,
                               rating: widget.item.rating.toString(),
                             ),
                           ),
@@ -240,7 +240,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           const SizedBox(height: 2.0),
                                           Flexible(
                                             child: Text(
-                                              widget.item.startAddress,
+                                              widget.item.startAddress!,
                                               maxLines: 5,
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
@@ -301,7 +301,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           const SizedBox(height: 2.0),
                                           Flexible(
                                             child: Text(
-                                              widget.item.endAddress,
+                                              widget.item.endAddress!,
                                               maxLines: 5,
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
@@ -453,7 +453,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   fontSize: 16)),
                                           Text(
                                             mergeDistanceTxt(
-                                              widget.item.distance,
+                                              widget.item.distance!,
                                             ),
                                             style: const TextStyle(
                                               fontSize: 16.0,
@@ -496,7 +496,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   fontFamily: 'poPPinSemiBold',
                                                   fontSize: 16)),
                                           Text(
-                                            mergePriceTxt(widget.item.total),
+                                            mergePriceTxt(widget.item.total!),
                                             style: const TextStyle(
                                               fontSize: 16.0,
                                               fontFamily: "poPPinMedium",
@@ -523,7 +523,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                         ),
                                       ),
                                       Text(
-                                        mergePriceTxt(widget.item.total),
+                                        mergePriceTxt(widget.item.total!),
                                         style: const TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w700,
@@ -555,12 +555,12 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                     ),
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: widget.item.ratingList.length,
+                      itemCount: widget.item.ratingList!.length,
                       itemBuilder: (context, index) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            widget.item.ratingList[index].type == 1
+                            widget.item.ratingList![index].type == 1
                                 ? Text(
                                     appLoc.ratingGiven,
                                     style: TextStyle(
@@ -578,8 +578,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                             RatingWidget(
                               ratingDate: "Date",
                               rating: double.parse(
-                                  widget.item.ratingList[index].rating),
-                              review: widget.item.ratingList[index].review,
+                                  widget.item.ratingList![index].rating),
+                              review: widget.item.ratingList![index].review,
                             ),
                           ],
                         );

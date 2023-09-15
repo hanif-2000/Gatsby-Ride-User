@@ -53,7 +53,7 @@ class ProfileEditProvider extends FormProvider {
       if (photo != null)
         'image': await MultipartFile.fromFile(photo.path, filename: photo.name),
       'last_name': lastName,
-      "country": selectedCountry.text
+      "country": "Canada"
     });
     final result = await updateProfile.execute(data);
     yield* result.fold((failure) async* {

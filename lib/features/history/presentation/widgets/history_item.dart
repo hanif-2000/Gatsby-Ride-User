@@ -30,10 +30,10 @@ class _HistoryItemState extends State<HistoryItem> {
     return GestureDetector(
         onTap: () {
           Provider.of<HistoryProvider>(context, listen: false).updateLatLong(
-            latOrigin: widget.data.startCoordinate.split(',').first,
-            longOrigin: widget.data.startCoordinate.split(',').last,
-            latDestination: widget.data.endCoordinate.split(',').first,
-            langDestination: widget.data.endCoordinate.split(',').last,
+            latOrigin: widget.data.startCoordinate!.split(',').first,
+            longOrigin: widget.data.startCoordinate!.split(',').last,
+            latDestination: widget.data.endCoordinate!.split(',').first,
+            langDestination: widget.data.endCoordinate!.split(',').last,
           );
           Navigator.pushNamed(context, DetailHistoryPage.routeName,
               arguments: widget.data);
@@ -92,7 +92,7 @@ class _HistoryItemState extends State<HistoryItem> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    (getHistoryStatus(widget.data.status) ==
+                                    (getHistoryStatus(widget.data.status!) ==
                                             "Cancelled")
                                         ? SvgPicture.asset(
                                             'assets/icons/red_dot.svg')
@@ -102,13 +102,13 @@ class _HistoryItemState extends State<HistoryItem> {
                                       width: 10.0,
                                     ),
                                     AutoSizeText(
-                                      getHistoryStatus(widget.data.status),
+                                      getHistoryStatus(widget.data.status!),
                                       textAlign: TextAlign.end,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       style: TextStyle(
                                         color: (getHistoryStatus(
-                                                    widget.data.status) ==
+                                                    widget.data.status!) ==
                                                 "Cancelled")
                                             ? redf52d56Color
                                             : green2DAA5FColor,
@@ -158,7 +158,7 @@ class _HistoryItemState extends State<HistoryItem> {
                                       ),
                                       Flexible(
                                         child: Text(
-                                          widget.data.startAddress,
+                                          widget.data.startAddress!,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                             color: blackColor,
@@ -183,7 +183,7 @@ class _HistoryItemState extends State<HistoryItem> {
                                       ),
                                       Flexible(
                                         child: Text(
-                                          widget.data.endAddress,
+                                          widget.data.endAddress!,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                             color: blackColor,
@@ -215,7 +215,7 @@ class _HistoryItemState extends State<HistoryItem> {
                                   ),
                                   Flexible(
                                     child: AutoSizeText(
-                                      mergePriceTxt(widget.data.total),
+                                      mergePriceTxt(widget.data.total!),
                                       maxLines: 1,
                                       style: const TextStyle(
                                           color: blackColor,

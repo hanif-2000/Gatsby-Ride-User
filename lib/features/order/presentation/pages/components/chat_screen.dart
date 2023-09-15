@@ -114,15 +114,16 @@ class _ChatScreenState extends State<ChatScreen> {
                       ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         reverse: true,
-                        itemCount: socketProvider.data!.data.length,
+                        itemCount: socketProvider.data!.data!.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Bubble(
-                            message: socketProvider.data!.data[index].message,
-                            isMe: socketProvider.data!.data[index].senderType ==
-                                    'Customer'
-                                ? false
-                                : true,
+                            message: socketProvider.data!.data![index].message,
+                            isMe:
+                                socketProvider.data!.data![index].senderType ==
+                                        'Customer'
+                                    ? false
+                                    : true,
                           );
                         },
                       ),

@@ -73,7 +73,7 @@ String mergeAddress(String placeName, String address) {
 
 String mergeTypeTaxi(history.CategoryClass category) {
   String result;
-  String categoryName = category.category;
+  String categoryName = category.category!;
   String seat = category.seat.toString();
   result = "$categoryName ($seat ${appLoc.people})";
   return result;

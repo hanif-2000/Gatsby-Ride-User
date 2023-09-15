@@ -129,7 +129,7 @@ class SocketProvider with ChangeNotifier {
       log("res  " + response.toString());
       if (response['type'] == 'MessageList') {
         data = ChatResponseModal.fromJson(response);
-        log("Message Length is==>> " + data!.data.length.toString());
+        log("Message Length is==>> " + data!.data!.length.toString());
 
         log("response   --->>>>" + response.toString());
         logMe('Message list data-----> ${response['data']}');

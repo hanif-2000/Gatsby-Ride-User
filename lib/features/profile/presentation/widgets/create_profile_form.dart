@@ -7,11 +7,9 @@ import 'package:GetsbyRideshare/features/profile/presentation/providers/create_p
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_state.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_state.dart';
-import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
-import '../../../../core/static/assets.dart';
 import '../../../../core/utility/helper.dart';
 
 class CreateProfileForm extends StatefulWidget {
@@ -139,53 +137,59 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
             InkWell(
               onTap: () {},
               child: CustomTextField(
-                readOnly: true,
-                placeholder: appLoc.country,
-                controller: provider.selectedCountry,
-                suffixWidget: InkWell(
-                    onTap: () {
-                      showCountryPicker(
-                        context: context,
-                        exclude: ['KN', 'MF'],
-                        onSelect: (Country country) {
-                          provider.updateCountry(
-                            value: country.displayNameNoCountryCode,
-                          );
-                          logMe(
-                              'Select country: ${country.displayNameNoCountryCode}');
-                        },
-                        countryListTheme: CountryListThemeData(
-                          // Optional. Sets the border radius for the bottomsheet.
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(40.0),
-                            topRight: Radius.circular(40.0),
-                          ),
-                          // Optional. Styles the search field.
-                          inputDecoration: InputDecoration(
-                            labelText: 'Search',
-                            hintText: 'Start typing to search',
-                            prefixIcon: const Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: const Color(0xFF8C98A8).withOpacity(0.2),
-                              ),
-                            ),
-                          ),
-                          // Optional. Styles the text in the search field
-                          searchTextStyle: const TextStyle(
-                            color: Colors.blue,
-                            fontSize: 18,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Image.asset(dropdownIcon)),
                 fieldValidator: (val) {
                   if (val == '') {
                     return appLoc.mustNotEmpty;
                   }
                   return null;
                 },
+                readOnly: true,
+                placeholder: appLoc.country,
+                controller: provider.selectedCountry,
+                // suffixWidget: InkWell(
+                //     onTap: () {
+                //       showCountryPicker(
+                //         context: context,
+                //         exclude: ['KN', 'MF'],
+                //         onSelect: (Country country) {
+                //           provider.updateCountry(
+                //             value: country.displayNameNoCountryCode,
+                //           );
+                //           logMe(
+                //               'Select country: ${country.displayNameNoCountryCode}');
+                //         },
+                //         countryListTheme: CountryListThemeData(
+                //           // Optional. Sets the border radius for the bottomsheet.
+                //           borderRadius: const BorderRadius.only(
+                //             topLeft: Radius.circular(40.0),
+                //             topRight: Radius.circular(40.0),
+                //           ),
+                //           // Optional. Styles the search field.
+                //           inputDecoration: InputDecoration(
+                //             labelText: 'Search',
+                //             hintText: 'Start typing to search',
+                //             prefixIcon: const Icon(Icons.search),
+                //             border: OutlineInputBorder(
+                //               borderSide: BorderSide(
+                //                 color: const Color(0xFF8C98A8).withOpacity(0.2),
+                //               ),
+                //             ),
+                //           ),
+                //           // Optional. Styles the text in the search field
+                //           searchTextStyle: const TextStyle(
+                //             color: Colors.blue,
+                //             fontSize: 18,
+                //           ),
+                //         ),
+                //       );
+                //     },
+                //     child: Image.asset(dropdownIcon)),
+                // fieldValidator: (val) {
+                //   if (val == '') {
+                //     return appLoc.mustNotEmpty;
+                //   }
+                //   return null;
+                // },
               ),
             ),
             const SizedBox(

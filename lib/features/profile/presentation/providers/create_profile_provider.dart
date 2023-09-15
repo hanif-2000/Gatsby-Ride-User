@@ -11,7 +11,7 @@ class CreateProfileProvider extends FormProvider {
 
   CreateProfileProvider({required this.doCreateProfile});
 
-  TextEditingController selectedCountry = TextEditingController();
+  TextEditingController selectedCountry = TextEditingController(text: "Canada");
 
   bool isImageUploaded = false;
 
@@ -26,7 +26,7 @@ class CreateProfileProvider extends FormProvider {
       'first_name': firstNameController.text,
       'last_name': lastNameController.text,
       'phone': phoneController.text,
-      'country': selectedCountry.text,
+      'country': "Canada",
       'image': profileImage
     });
     final result = await doCreateProfile.execute(formData);
