@@ -99,6 +99,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                         vehicleType: data[index].categoryCar,
                                         capacity: data[index].seat.toString(),
                                         provider: provider,
+                                        vehicleDetail:
+                                            provider.vehiclesDetailsList,
                                       ),
                                     ),
                                   );

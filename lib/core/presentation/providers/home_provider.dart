@@ -202,6 +202,36 @@ class HomeProvider with ChangeNotifier {
     "assets/icons/tesla_car.png"
   ];
 
+  List vehiclesDetailsList = [
+    {
+      "carImg": "assets/icons/economy_car.png",
+      "minimunFare": "5.00",
+      "baseFare": "1.70",
+      "techFee": "3.00",
+      "perKm": "1.30",
+      "perMin": "0.30",
+      "seat": "4"
+    },
+    {
+      "carImg": "assets/icons/xl_car.png",
+      "minimunFare": "10.00",
+      "baseFare": "2.00",
+      "techFee": "3.00",
+      "perKm": "1.65",
+      "perMin": "0.35",
+      "seat": "4-6"
+    },
+    {
+      "carImg": "assets/icons/tesla_car.png",
+      "minimunFare": "10.00",
+      "baseFare": "2.00",
+      "techFee": "3.00",
+      "perKm": "1.65",
+      "perMin": "0.35",
+      "seat": "4-6"
+    }
+  ];
+
   //constructor
   HomeProvider(
       {required this.getTotalPrice,

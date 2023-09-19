@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:flutter/material.dart';
+
+import 'car_details_bottom_sheet.dart';
 
 class CustomVehicleInfo extends StatelessWidget {
   final String? vehicleImage;
@@ -11,6 +15,7 @@ class CustomVehicleInfo extends StatelessWidget {
   final VoidCallback? onTap;
   final int? index;
   final HomeProvider provider;
+  final List vehicleDetail;
 
   const CustomVehicleInfo({
     Key? key,
@@ -21,6 +26,7 @@ class CustomVehicleInfo extends StatelessWidget {
     this.capacity,
     this.onTap,
     this.index,
+    required this.vehicleDetail,
     required this.provider,
   }) : super(key: key);
 
@@ -117,6 +123,26 @@ class CustomVehicleInfo extends StatelessWidget {
                 ),
               ),
 
+              GestureDetector(
+                  onTap: () {
+                    log("on tap info called");
+
+                    showBottomSheet(
+                        estimatedPrice: price,
+                        minimumFare: provider.vehiclesDetailsList[index!]
+                            ["minimunFare"],
+                        context: context,
+                        baseFare: provider.vehiclesDetailsList[index!]
+                            ["baseFare"],
+                        carImg: provider.vehiclesDetailsList[index!]["carImg"],
+                        carSeat: provider.vehiclesDetailsList[index!]["seat"],
+                        perkm: provider.vehiclesDetailsList[index!]["perKm"],
+                        permin: provider.vehiclesDetailsList[index!]["perMin"],
+                        techFee: provider.vehiclesDetailsList[index!]
+                            ["techFee"]);
+                  },
+                  child: Icon(Icons.info_outline)),
+
               //Price
               Row(
                 children: [
@@ -139,6 +165,47 @@ class CustomVehicleInfo extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  showBottomSheet(
+      {context,
+      carImg,
+      carSeat,
+      baseFare,
+      techFee,
+      perkm,
+      permin,
+      estimatedPrice,
+      minimumFare}) {
+    showModalBottomSheet(
+      barrierColor: Colors.transparent,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      useSafeArea: true,
+      // constraints: BoxConstraints(
+      //     maxHeight: _deviceSize.height * .45),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16.0),
+        ),
+      ),
+      backgroundColor: whiteColor,
+      context: context,
+      builder: (context) {
+        return Container(
+            child: CarDetailWidget(
+          estimatedPrice: estimatedPrice,
+          carImg: carImg,
+          carSeat: carSeat,
+          baseFare: baseFare,
+          perMin: permin,
+          perkM: perkm,
+          techFee: techFee,
+          minimumFare: minimumFare,
+        ));
+      },
     );
   }
 }
