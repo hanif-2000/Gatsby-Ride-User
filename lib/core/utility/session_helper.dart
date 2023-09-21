@@ -15,6 +15,8 @@ abstract class Session {
   set setCurrentLat(String currentLat);
   set setCurrentLong(String currentLong);
   set setDeviceType(String device);
+  set setEstimatedDistance(String distance);
+  set setEstimatedTime(String time);
 
   set setOriginAddress(String originAddress);
   set setDestinationAddress(String destinationAddress);
@@ -26,6 +28,10 @@ abstract class Session {
   bool get isLoggedIn;
   String get orderId;
   int get chatToken;
+
+  String get estimatedDistance;
+  String get estimatedTime;
+
   String get sessionToken;
   String get sessionFcmToken;
   String get currency;
@@ -66,6 +72,16 @@ class SessionHelper implements Session {
   @override
   set setUserId(String userId) {
     pref.setString(USER_ID, userId);
+  }
+
+  @override
+  set setEstimatedDistance(String distance) {
+    pref.setString(ESTIMATED_DISTANCE, distance);
+  }
+
+  @override
+  set setEstimatedTime(String time) {
+    pref.setString(ESTIMATED_TIME, time);
   }
 
   @override
@@ -184,6 +200,8 @@ class SessionHelper implements Session {
     await pref.remove(ORDER_ID);
     await pref.remove(ORDER_STATUS);
     await pref.remove(DRIVER_ID);
+    await pref.remove(ESTIMATED_DISTANCE);
+    await pref.remove(ESTIMATED_TIME);
   }
 
   @override
@@ -206,4 +224,10 @@ class SessionHelper implements Session {
 
   @override
   double get originLong => pref.getDouble(ORIGIN_LAT) ?? 0.0;
+
+  @override
+  String get estimatedDistance => pref.getString(ESTIMATED_DISTANCE) ?? '';
+
+  @override
+  String get estimatedTime => pref.getString(ESTIMATED_TIME) ?? '';
 }

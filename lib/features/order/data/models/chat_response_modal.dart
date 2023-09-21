@@ -14,7 +14,7 @@ class ChatResponseModal {
   String response;
   String message;
   String type;
-  List<Datum>? data;
+  List<ChatData>? data;
 
   ChatResponseModal({
     required this.response,
@@ -29,7 +29,7 @@ class ChatResponseModal {
         message: json["message"] ?? "",
         type: json["type"] ?? '',
         data: json["data"] != null
-            ? List<Datum>.from(json["data"].map((x) => Datum.fromJson(x)))
+            ? List<ChatData>.from(json["data"].map((x) => ChatData.fromJson(x)))
             : [],
       );
 
@@ -41,7 +41,7 @@ class ChatResponseModal {
       };
 }
 
-class Datum {
+class ChatData {
   String id;
   String roomId;
   String sourceUserId;
@@ -54,7 +54,7 @@ class Datum {
   DateTime modifiedOn;
   DateTime createdOn;
 
-  Datum({
+  ChatData({
     required this.id,
     required this.roomId,
     required this.sourceUserId,
@@ -68,7 +68,7 @@ class Datum {
     required this.createdOn,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory ChatData.fromJson(Map<String, dynamic> json) => ChatData(
         id: json["id"],
         roomId: json["roomID"],
         sourceUserId: json["source_user_id"],

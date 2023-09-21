@@ -521,7 +521,16 @@ class HomeProvider with ChangeNotifier {
       distance = data.rows[0].elements[0].distance.text;
       estimatedTime = data.rows[0].elements[0].duration.value;
       estimatedTimeToShow = data.rows[0].elements[0].duration.text;
+
+      session.setEstimatedDistance =
+          data.rows[0].elements[0].distance.value.toString();
+      session.setEstimatedTime =
+          data.rows[0].elements[0].duration.value.toString();
+
       notifyListeners();
+
+      log("session distnace:--${session.estimatedDistance}");
+      log("session duration:--${session.estimatedTime}");
     } catch (e) {
       print(e);
     }

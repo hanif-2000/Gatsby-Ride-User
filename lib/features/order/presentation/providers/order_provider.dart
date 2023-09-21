@@ -385,8 +385,16 @@ class OrderProvider with ChangeNotifier {
 
   //Order Receipt
   Stream<GetReceiptState> orderReceiptApi() async* {
+    log("estimated distance :-->> ${session.estimatedDistance}");
+    log("estimated time :-->> ${session.estimatedTime}");
+
     yield GetReceiptLoading();
-    final formData = FormData.fromMap({"id": session.orderId});
+    final formData = FormData.fromMap({
+      "id": session.orderId,
+      "distance": (int.parse(session.estimatedDistance) / 1000),
+      "time": int.parse(session.estimatedTime)
+    });
+    log("form data of order is --->> $formData");
     final result = await orderReceipt.execute(formData);
     yield* result.fold((failure) async* {
       logMe("failure");

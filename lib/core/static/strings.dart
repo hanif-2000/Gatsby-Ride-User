@@ -6,6 +6,9 @@ const String CURRENCY = 'currency';
 const String CHAT_TOKEN = 'chat_token';
 const String ORDER_ID = 'orderId';
 const String USER_ID = 'user_id';
+const String ESTIMATED_DISTANCE = 'estimated_distance';
+const String ESTIMATED_TIME = 'estimated_time';
+
 const String FCM_TOKEN = 'fcm_token';
 const String ORDER_STATUS = 'order_status';
 const String DRIVER_ID = 'driver_id';

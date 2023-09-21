@@ -194,17 +194,18 @@ class CustomVehicleInfo extends StatelessWidget {
       backgroundColor: whiteColor,
       context: context,
       builder: (context) {
-        return Container(
-            child: CarDetailWidget(
-          estimatedPrice: estimatedPrice,
-          carImg: carImg,
-          carSeat: carSeat,
-          baseFare: baseFare,
-          perMin: permin,
-          perkM: perkm,
-          techFee: techFee,
-          minimumFare: minimumFare,
-        ));
+        return Wrap(children: [
+          CarDetailWidget(
+            estimatedPrice: estimatedPrice,
+            carImg: carImg,
+            carSeat: carSeat,
+            baseFare: baseFare,
+            perMin: permin,
+            perkM: perkm,
+            techFee: techFee,
+            minimumFare: minimumFare,
+          )
+        ]);
       },
     );
   }

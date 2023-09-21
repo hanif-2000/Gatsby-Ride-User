@@ -94,7 +94,9 @@ class BottomSheetBookRide extends StatelessWidget {
                                         index: index,
                                         vehicleImage:
                                             "${provider.carsImageList[index]}",
-                                        time: "${provider.estimatedTimeToShow}",
+                                        // time: "${provider.estimatedTimeToShow}",
+                                        time: data[index].time.toString() +
+                                            " min",
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
                                         capacity: data[index].seat.toString(),
@@ -235,21 +237,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                             showToast(
                                                 message:
                                                     appLoc.taxiTypeNotSelected);
-                                            // showDialog(
-                                            //   barrierDismissible: false,
-                                            //   context: context,
-                                            //   builder: (context) {
-                                            //     return CustomSimpleDialog(
-                                            //         text: appLoc
-                                            //             .taxiTypeNotSelected,
-                                            //         onTap: () {
-                                            //           Navigator.pop(context);
-                                            //         });
-                                            //   },
-                                            // );
                                           } else {
-                                            // Navigator.pop(context);
-
                                             provider
                                                 .submitOrder()
                                                 .listen((event) async {
