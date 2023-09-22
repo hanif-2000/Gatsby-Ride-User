@@ -22,7 +22,6 @@ import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
-import '../../domain/entities/driver_detail.dart';
 import '../providers/get_driver_detail_state.dart';
 import 'components/chat_screen.dart';
 import 'components/receipt_screen.dart';
@@ -483,7 +482,10 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                               driverName: provider.driverName,
                               platerNumber: provider.plateNumber,
                               rating: provider.ratings,
-                              isReceiptVisible: provider.isReachedToDestination,
+                              isReceiptVisible: ((session.orderStatus == 6) ||
+                                      (session.orderStatus == 7))
+                                  ? true
+                                  : false,
                               // isReceiptVisible: true,
                             ),
                           ),
@@ -519,62 +521,62 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     });
   }
 
-  showDriverFoundBottomSheet(
-      {required BuildContext context,
-      required DriverDetail driverDetails,
-      required String driverStatusText,
-      required OrderProvider provider}) {
-    showModalBottomSheet(
-        isDismissible: false,
-        isScrollControlled: false,
-        backgroundColor: whiteColor,
-        context: context,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-          topRight: Radius.circular(20.0),
-          topLeft: Radius.circular(20.0),
-        )),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        builder: (context) {
-          return Wrap(children: [
-            DriverInfoBottomSheet(
-              reviewEvent: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            RatingsScreen(driverId: session.driverId)));
-              },
-              callEvent: () {
-                provider.callDriver();
-              },
-              messageEvent: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatScreen(),
-                  ),
-                );
-              },
-              viewReceiptEvent: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReceiptScreen(),
-                  ),
-                );
-              },
-              driverStatusText: driverStatusText,
-              category: driverDetails.model,
-              driverId: '4',
-              driverImage: '',
-              driverName: driverDetails.name,
-              platerNumber: driverDetails.plat,
-              rating: "4.5",
-              isReceiptVisible:
-                  (provider.session.orderStatus == (6)) ? true : false,
-            ),
-          ]);
-        });
-  }
+  // showDriverFoundBottomSheet(
+  //     {required BuildContext context,
+  //     required DriverDetail driverDetails,
+  //     required String driverStatusText,
+  //     required OrderProvider provider}) {
+  //   showModalBottomSheet(
+  //       isDismissible: false,
+  //       isScrollControlled: false,
+  //       backgroundColor: whiteColor,
+  //       context: context,
+  //       shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.only(
+  //         topRight: Radius.circular(20.0),
+  //         topLeft: Radius.circular(20.0),
+  //       )),
+  //       clipBehavior: Clip.antiAliasWithSaveLayer,
+  //       builder: (context) {
+  //         return Wrap(children: [
+  //           DriverInfoBottomSheet(
+  //             reviewEvent: () {
+  //               Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                       builder: (context) =>
+  //                           RatingsScreen(driverId: session.driverId)));
+  //             },
+  //             callEvent: () {
+  //               provider.callDriver();
+  //             },
+  //             messageEvent: () {
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => ChatScreen(),
+  //                 ),
+  //               );
+  //             },
+  //             viewReceiptEvent: () {
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => ReceiptScreen(),
+  //                 ),
+  //               );
+  //             },
+  //             driverStatusText: driverStatusText,
+  //             category: driverDetails.model,
+  //             driverId: '4',
+  //             driverImage: '',
+  //             driverName: driverDetails.name,
+  //             platerNumber: driverDetails.plat,
+  //             rating: "4.5",
+  //             isReceiptVisible:
+  //                 (provider.session.orderStatus == (6)) ? true : false,
+  //           ),
+  //         ]);
+  //       });
+  // }
 }

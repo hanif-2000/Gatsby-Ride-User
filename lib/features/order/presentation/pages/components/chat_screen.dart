@@ -26,7 +26,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
     socketProvider.joinExitRoom(receiverId: int.parse(session.driverId));
+    // });
   }
 
   @override
@@ -108,36 +110,43 @@ class _ChatScreenState extends State<ChatScreen> {
                 padding: EdgeInsets.symmetric(
                   horizontal: 10.0,
                 ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        reverse: true,
-                        itemCount: socketProvider.data!.data!.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Bubble(
-                            message: socketProvider.data!.data![index].message,
-                            isMe:
-                                socketProvider.data!.data![index].senderType ==
-                                        'Customer'
-                                    ? false
-                                    : true,
-                          );
-                        },
-                      ),
-                      SizedBox(
-                        height: 90,
+                child: socketProvider.data != null
+                    ? SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              reverse: true,
+                              itemCount: socketProvider.data!.data!.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return Bubble(
+                                  message:
+                                      socketProvider.data!.data![index].message,
+                                  isMe: socketProvider
+                                              .data!.data![index].senderType ==
+                                          'Customer'
+                                      ? false
+                                      : true,
+                                );
+                              },
+                            ),
+                            SizedBox(
+                              height: 90,
+                            )
+                          ],
+                        ),
                       )
-                    ],
-                  ),
-                )),
+                    : Center(
+                        child: Text("Start Chatting"),
+                      )),
           ),
           floatingActionButton: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
             child: SendMessageTextField(
               onTap: () {
+                log("---------msg------  ");
+
                 var msg = socketProvider.msgEditingController.text;
                 log("---------msg------  " + msg);
 

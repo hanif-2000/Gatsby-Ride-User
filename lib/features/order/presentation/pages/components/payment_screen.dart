@@ -23,10 +23,18 @@ class PaymentScreen extends StatefulWidget {
   final String img;
   final String carModal;
   final String carNo;
-  final double totalPrice;
+  final dynamic totalPrice;
   final int paymentMode;
   final String orderId;
   final String driverId;
+  final dynamic grandTotal;
+  final String vehicleCategory;
+
+  final dynamic extraDistancePrice;
+  final dynamic extraMinPrice;
+  final dynamic extraDistance;
+  final dynamic extraTime;
+  final String distance;
 
   const PaymentScreen({
     Key? key,
@@ -38,6 +46,13 @@ class PaymentScreen extends StatefulWidget {
     required this.paymentMode,
     required this.orderId,
     required this.driverId,
+    required this.extraDistance,
+    required this.extraTime,
+    required this.extraDistancePrice,
+    required this.extraMinPrice,
+    required this.grandTotal,
+    required this.vehicleCategory,
+    required this.distance,
   }) : super(key: key);
 
   @override
@@ -194,23 +209,75 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: Column(
                 children: [
                   TextInRow(
-                    firstText: 'Price',
+                    firstText: 'Distance',
+                    secondText: "${widget.distance} Km",
+                  ),
+                  Divider(
+                    color: whiteAccentColor,
+                  ),
+                  TextInRow(
+                    firstText: 'Estimated Amount',
                     secondText: r'$' + widget.totalPrice.toString(),
                   ),
                   Divider(
                     color: whiteAccentColor,
                   ),
                   TextInRow(
-                    firstText: 'Service Price',
-                    secondText: r'$0.00',
+                    firstText: 'Extra Distance',
+                    secondText: widget.extraDistance + " Km",
                   ),
+                  Divider(
+                    color: whiteAccentColor,
+                  ),
+                  TextInRow(
+                    firstText: widget.vehicleCategory == "2"
+                        ? r"Extra Distance Price 1.65$CA/km"
+                        : r"Extra Distance Price 1.30$CA/km",
+                    secondText: r'$' + widget.extraDistancePrice,
+                  ),
+                  Divider(
+                    color: whiteAccentColor,
+                  ),
+                  TextInRow(
+                    firstText: 'Extra Time',
+                    secondText: widget.extraTime.toString() + ' Min',
+                  ),
+                  Divider(
+                    color: whiteAccentColor,
+                  ),
+                  TextInRow(
+                    firstText: widget.vehicleCategory == "2"
+                        ? r"Extra Time Price 0.35$CA/Min"
+                        : r"Extra Time Price 0.30$CA/Min",
+                    secondText: r'$' + widget.extraMinPrice,
+                  ),
+                  // Divider(
+                  //   color: whiteAccentColor,
+                  // ),
+
+                  // TextInRow(
+                  //   secondTextweight: FontWeight.w700,
+                  //   firstText: 'Total Distance',
+                  //   secondText: r'$' +
+                  //       ((double.parse(widget.distance)) +
+                  //               (double.parse(widget.extraDistance)))
+                  //           .toStringAsFixed(3)
+                  //           .toString(),
+                  // ),
+                  // Divider(
+                  //   color: whiteAccentColor,
+                  // ),
+                  // TextInRow(
+                  //   firstText: 'Service Price',
+                  //   secondText: r'$0.00',
+                  // ),
                   Divider(
                     color: whiteAccentColor,
                   ),
                   TextInRow(
                     secondTextweight: FontWeight.w700,
-                    firstText: 'Total Price',
-                    secondText: r'$' + widget.totalPrice.toString(),
+                    firstText: 'Grand Total',
+                    secondText: r'$' + widget.grandTotal,
                   ),
                 ],
               ),

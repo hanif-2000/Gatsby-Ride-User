@@ -4,6 +4,7 @@ import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/payment_screen.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -119,7 +120,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                 dismissLoading();
 
                 DateTime dt1 = DateTime.parse(data.orderReceipt![0].startTime);
-                DateTime dt2 = data.orderReceipt![0].endTime;
+                DateTime dt2 = DateTime.parse(data.orderReceipt![0].endTime!);
                 int timeTaken = dt2.difference(dt1).inMinutes;
 
                 // int time =
@@ -307,45 +308,51 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               top: 13, bottom: 13, left: 11, right: 11),
                           child: Column(
                             children: [
-                              TextInRow(
-                                firstText: appLoc.price,
-                                secondText:
-                                    r"$" + "${data.orderReceipt![0].total}",
-                              ),
-                              Divider(
-                                color: whiteAccentColor,
-                              ),
-                              TextInRow(
-                                firstText: appLoc.servicePrice,
-                                secondText: r'$0.00',
-                              ),
-                              Divider(
-                                color: whiteAccentColor,
-                              ),
+                              // TextInRow(
+                              //   firstText: appLoc.price,
+                              //   secondText:
+                              //       r"$" + "${data.orderReceipt![0].total}",
+                              // ),
+                              // Divider(
+                              //   color: whiteAccentColor,
+                              // ),
+                              // TextInRow(
+                              //   firstText: appLoc.servicePrice,
+                              //   secondText: r'$0.00',
+                              // ),
+                              // Divider(
+                              //   color: whiteAccentColor,
+                              // ),
                               TextInRow(
                                 secondTextweight: FontWeight.w700,
-                                firstText: appLoc.totalPrice,
+                                firstText: "Total amount to pay",
                                 secondText:
-                                    r"$" + "${data.orderReceipt![0].total}",
+                                    r"$CA " + data.orderReceipt![0].grandTotal,
                               ),
                             ],
                           ),
                         ),
                         CustomButton(
-                          text: Text(
-                            "Continue",
+                          text: AutoSizeText(
+                            "Continue to Pay",
                             // appLoc.login.toUpperCase(),
                             style: TextStyle(
-                              fontFamily: 'poPPinSemiBold',
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
+                                fontFamily: 'poPPinSemiBold',
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                fontSize: 18.0),
+                            minFontSize: 8.0,
                           ),
                           event: () async {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PaymentScreen(
+                                    distance: data.orderReceipt![0].distance
+                                        .toString(),
+                                    vehicleCategory: data
+                                        .orderReceipt![0].vehicleCategory.id
+                                        .toString(),
                                     name: data.orderReceipt![0].userName,
                                     img: data.orderReceipt![0].image,
                                     carModal: data.orderReceipt![0].carModel,
@@ -355,6 +362,15 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                         data.orderReceipt![0].paymentMethod,
                                     driverId: data.orderReceipt![0].driverId,
                                     orderId: data.orderReceipt![0].id,
+                                    extraDistance:
+                                        data.orderReceipt![0].extraDistance,
+                                    extraDistancePrice: data
+                                        .orderReceipt![0].extraDistancePrice,
+                                    extraMinPrice:
+                                        data.orderReceipt![0].extraKmPrice,
+                                    extraTime: data.orderReceipt![0].extraTime,
+                                    grandTotal:
+                                        data.orderReceipt![0].grandTotal,
                                   ),
                                 ));
                             // Navigator.push(

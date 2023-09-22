@@ -41,6 +41,8 @@ class SocketProvider with ChangeNotifier {
     });
   }
 
+  List<ChatData> newMessageList = [];
+
   ChatResponseModal? data;
 
   // listenRequests() {
@@ -129,6 +131,8 @@ class SocketProvider with ChangeNotifier {
       log("res  " + response.toString());
       if (response['type'] == 'MessageList') {
         data = ChatResponseModal.fromJson(response);
+
+        newMessageList = response['data'];
         log("Message Length is==>> " + data!.data!.length.toString());
 
         log("response   --->>>>" + response.toString());

@@ -48,9 +48,14 @@ class OrderReceiptDataModel extends Equatable {
   String driverId;
   String distance;
   dynamic total;
+  String grandTotal;
+  String extraTime;
+  String extraKmPrice;
+  String extraDistance;
+  String extraDistancePrice;
   DateTime orderTime;
   dynamic startTime;
-  DateTime endTime;
+  dynamic endTime;
   String status;
   String image;
   String userName;
@@ -69,7 +74,7 @@ class OrderReceiptDataModel extends Equatable {
     required this.distance,
     required this.total,
     required this.orderTime,
-    this.startTime,
+    required this.startTime,
     required this.endTime,
     required this.status,
     required this.image,
@@ -82,6 +87,11 @@ class OrderReceiptDataModel extends Equatable {
     required this.paymentMethod,
     required this.vehicleCategory,
     required this.timestamp,
+    required this.grandTotal,
+    required this.extraTime,
+    required this.extraKmPrice,
+    required this.extraDistance,
+    required this.extraDistancePrice,
   });
 
   @override
@@ -114,7 +124,7 @@ class OrderReceiptDataModel extends Equatable {
         total: json["total"] ?? 0.0,
         orderTime: DateTime.parse(json["order_time"]),
         startTime: json["start_time"],
-        endTime: DateTime.parse(json["end_time"]),
+        endTime: json["end_time"],
         status: json["status"],
         image: json["image"],
         userName: json["user_name"],
@@ -126,6 +136,15 @@ class OrderReceiptDataModel extends Equatable {
         paymentMethod: json["payment_method"],
         vehicleCategory: VehicleCategory.fromJson(json["vehicle_category"]),
         timestamp: json["timestamp"],
+        grandTotal: json["grand_total"] ?? '0',
+        extraTime: json["extra_time"] == "" ? "0" : json["extra_time"],
+        extraKmPrice:
+            json["extra_km_price"] == "" ? "0" : json["extra_km_price"],
+        extraDistance:
+            json["extra_distance"] == "" ? "0" : json["extra_distance"],
+        extraDistancePrice: json["extra_distance_price"] == ""
+            ? '0'
+            : json["extra_distance_price"],
       );
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -134,7 +153,7 @@ class OrderReceiptDataModel extends Equatable {
         "total": total,
         "order_time": orderTime.toIso8601String(),
         "start_time": startTime,
-        "end_time": endTime.toIso8601String(),
+        "end_time": endTime,
         "status": status,
         "image": image,
         "user_name": userName,
@@ -146,6 +165,11 @@ class OrderReceiptDataModel extends Equatable {
         "payment_method": paymentMethod,
         "vehicle_category": vehicleCategory.toJson(),
         "timestamp": timestamp,
+        "grand_total": grandTotal,
+        "extra_time": extraTime,
+        "extra_km_price": extraKmPrice,
+        "extra_distance": extraDistance,
+        "extra_distance_price": extraDistancePrice,
       };
 }
 
@@ -162,7 +186,7 @@ class VehicleCategory {
   String seat;
   DateTime createdAt;
   DateTime updatedAt;
-  dynamic deletedAt;
+  // String deletedAt;
 
   VehicleCategory({
     required this.id,
@@ -177,7 +201,7 @@ class VehicleCategory {
     required this.seat,
     required this.createdAt,
     required this.updatedAt,
-    required this.deletedAt,
+    // required this.deletedAt,
   });
 
   factory VehicleCategory.fromJson(Map<String, dynamic> json) =>
@@ -194,7 +218,7 @@ class VehicleCategory {
         seat: json["seat"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: json["deleted_at"],
+        // deletedAt: json["deleted_at"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -210,7 +234,7 @@ class VehicleCategory {
         "seat": seat,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
-        "deleted_at": deletedAt,
+        // "deleted_at": deletedAt,
       };
 }
 
