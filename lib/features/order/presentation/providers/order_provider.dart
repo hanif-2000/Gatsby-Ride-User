@@ -102,6 +102,7 @@ class OrderProvider with ChangeNotifier {
 
 //update Driver Details
   updateDriverDetails({required DriverDetail data}) {
+    log(data.toString());
     driverName = data.name;
     ratings = data.rating.toString();
     carModal = data.model;

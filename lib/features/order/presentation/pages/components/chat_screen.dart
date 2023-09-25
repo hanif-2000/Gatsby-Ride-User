@@ -150,7 +150,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 var msg = socketProvider.msgEditingController.text;
                 log("---------msg------  " + msg);
 
-                socketProvider.sendChatMessage(message: msg, receiverId: 1);
+                socketProvider.sendChatMessage(
+                    message: msg, receiverId: int.parse(session.driverId));
                 // Provider.of<SocketProvider>(context, listen: true)
                 //     .sendChatMessage(message: msg);
               },

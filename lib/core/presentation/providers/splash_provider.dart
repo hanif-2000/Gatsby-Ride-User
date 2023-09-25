@@ -183,7 +183,7 @@ class SplashProvider with ChangeNotifier {
         session.setCurrentLat = locationData.latitude.toString();
         session.setCurrentLong = locationData.longitude.toString();
 
-        log("Driver id is=====>>>>" + session.orderId.toString());
+        log("order id is=====>>>>" + session.orderId.toString());
 
         // getAddressFromLatLng();
         //onlocation change

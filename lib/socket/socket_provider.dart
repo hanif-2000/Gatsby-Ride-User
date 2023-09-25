@@ -94,6 +94,7 @@ class SocketProvider with ChangeNotifier {
     int? receiverId,
     String? messageType = 'Text',
   }) {
+    log("receiver driver id is:  -->> $receiverId");
     // final chatProvider = locator<ChatProvider>();
     final map = {
       "userID": session.userId,
@@ -133,6 +134,8 @@ class SocketProvider with ChangeNotifier {
         data = ChatResponseModal.fromJson(response);
 
         newMessageList = response['data'];
+
+        log("new message list data is =-->> ${newMessageList}");
         log("Message Length is==>> " + data!.data!.length.toString());
 
         log("response   --->>>>" + response.toString());
