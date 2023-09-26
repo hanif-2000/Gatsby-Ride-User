@@ -366,9 +366,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                         data.orderReceipt![0].extraDistance,
                                     extraDistancePrice: data
                                         .orderReceipt![0].extraDistancePrice,
-                                    extraMinPrice:
-                                        data.orderReceipt![0].extraKmPrice,
-                                    extraTime: data.orderReceipt![0].extraTime,
+                                    // extraMinPrice:
+                                    //     data.orderReceipt![0].extraKmPrice,
+                                    // extraTime: data.orderReceipt![0].extraTime,
                                     grandTotal:
                                         data.orderReceipt![0].grandTotal,
                                   ),

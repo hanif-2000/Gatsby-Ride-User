@@ -87,7 +87,7 @@ class CustomVehicleInfo extends StatelessWidget {
                                   color: black080808Color),
                             ),
                             Image.asset(
-                              'assets/icons/car_seat.png',
+                              'assets/icons/car-seat.png',
                               height: 15,
                               width: 15,
                             ),

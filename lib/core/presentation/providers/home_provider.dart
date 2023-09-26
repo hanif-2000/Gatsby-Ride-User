@@ -126,6 +126,7 @@ class HomeProvider with ChangeNotifier {
   String destinationAddress = appLoc.destination;
   String distance = "0", price = "";
   int estimatedTime = 0;
+  String time = '';
   late Text originText;
   late Text destinationText;
   List<LatLng> polylineCoordinates = [];
@@ -598,12 +599,17 @@ class HomeProvider with ChangeNotifier {
 //Get all the Vehicles Catagories
   Stream<VehiclesCategoryState> fetchVehicleCategory() async* {
     log("-->>> distance privce --->>>>   $distance");
+    log("estimated time is:  $estimatedTime");
+
+    //Convert seconds to minute and round off
+
+    String newTime = (estimatedTime / 60).round().toString();
 
     String dist = distance.split(' ').first;
     yield VehiclesCategoryLoading();
 
-    final result = await getVehicleCatagory(
-        dist, "0", "${originLatLng.latitude},${originLatLng.longitude}");
+    final result = await getVehicleCatagory(dist, "0",
+        "${originLatLng.latitude},${originLatLng.longitude}", newTime);
     yield* result.fold(
       (failure) async* {
         yield VehiclesCategoryFailure(failure: failure);

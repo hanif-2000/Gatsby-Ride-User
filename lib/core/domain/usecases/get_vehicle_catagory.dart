@@ -9,6 +9,7 @@ abstract class GetVehicleCategoryUseCase<Type> {
     String distance,
     String nightService,
     String coordinates,
+    String time,
   );
 }
 
@@ -18,12 +19,9 @@ class GetVehiclesCategory implements GetVehicleCategoryUseCase {
   GetVehiclesCategory(this.repository);
 
   @override
-  Future<Either<Failure, VehiclesCategoryList>> call(
-    String distance,
-    String nightService,
-    String coordinates,
-  ) async {
+  Future<Either<Failure, VehiclesCategoryList>> call(String distance,
+      String nightService, String coordinates, String time) async {
     return await repository.getVehiclesCategoryList(
-        distance, nightService, coordinates);
+        distance, nightService, coordinates, time);
   }
 }

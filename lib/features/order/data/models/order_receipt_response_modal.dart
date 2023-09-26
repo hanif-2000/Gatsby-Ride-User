@@ -49,8 +49,8 @@ class OrderReceiptDataModel extends Equatable {
   String distance;
   dynamic total;
   String grandTotal;
-  String extraTime;
-  String extraKmPrice;
+  // String extraTime;
+  // String extraKmPrice;
   String extraDistance;
   String extraDistancePrice;
   DateTime orderTime;
@@ -88,8 +88,8 @@ class OrderReceiptDataModel extends Equatable {
     required this.vehicleCategory,
     required this.timestamp,
     required this.grandTotal,
-    required this.extraTime,
-    required this.extraKmPrice,
+    // required this.extraTime,
+    // required this.extraKmPrice,
     required this.extraDistance,
     required this.extraDistancePrice,
   });
@@ -122,26 +122,28 @@ class OrderReceiptDataModel extends Equatable {
         driverId: json["driver_id"] ?? "",
         distance: json["distance"] ?? '',
         total: json["total"] ?? 0.0,
-        orderTime: DateTime.parse(json["order_time"]),
-        startTime: json["start_time"],
-        endTime: json["end_time"],
-        status: json["status"],
+        orderTime: json["order_time"] != null
+            ? DateTime.parse(json["order_time"])
+            : DateTime.now(),
+        startTime: json["start_time"] ?? '',
+        endTime: json["end_time"] ?? '',
+        status: json["status"] ?? '',
         image: json["image"],
-        userName: json["user_name"],
-        userPhone: json["user_phone"],
+        userName: json["user_name"] ?? "",
+        userPhone: json["user_phone"] ?? '',
         rating: json["rating"] ?? 0,
         plateNumber: json["plate_number"] ?? '',
         vehicleName: json["vehicle_name"] ?? "",
         carModel: json["car_model"] ?? "",
-        paymentMethod: json["payment_method"],
+        paymentMethod: json["payment_method"] ?? 1,
         vehicleCategory: VehicleCategory.fromJson(json["vehicle_category"]),
         timestamp: json["timestamp"],
         grandTotal: json["grand_total"] ?? '0',
-        extraTime: json["extra_time"] == "" ? "0" : json["extra_time"],
-        extraKmPrice:
-            json["extra_km_price"] == "" ? "0" : json["extra_km_price"],
+        // extraTime: json["extra_time"] == "" ? "0" : json["extra_time"],
+        // extraKmPrice:
+        //     json["extra_km_price"].length == 0 ? "0" : json["extra_km_price"],
         extraDistance:
-            json["extra_distance"] == "" ? "0" : json["extra_distance"],
+            json["extra_distance"].length == 1 ? "0" : json["extra_distance"],
         extraDistancePrice: json["extra_distance_price"] == ""
             ? '0'
             : json["extra_distance_price"],
@@ -166,8 +168,8 @@ class OrderReceiptDataModel extends Equatable {
         "vehicle_category": vehicleCategory.toJson(),
         "timestamp": timestamp,
         "grand_total": grandTotal,
-        "extra_time": extraTime,
-        "extra_km_price": extraKmPrice,
+        // "extra_time": extraTime,
+        // "extra_km_price": extraKmPrice,
         "extra_distance": extraDistance,
         "extra_distance_price": extraDistancePrice,
       };

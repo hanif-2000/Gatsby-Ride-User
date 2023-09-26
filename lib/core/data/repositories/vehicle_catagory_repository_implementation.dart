@@ -18,17 +18,17 @@ class VehiclesCategoryRepositoryImplementation
 
   @override
   Future<Either<Failure, VehiclesCategoryList>> getVehiclesCategoryList(
-    String distance,
-    String nightService,
-    String coordinates,
-  ) async {
+      String distance,
+      String nightService,
+      String coordinates,
+      String time) async {
     if (!await networkInfo.isConnected) {
       return const Left(ConnectionFailure());
     }
 
     try {
       final response = await dataSource.getVehiclesCategoryList(
-          distance, nightService, coordinates);
+          distance, nightService, coordinates, time);
       return Right(response);
     } catch (e) {
       return const Left(ServerFailure());

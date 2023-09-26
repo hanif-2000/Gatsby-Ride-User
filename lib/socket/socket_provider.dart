@@ -22,7 +22,8 @@ class SocketProvider with ChangeNotifier {
 
   TextEditingController msgEditingController = TextEditingController();
 
-  List<Object> chatList = [];
+  // List<Object> chatList = [];
+  List<ChatData> chatMessages = [];
 
   connectToSocket() {
     logMe('============= Chat Token ${session.chatToken} ================');
@@ -41,7 +42,7 @@ class SocketProvider with ChangeNotifier {
     });
   }
 
-  List<ChatData> newMessageList = [];
+  // List<ChatData> newMessageList = [];
 
   ChatResponseModal? data;
 
@@ -89,6 +90,26 @@ class SocketProvider with ChangeNotifier {
     listenRequests();
   }
 
+  addSingleMessageToList({int? receiverId, msg}) {
+    receiverId = int.parse(session.driverId);
+
+    chatMessages.add(ChatData(
+      status: "0",
+      id: session.orderId,
+      messageType: 'Text',
+      roomId: (int.parse(session.userId) > receiverId)
+          ? '$receiverId-${session.userId}'
+          : '${session.userId}-$receiverId',
+      message: msg,
+      senderType: 'Customer',
+      recieverType: 'Driver',
+      sourceUserId: session.userId,
+      targetUserId: receiverId.toString(),
+      createdOn: DateTime.now(),
+      modifiedOn: DateTime.now(),
+    ));
+  }
+
   sendChatMessage({
     String? message,
     int? receiverId,
@@ -111,7 +132,38 @@ class SocketProvider with ChangeNotifier {
     };
     print('Message send ---> ${map.toString()}');
     _socket!.send(jsonEncode(map));
-    listenRequests();
+    msgEditingController.clear();
+
+    chatMessages.add(ChatData(
+      id: session.orderId,
+      messageType: 'Text',
+      roomId: (int.parse(session.userId) > receiverId)
+          ? '$receiverId-${session.userId}'
+          : '${session.userId}-$receiverId',
+      message: message!,
+      senderType: 'Customer',
+      recieverType: 'Driver',
+      sourceUserId: session.userId,
+      targetUserId: receiverId.toString(),
+      createdOn: DateTime.now(),
+      modifiedOn: DateTime.now(),
+      status: '',
+    ));
+    // chatMessages.add(ChatData(
+    //     id: session.orderId,
+    //     roomId: (int.parse(session.userId) > receiverId)
+    //         ? '$receiverId-${session.userId}'
+    //         : '${session.userId}-$receiverId',
+    //     sourceUserId: sourceUserId,
+    //     targetUserId: targetUserId,
+    //     senderType: senderType,
+    //     recieverType: recieverType,
+    //     message: message,
+    //     status: status,
+    //     messageType: messageType,
+    //     modifiedOn: modifiedOn,
+    //     createdOn: createdOn));
+    // listenRequests();
 
     // chatProvider.addSingleChat(
     //   ChatDataModel(
@@ -132,16 +184,14 @@ class SocketProvider with ChangeNotifier {
       log("res  " + response.toString());
       if (response['type'] == 'MessageList') {
         data = ChatResponseModal.fromJson(response);
+        chatMessages = ChatResponseModal.fromJson(response).data ?? [];
 
-        newMessageList = response['data'];
-
-        log("new message list data is =-->> ${newMessageList}");
         log("Message Length is==>> " + data!.data!.length.toString());
 
         log("response   --->>>>" + response.toString());
         logMe('Message list data-----> ${response['data']}');
 
-        chatList.add({"msg": data!.message});
+        // chatList.add({"msg": data!.message});
 
         notifyListeners();
 
@@ -154,6 +204,12 @@ class SocketProvider with ChangeNotifier {
         // );
       }
       if (response['type'] == 'Chat') {
+        log("resposne data is csingle chat-------------------------");
+
+        log("chat data is:0--${response['data']}");
+        chatMessages.add(response['data']);
+        notifyListeners();
+
         // chatProvider.addSingleChat(
         //   ChatModel.fromMap(
         //     response['data'],
@@ -283,3 +339,5 @@ class SocketProvider with ChangeNotifier {
 //     });
 //   }
 // }
+
+

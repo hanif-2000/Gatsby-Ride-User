@@ -8,5 +8,6 @@ abstract class VehiclesCategoryRepository {
     String distance,
     String nightService,
     String coordinates,
+    String time,
   );
 }

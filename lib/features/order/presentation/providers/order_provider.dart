@@ -6,6 +6,7 @@ import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
 import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/data/models/chat_response_modal.dart';
 import 'package:GetsbyRideshare/features/order/domain/entities/driver_detail.dart';
 import 'package:GetsbyRideshare/features/order/domain/usecases/get_driver_detail.dart';
 import 'package:GetsbyRideshare/features/order/domain/usecases/get_driver_location.dart';
@@ -54,6 +55,8 @@ class OrderProvider with ChangeNotifier {
   //Web Socket
 
   WebSocket? _socket;
+
+  List<ChatData> chatMessages = [];
 
   DriverLocationResponseModel? _driverLocation;
   DriverDetail? _driverDetail;
@@ -393,7 +396,7 @@ class OrderProvider with ChangeNotifier {
     final formData = FormData.fromMap({
       "id": session.orderId,
       "distance": (int.parse(session.estimatedDistance) / 1000),
-      "time": int.parse(session.estimatedTime)
+      "time": (int.parse(session.estimatedTime) / 60).round()
     });
     log("form data of order is --->> $formData");
     final result = await orderReceipt.execute(formData);

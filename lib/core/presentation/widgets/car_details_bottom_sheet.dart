@@ -40,7 +40,7 @@ class CarDetailWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/icons/car_seat.png',
+                  'assets/icons/car-seat.png',
                   height: 15,
                   width: 15,
                 ),

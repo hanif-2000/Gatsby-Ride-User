@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/chat_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/circular_image_container.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
@@ -42,8 +43,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Consumer<OrderProvider>(
-      builder: (context, OrderProvider orderProvider, child) {
+    return SafeArea(child: Consumer<ChatProvider>(
+      builder: (context, ChatProvider orderProvider, child) {
         return Scaffold(
           extendBody: false,
           resizeToAvoidBottomInset: true,
@@ -121,10 +122,10 @@ class _ChatScreenState extends State<ChatScreen> {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return Bubble(
-                                  message:
-                                      socketProvider.data!.data![index].message,
+                                  message: socketProvider
+                                      .chatMessages[index].message,
                                   isMe: socketProvider
-                                              .data!.data![index].senderType ==
+                                              .chatMessages[index].senderType ==
                                           'Customer'
                                       ? false
                                       : true,

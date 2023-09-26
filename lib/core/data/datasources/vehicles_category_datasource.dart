@@ -7,10 +7,7 @@ import '../models/vehicles_catagory_list_modal.dart';
 
 abstract class VehicleCategoryDataSource {
   Future<VehiclesCategoryList> getVehiclesCategoryList(
-    String distance,
-    String nightService,
-    String coordinates,
-  );
+      String distance, String nightService, String coordinates, String time);
 }
 
 class VehicleCategoryDataSourceImplementation
@@ -50,12 +47,13 @@ class VehicleCategoryDataSourceImplementation
   // }
 
   @override
-  Future<VehiclesCategoryList> getVehiclesCategoryList(
-      String distance, String nightService, String coordinates) async {
+  Future<VehiclesCategoryList> getVehiclesCategoryList(String distance,
+      String nightService, String coordinates, String time) async {
     FormData data = FormData.fromMap({
       'distance': distance,
       'night_service': nightService,
-      'coordinates': coordinates
+      'coordinates': coordinates,
+      'time': time
     });
     String url = 'api/webservice/priceCategory';
 
