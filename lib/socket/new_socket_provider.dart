@@ -1,0 +1,168 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:web_socket_client/web_socket_client.dart';
+
+import '../core/utility/helper.dart';
+import '../core/utility/injection.dart';
+import '../core/utility/session_helper.dart';
+import '../features/order/data/models/chat_modal.dart';
+import '../features/order/presentation/providers/chat_provider.dart';
+
+class NewSocketProvider with ChangeNotifier {
+  static final NewSocketProvider _singleton = NewSocketProvider._internal();
+
+  factory NewSocketProvider() {
+    return _singleton;
+  }
+
+  NewSocketProvider._internal();
+
+  WebSocket? _socket;
+  final session = locator<Session>();
+  final chatProvider = locator<ChatProvider>();
+
+  connectToSocket() {
+    logMe('============= Chat Token ${session.chatToken} ================');
+
+    logMe(
+        'URL --> ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
+    _socket = WebSocket(Uri.parse(
+        'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}'));
+
+    // logMe(
+    //     'URL --> ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
+    // _socket = WebSocket(Uri.parse(
+    //     'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}'));
+
+    logMe('============= Connecting to Socket ================');
+    _socket!.connection.listen((event) {
+      logMe('Socket on Listen ---> ${event.toString()}');
+      if (event is Connected) {
+        listenRequests();
+      }
+    });
+  }
+
+  listenRequests() {
+    logMe('============= Listening to requests ================');
+    _socket!.messages.listen(
+      (event) {
+        final response = jsonDecode(event);
+        logMe('Message list data-----> ${response.toString()}');
+        if (response['type'] == 'MessageList') {
+          logMe('Message list data-----> ${response['data']}');
+          if (response['data'] != null) {
+            chatProvider.addChatAll(
+              List<ChatModel>.from(
+                response["data"].map(
+                  (x) => ChatModel.fromMap(x),
+                ),
+              ),
+            );
+          } else {
+            chatProvider.addChatAll([]);
+          }
+        }
+        if (response['type'] == 'Chat') {
+          chatProvider.addSingleChat(
+            ChatModel.fromMap(
+              response['data'],
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  rejectRequestSocket() {
+    final map = {
+      'serviceType': 'RejectRequest',
+      'driverID': session.userId,
+    };
+    logMe('reject request socket -- > ${map.toString()}');
+    _socket!.send(
+      jsonEncode(map),
+    );
+  }
+
+  acceptRequestSocket() {
+    final map = {
+      'serviceType': 'AcceptRequest',
+      'driverID': session.userId,
+    };
+    logMe('reject request socket -- > ${map.toString()}');
+    _socket!.send(jsonEncode(map));
+  }
+
+  joinExitRoom({int? receiverId, String type = 'Join'}) {
+    final map = {
+      'type': 'Customer',
+      'serviceType': type,
+      'UserID': session.userId,
+      'roomID': (int.parse(session.userId) > receiverId!)
+          ? '$receiverId-${session.userId}'
+          : '${session.userId}-$receiverId',
+    };
+    logMe('Join Exit room socket -- > ${map.toString()}');
+    _socket!.send(
+      jsonEncode(map),
+    );
+  }
+
+  sendChatMessage({
+    String? message,
+    int? receiverId,
+    String? messageType = 'Text',
+  }) {
+    final chatProvider = locator<ChatProvider>();
+    final map = {
+      "userID": session.userId,
+      "serviceType": "Chat",
+      "recieverID": receiverId,
+      "msg": message,
+      "room": (int.parse(session.userId) > receiverId!)
+          ? '$receiverId-${session.userId}'
+          : '${session.userId}-$receiverId',
+      "MessageType": "Text",
+      "SenderType": "Customer",
+      "RecieverType": "Driver",
+      "type": "Chat"
+    };
+    print('Message send ---> ${map.toString()}');
+    _socket!.send(jsonEncode(map));
+    chatProvider.addSingleChat(
+      ChatModel(
+        id: session.orderId,
+        messageType: 'Text',
+        roomId: (int.parse(session.userId) > receiverId)
+            ? '$receiverId-${session.userId}'
+            : '${session.userId}-$receiverId',
+        message: message,
+        senderType: 'Customer',
+        recieverType: 'Driver',
+        sourceUserId: session.userId,
+        targetUserId: receiverId.toString(),
+        createdOn: DateTime.now(),
+        modifiedOn: DateTime.now(),
+      ),
+    );
+  }
+
+  markMessageAsRead({
+    int? receiverId,
+  }) {
+    final map = {
+      "userID": session.userId,
+      "serviceType": "Chat",
+      "recieverID": receiverId,
+      "room": (int.parse(session.userId) > receiverId!)
+          ? '$receiverId-${session.userId}'
+          : '${session.userId}-$receiverId',
+      "SenderType": "Customer",
+      "RecieverType": "Driver",
+      "type": "read"
+    };
+    _socket!.send(jsonEncode(map));
+  }
+}

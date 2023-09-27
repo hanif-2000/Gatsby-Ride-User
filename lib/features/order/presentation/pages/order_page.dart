@@ -6,12 +6,12 @@ import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dar
 import 'package:GetsbyRideshare/core/presentation/widgets/origin_widget.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/get_order_detail_state.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/get_status_order_state.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
-import 'package:GetsbyRideshare/socket/socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,8 +22,8 @@ import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
+import '../../../../socket/new_socket_provider.dart';
 import '../providers/get_driver_detail_state.dart';
-import 'components/chat_screen.dart';
 import 'components/receipt_screen.dart';
 
 class OrderPage extends StatefulWidget {
@@ -46,7 +46,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    Provider.of<SocketProvider>(context, listen: false).connectToSocket();
+    // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
+    Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
 
     var orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
@@ -452,7 +453,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ChatScreen()));
+                                        builder: (context) => ChatPage()));
                               },
                               viewReceiptEvent: () {
                                 // Navigator.push(

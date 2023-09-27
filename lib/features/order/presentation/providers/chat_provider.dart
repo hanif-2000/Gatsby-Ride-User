@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 
-import '../../data/models/chat_response_modal.dart';
+import '../../data/models/chat_modal.dart';
 
 class ChatProvider extends ChangeNotifier {
   static final ChatProvider chatProvider = ChatProvider._internal();
@@ -13,9 +15,9 @@ class ChatProvider extends ChangeNotifier {
 
   final chatController = TextEditingController();
 
-  List<ChatData> _chatMessagesList = [];
+  List<ChatModel> _chatMessagesList = [];
 
-  List<ChatData> get chatMessageList => _chatMessagesList;
+  List<ChatModel> get chatMessageList => _chatMessagesList;
 
   clearChatList() {
     _chatMessagesList.clear();
@@ -23,12 +25,13 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addChatAll(List<ChatData> list) {
+  addChatAll(List<ChatModel> list) {
     _chatMessagesList = list;
     notifyListeners();
   }
 
-  addSingleChat(ChatData chat) {
+  addSingleChat(ChatModel chat) {
+    log("my single chat data is:-->> ${chat}");
     _chatMessagesList.insert(0, chat);
     notifyListeners();
   }

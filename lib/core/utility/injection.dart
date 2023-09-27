@@ -21,7 +21,6 @@ import 'package:GetsbyRideshare/features/profile/domain/usecases/create_profile.
 import 'package:GetsbyRideshare/features/profile/domain/usecases/upload_profile_image.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
-import 'package:GetsbyRideshare/socket/socket_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +58,7 @@ import '../../features/order/domain/usecases/get_order_detail.dart';
 import '../../features/order/domain/usecases/get_receipt.dart';
 import '../../features/order/domain/usecases/get_status_order.dart';
 import '../../features/order/domain/usecases/update_status_order.dart';
+import '../../features/order/presentation/providers/chat_provider.dart';
 import '../../features/order/presentation/providers/order_provider.dart';
 import '../../features/profile/data/datasources/profile_data_source.dart';
 import '../../features/profile/data/repositories/create_profile_repository_implementation.dart';
@@ -77,6 +77,7 @@ import '../../features/register/data/repositories/register_repository_implementa
 import '../../features/register/domain/repositories/register_repository.dart';
 import '../../features/register/domain/usecases/do_register.dart';
 import '../../features/register/presentation/providers/register_provider.dart';
+import '../../socket/new_socket_provider.dart';
 import '../data/datasources/currency_datasource.dart';
 import '../data/datasources/place_text_search_datasource.dart';
 import '../data/datasources/price_category_datasource.dart';
@@ -400,5 +401,7 @@ Future<void> init() async {
   locator.registerFactory<PaymentProvider>(
       () => PaymentProvider(paymentCard: locator()));
 
-  locator.registerFactory<SocketProvider>(() => SocketProvider());
+  // locator.registerFactory<SocketProvider>(() => SocketProvider());
+  locator.registerFactory<NewSocketProvider>(() => NewSocketProvider());
+  locator.registerFactory<ChatProvider>(() => ChatProvider());
 }

@@ -72,7 +72,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
     });
   }
 
-  TextEditingController tipsTextEditingController = TextEditingController();
+  late String totalAmountToPay;
+
+  updateTotalAmount({tip}) {
+    setState(() {
+      totalAmountToPay = (double.parse(widget.grandTotal) + double.parse(tip))
+          .toStringAsFixed(3);
+    });
+  }
+
+  TextEditingController tipsTextEditingController =
+      TextEditingController(text: "0.0");
 
   var _paymentItems = [
     PaymentItem(
@@ -111,10 +121,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
     log("-->>> Token id is <<<<-----" + token.id);
 
     var body = {
+      'tip': tipsTextEditingController.text,
       'token': token.id,
       'order_id': int.parse(widget.orderId),
       "driver_id": int.parse(widget.driverId),
-      "amount": widget.totalPrice
+      "amount": totalAmountToPay
     };
 
     log("apple card body is-->>  " + body.toString());
@@ -170,6 +181,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
     super.initState();
     _googlePayConfigFuture =
         PaymentConfiguration.fromAsset('default_google_pay_config.json');
+
+    setState(() {
+      totalAmountToPay = widget.grandTotal;
+    });
   }
 
   var dio = Dio();
@@ -295,9 +310,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     GestureDetector(
                       onTap: () {},
                       child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(10.0)),
+                        // decoration: BoxDecoration(
+                        //     color: Colors.black,
+                        //     borderRadius: BorderRadius.circular(10.0)),
                         child: Column(
                           children: [
                             Padding(
@@ -306,8 +321,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 "Add Tips",
                                 style: TextStyle(
                                   fontFamily: "poPPinMedium",
-                                  fontSize: 13.0,
-                                  color: whiteColor,
+                                  fontSize: 15.0,
+                                  color: black15141FColor,
                                 ),
                               ),
                             )
@@ -317,16 +332,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
 
                     Container(
+                      height: 30,
                       width: _deviceSize.width * .3,
                       child: TextField(
+                        controller: tipsTextEditingController,
+                        onChanged: (value) {
+                          log("test value is-->> $value");
+
+                          if (value != '') {
+                            setState(() {
+                              updateTotalAmount(tip: value);
+                            });
+                          } else {
+                            setState(() {
+                              updateTotalAmount(tip: "0.0");
+                            });
+                          }
+                        },
+                        onTapOutside: (event) {
+                          setState(() {
+                            updateTotalAmount(tip: "0.0");
+                          });
+                          FocusScope.of(context).requestFocus(new FocusNode());
+                        },
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 3, color: Colors.black),
-                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                          border: OutlineInputBorder(),
                         ),
                       ),
-                    )
+                    ),
+
                     // Container(
                     //   padding: EdgeInsets.zero,
                     //   width: _deviceSize.width * .3,
@@ -339,6 +375,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     // )
                   ],
                 ),
+              ),
+
+              TextInRow(
+                firstText: 'Total amount to Pay',
+                secondText: "\$CA ${totalAmountToPay} ",
               ),
               Padding(
                 padding:
@@ -459,12 +500,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           String cardToken = res.data["id"];
 
                                           var body = {
+                                            'tip':
+                                                tipsTextEditingController.text,
                                             'token': cardToken,
                                             'order_id':
                                                 int.parse(widget.orderId),
                                             "driver_id":
                                                 int.parse(widget.driverId),
-                                            "amount": widget.totalPrice
+                                            "amount": totalAmountToPay
                                           };
 
                                           log(body.toString());
@@ -715,10 +758,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     var cardToken = tokenJson['id'];
 
                                     var body = {
+                                      'tip': tipsTextEditingController.text,
                                       'token': cardToken,
                                       'order_id': int.parse(widget.orderId),
                                       "driver_id": int.parse(widget.driverId),
-                                      "amount": widget.totalPrice
+                                      "amount": totalAmountToPay
                                     };
 
                                     log(body.toString());

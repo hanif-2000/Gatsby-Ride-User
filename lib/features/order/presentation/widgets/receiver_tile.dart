@@ -25,9 +25,9 @@ class ReceiverTile extends StatelessWidget {
         child: Text(title!,
             textAlign: TextAlign.left,
             style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontWeight: FontWeight.bold)),
+              fontSize: 16,
+              color: Colors.black,
+            )),
       ),
     );
   }
