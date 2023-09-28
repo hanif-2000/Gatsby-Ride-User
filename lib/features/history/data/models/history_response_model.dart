@@ -47,6 +47,8 @@ class HistoryOrder {
   String? distance;
   String? total;
   DateTime orderTime;
+  dynamic tip;
+
   int? status;
   String? timeSchool;
   String? timeAfterSchool;
@@ -70,6 +72,7 @@ class HistoryOrder {
     required this.distance,
     required this.total,
     required this.orderTime,
+    required this.tip,
     required this.status,
     required this.timeSchool,
     required this.timeAfterSchool,
@@ -87,6 +90,7 @@ class HistoryOrder {
         image: json["image"] ?? '',
         plateNumber: json["plate_number"] ?? '',
         rating: json["rating"] ?? 0,
+        tip: json["tip"],
         startCoordinate: json["start_coordinate"] ?? '',
         endCoordinate: json["end_coordinate"] ?? "",
         startAddress: json["start_address"] ?? "",
@@ -120,6 +124,7 @@ class HistoryOrder {
         "end_address": endAddress,
         "distance": distance,
         "total": total,
+        "tip": tip,
         "order_time": orderTime.toIso8601String(),
         "status": status,
         "time_school": timeSchool,

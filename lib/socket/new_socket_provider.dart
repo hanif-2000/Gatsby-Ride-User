@@ -108,6 +108,7 @@ class NewSocketProvider with ChangeNotifier {
     _socket!.send(
       jsonEncode(map),
     );
+    listenRequests();
   }
 
   sendChatMessage({

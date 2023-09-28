@@ -485,23 +485,46 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           )
                                         ],
                                       ),
+                                      // Row(
+                                      //   mainAxisAlignment:
+                                      //       MainAxisAlignment.spaceBetween,
+                                      //   crossAxisAlignment:
+                                      //       CrossAxisAlignment.center,
+                                      //   children: [
+                                      //     Text(appLoc.price,
+                                      //         style: const TextStyle(
+                                      //             fontFamily: 'poPPinSemiBold',
+                                      //             fontSize: 16)),
+                                      //     Text(
+                                      //       mergePriceTxt(widget.item.total!),
+                                      //       style: const TextStyle(
+                                      //         fontSize: 16.0,
+                                      //         fontFamily: "poPPinMedium",
+                                      //       ),
+                                      //     ),
+                                      //   ],
+                                      // ),
+
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(appLoc.price,
+                                          Text("Tip",
                                               style: const TextStyle(
                                                   fontFamily: 'poPPinSemiBold',
                                                   fontSize: 16)),
                                           Text(
-                                            mergePriceTxt(widget.item.total!),
+                                            mergePriceTxt(widget.item.tip ==
+                                                    null
+                                                ? "0.0"
+                                                : widget.item.tip.toString()),
                                             style: const TextStyle(
                                               fontSize: 16.0,
                                               fontFamily: "poPPinMedium",
                                             ),
-                                          )
+                                          ),
                                         ],
                                       )
                                     ],

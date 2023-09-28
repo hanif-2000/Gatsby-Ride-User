@@ -483,10 +483,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                               driverName: provider.driverName,
                               platerNumber: provider.plateNumber,
                               rating: provider.ratings,
-                              isReceiptVisible: ((session.orderStatus == 6) ||
-                                      (session.orderStatus == 7))
-                                  ? true
-                                  : false,
+                              isReceiptVisible:
+                                  ((session.orderStatus == 7)) ? true : false,
                               // isReceiptVisible: true,
                             ),
                           ),

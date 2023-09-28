@@ -395,8 +395,8 @@ class OrderProvider with ChangeNotifier {
     yield GetReceiptLoading();
     final formData = FormData.fromMap({
       "id": session.orderId,
-      "distance": (int.parse(session.estimatedDistance) / 1000),
-      "time": (int.parse(session.estimatedTime) / 60).round()
+      // "distance": (int.parse(session.estimatedDistance) / 1000),
+      // "time": (int.parse(session.estimatedTime) / 60).round()
     });
     log("form data of order is --->> $formData");
     final result = await orderReceipt.execute(formData);

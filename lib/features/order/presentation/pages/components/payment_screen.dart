@@ -351,7 +351,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         },
                         onTapOutside: (event) {
                           setState(() {
-                            updateTotalAmount(tip: "0.0");
+                            // updateTotalAmount(tip: "0.0");
                           });
                           FocusScope.of(context).requestFocus(new FocusNode());
                         },
