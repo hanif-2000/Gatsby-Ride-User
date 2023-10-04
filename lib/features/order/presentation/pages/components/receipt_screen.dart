@@ -325,7 +325,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               // ),
                               TextInRow(
                                 secondTextweight: FontWeight.w700,
-                                firstText: "Total amount to pay",
+                                firstText: "Total amount to pay ",
                                 secondText:
                                     r"$CA " + data.orderReceipt![0].total,
                               ),
