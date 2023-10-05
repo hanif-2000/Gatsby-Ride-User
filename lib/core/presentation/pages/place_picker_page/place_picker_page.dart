@@ -10,6 +10,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:provider/provider.dart';
+import 'dart:developer' as dev;
 
 import '../../../domain/entities/google_places.dart';
 import '../../providers/place_auto_complete_state.dart';
@@ -110,6 +111,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         showLeading: false,
                         height: kToolbarHeight - 12,
                         onSubmitted: (String query) async {
+                          dev.log("search query is -->> $query");
                           _displayOverlay(buildSearchingOverlay());
                           await provider.fetchGooglePlaces();
                           if (provider.state.runtimeType == PlaceAutoLoaded) {
@@ -119,10 +121,20 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                 buildPredictionOverlay(data, context));
                           }
                         },
-                        onChanged: (String _) {
+                        onChanged: (String val) async {
+                          dev.log("onchnaged called on search $val");
                           provider.changeValue = provider.controller.text;
                           if (provider.textFieldIsEmpty) {
                             _clearOverlay();
+                          }
+                          dev.log("search val onchanged is -->> $val");
+                          _displayOverlay(buildSearchingOverlay());
+                          await provider.fetchGooglePlaces();
+                          if (provider.state.runtimeType == PlaceAutoLoaded) {
+                            final data =
+                                (provider.state as PlaceAutoLoaded).data;
+                            _displayOverlay(
+                                buildPredictionOverlay(data, context));
                           }
                         },
                       ),
@@ -269,6 +281,8 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                               ),
                                             ),
                                             onPressed: () {
+                                              dev.log(
+                                                  "on pressed called -------->>>..");
                                               if (!provider.isAddressLoading) {
                                                 if (widget.addressType ==
                                                     AddressType.origin) {

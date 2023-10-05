@@ -206,32 +206,62 @@ class LoginPage extends StatelessWidget {
                   ),
                   image: SvgPicture.asset('assets/icons/google.svg'),
                   event: () async {
-                    final FirebaseAuth auth = FirebaseAuth.instance;
+                    final GoogleSignIn _googleSignIn =
+                        GoogleSignIn(signInOption: SignInOption.standard);
+
                     // Trigger the authentication flow
                     final GoogleSignInAccount? googleUser =
-                        await GoogleSignIn().signIn();
+                        await _googleSignIn.signIn();
+
+                    log("google user:--> $googleUser");
 
                     // Obtain the auth details from the request
                     final GoogleSignInAuthentication? googleAuth =
                         await googleUser?.authentication;
 
-                    log("Google auth" + googleAuth.toString());
+                    log("Google auth$googleAuth");
 
                     // Create a new credential
                     final credential = GoogleAuthProvider.credential(
                       accessToken: googleAuth?.accessToken,
                       idToken: googleAuth?.idToken,
                     );
-                    log("Credential" + credential.toString());
+                    log("Credential$credential");
+                    final FirebaseAuth auth = FirebaseAuth.instance;
+                    // // Trigger the authentication flow
+                    // final GoogleSignInAccount? googleUser =
+                    //     await GoogleSignIn().signIn();
+
+                    // // Obtain the auth details from the request
+                    // final GoogleSignInAuthentication? googleAuth =
+                    //     await googleUser?.authentication;
+
+                    // log("Google auth " + googleAuth.toString());
+
+                    // // Create a new credential
+                    // final credential = GoogleAuthProvider.credential(
+                    //   accessToken: googleAuth?.accessToken,
+                    //   idToken: googleAuth?.idToken,
+                    // );
+                    // log("Credential " + credential.toString());
 
                     // Once signed in, return the UserCredential
                     await auth.signInWithCredential(credential).then((value) {
+                      log("value is -->> $value");
+
+                      log("email is :-->> ${value.user!.email}");
+                      log("name is :-->> ${value.user!.displayName}");
+                      log("google name is :-->> ${googleUser!.displayName!}");
+
+                      log("uid is :-->> ${value.user!.uid}");
+
                       var provider =
                           Provider.of<LoginProvider>(context, listen: false);
                       provider
                           .updateSocialLoginData(
                         userEmail: value.user!.email!,
-                        name: value.user!.displayName!,
+                        name:
+                            value.user!.displayName ?? googleUser.displayName!,
                         id: value.user!.uid,
                       )
                           .then((value) {
@@ -309,7 +339,7 @@ class LoginPage extends StatelessWidget {
                             idToken: credential.identityToken,
                           );
 
-                          Navigator.pop(context);
+                          // Navigator.pop(context);
                           log('Email - ${credential.email}');
                           log('Name - ${credential.givenName}');
                           log('Code - ${credential.authorizationCode}');
@@ -360,8 +390,9 @@ class LoginPage extends StatelessWidget {
                                     listen: false);
                                 provider
                                     .updateSocialLoginData(
-                                  userEmail: value.user!.email!,
-                                  name: value.user!.displayName!,
+                                  userEmail: value.user!.email ?? email,
+                                  name: value.user!.displayName ??
+                                      "$name $lastName",
                                   id: value.user!.uid,
                                 )
                                     .then((value) {

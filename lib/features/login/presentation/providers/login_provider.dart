@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';
@@ -17,6 +18,8 @@ class LoginProvider extends FormProvider {
   String lastName = '';
   String socialId = '';
   String email = '';
+
+  Session session = locator<Session>();
 
   Stream<LoginState> doLoginApi() async* {
     yield LoginLoading();
@@ -56,7 +59,7 @@ class LoginProvider extends FormProvider {
       email,
       firstName,
       lastName,
-      "gmail",
+      session.device,
       sessionHelper.device,
     );
 

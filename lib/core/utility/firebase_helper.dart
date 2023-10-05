@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:GetsbyRideshare/core/utility/notification_service.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:firebase_core/firebase_core.dart';

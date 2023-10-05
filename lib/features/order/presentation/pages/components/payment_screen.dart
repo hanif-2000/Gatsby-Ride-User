@@ -76,7 +76,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   updateTotalAmount({tip}) {
     setState(() {
-      totalAmountToPay = (double.parse(widget.grandTotal) + double.parse(tip))
+      totalAmountToPay = (double.parse(widget.totalPrice) + double.parse(tip))
           .toStringAsFixed(3);
     });
   }
@@ -183,13 +183,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
         PaymentConfiguration.fromAsset('default_google_pay_config.json');
 
     setState(() {
-      totalAmountToPay = widget.grandTotal;
+      totalAmountToPay = widget.totalPrice;
     });
   }
 
   var dio = Dio();
   @override
   Widget build(BuildContext context) {
+    log("total amount to pay:-->> ${widget.totalPrice}");
+    log("total amount to pay:-->> ${totalAmountToPay}");
+
     var _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: whiteColor,
@@ -295,7 +298,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       secondTextweight: FontWeight.w700,
                       firstText: 'Grand Total',
-                      secondText: r'$' + widget.grandTotal,
+                      secondText: r'$' + widget.totalPrice,
                     ),
                   ],
                 ),
