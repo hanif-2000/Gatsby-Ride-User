@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/login/presentation/pages/login_page.dart';
@@ -44,6 +46,16 @@ class _SplashPageState extends State<SplashPage> {
         // await sessionClearOrder();
 
         context.read<SplashProvider>().fetchCurrency().listen((state) async {
+          PermissionStatus status = await Permission.notification.request();
+          if (status.isGranted) {
+            log("notification permissin is granetd");
+            // notification permission is granted
+          } else {
+            // Permission.notification.request();
+            log("ask for notification permission ");
+            AppSettings.openAppSettings(type: AppSettingsType.notification);
+            // Open settings to enable notification permission
+          }
           final session = locator<Session>();
           // log("session token" + session.sessionToken.toString());
           // log("order id" + session.orderId.toString());

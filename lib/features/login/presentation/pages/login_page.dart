@@ -285,7 +285,7 @@ class LoginPage extends StatelessWidget {
 
                               final session = locator<Session>();
                               session.setLoggedIn = true;
-                              showToast(message: appLoc.success);
+                              showToast(message: "Login Success");
                               Navigator.pushNamedAndRemoveUntil(context,
                                   HomePage.routeName, (route) => false);
                               logMe(

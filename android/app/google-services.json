@@ -7,51 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1022060321341:android:ed95f39f92358cae122854",
-        "android_client_info": {
-          "package_name": "appkey.user.taxi"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1022060321341-dpcl9oeh5u697ikcbnutlqa1uibgltgq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "appkey.user.taxi",
-            "certificate_hash": "f19b10a1ce239a1a8a23248fa0e7a0ea3e2d1981"
-          }
-        },
-        {
-          "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDi62G7s0eXnCzwbDYYDIj8yDF0drF0_2M"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1022060321341-0c5f614tgu3358is65esg6v6kat912mn.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "getride.user.taxi",
-                "app_store_id": "6458739721"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:1022060321341:android:1d535f74130f9e28122854",
         "android_client_info": {
           "package_name": "driver.getride.taxi"
@@ -67,48 +22,11 @@
           }
         },
         {
-          "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDi62G7s0eXnCzwbDYYDIj8yDF0drF0_2M"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1022060321341-3p21cv1hu6d2jk9lejp509g0jp34mk4c.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1022060321341-0c5f614tgu3358is65esg6v6kat912mn.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "getride.user.taxi",
-                "app_store_id": "6458739721"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1022060321341:android:eb8276d2fa56bc57122854",
-        "android_client_info": {
-          "package_name": "getride.driver.taxi"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1022060321341-pfteeusq4b1jclpptokfde5skok2c8ni.apps.googleusercontent.com",
+          "client_id": "1022060321341-lq006b92em8t7kecdavgepqutfr4bi76.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "getride.driver.taxi",
-            "certificate_hash": "200036b375dbbf234bcf59a9527aab416d312c62"
+            "package_name": "driver.getride.taxi",
+            "certificate_hash": "dabebeeed7fd429ad186382bd14456e32bb1591b"
           }
         },
         {
@@ -178,6 +96,14 @@
           "android_info": {
             "package_name": "getride.user.taxi",
             "certificate_hash": "f19b10a1ce239a1a8a23248fa0e7a0ea3e2d1981"
+          }
+        },
+        {
+          "client_id": "1022060321341-nv2qfm4522bq9c9lresr8m20r0vthf1b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "getride.user.taxi",
+            "certificate_hash": "dabebeeed7fd429ad186382bd14456e32bb1591b"
           }
         },
         {
