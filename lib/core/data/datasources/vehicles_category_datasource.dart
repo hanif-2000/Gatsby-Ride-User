@@ -47,8 +47,12 @@ class VehicleCategoryDataSourceImplementation
   // }
 
   @override
-  Future<VehiclesCategoryList> getVehiclesCategoryList(String distance,
-      String nightService, String coordinates, String time) async {
+  Future<VehiclesCategoryList> getVehiclesCategoryList(
+    String distance,
+    String nightService,
+    String coordinates,
+    String time,
+  ) async {
     FormData data = FormData.fromMap({
       'distance': distance,
       'night_service': nightService,
@@ -56,6 +60,8 @@ class VehicleCategoryDataSourceImplementation
       'time': time
     });
     String url = 'api/webservice/priceCategory';
+
+    log("fetch vehicle catagory list body:---> ${data.fields} ");
 
     try {
       // final response = await dio.post(path,data: formdata);

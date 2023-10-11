@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/presentation/pages/home_page/home_page.dart';
+import '../../../../core/presentation/providers/home_provider.dart';
 import '../../../../core/presentation/widgets/searching_ride_bottom_sheet.dart';
 import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
@@ -24,6 +26,7 @@ import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
 import '../../../../socket/new_socket_provider.dart';
 import '../providers/get_driver_detail_state.dart';
+import '../providers/update_status_order_state.dart';
 import 'components/receipt_screen.dart';
 
 class OrderPage extends StatefulWidget {
@@ -62,6 +65,52 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (session.orderStatus == 0) {
         showSearchingVehiclesBottomSheet(context);
+
+        //Automatically cancel order ride request after 5 minutes
+
+        Future.delayed(Duration(seconds: 300), () {
+          if (session.orderStatus == 0) {
+            orderProvider.submitStatusOrder(Order.cancel).listen((event) async {
+              if (event is UpdateStatusOrderLoading) {
+                showLoading();
+                log("Order Status LOADING");
+              } else if (event is UpdateStatusOrderLoaded) {
+                log("Order Status LOADED--------");
+
+                var homeProvider =
+                    Provider.of<HomeProvider>(context, listen: false);
+                await homeProvider.clearState();
+                session.setOrderStatus = 100;
+                dismissLoading();
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  HomePage.routeName,
+                  (route) => false,
+                );
+
+//Show dialog for order canceled
+                // showDialog(
+                //   barrierDismissible: false,
+                //   context: context,
+                //   builder: (context) {
+                //     return CustomSimpleDialog(
+                //         text: appLoc.orderCanceled,
+                //         onTap: () {
+                //           Navigator.pushNamedAndRemoveUntil(
+                //             context,
+                //             HomePage.routeName,
+                //             (route) => false,
+                //           );
+                //         });
+                //   },
+                // );
+              } else if (event is UpdateStatusOrderFailure) {
+                log("Update Order Status Failed.......");
+                dismissLoading();
+              }
+            });
+          } else {}
+        });
       }
     });
   }

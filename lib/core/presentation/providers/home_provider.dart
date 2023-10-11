@@ -603,7 +603,7 @@ class HomeProvider with ChangeNotifier {
 
     //Convert seconds to minute and round off
 
-    String newTime = (estimatedTime / 60).round().toString();
+    String newTime = (estimatedTime / 60).toStringAsFixed(1);
 
     String dist = distance.split(' ').first;
     yield VehiclesCategoryLoading();
