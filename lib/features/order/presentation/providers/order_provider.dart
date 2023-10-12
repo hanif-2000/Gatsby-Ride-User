@@ -28,7 +28,6 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lctn;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 import '../../../../core/utility/direction_helper.dart';
 import '../../../../core/utility/injection.dart';
@@ -54,7 +53,7 @@ class OrderProvider with ChangeNotifier {
 
   //Web Socket
 
-  WebSocket? _socket;
+  // WebSocket? _socket;
 
   List<ChatData> chatMessages = [];
 

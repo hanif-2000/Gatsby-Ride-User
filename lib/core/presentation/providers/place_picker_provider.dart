@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/domain/usecases/get_google_place.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
@@ -33,6 +34,9 @@ class PlacePickerProvider with ChangeNotifier {
   bool isCurrentLoading = false;
   bool isAddressLoading = false;
 
+  String originTextToShow = '';
+  String destinationTextToShow = '';
+
   bool get textFieldIsEmpty => _controller.text.isEmpty;
 
   PlacePickerProvider({required this.getGooglePlace});
@@ -40,6 +44,7 @@ class PlacePickerProvider with ChangeNotifier {
   String _changeValue = "";
 
   set setOriginAddress(val) {
+    log("origin value is:-->> $val");
     addressSelected = val;
     isCurrentLoading = false;
     originLatLng = LatLng(
@@ -55,6 +60,8 @@ class PlacePickerProvider with ChangeNotifier {
   }
 
   set setDestinationAddress(val) {
+    log("destination value is:-->> $val");
+
     addressSelected = val;
     isCurrentLoading = false;
     destinationLatLng = LatLng(
@@ -122,6 +129,18 @@ class PlacePickerProvider with ChangeNotifier {
 
   setAddressLoad(value) {
     isAddressLoading = value;
+    notifyListeners();
+  }
+
+  updateOriginTextShow(val) {
+    originTextToShow = val;
+    notifyListeners();
+
+    log("orofin text:  $originTextToShow");
+  }
+
+  updateDestinationTextShow(val) {
+    destinationTextToShow = val;
     notifyListeners();
   }
 

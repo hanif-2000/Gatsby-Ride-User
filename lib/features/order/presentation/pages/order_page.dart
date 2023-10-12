@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/origin_widget.dart';

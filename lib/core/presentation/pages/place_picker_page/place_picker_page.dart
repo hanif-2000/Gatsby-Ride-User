@@ -43,6 +43,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
   }
 
   _displayOverlay(Widget overlayChild) {
+    dev.log("Display overlay called");
     _clearOverlay();
     final screenWidth = MediaQuery.of(context).size.width;
     overlayEntry = OverlayEntry(
@@ -145,6 +146,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
               ),
               body: Stack(
                 children: [
+                  //show background google maps
                   GoogleMap(
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,
@@ -180,6 +182,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                       }
                     },
                   ),
+
                   Center(
                     child: Image.asset(
                       widget.addressType == AddressType.origin
@@ -188,6 +191,15 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                       width: 100,
                     ),
                   ),
+
+                  Positioned(
+                    top: 150,
+                    child: Container(
+                      child: Text(provider.originTextToShow),
+                    ),
+                  ),
+
+                  //Bottom Section
                   Positioned(
                       bottom: 0.0,
                       left: 0.0,
@@ -242,7 +254,11 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                 child: Column(
                                   children: [
                                     Expanded(
-                                        flex: 3,
+                                      flex: 3,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          dev.log("address on tap called");
+                                        },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Center(
@@ -252,6 +268,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                                         CircularProgressIndicator(),
                                                   )
                                                 : AutoSizeText(
+                                                    // "sdf",
                                                     provider.addressSelected,
                                                     style: const TextStyle(
                                                         fontSize: 20),
@@ -260,7 +277,11 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                                     textAlign: TextAlign.center,
                                                   ),
                                           ),
-                                        )),
+                                        ),
+                                      ),
+                                    ),
+
+                                    //Select this place button
                                     Expanded(
                                         flex: 2,
                                         child: SizedBox(
@@ -368,6 +389,22 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                   name: mergeAddress(predictions[index].name,
                       predictions[index].formattedAddress),
                   onTap: () async {
+                    dev.log("On Tap on predict location called");
+                    FocusScope.of(context).unfocus();
+
+                    dev.log("lat: ${predictions[index].geometry.location}");
+                    // setOriginAddress();
+                    // provider.updateOriginTextShow(mergeAddress(
+                    //     predictions[index].name,
+                    //     predictions[index].formattedAddress));
+
+                    dev.log(mergeAddress(predictions[index].name,
+                            predictions[index].formattedAddress)
+                        .toString());
+                    provider.addressSelected = mergeAddress(
+                            predictions[index].name,
+                            predictions[index].formattedAddress)
+                        .toString();
                     clearOverlay();
                     provider.googleMapController.moveCamera(
                         CameraUpdate.newCameraPosition(CameraPosition(
@@ -379,6 +416,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         target: LatLng(predictions[index].geometry.location.lat,
                             predictions[index].geometry.location.lng),
                         zoom: 18);
+                    FocusScope.of(context).unfocus();
                   },
                 );
               },

@@ -1,4 +1,4 @@
-import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/types/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -39,14 +39,12 @@ class CustomContactBtn extends StatelessWidget {
               padding: const EdgeInsets.only(
                 left: 14.0,
               ),
-              child: Text(
-                btnText,
-                style: TextStyle(
-                  fontFamily: "poPPinSemiBold",
-                  fontSize: 12.0,
-                  color: whiteColor,
-                ),
-              ),
+              child: Text(btnText,
+                  style: TextStyle(
+                          fontSize: 15.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400)
+                      .usePoppinsW6Font()),
             ),
           ],
         ),

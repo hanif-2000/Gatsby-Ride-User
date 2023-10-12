@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -45,12 +46,14 @@ class NewSocketProvider with ChangeNotifier {
   }
 
   listenRequests() {
+    // connectToSocket();
     logMe('============= Listening to requests ================');
     _socket!.messages.listen(
       (event) {
         final response = jsonDecode(event);
         logMe('Message list data-----> ${response.toString()}');
         if (response['type'] == 'MessageList') {
+          log("messgae type is MESSAGE LIST");
           logMe('Message list data-----> ${response['data']}');
           if (response['data'] != null) {
             chatProvider.addChatAll(
@@ -60,6 +63,7 @@ class NewSocketProvider with ChangeNotifier {
                 ),
               ),
             );
+            log("chat data is :-->>${chatProvider.chatMessageList.length}");
           } else {
             chatProvider.addChatAll([]);
           }
@@ -70,6 +74,8 @@ class NewSocketProvider with ChangeNotifier {
               response['data'],
             ),
           );
+
+          log("chat data is :-->>${chatProvider.chatMessageList.length}");
         }
       },
     );

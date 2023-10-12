@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/presentation/pages/menu_page.dart';
 import 'package:GetsbyRideshare/core/presentation/pages/place_picker_page/place_picker_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
@@ -118,6 +120,7 @@ class OriginWidget extends StatelessWidget {
                           // map.fetchTotalPrice().listen((event) {});
                         }
                       } else {
+                        log("user session value is: $value");
                         Navigator.pushNamed(context, LoginPage.routeName);
                       }
                     });

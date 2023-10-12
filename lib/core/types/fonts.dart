@@ -16,7 +16,7 @@ TextStyle appFont(
   TextDecoration textDecoration = TextDecoration.none,
 }) {
   return GoogleFonts.notoSans(
-    textStyle: textStyle ?? Theme.of(context).textTheme.bodyText2,
+    textStyle: textStyle ?? Theme.of(context).textTheme.bodyMedium,
     fontWeight: FontWeight.w600,
     height: height,
     letterSpacing: letterSpacing,
@@ -47,10 +47,27 @@ extension CustomFontFamily on TextStyle {
         const TextStyle(fontFamily: fontName, fontWeight: FontWeight.w400));
   }
 
-
   TextStyle usePoPPinSemiBoldW6Font() {
     const String fontName = 'poPPinSemiBold';
     return merge(
         const TextStyle(fontFamily: fontName, fontWeight: FontWeight.w600));
+  }
+
+  TextStyle usePoppinsW6Font() {
+    const String fontName = 'Poppins';
+    return merge(
+        const TextStyle(fontFamily: fontName, fontWeight: FontWeight.w600));
+  }
+
+  TextStyle usePoppinsW5Font() {
+    const String fontName = 'Poppins';
+    return merge(
+        const TextStyle(fontFamily: fontName, fontWeight: FontWeight.w500));
+  }
+
+  TextStyle usePoppinsW4Font() {
+    const String fontName = 'Poppins';
+    return merge(
+        const TextStyle(fontFamily: fontName, fontWeight: FontWeight.w400));
   }
 }

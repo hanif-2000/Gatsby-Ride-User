@@ -115,6 +115,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                 final data = (state.data as GetReceiptLoaded).data;
                 log("---->>>Receipt loaded called   <<<<-------");
 
+                log("end time from response modal is::  ${data.orderReceipt![0].endTime}");
+
                 log("data is $data");
 
                 dismissLoading();

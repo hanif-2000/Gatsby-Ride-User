@@ -769,57 +769,64 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     };
 
                                     log(body.toString());
+                                    try {
+                                      var response = await dio.post(
+                                        'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                                        data: body,
+                                        options: Options(headers: {
+                                          "Authorization":
+                                              "Bearer $sessionToken"
+                                        }),
+                                      );
 
-                                    var response = await dio.post(
-                                      'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
-                                      data: body,
-                                      options: Options(headers: {
-                                        "Authorization": "Bearer $sessionToken"
-                                      }),
-                                    );
+                                      if (response.data["success"] == 1) {
+                                        log("payment successful");
 
-                                    if (response.data["success"] == 1) {
-                                      updatePaymentSuccess();
-                                      showDialog(
-                                        context: context,
-                                        builder: (ctx) => AlertDialog(
-                                          title:
-                                              const Text("Ride Payment Status"),
-                                          content:
-                                              const Text("Payment successfull"),
-                                          actions: [
-                                            CustomButton(
-                                                isRounded: true,
-                                                text: "Ok",
-                                                event: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FeedBackScreen(
-                                                        name: widget.name,
-                                                        img: widget.img,
-                                                        carModal:
-                                                            widget.carModal,
-                                                        carNo: widget.carNo,
+                                        updatePaymentSuccess();
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: const Text(
+                                                "Ride Payment Status"),
+                                            content: const Text(
+                                                "Payment successfull"),
+                                            actions: [
+                                              CustomButton(
+                                                  isRounded: true,
+                                                  text: "Ok",
+                                                  event: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            FeedBackScreen(
+                                                          name: widget.name,
+                                                          img: widget.img,
+                                                          carModal:
+                                                              widget.carModal,
+                                                          carNo: widget.carNo,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  );
-                                                },
-                                                bgColor: black080808Color)
-                                          ],
-                                        ),
-                                      );
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (ctx) => AlertDialog(
-                                          title: const Text(
-                                              "Payment unsuccessfull"),
-                                          content:
-                                              Text(response.data["message"]),
-                                        ),
-                                      );
+                                                    );
+                                                  },
+                                                  bgColor: black080808Color)
+                                            ],
+                                          ),
+                                        );
+                                      } else {
+                                        log("payment unsuccessful");
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: const Text(
+                                                "Payment unsuccessfull"),
+                                            content:
+                                                Text(response.data["message"]),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      log(e.toString());
                                     }
                                   },
                                   loadingIndicator: const Center(

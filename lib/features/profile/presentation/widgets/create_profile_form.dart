@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/pages/home_page/home_page.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_text_field.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_state.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../core/utility/helper.dart';
+import '../../../../core/utility/session_helper.dart';
 
 class CreateProfileForm extends StatefulWidget {
   const CreateProfileForm({Key? key}) : super(key: key);
@@ -74,6 +76,8 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
           final data = (state as CreateProfileSuccess).data;
           dismissLoading();
           if (data.success == 1) {
+            final session = locator<Session>();
+            session.setLoggedIn = true;
             showToast(message: appLoc.createProfileSuccessfully);
             Navigator.pushNamedAndRemoveUntil(
                 context, HomePage.routeName, (route) => false);

@@ -526,7 +526,7 @@ class HomeProvider with ChangeNotifier {
       session.setEstimatedDistance =
           data.rows[0].elements[0].distance.value.toString();
       session.setEstimatedTime =
-          data.rows[0].elements[0].duration.value.toString();
+          data.rows[0].elements[0].duration.value.toStringAsFixed(1);
 
       notifyListeners();
 
