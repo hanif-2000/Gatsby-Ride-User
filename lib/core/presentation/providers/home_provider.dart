@@ -242,13 +242,13 @@ class HomeProvider with ChangeNotifier {
     getBytesFromAsset(driverMarkerIcon, 70).then((value) {
       driverMarker = BitmapDescriptor.fromBytes(value);
     });
-    getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
+    getBytesFromAsset(initialPickUpIcon, 250).then((value) async {
       pickUpMarker = BitmapDescriptor.fromBytes(value);
     });
     getBytesFromAsset(destinationIcon, 100).then((value) async {
       destinationMarker = BitmapDescriptor.fromBytes(value);
     });
-    getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
+    getBytesFromAsset(initialPickUpIcon, 250).then((value) async {
       initialPickMarker = BitmapDescriptor.fromBytes(value);
     });
 
@@ -401,6 +401,7 @@ class HomeProvider with ChangeNotifier {
 
       MarkerId markerId = const MarkerId("origin");
       final Marker marker = Marker(
+        anchor: const Offset(0.5, 0.5),
         markerId: markerId,
         position: LatLng(originLatLng.latitude, originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),
@@ -439,6 +440,7 @@ class HomeProvider with ChangeNotifier {
         MarkerId(addressType == AddressType.origin ? "origin" : "destination");
     try {
       final Marker marker = Marker(
+        anchor: const Offset(0.5, 0.5),
         markerId: markerId,
         position: latlng,
         icon: addressType == AddressType.origin

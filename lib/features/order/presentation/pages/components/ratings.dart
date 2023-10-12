@@ -55,10 +55,13 @@ class RatingsScreen extends StatelessWidget {
                     builder: (context, state) {
                       switch (state.data.runtimeType) {
                         case GetRatingLoading:
+                          log("rating loading");
                           return const Center(
                               child: CircularProgressIndicator());
 
                         case GetRatingFailure:
+                          log("rating failure");
+
                           final failure =
                               (state.data as GetRatingFailure).failure;
                           dismissLoading();
@@ -66,104 +69,127 @@ class RatingsScreen extends StatelessWidget {
                           return const SizedBox.shrink();
 
                         case GetRatingLoaded:
+                          log("rating loaded");
+
                           final data = (state.data as GetRatingLoaded).data;
 
                           log(data.toString());
+                          log("${data.list.length}");
 
                           dismissLoading();
-                          return SizedBox(
-                              height: height,
-                              width: width,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 20, left: 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: whiteColor,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: bgGreyColor.withOpacity(.5),
-                                            blurRadius:
-                                                10.0, // soften the shadow
-                                            spreadRadius:
-                                                1.0, //extend the shadow
-                                            offset: Offset(
-                                              -10.0, // Move to right 5  horizontally
-                                              2.0, // Move to bottom 5 Vertically
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            CommonText(
-                                              text: data.rating.toString(),
-                                              fontWeight: FontWeight.w500,
-                                              fontColor: blackColor,
-                                              fontFamily: "poPPinMedium",
-                                              fontSize: 34,
-                                            ),
-                                            SizedBox(width: 15),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                RatingBarIndicator(
-                                                  rating: double.parse(
-                                                      data.rating.toString()),
-                                                  itemBuilder:
-                                                      (context, index) => Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
-                                                  ),
-                                                  itemCount: 5,
-                                                  itemSize: 24.0,
-                                                  direction: Axis.horizontal,
+                          return
+                              // data.list.length < 1
+                              // ?
+                              SizedBox(
+                                  height: height,
+                                  width: width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 20, left: 20),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: whiteColor,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color:
+                                                    bgGreyColor.withOpacity(.5),
+                                                blurRadius:
+                                                    10.0, // soften the shadow
+                                                spreadRadius:
+                                                    1.0, //extend the shadow
+                                                offset: Offset(
+                                                  -10.0, // Move to right 5  horizontally
+                                                  2.0, // Move to bottom 5 Vertically
                                                 ),
+                                              )
+                                            ],
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: [
                                                 CommonText(
-                                                  text:
-                                                      "Based On ${data.ratingCount} Reviews",
-                                                  fontWeight: FontWeight.w400,
+                                                  text: data.rating.toString(),
+                                                  fontWeight: FontWeight.w500,
                                                   fontColor: blackColor,
-                                                  fontFamily: "poPPinRegular",
-                                                  fontSize: 12,
+                                                  fontFamily: "poPPinMedium",
+                                                  fontSize: 34,
+                                                ),
+                                                SizedBox(width: 15),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    RatingBarIndicator(
+                                                      rating: double.parse(data
+                                                          .rating
+                                                          .toString()),
+                                                      itemBuilder:
+                                                          (context, index) =>
+                                                              Icon(
+                                                        Icons.star,
+                                                        color: Colors.amber,
+                                                      ),
+                                                      itemCount: 5,
+                                                      itemSize: 24.0,
+                                                      direction:
+                                                          Axis.horizontal,
+                                                    ),
+                                                    CommonText(
+                                                      text:
+                                                          "Based On ${data.ratingCount} Reviews",
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontColor: blackColor,
+                                                      fontFamily:
+                                                          "poPPinRegular",
+                                                      fontSize: 12,
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                        Expanded(
+                                          child: ListView.builder(
+                                              itemCount: data.list.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return CustomRatingItem(
+                                                  date:
+                                                      DateFormat('dd MMM yyyy')
+                                                          .format(data
+                                                              .list[index]
+                                                              .createdAt)
+                                                          .toString(),
+                                                  image: data.list[index].image,
+                                                  name: data.list[index].name,
+                                                  rating:
+                                                      data.list[index].rating,
+                                                  reviews:
+                                                      data.list[index].review,
+                                                );
+                                              }),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    Expanded(
-                                      child: ListView.builder(
-                                          itemCount: data.list.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return CustomRatingItem(
-                                              date: DateFormat('dd MMM yyyy')
-                                                  .format(data
-                                                      .list[index].createdAt)
-                                                  .toString(),
-                                              image: data.list[index].image,
-                                              name: data.list[index].name,
-                                              rating: data.list[index].rating,
-                                              reviews: data.list[index].review,
-                                            );
-                                          }),
-                                    ),
-                                  ],
-                                ),
-                              ));
+                                  ));
+                        // : Center(
+                        //     child: Text("No Rating Given yet"),
+                        // );
                       }
+                      ;
                       return const SizedBox.shrink();
                     },
                   )));

@@ -34,18 +34,33 @@ class PlacePickerProvider with ChangeNotifier {
   bool isCurrentLoading = false;
   bool isAddressLoading = false;
 
+  String newAddressSelected = '';
+
   String originTextToShow = '';
   String destinationTextToShow = '';
 
   bool get textFieldIsEmpty => _controller.text.isEmpty;
 
+  bool isSearch = false;
+
+  updateIsSearch({val}) {
+    isSearch = val;
+    notifyListeners();
+  }
+
   PlacePickerProvider({required this.getGooglePlace});
 
   String _changeValue = "";
 
+  updateNewAddress(val) {
+    newAddressSelected = val;
+    notifyListeners();
+  }
+
   set setOriginAddress(val) {
     log("origin value is:-->> $val");
-    addressSelected = val;
+
+    addressSelected = isSearch ? originTextToShow : val;
     isCurrentLoading = false;
     originLatLng = LatLng(
         cameraPosition!.target.latitude, cameraPosition!.target.longitude);
@@ -62,7 +77,7 @@ class PlacePickerProvider with ChangeNotifier {
   set setDestinationAddress(val) {
     log("destination value is:-->> $val");
 
-    addressSelected = val;
+    addressSelected = isSearch ? originTextToShow : val;
     isCurrentLoading = false;
     destinationLatLng = LatLng(
         cameraPosition!.target.latitude, cameraPosition!.target.longitude);

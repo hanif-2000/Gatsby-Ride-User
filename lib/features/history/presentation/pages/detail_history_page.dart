@@ -142,9 +142,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                         ),
                         zoom: 15,
                       ),
-                      // on below line we have given map type
                       mapType: MapType.normal,
-                      // specified set of markers below
                       markers: provider.markers,
                       // on below line we have enabled location
                       myLocationEnabled: false,

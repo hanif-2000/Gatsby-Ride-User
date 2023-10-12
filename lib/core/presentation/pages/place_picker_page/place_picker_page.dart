@@ -147,40 +147,52 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
               body: Stack(
                 children: [
                   //show background google maps
-                  GoogleMap(
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    initialCameraPosition: CameraPosition(
-                      target: widget.addressType == AddressType.origin
-                          ? provider.originLatLng
-                          : provider.destinationLatLng,
-                      zoom: 18.0,
-                    ),
-                    mapType: MapType.normal,
-                    onMapCreated: (controller) {
-                      provider.googleMapController = controller;
+                  Listener(
+                    onPointerMove: (event) {
+                      provider.updateIsSearch(val: false);
+                      dev.log("On pointer moved called");
                     },
-                    onCameraMove: (CameraPosition cameraPositiona) {
-                      provider.cameraPosition = cameraPositiona;
-                    },
-                    onCameraIdle: () async {
-                      if (provider.cameraPosition != null) {
-                        provider.setAddressLoad(true);
-                        List<Placemark> placemarks =
-                            await placemarkFromCoordinates(
-                                provider.cameraPosition!.target.latitude,
-                                provider.cameraPosition!.target.longitude);
-                        if (widget.addressType == AddressType.origin) {
-                          provider.setOriginAddress =
-                              "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
-                          provider.setAddressLoad(false);
-                        } else {
-                          provider.setDestinationAddress =
-                              "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
-                          provider.setAddressLoad(false);
+                    child: GoogleMap(
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                      initialCameraPosition: CameraPosition(
+                        target: widget.addressType == AddressType.origin
+                            ? provider.originLatLng
+                            : provider.destinationLatLng,
+                        zoom: 18.0,
+                      ),
+                      mapType: MapType.normal,
+                      onMapCreated: (controller) {
+                        provider.googleMapController = controller;
+                      },
+                      onCameraMove: (CameraPosition cameraPositiona) {
+                        provider.cameraPosition = cameraPositiona;
+                      },
+                      onCameraIdle: () async {
+                        dev.log("On CAMERA ideal called");
+                        if (provider.cameraPosition != null) {
+                          provider.setAddressLoad(true);
+                          List<Placemark> placemarks =
+                              await placemarkFromCoordinates(
+                                  provider.cameraPosition!.target.latitude,
+                                  provider.cameraPosition!.target.longitude);
+                          if (widget.addressType == AddressType.origin) {
+                            FocusScope.of(context).unfocus();
+
+                            provider.setOriginAddress =
+                                "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
+
+                            provider.setAddressLoad(false);
+                          } else {
+                            FocusScope.of(context).unfocus();
+
+                            provider.setDestinationAddress =
+                                "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
+                            provider.setAddressLoad(false);
+                          }
                         }
-                      }
-                    },
+                      },
+                    ),
                   ),
 
                   Center(
@@ -189,13 +201,6 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                           ? initialPickUpIcon
                           : destinationIcon,
                       width: 100,
-                    ),
-                  ),
-
-                  Positioned(
-                    top: 150,
-                    child: Container(
-                      child: Text(provider.originTextToShow),
                     ),
                   ),
 
@@ -389,8 +394,14 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                   name: mergeAddress(predictions[index].name,
                       predictions[index].formattedAddress),
                   onTap: () async {
+                    provider.updateIsSearch(val: true);
+
+                    provider.updateOriginTextShow(mergeAddress(
+                        predictions[index].name,
+                        predictions[index].formattedAddress));
                     dev.log("On Tap on predict location called");
                     FocusScope.of(context).unfocus();
+                    provider.clearController();
 
                     dev.log("lat: ${predictions[index].geometry.location}");
                     // setOriginAddress();
@@ -432,6 +443,16 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
             name: mergeAddress(
                 predictions[index].name, predictions[index].formattedAddress),
             onTap: () async {
+              provider.updateIsSearch(val: true);
+
+              provider.updateOriginTextShow(mergeAddress(
+                  predictions[index].name,
+                  predictions[index].formattedAddress));
+              dev.log("On Tap on when item < 4predict location called");
+              FocusScope.of(context).unfocus();
+              provider.clearController();
+
+              dev.log("lat: ${predictions[index].geometry.location}");
               clearOverlay();
               provider.googleMapController.moveCamera(
                   CameraUpdate.newCameraPosition(CameraPosition(
