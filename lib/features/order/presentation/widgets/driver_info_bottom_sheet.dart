@@ -3,6 +3,8 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/custom_contact_btn.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/utility/injection.dart';
+import '../../../../core/utility/session_helper.dart';
 import '../../../history/presentation/widgets/driver_profile.dart';
 
 class DriverInfoBottomSheet extends StatelessWidget {
@@ -39,6 +41,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
+    final session = locator<Session>();
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 10.0,
@@ -72,16 +75,52 @@ class DriverInfoBottomSheet extends StatelessWidget {
                 btnText: "Call now",
                 image: 'assets/icons/call_icon.svg',
                 btnWidth: _deviceSize.width * .45,
-                btnColor: green2DAA5FColor,
-                event: callEvent,
+                btnColor:
+                    //  session.orderStatus == 1
+
+                    // ? green2DAA5FColor
+                    // : session.orderStatus == 2
+                    //     ? green2DAA5FColor
+                    //     : session.orderStatus == 3
+                    //         ?
+
+                    green2DAA5FColor,
+                // : grey606060Color,
+                event:
+                    // session.orderStatus == 1
+                    //     ? callEvent
+                    //     : session.orderStatus == 2
+                    //         ? callEvent
+                    //         : session.orderStatus == 3
+                    //             ?
+                    callEvent,
+                // : () {},
               ),
               CustomContactBtn(
-                btnText: "Message",
-                image: 'assets/icons/message_icon.svg',
-                btnWidth: _deviceSize.width * .45,
-                btnColor: blue249DE0Color,
-                event: messageEvent,
-              ),
+                  btnText: "Message",
+                  image: 'assets/icons/message_icon.svg',
+                  btnWidth: _deviceSize.width * .45,
+                  btnColor:
+                      // session.orderStatus == 1
+                      //     ? blue249DE0Color
+                      //     : session.orderStatus == 2
+                      //         ? blue249DE0Color
+                      //         : session.orderStatus == 3
+                      //             ?
+                      blue249DE0Color,
+                  // : grey606060Color,
+                  // btnColor: blue249DE0Color,
+                  event:
+                      //  session.orderStatus == 1
+                      //     ? messageEvent
+                      //     : session.orderStatus == 2
+                      //         ? messageEvent
+                      //         : session.orderStatus == 3
+                      //             ?
+                      messageEvent
+
+                  // : () {},
+                  ),
             ],
           ),
           Visibility(
