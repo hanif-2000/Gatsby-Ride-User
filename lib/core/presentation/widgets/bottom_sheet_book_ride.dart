@@ -246,9 +246,9 @@ class BottomSheetBookRide extends StatelessWidget {
                                               } else if (event
                                                   is CreateOrderLoaded) {
                                                 dismissLoading();
-                                                showToast(
-                                                    message: appLoc
-                                                        .orderCreatedSuccessfully);
+                                                // showToast(
+                                                //     message: appLoc
+                                                //         .orderCreatedSuccessfully);
                                                 final OrderDataDetail
                                                     orderDataDetail = OrderDataDetail(
                                                         originLatLng: provider

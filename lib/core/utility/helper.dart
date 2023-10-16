@@ -129,6 +129,7 @@ dismissLoading() {
 
 void showToast({required String message, Color? color}) {
   Fluttertoast.showToast(
+      gravity: ToastGravity.TOP,
       backgroundColor: color ?? Colors.black,
       msg: message,
       toastLength: Toast.LENGTH_LONG,

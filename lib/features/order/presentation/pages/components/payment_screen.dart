@@ -304,81 +304,87 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
               ),
 
-              Padding(
-                padding:
-                    EdgeInsets.symmetric(vertical: _deviceSize.height * .02),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        // decoration: BoxDecoration(
-                        //     color: Colors.black,
-                        //     borderRadius: BorderRadius.circular(10.0)),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Text(
-                                "Add Tips",
-                                style: TextStyle(
-                                  fontFamily: "poPPinMedium",
-                                  fontSize: 15.0,
-                                  color: black15141FColor,
-                                ),
+              widget.paymentMode != 1
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: _deviceSize.height * .02),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              // decoration: BoxDecoration(
+                              //     color: Colors.black,
+                              //     borderRadius: BorderRadius.circular(10.0)),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: Text(
+                                      "Add Tips",
+                                      style: TextStyle(
+                                        fontFamily: "poPPinMedium",
+                                        fontSize: 15.0,
+                                        color: black15141FColor,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            )
-                          ],
-                        ),
+                            ),
+                          ),
+
+                          Container(
+                            height: 30,
+                            width: _deviceSize.width * .3,
+                            child: TextField(
+                              controller: tipsTextEditingController,
+                              onChanged: (value) {
+                                log("test value is-->> $value");
+
+                                if (value != '') {
+                                  setState(() {
+                                    updateTotalAmount(tip: value);
+                                  });
+                                } else {
+                                  setState(() {
+                                    updateTotalAmount(tip: "0.0");
+                                  });
+                                }
+                              },
+                              onTapOutside: (event) {
+                                setState(() {
+                                  // updateTotalAmount(tip: "0.0");
+                                });
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+                              },
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 8.0),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+
+                          // Container(
+                          //   padding: EdgeInsets.zero,
+                          //   width: _deviceSize.width * .3,
+                          //   child: CustomTextField(
+
+                          //     placeholder: '0.0',
+                          //     controller: tipsTextEditingController,
+                          //     fieldValidator: null,
+                          //   ),
+                          // )
+                        ],
                       ),
+                    )
+                  : SizedBox(
+                      height: 10.0,
                     ),
-
-                    Container(
-                      height: 30,
-                      width: _deviceSize.width * .3,
-                      child: TextField(
-                        controller: tipsTextEditingController,
-                        onChanged: (value) {
-                          log("test value is-->> $value");
-
-                          if (value != '') {
-                            setState(() {
-                              updateTotalAmount(tip: value);
-                            });
-                          } else {
-                            setState(() {
-                              updateTotalAmount(tip: "0.0");
-                            });
-                          }
-                        },
-                        onTapOutside: (event) {
-                          setState(() {
-                            // updateTotalAmount(tip: "0.0");
-                          });
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-
-                    // Container(
-                    //   padding: EdgeInsets.zero,
-                    //   width: _deviceSize.width * .3,
-                    //   child: CustomTextField(
-
-                    //     placeholder: '0.0',
-                    //     controller: tipsTextEditingController,
-                    //     fieldValidator: null,
-                    //   ),
-                    // )
-                  ],
-                ),
-              ),
 
               TextInRow(
                 firstText: 'Total amount to Pay',

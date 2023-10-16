@@ -108,6 +108,10 @@ class ButtonCancelOrder extends StatelessWidget {
                                     listen: false);
                                 await homeProvider.clearState();
                                 dismissLoading();
+
+                                log("order status code is:--->> ${provider.session.orderStatus}");
+
+                                provider.session.setOrderStatus = 100;
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
                                   HomePage.routeName,

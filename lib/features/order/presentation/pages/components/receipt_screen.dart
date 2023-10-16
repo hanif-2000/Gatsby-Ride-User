@@ -123,7 +123,12 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
                 DateTime dt1 = DateTime.parse(data.orderReceipt![0].startTime);
                 DateTime dt2 = DateTime.parse(data.orderReceipt![0].endTime!);
+
+                log("start time: $dt1");
+                log("end time: $dt2");
+
                 int timeTaken = dt2.difference(dt1).inMinutes;
+                log("time taken: $timeTaken");
 
                 // int time =
                 // (order.endTime!.difference(order.startTime!).inMinutes);

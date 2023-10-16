@@ -125,7 +125,7 @@ class OrderReceiptDataModel extends Equatable {
         orderTime: json["order_time"] != null
             ? DateTime.parse(json["order_time"])
             : DateTime.now(),
-        startTime: json["start_time"] ?? '',
+        startTime: json["start_time"] ?? DateTime.now().toIso8601String(),
         endTime: json["end_time"] ?? DateTime.now().toIso8601String(),
         status: json["status"] ?? '',
         image: json["image"],
