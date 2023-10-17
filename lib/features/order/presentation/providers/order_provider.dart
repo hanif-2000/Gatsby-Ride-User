@@ -240,6 +240,7 @@ class OrderProvider with ChangeNotifier {
   }
 
   setAddressFromLatLng(OrderDataDetail orderDataDetail) async {
+    log("set address from lat long  ORDER DETAILS : ${orderDataDetail}");
     try {
       MarkerId markerIdOrigin = const MarkerId("origin");
       MarkerId markerIdDestination = const MarkerId("destination");

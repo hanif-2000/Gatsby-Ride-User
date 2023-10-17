@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +30,7 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   var socketProvider = locator<NewSocketProvider>();
   var orderProvider = locator<OrderProvider>();
   var chatProvider = locator<ChatProvider>();
@@ -39,6 +41,20 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
     socketProvider.joinExitRoom(receiverId: int.parse(session.driverId));
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    log(" app lifecycle state is ------>>>>>>>   $state");
+    if (state == AppLifecycleState.paused) {
+      socketProvider.joinExitRoom(
+        type: 'unJoin',
+        receiverId: int.parse(session.driverId),
+      );
+    } else if (state == AppLifecycleState.resumed) {
+      socketProvider.joinExitRoom(receiverId: int.parse(session.driverId));
+    }
   }
 
   @override
@@ -48,9 +64,10 @@ class _ChatPageState extends State<ChatPage> {
     // socketProvider.joinExitRoom(
     //     receiverId: int.parse(session.userId), type: 'unJoin');
     socketProvider.joinExitRoom(
-      type: 'UnJoin',
+      type: 'unJoin',
       receiverId: int.parse(session.driverId),
     );
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

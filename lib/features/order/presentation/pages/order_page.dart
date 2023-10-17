@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
-import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dart';
-import 'package:GetsbyRideshare/core/presentation/widgets/origin_widget.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
@@ -12,13 +10,11 @@ import 'package:GetsbyRideshare/features/order/presentation/providers/get_status
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/providers/home_provider.dart';
 import '../../../../core/presentation/widgets/searching_ride_bottom_sheet.dart';
-import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
 import '../../../../core/utility/injection.dart';
@@ -385,61 +381,65 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                             ? SizedBox(
                                 height: 10,
                               )
-                            : Container(
-                                color: whiteColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6.0),
-                                  child: Container(
-                                      child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            locationPngIcon,
-                                            height: 24.0,
-                                            width: 24.0,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          SvgPicture.asset(dottedLine),
-                                          SvgPicture.asset(
-                                            destinationSvgIcon,
-                                            height: 30.0,
-                                            width: 30.0,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          OriginWidget(
-                                            deviceWidth: _deviceSize.width,
-                                            isFromOrder: false,
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.zero,
-                                            width: _deviceSize.width * .8,
-                                            height: 1.0,
-                                            color: whiteEFEFEFColor,
-                                          ),
-                                          Container(
-                                            child: DestinationWidget(
-                                              deviceWidth: _deviceSize.width,
-                                              isFromOrder: false,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  )),
-                                ),
-                              ),
+                            : SizedBox(
+                                height: 10,
+                              )
+
+                        //  Container(
+                        //     color: whiteColor,
+                        //     child: Padding(
+                        //       padding: const EdgeInsets.symmetric(
+                        //           horizontal: 6.0),
+                        //       child: Container(
+                        //           child: Row(
+                        //         mainAxisAlignment:
+                        //             MainAxisAlignment.spaceAround,
+                        //         children: [
+                        //           Column(
+                        //             mainAxisAlignment:
+                        //                 MainAxisAlignment.center,
+                        //             children: [
+                        //               Image.asset(
+                        //                 locationPngIcon,
+                        //                 height: 24.0,
+                        //                 width: 24.0,
+                        //                 fit: BoxFit.cover,
+                        //               ),
+                        //               SvgPicture.asset(dottedLine),
+                        //               SvgPicture.asset(
+                        //                 destinationSvgIcon,
+                        //                 height: 30.0,
+                        //                 width: 30.0,
+                        //                 fit: BoxFit.cover,
+                        //               ),
+                        //             ],
+                        //           ),
+                        //           Column(
+                        //             mainAxisAlignment:
+                        //                 MainAxisAlignment.spaceAround,
+                        //             children: [
+                        //               OriginWidget(
+                        //                 deviceWidth: _deviceSize.width,
+                        //                 isFromOrder: false,
+                        //               ),
+                        //               Container(
+                        //                 margin: EdgeInsets.zero,
+                        //                 width: _deviceSize.width * .8,
+                        //                 height: 1.0,
+                        //                 color: whiteEFEFEFColor,
+                        //               ),
+                        //               Container(
+                        //                 child: DestinationWidget(
+                        //                   deviceWidth: _deviceSize.width,
+                        //                   isFromOrder: false,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           )
+                        //         ],
+                        //       )),
+                        //     ),
+                        //   ),
 
                         /**Old Code  */
 
@@ -463,8 +463,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                         //           : const CurrentLocationOrderWidget(),
                         //       const BottomContaineOrder()
                         //     ]))
+                        ,
                         Spacer(),
-
                         Visibility(
                           visible: (provider.isOrderAccepted) ||
                               (session.orderStatus != 0),

@@ -37,6 +37,7 @@ class FirebaseHelper {
   static Future<void> incomingNotificationHandling() async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      log("on message listen:-->> ${message}");
       // fetchRemoteMessage(message);
       NotificationHelper _notificationService = NotificationHelper();
       _notificationService.showNotifications(message);
@@ -64,7 +65,13 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // make sure you call `initializeApp` before using other Firebase services.
   // await Firebase.initializeApp();
 
+  NotificationHelper _notificationService = NotificationHelper();
+  _notificationService.showNotifications(message);
+
   log("Message _____ " + message.data.toString());
+
+  log("message data TITLE is ---${message.notification!.title}");
+  log("message data BODY is ---${message.data['message']}");
 
   logMe("Handling a background message: ${message.messageId}");
 }

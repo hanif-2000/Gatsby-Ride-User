@@ -37,8 +37,8 @@ class NotificationHelper {
     'channel ID',
     'channel name',
     playSound: true,
-    priority: Priority.high,
-    importance: Importance.high,
+    priority: Priority.max,
+    importance: Importance.max,
     // color: Color(0xff000000),
   );
 
@@ -47,7 +47,9 @@ class NotificationHelper {
       await flutterLocalNotificationsPlugin.show(
         0,
         message.notification?.title,
-        message.notification?.body,
+        message.notification?.body != null
+            ? message.notification?.body
+            : message.data['message'],
         NotificationDetails(android: _androidNotificationDetails),
       );
     } else {
