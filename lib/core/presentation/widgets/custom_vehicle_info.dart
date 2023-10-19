@@ -156,7 +156,7 @@ class CustomVehicleInfo extends StatelessWidget {
                     style: const TextStyle(
                         fontFamily: 'poPPinRegular',
                         fontWeight: FontWeight.w600,
-                        fontSize: 16.0,
+                        fontSize: 14.0,
                         color: black080808Color),
                   ),
                 ],

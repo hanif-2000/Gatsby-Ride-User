@@ -58,7 +58,6 @@ import '../../features/order/domain/usecases/get_order_detail.dart';
 import '../../features/order/domain/usecases/get_receipt.dart';
 import '../../features/order/domain/usecases/get_status_order.dart';
 import '../../features/order/domain/usecases/update_status_order.dart';
-import '../../features/order/presentation/providers/chat_provider.dart';
 import '../../features/order/presentation/providers/order_provider.dart';
 import '../../features/profile/data/datasources/profile_data_source.dart';
 import '../../features/profile/data/repositories/create_profile_repository_implementation.dart';
@@ -403,5 +402,5 @@ Future<void> init() async {
 
   // locator.registerFactory<SocketProvider>(() => SocketProvider());
   locator.registerFactory<NewSocketProvider>(() => NewSocketProvider());
-  locator.registerFactory<ChatProvider>(() => ChatProvider());
+  // locator.registerFactory<ChatProvider>(() => ChatProvider());
 }

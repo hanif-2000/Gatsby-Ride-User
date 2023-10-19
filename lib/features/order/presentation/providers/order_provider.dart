@@ -215,6 +215,7 @@ class OrderProvider with ChangeNotifier {
   }
 
   setCurrentLocation(OrderDataDetail orderDataDetail) async {
+    log("set current location called");
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {

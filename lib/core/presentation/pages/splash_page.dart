@@ -46,6 +46,12 @@ class _SplashPageState extends State<SplashPage> {
         // await sessionClearOrder();
 
         context.read<SplashProvider>().fetchCurrency().listen((state) async {
+          // Permission.notification.isDenied.then((value) async {
+          //   if (value) {
+          //     Permission.notification.request();
+          //   }
+          // });
+
           PermissionStatus status = await Permission.notification.request();
           if (status.isGranted) {
             log("notification permissin is granetd");
@@ -71,6 +77,9 @@ class _SplashPageState extends State<SplashPage> {
                   Navigator.pushNamedAndRemoveUntil(
                       context, HomePage.routeName, (route) => false);
                 } else {
+                  log("orogin lat lat :->> ${session.originLat}");
+                  log("orogin lat long :->> ${session.originLong}");
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(

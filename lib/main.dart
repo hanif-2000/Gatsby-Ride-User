@@ -3,7 +3,6 @@ import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
 import 'package:GetsbyRideshare/features/login/presentation/providers/login_provider.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/chat_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
@@ -101,9 +100,9 @@ Future<void> main() async {
             ChangeNotifierProvider<PaymentProvider>(
               create: (context) => locator<PaymentProvider>(),
             ),
-            ChangeNotifierProvider<ChatProvider>(
-              create: (context) => locator<ChatProvider>(),
-            ),
+            // ChangeNotifierProvider<ChatProvider>(
+            //   create: (context) => locator<ChatProvider>(),
+            // ),
             ChangeNotifierProvider<NewSocketProvider>(
               create: (context) => locator<NewSocketProvider>(),
             ),

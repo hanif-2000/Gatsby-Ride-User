@@ -6,6 +6,7 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/new_card_payment/presentation/providers/add_card_state.dart';
@@ -113,35 +114,47 @@ class AddNewCardPopUp extends StatelessWidget {
                 ),
 
                 //Expiry Date
-                GestureDetector(
-                  onTap: () {
+                InkWell(
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(DateTime.now().year + 30));
+                    if (pickedDate != null) {
+                      log(pickedDate.toString());
+                      log(pickedDate.toString());
+                      String formattedDate =
+                          DateFormat('yyyy/MM').format(pickedDate);
+                      log(formattedDate);
+
+                      provider.setExpiryDate = formattedDate;
+
+                      // Provider.of<PaymentProvider>(context)
+                      //     .expiryController
+                      //     .text = formattedDate;
+
+                      // expairyController.text = formattedDate;
+                    }
+
                     // log("celcil sdfa");
                     // var date = DatePickerDialog(
                     //     initialDate: DateTime.now(),
                     //     firstDate: DateTime.now(),
                     //     lastDate: DateTime(DateTime.now().year + 20));
                   },
-                  child: CustomTextField(
-                    onTap: () {
-                      log("celcil sdfa");
-                      var date = DatePickerDialog(
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(DateTime.now().year + 20));
-                    },
-                    readOnly: true,
-                    fillColor: greyE7E7E7Color.withOpacity(.2),
-                    hintStyle: const TextStyle(
-                        fontFamily: 'poPPinRegular',
-                        fontWeight: FontWeight.w400,
-                        color: grey9c9c9cColor,
-                        fontSize: 12.0),
-                    placeholder: "Expiry Date (yyyy/mm)",
-                    prefixIcon: GestureDetector(
-                      onTap: () {
-                        log("asdf");
-                      },
-                      child: Padding(
+                  child: IgnorePointer(
+                    child: CustomTextField(
+                      onTap: null,
+                      readOnly: true,
+                      fillColor: greyE7E7E7Color.withOpacity(.2),
+                      hintStyle: const TextStyle(
+                          fontFamily: 'poPPinRegular',
+                          fontWeight: FontWeight.w400,
+                          color: grey9c9c9cColor,
+                          fontSize: 12.0),
+                      placeholder: "Expiry Date (yyyy/mm)",
+                      prefixIcon: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: SvgPicture.asset(
                           'assets/icons/calender.svg',
@@ -150,15 +163,15 @@ class AddNewCardPopUp extends StatelessWidget {
                           fit: BoxFit.fill,
                         ),
                       ),
+                      controller: Provider.of<PaymentProvider>(context)
+                          .expiryController,
+                      fieldValidator: (val) {
+                        if (val == '') {
+                          return appLoc.mustNotEmpty;
+                        }
+                        return null;
+                      },
                     ),
-                    controller:
-                        Provider.of<PaymentProvider>(context).expiryController,
-                    fieldValidator: (val) {
-                      if (val == '') {
-                        return appLoc.mustNotEmpty;
-                      }
-                      return null;
-                    },
                   ),
                 ),
                 SizedBox(
@@ -181,9 +194,12 @@ class AddNewCardPopUp extends StatelessWidget {
                     final provider = context.read<PaymentProvider>();
 
                     if (provider.cardNumberController.text.trim() == '' ||
-                        provider.cardCvvController.text.trim() == '' ||
-                        provider.accountHolderController.text.trim() == '' ||
-                        provider.expiryController.text.trim() == '') {
+                            provider.cardCvvController.text.trim() == '' ||
+                            provider.accountHolderController.text.trim() == ''
+                        // ||
+
+                        // provider.expiryController.text.trim() == ''
+                        ) {
                       showToast(message: "Please fill all the fields");
                     } else {
                       final provider = context.read<PaymentProvider>();

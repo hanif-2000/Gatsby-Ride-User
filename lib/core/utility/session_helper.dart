@@ -223,7 +223,7 @@ class SessionHelper implements Session {
   double get originLat => pref.getDouble(ORIGIN_LAT) ?? 0.0;
 
   @override
-  double get originLong => pref.getDouble(ORIGIN_LAT) ?? 0.0;
+  double get originLong => pref.getDouble(ORIGIN_LONG) ?? 0.0;
 
   @override
   String get estimatedDistance => pref.getString(ESTIMATED_DISTANCE) ?? '';

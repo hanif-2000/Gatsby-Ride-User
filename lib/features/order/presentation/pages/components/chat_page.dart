@@ -14,7 +14,6 @@ import '../../../../../core/utility/injection.dart';
 import '../../../../../core/utility/session_helper.dart';
 import '../../../../testing/widgets/circular_image_container.dart';
 import '../../../../testing/widgets/common_text.dart';
-import '../../providers/chat_provider.dart';
 import '../../widgets/receiver_tile.dart';
 import '../../widgets/sender_tile.dart';
 
@@ -33,7 +32,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   var socketProvider = locator<NewSocketProvider>();
   var orderProvider = locator<OrderProvider>();
-  var chatProvider = locator<ChatProvider>();
+  // var chatProvider = locator<ChatProvider>();
   var session = locator<Session>();
 
   @override
@@ -42,6 +41,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
     socketProvider.joinExitRoom(receiverId: int.parse(session.driverId));
     WidgetsBinding.instance.addObserver(this);
+    socketProvider.listenRequests();
   }
 
   @override
@@ -60,7 +60,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   @override
   void dispose() {
     super.dispose();
-    chatProvider.clearChatList();
+    // socketProvider.clearChatList();
     // socketProvider.joinExitRoom(
     //     receiverId: int.parse(session.userId), type: 'unJoin');
     socketProvider.joinExitRoom(
@@ -134,7 +134,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         ),
       ),
       // backgroundColor: Colors.grey,
-      body: Consumer<ChatProvider>(builder: (context, provider, _) {
+      body: Consumer<NewSocketProvider>(builder: (context, provider, _) {
         return Column(
           children: [
             // Container(

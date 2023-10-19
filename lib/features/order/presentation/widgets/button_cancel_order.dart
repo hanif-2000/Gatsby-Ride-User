@@ -22,7 +22,7 @@ class ButtonCancelOrder extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 8),
         child: SizedBox(
-            height: 48,
+            height: 45,
             width: double.infinity,
             child: CustomButton(
                 isRounded: true,

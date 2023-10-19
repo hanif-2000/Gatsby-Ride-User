@@ -93,7 +93,7 @@ class CreditCardExpansionTile extends StatelessWidget {
                 child: Column(
                   children: [
                     ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
+                      // physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: DummyData.dummyCardList.length,
                       itemBuilder: (context, index) {

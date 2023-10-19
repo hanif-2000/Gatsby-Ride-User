@@ -52,12 +52,12 @@ class CardPaymentExpansionTile extends StatelessWidget {
             ? const Icon(
                 Icons.radio_button_on_outlined,
                 color: yellowE5A829Color,
-                size: 35,
+                size: 30,
               )
             : Icon(
                 Icons.radio_button_off_outlined,
                 color: greyB6B6B6Color,
-                size: 35,
+                size: 30,
               ),
         title: const Text(
           "Debit/Credit Card",

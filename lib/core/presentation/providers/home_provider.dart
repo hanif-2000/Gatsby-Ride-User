@@ -65,15 +65,17 @@ class HomeProvider with ChangeNotifier {
 
   //Connec to Socket
   connectToSocket() {
-    logMe('============= chat Token : ${session.chatToken} ================');
-    logMe('============= User Id Token :  ${session.userId} ================');
+    logMe(
+        'Socket ============= chat Token : ${session.chatToken} ================');
+    logMe(
+        'Socket ============= User Id Token :  ${session.userId} ================');
 
     socket = WebSocket(Uri.parse(
 
         // 'ws://shakti.parastechnologies.in:8051?token=597011984&room=0&userID=1'
         'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}'));
 
-    logMe('============= Connecting to Socket ================');
+    logMe('Socket ============= Connecting to Socket ================');
     socket!.connection.listen((event) {
       logMe('Socket on Listen ---> ${event.toString()}');
 
@@ -83,8 +85,8 @@ class HomeProvider with ChangeNotifier {
 
         log("=====event======>>>>> " + event.toString());
       } else if (event is Disconnected) {
-        log("=== Event is Disconnected ===");
-        log("=== reason ${event.reason}");
+        log("Socket === Event is Disconnected ===");
+        log("Socket === reason ${event.reason}");
       }
     });
   }

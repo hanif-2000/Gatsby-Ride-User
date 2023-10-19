@@ -96,6 +96,11 @@ class FormProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  set setExpiryDate(val) {
+    _expiryController.text = val;
+    notifyListeners();
+  }
+
   // getter
 
   TextEditingController get phoneController => _phoneController;
@@ -144,6 +149,11 @@ class FormProvider with ChangeNotifier {
     _emailController.clear();
     notifyListeners();
   }
+
+  // updateExpiryDate({val}) {
+  //   expiryController.text = val;
+  //   notifyListeners();
+  // }
 
   refreshPassword() {
     _passwordConfirmController.clear();

@@ -56,7 +56,10 @@ class SearchingRideBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              ButtonCancelOrder()
+              ButtonCancelOrder(),
+              SizedBox(
+                height: 6.0,
+              )
             ],
           ),
         );

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import 'package:provider/provider.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
@@ -245,16 +246,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     TextInRow(
                       firstText: 'Extra Distance',
-                      secondText: widget.extraDistance + " Km",
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: "0" + " Km",
                     ),
                     Divider(
                       color: whiteAccentColor,
                     ),
                     TextInRow(
                       firstText: widget.vehicleCategory == "2"
-                          ? r"Extra Distance Price 1.65$CA/km"
-                          : r"Extra Distance Price 1.30$CA/km",
-                      secondText: r'$' + widget.extraDistancePrice,
+                          ? r"Extra Distance Price 1.65 /km"
+                          : r"Extra Distance Price 1.30 /km",
+                      // secondText: r'$' + widget.extraDistancePrice,
+                      secondText: r'CA$ ' + "0",
                     ),
                     // Divider(
                     //   color: whiteAccentColor,
@@ -298,7 +301,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       secondTextweight: FontWeight.w700,
                       firstText: 'Grand Total',
-                      secondText: r'$' + widget.totalPrice,
+                      secondText: r'CA$ ' + widget.totalPrice,
                     ),
                   ],
                 ),
@@ -339,6 +342,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             height: 30,
                             width: _deviceSize.width * .3,
                             child: TextField(
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]'))
+                              ],
                               controller: tipsTextEditingController,
                               onChanged: (value) {
                                 log("test value is-->> $value");
@@ -360,7 +367,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
                               },
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: true),
                               decoration: InputDecoration(
                                 contentPadding:
                                     EdgeInsets.symmetric(horizontal: 8.0),
@@ -388,7 +396,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
               TextInRow(
                 firstText: 'Total amount to Pay',
-                secondText: "\$CA ${totalAmountToPay} ",
+                secondText: "CA\$ ${totalAmountToPay} ",
               ),
               Padding(
                 padding:
