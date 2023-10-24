@@ -193,7 +193,7 @@ class _FormEditProfileState extends State<FormEditProfile> {
                       readOnly:
                           !Provider.of<ProfileProvider>(context, listen: true)
                               .isProfileEdit,
-                      placeholder: appLoc.phoneNumber,
+                      placeholder: appLoc.lastName,
                       title: appLoc.phoneNumber,
                       controller: provider.lastNameController,
                       inputType: TextInputType.name,

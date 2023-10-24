@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
 import 'package:app_settings/app_settings.dart';
@@ -52,16 +53,19 @@ class _SplashPageState extends State<SplashPage> {
           //   }
           // });
 
-          PermissionStatus status = await Permission.notification.request();
-          if (status.isGranted) {
-            log("notification permissin is granetd");
-            // notification permission is granted
-          } else {
-            // Permission.notification.request();
-            log("ask for notification permission ");
-            AppSettings.openAppSettings(type: AppSettingsType.notification);
-            // Open settings to enable notification permission
+          if (Platform.isAndroid) {
+            PermissionStatus status = await Permission.notification.request();
+            if (status.isGranted) {
+              log("notification permissin is granetd");
+              // notification permission is granted
+            } else {
+              // Permission.notification.request();
+              log("ask for notification permission ");
+              AppSettings.openAppSettings(type: AppSettingsType.notification);
+              // Open settings to enable notification permission
+            }
           }
+
           final session = locator<Session>();
           // log("session token" + session.sessionToken.toString());
           // log("order id" + session.orderId.toString());

@@ -13,6 +13,8 @@ import '../../../features/order/presentation/pages/order_page.dart';
 import '../../domain/entities/order_data_detail.dart';
 import '../../static/enums.dart';
 import '../../utility/helper.dart';
+import '../../utility/injection.dart';
+import '../../utility/session_helper.dart';
 import '../providers/create_order_state.dart';
 import '../providers/vehicle_category_state.dart';
 import 'custom_button/custom_button_widget.dart';
@@ -249,23 +251,23 @@ class BottomSheetBookRide extends StatelessWidget {
                                                 //         .orderCreatedSuccessfully);
 
                                                 // provider.sendRequest();
-                                                // var session =
-                                                //     locator<Session>();
+                                                var session =
+                                                    locator<Session>();
 
-                                                // session.setOriginAddress =
-                                                //     provider.originAddress;
-                                                // session.setDestinationAddress =
-                                                //     provider.destinationAddress;
-                                                // session.setOriginLat = provider
-                                                //     .originLatLng.latitude;
-                                                // session.setOriginLong = provider
-                                                //     .originLatLng.longitude;
-                                                // session.setDestinationLat =
-                                                //     provider.destinationLatLng
-                                                //         .latitude;
-                                                // session.setDestinationLong =
-                                                //     provider.destinationLatLng
-                                                //         .longitude;
+                                                session.setOriginAddress =
+                                                    provider.originAddress;
+                                                session.setDestinationAddress =
+                                                    provider.destinationAddress;
+                                                session.setOriginLat = provider
+                                                    .originLatLng.latitude;
+                                                session.setOriginLong = provider
+                                                    .originLatLng.longitude;
+                                                session.setDestinationLat =
+                                                    provider.destinationLatLng
+                                                        .latitude;
+                                                session.setDestinationLong =
+                                                    provider.destinationLatLng
+                                                        .longitude;
 
                                                 log("first time order origin lat long:-->> ${provider.originLatLng}");
                                                 log("first time order origin lat long:-->> ${provider.originLatLng.latitude}");

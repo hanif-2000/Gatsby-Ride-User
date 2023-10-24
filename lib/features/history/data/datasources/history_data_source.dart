@@ -26,9 +26,14 @@ class HistoryDataSourceImplementation implements HistoryDataSource {
       final response = await dio.get(
         url,
       );
+
+      log("history response :$response");
+
+      if ((response.data['success'] == 0) &&
+          (response.data['message'] == "record not found")) {}
       final model = HistoryResponseModel.fromJson(response.data);
       logMe("Loaded modell");
-      return model.historyOrder;
+      return model.historyOrder!;
     } catch (e) {
       rethrow;
     }

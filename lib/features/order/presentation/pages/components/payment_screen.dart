@@ -78,7 +78,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   updateTotalAmount({tip}) {
     setState(() {
       totalAmountToPay = (double.parse(widget.totalPrice) + double.parse(tip))
-          .toStringAsFixed(3);
+          .toStringAsFixed(2);
     });
   }
 
@@ -343,12 +343,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             width: _deviceSize.width * .3,
                             child: TextField(
                               inputFormatters: [
+                                // FilteringTextInputFormatter.allow(
+
                                 FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]'))
+                                    RegExp(r'^\d+\.?\d{0,2}')),
+                                // RegExp(r'^[0-9]+.?[0-9]*')),
+                                // WhitelistingTextInputFormatter(RegExp(r'^\d+\.?\d{0,2}')),
+
+                                // FilteringTextInputFormatter.allow(
+                                //     RegExp(r'[0-9]'))
                               ],
                               controller: tipsTextEditingController,
                               onChanged: (value) {
                                 log("test value is-->> $value");
+                                log("length is ::_>> ${value.length}");
 
                                 if (value != '') {
                                   setState(() {

@@ -445,6 +445,7 @@ class LoginPage extends StatelessWidget {
                             log('Saved in Keychain.....');
 
                             log("oauthcredential: $oauthCredential");
+
                             await auth
                                 .signInWithCredential(oauthCredential)
                                 .then((value) {

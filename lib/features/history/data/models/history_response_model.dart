@@ -12,7 +12,7 @@ String historyResponseModelToJson(HistoryResponseModel data) =>
 
 class HistoryResponseModel {
   int success;
-  List<HistoryOrder> historyOrder;
+  List<HistoryOrder>? historyOrder;
 
   HistoryResponseModel({
     required this.success,
@@ -22,14 +22,17 @@ class HistoryResponseModel {
   factory HistoryResponseModel.fromJson(Map<String, dynamic> json) =>
       HistoryResponseModel(
         success: json["success"],
-        historyOrder: List<HistoryOrder>.from(
-            json["history_order"].map((x) => HistoryOrder.fromJson(x))),
+        historyOrder: json["history_order"] != null
+            ? List<HistoryOrder>.from(
+                json["history_order"].map((x) => HistoryOrder.fromJson(x)))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {
         "success": success,
-        "history_order":
-            List<dynamic>.from(historyOrder.map((x) => x.toJson())),
+        "history_order": historyOrder!.length != 0
+            ? List<dynamic>.from(historyOrder!.map((x) => x.toJson()))
+            : [],
       };
 }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/styles.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
@@ -56,13 +58,20 @@ class _HistoryPageState extends State<HistoryPage> {
                 builder: (context, state) {
                   switch (state.data.runtimeType) {
                     case HistoryLoading:
+                      log("history loading called");
                       return const Center(child: CircularProgressIndicator());
                     case HistoryFailure:
+                      log("history failure called");
+
                       final failure = (state.data as HistoryFailure).failure;
                       showToast(message: failure);
                       return const SizedBox.shrink();
                     case HistoryLoaded:
+                      log("history loadeed called");
+
                       final _data = (state.data as HistoryLoaded).data;
+
+                      log("history data is====>>>${_data}");
                       if (_data.isEmpty) {
                         return Center(
                           child: Text(

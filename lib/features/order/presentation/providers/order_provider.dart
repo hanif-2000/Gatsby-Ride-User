@@ -470,6 +470,12 @@ class OrderProvider with ChangeNotifier {
       var split = latLong.split(",");
       var latDriver = double.parse(split[0]);
       var lngDriver = double.parse(split[1]);
+
+      log("fetchDriverLocation:-->> _driverLat ${_driverLat} ");
+      log("fetchDriverLocation:-->> latDriver ${latDriver} ");
+      log("fetchDriverLocation:-->> _driverLng ${_driverLng} ");
+      log("fetchDriverLocation:-->> lngDriver ${lngDriver} ");
+
       if (_driverLat != latDriver && _driverLng != lngDriver) {
         _driverLat = latDriver;
         _driverLng = lngDriver;
@@ -495,6 +501,8 @@ class OrderProvider with ChangeNotifier {
 
 /**  Tracking Driver */
   trackingDriver(bool listenLocation) async {
+    log(" driver:- tracking driver called-->>>>>.");
+    log("driver:- is listenLocation :$listenLocation");
     var latLong = _driverLocation!.longLat;
     var split = latLong.split(",");
     var bearing = _driverLocation!.bearing;
@@ -532,9 +540,12 @@ class OrderProvider with ChangeNotifier {
         )));
 
         if (isWithDriver) {
+          log("driver:-  is with driver. $isWithDriver");
           setPolylinesDirection(
               LatLng(latDriver, lngDriver), destinationLatLng);
         } else {
+          log("driver:-  is not with driver. $isWithDriver");
+
           setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
         }
       }
