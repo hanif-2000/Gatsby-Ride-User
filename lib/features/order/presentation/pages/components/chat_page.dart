@@ -31,16 +31,17 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   var socketProvider = locator<NewSocketProvider>();
-  var orderProvider = locator<OrderProvider>();
+  // var orderProvider = locator<OrderProvider>();
   // var chatProvider = locator<ChatProvider>();
   var session = locator<Session>();
 
   @override
   void initState() {
     super.initState();
-    // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
-    socketProvider.joinExitRoom(receiverId: int.parse(session.driverId));
     WidgetsBinding.instance.addObserver(this);
+    // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
+    socketProvider.joinExitRoom(
+        receiverId: int.parse(session.driverId), type: "Join");
     socketProvider.listenRequests();
   }
 
@@ -63,11 +64,14 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     // socketProvider.clearChatList();
     // socketProvider.joinExitRoom(
     //     receiverId: int.parse(session.userId), type: 'unJoin');
+
     socketProvider.joinExitRoom(
       type: 'unJoin',
       receiverId: int.parse(session.driverId),
     );
     WidgetsBinding.instance.removeObserver(this);
+    socketProvider.disconnectSocket();
+    socketProvider.connectToSocket();
   }
 
   @override
@@ -251,11 +255,15 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                   ),
                   InkWell(
                     onTap: () {
-                      ///TODO: send the message
-                      socketProvider.sendChatMessage(
-                          message: provider.chatController.text.trim(),
-                          receiverId: int.parse(session.driverId));
-                      provider.chatController.text = '';
+                      if (provider.chatController.text.trim().isEmpty) {
+                        showToast(message: "Please enter your message");
+                      } else {
+                        ///TODO: send the message
+                        socketProvider.sendChatMessage(
+                            message: provider.chatController.text.trim(),
+                            receiverId: int.parse(session.driverId));
+                        provider.chatController.text = '';
+                      }
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),

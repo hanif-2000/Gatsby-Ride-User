@@ -341,47 +341,55 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           Container(
                             height: 30,
                             width: _deviceSize.width * .3,
-                            child: TextField(
-                              inputFormatters: [
-                                // FilteringTextInputFormatter.allow(
+                            child: Row(
+                              children: [
+                                Text(r"CA$ "),
+                                Expanded(
+                                  child: TextField(
+                                    inputFormatters: [
+                                      // FilteringTextInputFormatter.allow(
 
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}')),
-                                // RegExp(r'^[0-9]+.?[0-9]*')),
-                                // WhitelistingTextInputFormatter(RegExp(r'^\d+\.?\d{0,2}')),
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}')),
+                                      // RegExp(r'^[0-9]+.?[0-9]*')),
+                                      // WhitelistingTextInputFormatter(RegExp(r'^\d+\.?\d{0,2}')),
 
-                                // FilteringTextInputFormatter.allow(
-                                //     RegExp(r'[0-9]'))
+                                      // FilteringTextInputFormatter.allow(
+                                      //     RegExp(r'[0-9]'))
+                                    ],
+                                    controller: tipsTextEditingController,
+                                    onChanged: (value) {
+                                      log("test value is-->> $value");
+                                      log("length is ::_>> ${value.length}");
+
+                                      if (value != '') {
+                                        setState(() {
+                                          updateTotalAmount(tip: value);
+                                        });
+                                      } else {
+                                        setState(() {
+                                          updateTotalAmount(tip: "0.0");
+                                        });
+                                      }
+                                    },
+                                    onTapOutside: (event) {
+                                      setState(() {
+                                        // updateTotalAmount(tip: "0.0");
+                                      });
+                                      FocusScope.of(context)
+                                          .requestFocus(new FocusNode());
+                                    },
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(
+                                            decimal: true),
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
                               ],
-                              controller: tipsTextEditingController,
-                              onChanged: (value) {
-                                log("test value is-->> $value");
-                                log("length is ::_>> ${value.length}");
-
-                                if (value != '') {
-                                  setState(() {
-                                    updateTotalAmount(tip: value);
-                                  });
-                                } else {
-                                  setState(() {
-                                    updateTotalAmount(tip: "0.0");
-                                  });
-                                }
-                              },
-                              onTapOutside: (event) {
-                                setState(() {
-                                  // updateTotalAmount(tip: "0.0");
-                                });
-                                FocusScope.of(context)
-                                    .requestFocus(new FocusNode());
-                              },
-                              keyboardType: TextInputType.numberWithOptions(
-                                  decimal: true),
-                              decoration: InputDecoration(
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 8.0),
-                                border: OutlineInputBorder(),
-                              ),
                             ),
                           ),
 
@@ -606,7 +614,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         }
                                       } catch (e) {
                                         dismissLoading();
-                                        log(e.toString());
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content:
+                                              Text("Card details Incorrect"),
+                                        ));
+                                        log("Card error is " + e.toString());
                                       }
                                     },
                                     bgColor: black080808Color)

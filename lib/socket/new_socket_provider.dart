@@ -44,10 +44,13 @@ class NewSocketProvider with ChangeNotifier {
     });
   }
 
+  Future<void> disconnectSocket() async {
+    _socket!.close();
+  }
+
   listenRequests() {
     // connectToSocket();
     logMe('============= Listening to requests ================');
-
     _socket!.messages.listen(
       (event) {
         final response = jsonDecode(event);
@@ -101,7 +104,8 @@ class NewSocketProvider with ChangeNotifier {
     _socket!.send(jsonEncode(map));
   }
 
-  joinExitRoom({int? receiverId, String type = 'Join'}) {
+//join/unjoin room
+  joinExitRoom({int? receiverId, String? type}) {
     final map = {
       'type': 'Customer',
       'serviceType': type,

@@ -215,7 +215,10 @@ class _HistoryItemState extends State<HistoryItem> {
                                   ),
                                   Flexible(
                                     child: AutoSizeText(
-                                      mergePriceTxt(widget.data.total!),
+                                      widget.data.tip == "0"
+                                          ? 'CA\$ ${widget.data.total} '
+                                          : 'CA\$ ${widget.data.grandTotal}',
+                                      // mergePriceTxt(widget.data.total!),
                                       maxLines: 1,
                                       style: const TextStyle(
                                           color: blackColor,

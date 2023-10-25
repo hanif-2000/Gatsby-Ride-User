@@ -49,6 +49,8 @@ class HistoryOrder {
   String? endAddress;
   String? distance;
   String? total;
+  dynamic grandTotal;
+
   DateTime orderTime;
   dynamic tip;
 
@@ -84,6 +86,7 @@ class HistoryOrder {
     required this.timestamp,
     required this.category,
     required this.ratingList,
+    required this.grandTotal,
   });
 
   factory HistoryOrder.fromJson(Map<String, dynamic> json) => HistoryOrder(
@@ -100,6 +103,7 @@ class HistoryOrder {
         endAddress: json["end_address"] ?? "",
         distance: json["distance"] ?? '',
         total: json["total"] ?? "",
+        grandTotal: json["grand_total"] ?? '0',
         orderTime: DateTime.parse(json["order_time"]),
         status: json["status"] ?? 0,
         timeSchool: json["time_school"] ?? '6',
@@ -127,6 +131,7 @@ class HistoryOrder {
         "end_address": endAddress,
         "distance": distance,
         "total": total,
+        "grandTotal": grandTotal,
         "tip": tip,
         "order_time": orderTime.toIso8601String(),
         "status": status,

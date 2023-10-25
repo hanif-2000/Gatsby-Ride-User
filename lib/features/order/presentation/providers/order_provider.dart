@@ -113,14 +113,39 @@ class OrderProvider with ChangeNotifier {
     driverId = data.id.toString();
     driverImg = data.image!;
 
-    updateDriverStatus("Driver is arriving");
+    updateDriverStatus(session.orderStatus == 1
+        ? "Driver is arriving"
+        : session.orderStatus == 2
+            ? appLoc.yourDriverIsOnTheWay
+            : session.orderStatus == 3
+                ? appLoc.driverReachYourLocation
+                : session.orderStatus == 5
+                    ? appLoc.departToDestination
+                    : session.orderStatus == 6
+                        ? appLoc.arriveAtDestination
+                        : appLoc.complete);
+
+    log("update driver status called");
+
     notifyListeners();
   }
 
   //Update driver status
   updateDriverStatus(value) {
+    // if ((session.orderStatus == 3) ||
+    //     (session.orderStatus == 5) ||
+    //     (session.orderStatus == 6) ||
+    //     (session.orderStatus == 4)) {
+    //   isWithDriver = true;
+    // }
+    // if ((value == appLoc.driverReachYourLocation) ||
+    //     value == appLoc.departToDestination) {
+    //   isWithDriver = true;
+    // }
     driverStatus = value;
     notifyListeners();
+
+    log("update driver status called is with driver-->> $isWithDriver");
   }
 
   //get
@@ -139,6 +164,7 @@ class OrderProvider with ChangeNotifier {
 
   set changeFirstTracking(val) {
     isFirstTracking = val;
+    notifyListeners();
   }
 
   //Update Order ID
@@ -320,8 +346,8 @@ class OrderProvider with ChangeNotifier {
 
 // Set polylines Direction
   setPolylinesDirection(LatLng origin, LatLng destination) async {
-    log(origin.latitude.toString());
-    log(destination.latitude.toString());
+    log("polyline :" + origin.latitude.toString());
+    log("polyline :" + destination.latitude.toString());
 
     await DirectionHelper()
         .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
@@ -386,6 +412,17 @@ class OrderProvider with ChangeNotifier {
     }, (data) async* {
       yield SubmitRatingsLoaded(data: data);
     });
+  }
+
+  updateIsWithDriver() {
+    log("update is with driver called");
+    if ((session.orderStatus == 3) ||
+        (session.orderStatus == 4) ||
+        (session.orderStatus == 5) ||
+        (session.orderStatus == 6)) {
+      isWithDriver = true;
+      notifyListeners();
+    }
   }
 
   //Order Receipt
@@ -456,6 +493,36 @@ class OrderProvider with ChangeNotifier {
     });
   }
 
+  /**   OLD CODE */
+
+  //   Stream<GetDriverLocationState> fetchDriverLocation() async* {
+  //   yield GetDriverLocationLoading();
+
+  //   final result = await getDriverLocation.call();
+  //   yield* result.fold((failure) async* {
+  //     logMe("failure");
+  //     logMe(failure);
+  //     yield GetDriverLocationFailure(failure: failure);
+  //   }, (data) async* {
+  //     var latLong = data.longLat;
+  //     var split = latLong.split(",");
+  //     var latDriver = double.parse(split[0]);
+  //     var lngDriver = double.parse(split[1]);
+  //     if (_driverLat != latDriver && _driverLng != lngDriver) {
+  //       _driverLat = latDriver;
+  //       _driverLng = lngDriver;
+  //       _driverLocation = data;
+  //       logMe("Listen True");
+  //       await trackingDriver(true);
+  //     } else {
+  //       logMe("Listen False");
+  //       await trackingDriver(false);
+  //     }
+
+  //     yield GetDriverLocationLoaded(data: data);
+  //   });
+  // }
+
 /** Get Driver Location */
   Stream<GetDriverLocationState> fetchDriverLocation() async* {
     yield GetDriverLocationLoading();
@@ -501,6 +568,7 @@ class OrderProvider with ChangeNotifier {
 
 /**  Tracking Driver */
   trackingDriver(bool listenLocation) async {
+    updateIsWithDriver();
     log(" driver:- tracking driver called-->>>>>.");
     log("driver:- is listenLocation :$listenLocation");
     var latLong = _driverLocation!.longLat;

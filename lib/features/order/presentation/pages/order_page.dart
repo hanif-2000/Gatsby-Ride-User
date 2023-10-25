@@ -145,6 +145,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                     int statusOrder = state.data.status;
 
                     log("state data status is: ${state.data.status}");
+
                     if (statusOrder != sessionStatusOrder) {
                       log("sesstion or real order different ");
                       session.setOrderStatus = state.data.status;
@@ -184,8 +185,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                   // showDriverFoundBottomSheet(
                                   //     context, eventDriverDetail.data);
 
-                                  // provider
-                                  //     .updateOrderId(eventDriverDetail.data);
+                                  provider
+                                      .updateOrderId(eventDriverDetail.data);
 
                                   provider.updateDriverDetails(
                                       data: eventDriverDetail.data);
@@ -251,6 +252,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                         case Order.arriveAtCustomerPlace:
                           provider.updateDriverStatus(
                               appLoc.driverReachYourLocation);
+                          await provider.removeMarker();
                           log("status is --3");
 
                           // showDialog(
@@ -307,6 +309,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                           if (trackingDriverTimer != null) {
                             trackingDriverTimer!.cancel();
                           }
+                          provider.updateReachedDestination();
+
 //                           provider
 //                               .submitStatusOrder(Order.complete)
 //                               .listen((event) async {
@@ -352,6 +356,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                           break;
 
                         case Order.complete:
+                          provider.updateDriverStatus(appLoc.complete);
                           provider.orderReceiptApi();
                           log("status is --7");
                           timer.cancel();
@@ -364,33 +369,51 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                           break;
                       }
                     } else {
+                      log("sesstion or real order are same ");
+
+                      // log("else called==========>>>>>>>>>>>>>>>>>>>>>>>>>> when restart app");
                       if ((session.orderStatus == 1) ||
                           (session.orderStatus == 2) ||
                           (session.orderStatus == 3) ||
                           (session.orderStatus == 5) ||
                           (session.orderStatus == 6)) {
+                        log("current order session is:----${session.orderStatus}");
+                        // trackingDriverTimer =
+                        //     Timer.periodic(const Duration(seconds: 5), (timer) {
+                        //   logMe("Tracking Driver");
                         provider
                             .fetchDriverLocation()
                             .listen((eventDriverLocation) async {});
+                        // });
                         ;
-                      }
-
-                      if (session.orderStatus == 2) {
-                        provider
-                            .updateDriverStatus(appLoc.yourDriverIsOnTheWay);
-                      } else if (session.orderStatus == 3) {
-                        provider
-                            .updateDriverStatus(appLoc.driverReachYourLocation);
-                        await provider.removeMarker();
-                      } else if (session.orderStatus == 5) {
-                        provider.updateDriverStatus(appLoc.departToDestination);
-                      } else if (session.orderStatus == 6) {
-                        provider.updateDriverStatus(appLoc.arriveAtDestination);
                       } else if (session.orderStatus == 7) {
                         checkOrderStatusTimer?.cancel();
                         trackingDriverTimer?.cancel();
-                        provider.updateDriverStatus(appLoc.complete);
                       }
+
+                      if ((session.orderStatus == 2) ||
+                          (session.orderStatus == 3) ||
+                          (session.orderStatus == 5) ||
+                          (session.orderStatus == 6)) {
+                        provider.changeFirstTracking = false;
+                      }
+
+                      // if (session.orderStatus == 2) {
+                      //   provider
+                      //       .updateDriverStatus(appLoc.yourDriverIsOnTheWay);
+                      // } else if (session.orderStatus == 3) {
+                      //   provider
+                      //       .updateDriverStatus(appLoc.driverReachYourLocation);
+                      //   await provider.removeMarker();
+                      // } else if (session.orderStatus == 5) {
+                      //   provider.updateDriverStatus(appLoc.departToDestination);
+                      // } else if (session.orderStatus == 6) {
+                      //   provider.updateDriverStatus(appLoc.arriveAtDestination);
+                      // } else if (session.orderStatus == 7) {
+                      //   checkOrderStatusTimer?.cancel();
+                      //   trackingDriverTimer?.cancel();
+                      //   provider.updateDriverStatus(appLoc.complete);
+                      // }
 
                       // session.setOrderStatus = state.data.status;
 
@@ -399,6 +422,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                   }
                 });
               });
+
               return Stack(
                 children: <Widget>[
                   //Google Maps
@@ -566,12 +590,21 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                 //   // log("Event :----------s  " +
                                 //   //     event.);
                                 // });
-                                Navigator.push(
+
+                                Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ReceiptScreen(),
+                                    builder: (BuildContext context) =>
+                                        ReceiptScreen(),
                                   ),
+                                  (route) => false,
                                 );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => ReceiptScreen(),
+                                //   ),
+                                // );
                               },
                               driverStatusText: provider.driverStatus,
                               category: provider.carModal,

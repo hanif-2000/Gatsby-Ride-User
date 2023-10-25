@@ -544,7 +544,10 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                         ),
                                       ),
                                       Text(
-                                        mergePriceTxt(widget.item.total!),
+                                        // mergePriceTxt(widget.item.total!),
+                                        widget.item.tip == "0"
+                                            ? 'CA\$ ${widget.item.total} '
+                                            : 'CA\$ ${widget.item.grandTotal}',
                                         style: const TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w700,
