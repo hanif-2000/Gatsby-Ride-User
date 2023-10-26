@@ -249,15 +249,29 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           ),
                           TextInRow(
                             firstText: appLoc.date,
-                            secondText: DateFormat('dd MMM yyyy')
-                                .format(data.orderReceipt![0].orderTime)
-                                .toString(),
+                            secondText: DateFormat.yMMMd().format(
+                                (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                                        data.orderReceipt![0].orderTime
+                                            .toString(),
+                                        true))
+                                    .toLocal()),
+
+                            // DateFormat('dd MMM yyyy')
+                            //     .format(data.orderReceipt![0].orderTime)
+                            //     .toString(),
                           ),
                           TextInRow(
                             firstText: appLoc.time,
-                            secondText: DateFormat('h:mma')
-                                .format(data.orderReceipt![0].orderTime)
-                                .toString(),
+                            secondText: DateFormat.jm().format(
+                                (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                                        data.orderReceipt![0].orderTime
+                                            .toString(),
+                                        true))
+                                    .toLocal()),
+
+                            //  DateFormat('h:mma')
+                            //     .format(data.orderReceipt![0].orderTime)
+                            //     .toString(),
                           ),
                           TextInRow(
                             firstText: appLoc.totalDistance,

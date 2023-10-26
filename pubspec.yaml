@@ -67,6 +67,8 @@ dependencies:
   flutter_keychain: ^2.3.0
   sign_in_with_apple: ^4.3.0
   app_settings: ^5.1.1
+  credit_card_type_detector: ^3.0.0
+  flutter_polyline_points: ^1.0.0
   # credit_card: ^0.1.8
   # upi_pay: ^1.0.1
   # flutter_pay: ^1.0.2

@@ -44,6 +44,10 @@ class AddNewCardPopUp extends StatelessWidget {
 
                 //Enter card number
                 CustomTextField(
+                  inputType: TextInputType.number,
+                  // onChanged: (val) {
+                  //   log("onchanged:--> $val");
+                  // },
                   fillColor: greyE7E7E7Color.withOpacity(.2),
                   hintStyle: const TextStyle(
                       fontFamily: 'poPPinRegular',
@@ -58,6 +62,7 @@ class AddNewCardPopUp extends StatelessWidget {
                   controller: Provider.of<PaymentProvider>(context)
                       .cardNumberController,
                   fieldValidator: (val) {
+                    log("value print :- $val");
                     if (val == '') {
                       return appLoc.mustNotEmpty;
                     }
@@ -66,27 +71,27 @@ class AddNewCardPopUp extends StatelessWidget {
                 ),
 
                 // Enter CVV Number
-                CustomTextField(
-                  fillColor: greyE7E7E7Color.withOpacity(.2),
-                  hintStyle: const TextStyle(
-                      fontFamily: 'poPPinRegular',
-                      fontWeight: FontWeight.w400,
-                      color: grey9c9c9cColor,
-                      fontSize: 12.0),
-                  placeholder: "Enter CVV Number",
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SvgPicture.asset('assets/icons/card.svg'),
-                  ),
-                  controller:
-                      Provider.of<PaymentProvider>(context).cardCvvController,
-                  fieldValidator: (val) {
-                    if (val == '') {
-                      return appLoc.mustNotEmpty;
-                    }
-                    return null;
-                  },
-                ),
+                // CustomTextField(
+                //   fillColor: greyE7E7E7Color.withOpacity(.2),
+                //   hintStyle: const TextStyle(
+                //       fontFamily: 'poPPinRegular',
+                //       fontWeight: FontWeight.w400,
+                //       color: grey9c9c9cColor,
+                //       fontSize: 12.0),
+                //   placeholder: "Enter CVV Number",
+                //   prefixIcon: Padding(
+                //     padding: const EdgeInsets.all(10.0),
+                //     child: SvgPicture.asset('assets/icons/card.svg'),
+                //   ),
+                //   controller:
+                //       Provider.of<PaymentProvider>(context).cardCvvController,
+                //   fieldValidator: (val) {
+                //     if (val == '') {
+                //       return appLoc.mustNotEmpty;
+                //     }
+                //     return null;
+                //   },
+                // ),
 
                 //Account Holder name
                 CustomTextField(
@@ -120,6 +125,7 @@ class AddNewCardPopUp extends StatelessWidget {
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
+                        initialDatePickerMode: DatePickerMode.year,
                         lastDate: DateTime(DateTime.now().year + 30));
                     if (pickedDate != null) {
                       log(pickedDate.toString());
@@ -194,7 +200,7 @@ class AddNewCardPopUp extends StatelessWidget {
                     final provider = context.read<PaymentProvider>();
 
                     if (provider.cardNumberController.text.trim() == '' ||
-                            provider.cardCvvController.text.trim() == '' ||
+                            // provider.cardCvvController.text.trim() == '' ||
                             provider.accountHolderController.text.trim() == ''
                         // ||
 

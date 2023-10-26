@@ -73,13 +73,13 @@ class RatingWidget extends StatelessWidget {
                           //       color: grey7D7979Color),
                           // ),
 
-                          const Text(
-                            "2min ago",
-                            style: TextStyle(
-                                fontFamily: 'poPPinRegular',
-                                fontSize: 12.0,
-                                color: greyB8B8B8Color),
-                          ),
+                          // const Text(
+                          //   "2min ago",
+                          //   style: TextStyle(
+                          //       fontFamily: 'poPPinRegular',
+                          //       fontSize: 12.0,
+                          //       color: greyB8B8B8Color),
+                          // ),
                         ]),
                     const Padding(
                       padding: EdgeInsets.only(top: 10.0),
@@ -157,13 +157,13 @@ class RatingWidget extends StatelessWidget {
                           //       color: grey7D7979Color),
                           // ),
 
-                          const Text(
-                            "2min ago",
-                            style: TextStyle(
-                                fontFamily: 'poPPinRegular',
-                                fontSize: 12.0,
-                                color: greyB8B8B8Color),
-                          ),
+                          // const Text(
+                          //   "2min ago",
+                          //   style: TextStyle(
+                          //       fontFamily: 'poPPinRegular',
+                          //       fontSize: 12.0,
+                          //       color: greyB8B8B8Color),
+                          // ),
                         ]),
                     const Padding(
                       padding: EdgeInsets.only(top: 10.0),

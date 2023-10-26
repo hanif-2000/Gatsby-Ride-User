@@ -43,13 +43,13 @@ class RatingWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              Text(
-                "2Min ago",
-                style: TextStyle(
-                  fontSize: 12.0,
-                  fontFamily: "poPPinRegular",
-                ),
-              )
+              // Text(
+              //   "2Min ago",
+              //   style: TextStyle(
+              //     fontSize: 12.0,
+              //     fontFamily: "poPPinRegular",
+              //   ),
+              // )
             ],
           ),
           SizedBox(

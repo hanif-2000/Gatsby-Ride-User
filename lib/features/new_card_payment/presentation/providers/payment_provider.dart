@@ -65,7 +65,7 @@ class PaymentProvider extends FormProvider {
       'card_holder_name': accountHolderController.text,
       'card_type': "visa",
       'expiry_date': expiryController.text,
-      'token': "111000"
+      // 'token': "111000"
     });
 
     log(formData.fields.toString());

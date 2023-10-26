@@ -76,9 +76,15 @@ class _HistoryItemState extends State<HistoryItem> {
                               Flexible(
                                 flex: 2,
                                 child: AutoSizeText(
-                                  DateFormat('dMMM yyyy, h:mma')
-                                      .format(widget.data.orderTime)
-                                      .toString(),
+                                  "${DateFormat.yMMMd().format(
+                                    (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                                            widget.data.orderTime.toString(),
+                                            true))
+                                        .toLocal(),
+                                  )} ${DateFormat.jm().format((DateFormat("yyyy-MM-dd HH:mm:ss").parse(widget.data.orderTime.toString(), true)).toLocal())}",
+                                  // DateFormat('dMMM yyyy, h:mma')
+                                  //     .format(widget.data.orderTime)
+                                  //     .toString(),
                                   // orderDate,
                                   maxLines: 1,
                                   style: const TextStyle(

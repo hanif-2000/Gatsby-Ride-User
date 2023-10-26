@@ -1,10 +1,13 @@
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/history/presentation/providers/history_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/utility/app_settings.dart';
 import '../../../../core/utility/helper.dart';
 import '../../../order/presentation/pages/components/ratings.dart';
 import '../../../testing/widgets/rating_widget.dart';
@@ -76,9 +79,15 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                             Flexible(
                               flex: 2,
                               child: AutoSizeText(
-                                DateFormat('dMMM yyyy, h:mma')
-                                    .format(widget.item.orderTime)
-                                    .toString(),
+                                "${DateFormat.yMMMd().format(
+                                  (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                                          widget.item.orderTime.toString(),
+                                          true))
+                                      .toLocal(),
+                                )} ${DateFormat.jm().format((DateFormat("yyyy-MM-dd HH:mm:ss").parse(widget.item.orderTime.toString(), true)).toLocal())}",
+                                // DateFormat('dMMM yyyy, h:mma')
+                                //     .format(widget.item.orderTime)
+                                //     .toString(),
                                 maxLines: 1,
                               ),
                             ),
@@ -134,28 +143,87 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                     height: MediaQuery.of(context).size.height * .25,
                     width: MediaQuery.of(context).size.width,
                     child: GoogleMap(
-                      //given camera position
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(
-                          provider.originLat,
-                          provider.originLang,
-                        ),
-                        zoom: 15,
-                      ),
+                      zoomGesturesEnabled: true,
+                      tiltGesturesEnabled: false,
                       mapType: MapType.normal,
-                      markers: provider.markers,
-                      // on below line we have enabled location
-                      myLocationEnabled: false,
-                      myLocationButtonEnabled: false,
-                      // on below line we have enabled compass location
-                      compassEnabled: true,
-                      // on below line we have added polylines
-                      polylines: provider.polyline,
-                      // displayed google map
-                      onMapCreated: (GoogleMapController controller) {
-                        provider.controller.complete(controller);
+                      gestureRecognizers: {}
+                        ..add(
+                          Factory<PanGestureRecognizer>(
+                            () => PanGestureRecognizer(),
+                          ),
+                        )
+                        ..add(Factory<ScaleGestureRecognizer>(
+                            () => ScaleGestureRecognizer()))
+                        ..add(Factory<TapGestureRecognizer>(
+                            () => TapGestureRecognizer()))
+                        ..add(Factory<VerticalDragGestureRecognizer>(
+                            () => VerticalDragGestureRecognizer())),
+                      myLocationButtonEnabled: true,
+                      zoomControlsEnabled: true,
+                      initialCameraPosition: const CameraPosition(
+                        target: DEFAULT_LATLNG,
+                        zoom: 14.4746,
+                      ),
+                      polylines: provider.polylines,
+                      markers: Set<Marker>.of(provider.markers.values),
+                      onMapCreated: (GoogleMapController controller) async {
+                        provider.googleMapController = controller;
+                        // await provider.setCurrentLocation(
+                        //     widget.orderDetail, widget.customerDetail);
+                        final pickup = LatLng(
+                            double.tryParse(
+                                widget.item.startCoordinate!.split(',').first)!,
+                            double.tryParse(
+                                widget.item.startCoordinate!.split(',').last)!);
+                        final drop = LatLng(
+                            double.tryParse(
+                                widget.item.endCoordinate!.split(',').first)!,
+                            double.tryParse(
+                                widget.item.endCoordinate!.split(',').last)!);
+
+                        await provider.createPickupAndDropMarker(pickup, drop);
+                        await provider.setPolylineDirection(pickup, drop);
                       },
                     ),
+
+                    //  GoogleMap(
+                    //   //given camera position
+                    //   initialCameraPosition: CameraPosition(
+                    //     target: LatLng(
+                    //       provider.originLat,
+                    //       provider.originLang,
+                    //     ),
+                    //     zoom: 15,
+                    //   ),
+                    //   mapType: MapType.normal,
+                    //   markers: provider.markers,
+                    //   // on below line we have enabled location
+                    //   myLocationEnabled: false,
+                    //   myLocationButtonEnabled: false,
+                    //   // on below line we have enabled compass location
+                    //   compassEnabled: true,
+                    //   // on below line we have added polylines
+                    //   polylines: provider.polyline,
+                    //   // displayed google map
+                    //   onMapCreated: (GoogleMapController controller) async {
+                    //     provider.controller.complete(controller);
+
+                    //     // final pickup = LatLng(
+                    //     //     double.tryParse(
+                    //     //         widget.item.startCoordinate!.split(',').first)!,
+                    //     //     double.tryParse(
+                    //     //         widget.item.startCoordinate!.split(',').last)!);
+                    //     // final drop = LatLng(
+                    //     //     double.tryParse(
+                    //     //         widget.item.endCoordinate!.split(',').first)!,
+                    //     //     double.tryParse(
+                    //     //         widget.item.endCoordinate!.split(',').last)!);
+
+                    //     // await provider.createPickupAndDropMarker(pickup, drop);
+
+                    //     // await provider.setPolylineDirection(pickup, drop);
+                    //   },
+                    // ),
                   ),
 
                   /** 

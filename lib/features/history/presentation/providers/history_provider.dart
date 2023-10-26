@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:ui' as ui;
 
-import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/history/presentation/providers/ratings_state.dart';
 import 'package:dio/dio.dart';
@@ -11,6 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';
+import '../../../../core/static/assets.dart';
+import '../../../../core/utility/direction_helper.dart';
 import '../../data/models/history_response_model.dart';
 import '../../domain/usecases/get_history.dart';
 import '../../domain/usecases/get_ratings.dart';
@@ -27,7 +28,86 @@ class HistoryProvider extends FormProvider {
     required this.getHistory,
     required this.getRatings,
   }) {
-    updatePolylines();
+    // updatePolylines();
+  }
+  late GoogleMapController googleMapController;
+
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  late BitmapDescriptor pickUpMarker, destinationMarker;
+
+  setPolylineDirection(LatLng origin, LatLng destination) async {
+    polylines.clear();
+    await DirectionHelper()
+        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
+            destination.latitude, destination.longitude)
+        .then(
+      (result) {
+        logMe('Polyline ---> ${result.toString()}');
+        if (result.isNotEmpty) {
+          polylineCoordinates = [];
+          for (var point in result) {
+            polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+          }
+
+          Polyline polyline = Polyline(
+              polylineId: const PolylineId("jalur"),
+              color: Colors.black,
+              points: polylineCoordinates,
+              width: 5,
+              startCap: Cap.roundCap,
+              endCap: Cap.roundCap);
+          polylines.add(polyline);
+          logMe('Polyline in the list - ${polylines.toString()}');
+          notifyListeners();
+        }
+      },
+    );
+  }
+
+  createPickupAndDropMarker(
+    LatLng pickup,
+    LatLng drop,
+  ) async {
+    try {
+      logMe('Create in creating marker --> ');
+      MarkerId pickupMarkerId = const MarkerId("pickup");
+      MarkerId dropMarkerId = const MarkerId("drop");
+      final Marker marker = Marker(
+        anchor: const Offset(0.5, 0.5),
+        markerId: pickupMarkerId,
+        position: LatLng(pickup.latitude, pickup.longitude),
+        icon: await getBytesFromAsset(initialPickUpIcon, 90).then((value) {
+          return pickUpMarker = BitmapDescriptor.fromBytes(value);
+        }),
+        // rotation: locationData.heading!,
+        onTap: () {},
+      );
+      final Marker dropMarker = Marker(
+        anchor: const Offset(0.5, 0.5),
+        markerId: dropMarkerId,
+        position: LatLng(drop.latitude, drop.longitude),
+        icon: await getBytesFromAsset(destinationIcon, 40).then((value) {
+          return destinationMarker = BitmapDescriptor.fromBytes(value);
+        }),
+        // rotation: locationData.heading!,
+        onTap: () {},
+      );
+
+      markers[pickupMarkerId] = marker;
+      markers[dropMarkerId] = dropMarker;
+      notifyListeners();
+
+      List<Marker> listMarker = [];
+      markers.forEach((k, v) => listMarker.add(v));
+      CameraUpdate cameraUpdate =
+          CameraUpdate.newLatLngBounds(getBounds(listMarker), 75);
+      googleMapController.animateCamera(cameraUpdate);
+
+      logMe('Marker created -- --> ${markers.length}');
+    } catch (e) {
+      logMe('Error in creating marker --> $e');
+    }
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -41,10 +121,14 @@ class HistoryProvider extends FormProvider {
   }
 
   // created controller to display Google Maps
-  Completer<GoogleMapController> controller = Completer();
+  // Completer<GoogleMapController> controller = Completer();
 
-  final Set<Marker> markers = {};
-  final Set<Polyline> polyline = {};
+  // final Set<Marker> markers = {};
+
+  // Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  // final Set<Polyline> polyline = {};
+
+  Set<Polyline> polylines = {};
 
   MarkerId markerId = const MarkerId("pickUp");
 
@@ -74,7 +158,7 @@ class HistoryProvider extends FormProvider {
       LatLng(double.parse(latDestination), double.parse(langDestination)),
     ];
 
-    updatePolylines();
+    // updatePolylines();
 
     notifyListeners();
 
@@ -95,34 +179,34 @@ class HistoryProvider extends FormProvider {
     });
   }
 
-  updatePolylines() async {
-    markers.clear();
-    // declared for loop for various locations
-    for (int i = 0; i < latLen.length; i++) {
-      markers.add(
-          // added markers
-          Marker(
-        markerId: MarkerId(i.toString()),
-        position: latLen[i],
-        // infoWindow: InfoWindow(
-        //   title: 'HOTEL',
-        //   snippet: '5 Star Hotel',
-        // ),
-        icon: await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(100, 100)),
-            'assets/icons/location4x.png'),
-      ));
+  // updatePolylines() async {
+  //   markers.clear();
+  //   // declared for loop for various locations
+  //   for (int i = 0; i < latLen.length; i++) {
+  //     markers.add(
+  //         // added markers
+  //         Marker(
+  //       markerId: MarkerId(i.toString()),
+  //       position: latLen[i],
+  //       // infoWindow: InfoWindow(
+  //       //   title: 'HOTEL',
+  //       //   snippet: '5 Star Hotel',
+  //       // ),
+  //       icon: await BitmapDescriptor.fromAssetImage(
+  //           ImageConfiguration(size: Size(100, 100)),
+  //           'assets/icons/location4x.png'),
+  //     ));
 
-      polyline.add(Polyline(
-        width: 5,
-        polylineId: PolylineId('1'),
-        points: latLen,
-        color: blackColor,
-      ));
+  //     polyline.add(Polyline(
+  //       width: 5,
+  //       polylineId: PolylineId('1'),
+  //       points: latLen,
+  //       color: blackColor,
+  //     ));
 
-      notifyListeners();
-    }
-  }
+  //     notifyListeners();
+  //   }
+  // }
 
 //Get Ratings and review list
   //Order Rating
