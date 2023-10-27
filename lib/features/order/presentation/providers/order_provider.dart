@@ -90,6 +90,8 @@ class OrderProvider with ChangeNotifier {
   double lat = 0.0;
   double long = 0.0;
 
+  int unreadMessage = 0;
+
 /** Driver Details */
   String driverName = '';
   String ratings = '';
@@ -129,6 +131,19 @@ class OrderProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  // updateUnReadMessages({required bool isNewMessage}) {
+  //   log("update unread message called");
+  //   if (isNewMessage) {
+  //     unreadMessage = unreadMessage + 1;
+  //     notifyListeners();
+  //   } else {
+  //     unreadMessage = 0;
+  //   }
+  //   notifyListeners();
+
+  //   log("new message count is : ${unreadMessage}");
+  // }
 
   //Update driver status
   updateDriverStatus(value) {

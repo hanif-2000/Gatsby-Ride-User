@@ -77,7 +77,7 @@ class HistoryProvider extends FormProvider {
         anchor: const Offset(0.5, 0.5),
         markerId: pickupMarkerId,
         position: LatLng(pickup.latitude, pickup.longitude),
-        icon: await getBytesFromAsset(initialPickUpIcon, 90).then((value) {
+        icon: await getBytesFromAsset(initialPickUpIcon, 200).then((value) {
           return pickUpMarker = BitmapDescriptor.fromBytes(value);
         }),
         // rotation: locationData.heading!,
@@ -87,7 +87,7 @@ class HistoryProvider extends FormProvider {
         anchor: const Offset(0.5, 0.5),
         markerId: dropMarkerId,
         position: LatLng(drop.latitude, drop.longitude),
-        icon: await getBytesFromAsset(destinationIcon, 40).then((value) {
+        icon: await getBytesFromAsset(destinationIcon, 100).then((value) {
           return destinationMarker = BitmapDescriptor.fromBytes(value);
         }),
         // rotation: locationData.heading!,

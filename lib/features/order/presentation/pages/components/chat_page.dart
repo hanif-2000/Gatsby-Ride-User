@@ -31,6 +31,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   var socketProvider = locator<NewSocketProvider>();
+
   // var orderProvider = locator<OrderProvider>();
   // var chatProvider = locator<ChatProvider>();
   var session = locator<Session>();

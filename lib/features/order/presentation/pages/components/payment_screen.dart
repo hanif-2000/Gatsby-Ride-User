@@ -183,6 +183,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _googlePayConfigFuture =
         PaymentConfiguration.fromAsset('default_google_pay_config.json');
 
+    var cardNumber =
+        Provider.of<PaymentProvider>(context, listen: false).selectedCardNumber;
+
+    log("selected card number is :$cardNumber");
+
     setState(() {
       totalAmountToPay = widget.totalPrice;
     });
@@ -458,14 +463,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
               widget.paymentMode == 2
                   ? CustomButton(
                       borderColor: black080808Color,
-                      text: "Pay With Card *******" +
-                          (Provider.of<PaymentProvider>(context, listen: false)
-                                  .selectedCardNumber)
-                              .substring(Provider.of<PaymentProvider>(context,
+                      text: Provider.of<PaymentProvider>(context, listen: false)
+                                  .selectedCardNumber
+                                  .length !=
+                              0
+                          ? "Pay With Card *******" +
+                              (Provider.of<PaymentProvider>(context,
                                           listen: false)
-                                      .selectedCardNumber
-                                      .length -
-                                  4),
+                                      .selectedCardNumber)
+                                  .substring(Provider.of<PaymentProvider>(
+                                              context,
+                                              listen: false)
+                                          .selectedCardNumber
+                                          .length -
+                                      4)
+                          : "Pay With Card ",
                       isRounded: true,
                       event: () async {
                         showDialog(
@@ -493,25 +505,46 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       };
                                       try {
                                         var body = {
-                                          "card[number]":
-                                              Provider.of<PaymentProvider>(
+                                          "card[number]": Provider.of<
+                                                              PaymentProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .selectedCardNumber
+                                                      .length !=
+                                                  0
+                                              ? Provider.of<PaymentProvider>(
                                                       context,
                                                       listen: false)
-                                                  .selectedCardNumber,
-                                          "card[exp_month]":
-                                              Provider.of<PaymentProvider>(
+                                                  .selectedCardNumber
+                                              : '4242424242424242',
+                                          "card[exp_month]": Provider.of<
+                                                              PaymentProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .selectedCardNumber
+                                                      .length !=
+                                                  0
+                                              ? Provider.of<PaymentProvider>(
                                                       context,
                                                       listen: false)
                                                   .selectedCardExpiry
                                                   .split('/')
-                                                  .last,
-                                          "card[exp_year]":
-                                              Provider.of<PaymentProvider>(
+                                                  .last
+                                              : '10',
+                                          "card[exp_year]": Provider.of<
+                                                              PaymentProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .selectedCardNumber
+                                                      .length !=
+                                                  0
+                                              ? Provider.of<PaymentProvider>(
                                                       context,
                                                       listen: false)
                                                   .selectedCardExpiry
                                                   .split('/')
-                                                  .first,
+                                                  .first
+                                              : '36',
                                           "card[cvc]": int.parse(
                                               textEditingController.text)
                                         };

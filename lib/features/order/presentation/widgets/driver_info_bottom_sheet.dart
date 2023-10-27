@@ -19,10 +19,11 @@ class DriverInfoBottomSheet extends StatelessWidget {
   final Function() viewReceiptEvent;
   final Function() messageEvent;
   final Function() reviewEvent;
+  // int newMessgeCount;
 
   final Function() callEvent;
 
-  const DriverInfoBottomSheet(
+  DriverInfoBottomSheet(
       {Key? key,
       required this.category,
       required this.driverId,
@@ -35,6 +36,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
       required this.callEvent,
       required this.messageEvent,
       required this.reviewEvent,
+      // required this.newMessgeCount,
       required this.isReceiptVisible})
       : super(key: key);
 

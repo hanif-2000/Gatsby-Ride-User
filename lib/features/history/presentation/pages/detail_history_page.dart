@@ -420,6 +420,11 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                   flex: 2,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
+
+                                    //                   ? SvgPicture.asset('assets/icons/card.svg')
+                                    // : widget.paymentMode == 3
+                                    //     ? SvgPicture.asset('assets/icons/google.svg')
+                                    //     : SvgPicture.asset('assets/icons/apple.svg'),
                                     children: [
                                       widget.item.paymentMethod == "1"
                                           ? SvgPicture.asset(
@@ -428,12 +433,24 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               width: 40,
                                               fit: BoxFit.fill,
                                             )
-                                          : SvgPicture.asset(
-                                              'assets/icons/google.svg',
-                                              height: 40,
-                                              width: 40,
-                                              fit: BoxFit.fill,
-                                            ),
+                                          : widget.item.paymentMethod == "2"
+                                              ? SvgPicture.asset(
+                                                  'assets/icons/card.svg',
+                                                  height: 40,
+                                                  width: 40,
+                                                  fit: BoxFit.fill,
+                                                )
+                                              : widget.item.paymentMethod == "3"
+                                                  ? SvgPicture.asset(
+                                                      'assets/icons/google.svg',
+                                                      height: 40,
+                                                      width: 40,
+                                                      fit: BoxFit.fill)
+                                                  : SvgPicture.asset(
+                                                      'assets/icons/apple.svg',
+                                                      height: 40,
+                                                      width: 40,
+                                                      fit: BoxFit.fill),
                                       Padding(
                                         padding: EdgeInsets.only(
                                           left: 10.0,
@@ -441,7 +458,12 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                         child: Text(
                                           widget.item.paymentMethod == "1"
                                               ? "Cash"
-                                              : "Google Pay",
+                                              : widget.item.paymentMethod == "2"
+                                                  ? "Credit Card"
+                                                  : widget.item.paymentMethod ==
+                                                          "3"
+                                                      ? "Google Pay"
+                                                      : "Apple Pay",
                                           style: TextStyle(
                                               fontFamily: 'poPPinMedium',
                                               fontWeight: FontWeight.w500,

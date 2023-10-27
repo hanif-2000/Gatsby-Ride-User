@@ -7,6 +7,7 @@ import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/new_card_payment/presentation/providers/add_card_state.dart';
@@ -44,6 +45,9 @@ class AddNewCardPopUp extends StatelessWidget {
 
                 //Enter card number
                 CustomTextField(
+                  // onChanged: (val) {
+                  //   log("val: $val");
+                  // },
                   inputType: TextInputType.number,
                   // onChanged: (val) {
                   //   log("onchanged:--> $val");
@@ -121,27 +125,69 @@ class AddNewCardPopUp extends StatelessWidget {
                 //Expiry Date
                 InkWell(
                   onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
+                    var picked = await showMonthYearPicker(
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
-                        initialDatePickerMode: DatePickerMode.year,
-                        lastDate: DateTime(DateTime.now().year + 30));
-                    if (pickedDate != null) {
-                      log(pickedDate.toString());
-                      log(pickedDate.toString());
+                        initialMonthYearPickerMode: MonthYearPickerMode.year,
+                        lastDate: DateTime(DateTime.now().year + 30)
+                        // showCupertinoDialog<void>(
+                        //   context: context,
+                        //   builder: (BuildContext context) {
+                        //     return Container(
+                        //       height: 200,
+                        //       child: CupertinoDatePicker(
+                        //         mode: CupertinoDatePickerMode.date,
+                        //         initialDateTime: DateTime.now(),
+                        //         onDateTimeChanged: (DateTime newDate) {
+                        //           // setState(() {
+                        //           //   _selectedDate = newDate;
+                        //           // });
+                        //         },
+                        //       ),
+                        //     );
+                        //   },
+                        );
+
+                    if (picked != null) {
+                      log("picked:  ${picked}");
                       String formattedDate =
-                          DateFormat('yyyy/MM').format(pickedDate);
+                          DateFormat('yyyy/MM').format(picked);
                       log(formattedDate);
 
                       provider.setExpiryDate = formattedDate;
-
-                      // Provider.of<PaymentProvider>(context)
-                      //     .expiryController
-                      //     .text = formattedDate;
-
-                      // expairyController.text = formattedDate;
                     }
+                    // CupertinoDatePicker(
+                    //     mode: CupertinoDatePickerMode.date,
+                    //     initialDateTime: DateTime.now(),
+                    //     onDateTimeChanged: (DateTime newDate) {
+                    //       // setState(() {
+                    //       //  _selectedDate = newDate;
+                    //     });
+                    //  };
+
+                    // ),
+                    // DateTime? pickedDate = await showDatePicker(
+                    //     context: context,
+                    //     initialDate: DateTime.now(),
+                    //     firstDate: DateTime.now(),
+                    //     initialDatePickerMode: DatePickerMode.year,
+                    //     lastDate: DateTime(DateTime.now().year + 30));
+                    // if (pickedDate != null) {
+                    //   log(pickedDate.toString());
+                    //   log(pickedDate.toString());
+                    //   String formattedDate =
+                    //       DateFormat('yyyy/MM').format(pickedDate);
+                    //   log(formattedDate);
+
+                    //   provider.setExpiryDate = formattedDate;
+
+                    // Provider.of<PaymentProvider>(context)
+                    //     .expiryController
+                    //     .text = formattedDate;
+
+                    // expairyController.text = formattedDate;
+                    // }
 
                     // log("celcil sdfa");
                     // var date = DatePickerDialog(

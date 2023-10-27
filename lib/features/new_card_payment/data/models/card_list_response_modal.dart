@@ -28,8 +28,9 @@ class CardListResponseModal extends Equatable {
       CardListResponseModal(
         success: json["success"],
         message: json["message"],
-        data:
-            List<CardData>.from(json["data"].map((x) => CardData.fromJson(x))),
+        data: json["data"] != null
+            ? List<CardData>.from(json["data"].map((x) => CardData.fromJson(x)))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {

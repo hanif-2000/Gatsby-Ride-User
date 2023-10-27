@@ -173,8 +173,12 @@ String getPaymentMethod(history.HistoryOrder data) {
   String result;
   if (data.paymentMethod == "1") {
     result = appLoc.cash;
-  } else {
+  } else if (data.paymentMethod == "2") {
+    result = "Credit Card";
+  } else if (data.paymentMethod == "3") {
     result = "Google Pay";
+  } else {
+    result = "Apple Pay";
   }
   return result;
 }

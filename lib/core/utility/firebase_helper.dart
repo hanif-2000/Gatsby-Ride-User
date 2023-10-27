@@ -37,7 +37,34 @@ class FirebaseHelper {
   static Future<void> incomingNotificationHandling() async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      log("on message listen:-->> ${message}");
+      log("on message listen:-->> ${message.data}");
+      log("on message listen:-->> ${message.notification!.title}");
+      log("on message listen:-->> ${message.notification!.bodyLocArgs}");
+      // if (message.notification!.title != 'New Order' ||
+      //     message.notification!.title != 'Booking Cancelled') {
+      //   var orderProvider = Provider.of<OrderProvider>(
+      //       locator<GlobalKey<NavigatorState>>().currentContext!,
+      //       listen: false);
+
+      //   orderProvider.updateUnReadMessages(isNewMessage: true);
+      // final GlobalKey<ScaffoldState> key = GlobalKey();
+
+      // Session session = locator<Session>();
+      // if (!session.isOrderRunning) {
+      //   homeProvider.getRequestListData().listen((event) {
+      //     log("event is -->> $event");
+      //     if (event is RequestListLoaded) {
+      //       logMe(
+      //           'Request list data loaded success----------> ${event.data.length}');
+      //       Navigator.pushNamedAndRemoveUntil(
+      //           locator<GlobalKey<NavigatorState>>().currentContext!,
+      //           HomePage.routeName,
+      //           (route) => false);
+      // }
+      //     });
+      //   }
+      // }
+
       // fetchRemoteMessage(message);
       NotificationHelper _notificationService = NotificationHelper();
       _notificationService.showNotifications(message);

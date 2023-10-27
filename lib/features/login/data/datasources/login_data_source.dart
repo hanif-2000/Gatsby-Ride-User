@@ -92,7 +92,8 @@ class LoginDataSourceImplementation implements LoginDataSource {
       'last_name': lastName,
       'fcm_token': fcmToken,
       'login_type': loginType,
-      'device_type': deviceType
+      'device_type': deviceType,
+      'country': 'Canada'
     });
 
     log("----Social login ----> ${data.fields}");

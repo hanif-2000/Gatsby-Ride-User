@@ -23,7 +23,8 @@ class FormProvider with ChangeNotifier {
       TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _countryController = TextEditingController();
+  final TextEditingController _countryController =
+      TextEditingController(text: "Canada");
   final TextEditingController _contactMessageController =
       TextEditingController();
 
