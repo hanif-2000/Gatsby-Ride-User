@@ -39,7 +39,7 @@ class NewSocketProvider with ChangeNotifier {
     _socket!.connection.listen((event) {
       logMe('Socket on Listen ---> ${event.toString()}');
       if (event is Connected) {
-        // listenRequests();
+        listenRequests();
       }
     });
   }
@@ -79,6 +79,11 @@ class NewSocketProvider with ChangeNotifier {
           );
 
           log("chat data is :-->>${chatMessageList.length}");
+        }
+        if (response['type'] == 'UnreadCount') {
+          log("unread message count called");
+
+          updateUnReadMessages(count: response['data']);
         }
       },
     );
@@ -165,7 +170,7 @@ class NewSocketProvider with ChangeNotifier {
   }) {
     final map = {
       "userID": session.userId,
-      "serviceType": "Chat",
+      "serviceType": "",
       "recieverID": receiverId,
       "room": (int.parse(session.userId) > receiverId!)
           ? '$receiverId-${session.userId}'
@@ -180,6 +185,8 @@ class NewSocketProvider with ChangeNotifier {
   final chatController = TextEditingController();
 
   List<ChatModel> _chatMessagesList = [];
+
+  int unreadMessageCount = 0;
 
   List<ChatModel> get chatMessageList => _chatMessagesList;
 
@@ -197,6 +204,11 @@ class NewSocketProvider with ChangeNotifier {
   addSingleChat(ChatModel chat) {
     log("my single chat data is:-->> ${chat}");
     _chatMessagesList.insert(0, chat);
+    notifyListeners();
+  }
+
+  updateUnReadMessages({required int count}) {
+    unreadMessageCount = count;
     notifyListeners();
   }
 }

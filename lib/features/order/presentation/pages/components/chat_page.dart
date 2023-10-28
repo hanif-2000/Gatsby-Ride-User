@@ -38,12 +38,17 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    // socketProvider.disconnectSocket();
+    // socketProvider.connectToSocket();
     super.initState();
+
     WidgetsBinding.instance.addObserver(this);
     // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
     socketProvider.joinExitRoom(
         receiverId: int.parse(session.driverId), type: "Join");
-    socketProvider.listenRequests();
+    // socketProvider.listenRequests();
+
+    socketProvider.markMessageAsRead(receiverId: int.parse(session.driverId));
   }
 
   @override

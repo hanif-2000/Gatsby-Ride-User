@@ -179,35 +179,6 @@ class HistoryProvider extends FormProvider {
     });
   }
 
-  // updatePolylines() async {
-  //   markers.clear();
-  //   // declared for loop for various locations
-  //   for (int i = 0; i < latLen.length; i++) {
-  //     markers.add(
-  //         // added markers
-  //         Marker(
-  //       markerId: MarkerId(i.toString()),
-  //       position: latLen[i],
-  //       // infoWindow: InfoWindow(
-  //       //   title: 'HOTEL',
-  //       //   snippet: '5 Star Hotel',
-  //       // ),
-  //       icon: await BitmapDescriptor.fromAssetImage(
-  //           ImageConfiguration(size: Size(100, 100)),
-  //           'assets/icons/location4x.png'),
-  //     ));
-
-  //     polyline.add(Polyline(
-  //       width: 5,
-  //       polylineId: PolylineId('1'),
-  //       points: latLen,
-  //       color: blackColor,
-  //     ));
-
-  //     notifyListeners();
-  //   }
-  // }
-
 //Get Ratings and review list
   //Order Rating
   Stream<GetRatingState> getRatingsAndReviews({driverId}) async* {

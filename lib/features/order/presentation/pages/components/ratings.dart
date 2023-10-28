@@ -115,7 +115,10 @@ class RatingsScreen extends StatelessWidget {
                                             child: Row(
                                               children: [
                                                 CommonText(
-                                                  text: data.rating.toString(),
+                                                  text: double.tryParse(data
+                                                          .rating
+                                                          .toString())
+                                                      .toString(),
                                                   fontWeight: FontWeight.w500,
                                                   fontColor: blackColor,
                                                   fontFamily: "poPPinMedium",

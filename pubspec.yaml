@@ -69,6 +69,7 @@ dependencies:
   app_settings: ^5.1.1
   credit_card_type_detector: ^3.0.0
   month_year_picker: ^0.2.0+4
+  lottie: ^2.3.2
 
   
 

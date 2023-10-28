@@ -1,8 +1,7 @@
+import 'package:GetsbyRideshare/core/presentation/widgets/cache_network_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../../../core/utility/helper.dart';
 
 class CustomRatingItem extends StatelessWidget {
   final String? name;
@@ -31,12 +30,22 @@ class CustomRatingItem extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(image == ''
-                        ? 'https://picsum.photos/250?image=9'
-                        : mergePhotoUrl(image)),
-                    maxRadius: 18.0,
-                  ),
+                  // image == ''
+                  //     ? const CircleAvatar(
+                  //         backgroundColor: transparentColor,
+                  //         radius: 18,
+                  //         backgroundImage: AssetImage(userAvatarImage),
+                  //       )
+                  //     :
+
+                  // CircleAvatar(
+                  //   backgroundImage: NetworkImage(image == ''
+                  //       ? 'https://picsum.photos/250?image=9'
+                  //       : mergePhotoUrl(image)),
+                  //   maxRadius: 18.0,
+                  // ),
+
+                  CustomCacheNetworkImage(img: image, size: 36),
                   SizedBox(
                     width: 10.0,
                   ),

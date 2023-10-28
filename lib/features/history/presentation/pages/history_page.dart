@@ -5,6 +5,7 @@ import 'package:GetsbyRideshare/core/static/styles.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/history/presentation/widgets/history_item.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/history_state.dart';
@@ -59,7 +60,12 @@ class _HistoryPageState extends State<HistoryPage> {
                   switch (state.data.runtimeType) {
                     case HistoryLoading:
                       log("history loading called");
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                        child: LottieBuilder.asset(
+                            'assets/icons/lottie_animation.json'),
+                      );
+
+                    // const Center(child: CircularProgressIndicator());
                     case HistoryFailure:
                       log("history failure called");
 

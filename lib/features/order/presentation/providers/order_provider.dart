@@ -90,7 +90,7 @@ class OrderProvider with ChangeNotifier {
   double lat = 0.0;
   double long = 0.0;
 
-  int unreadMessage = 0;
+  // int unreadMessage = 0;
 
 /** Driver Details */
   String driverName = '';
@@ -113,7 +113,7 @@ class OrderProvider with ChangeNotifier {
     plateNumber = data.plat;
     phoneNumber = data.phone;
     driverId = data.id.toString();
-    driverImg = data.image!;
+    driverImg = data.image != null ? data.image! : '';
 
     updateDriverStatus(session.orderStatus == 1
         ? "Driver is arriving"

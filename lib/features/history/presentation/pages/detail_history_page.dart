@@ -230,9 +230,12 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                  * 
                  * Show Trip Starting and Ending Points 
                  * **/
+
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10.0, horizontal: 10.0),
+
+                    //DRIVER DETAILS SECTION
                     child: Container(
                       color: whiteColor,
                       child: Column(

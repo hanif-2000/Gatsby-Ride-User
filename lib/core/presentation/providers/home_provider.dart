@@ -651,6 +651,7 @@ class HomeProvider with ChangeNotifier {
 
 // Create or Submit Order
   Stream<CreateOrderState> submitOrder() async* {
+    String newTime = (estimatedTime / 60).toStringAsFixed(1);
     log("Submit order Clicked");
     yield CreateOrderLoading();
     String txtLatLngOrigin =
@@ -666,6 +667,8 @@ class HomeProvider with ChangeNotifier {
     log(price.toString());
     log(_paymentMethod.toString());
     log(selectedVehicleId.toString());
+    log("estimated distacnce while send order is:-->> $distance");
+    log("estimated time while send order is:-->> $newTime");
 
     final formData = FormData.fromMap({
       'start_coordinate': txtLatLngOrigin,
@@ -674,7 +677,7 @@ class HomeProvider with ChangeNotifier {
       'end_address': destinationAddress,
       'distance': distance.split(' ').first,
       'total': price,
-      'estimated_time': estimatedTime,
+      'estimated_time': newTime,
       'payment_method': (_paymentMethod == PaymentMethod.cash)
           ? "1"
           : (_paymentMethod == PaymentMethod.creditCard)

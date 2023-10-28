@@ -10,11 +10,13 @@ import 'package:GetsbyRideshare/features/order/presentation/providers/get_status
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/providers/home_provider.dart';
 import '../../../../core/presentation/widgets/searching_ride_bottom_sheet.dart';
+import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/static/order_status.dart';
 import '../../../../core/utility/injection.dart';
@@ -38,6 +40,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
   Timer? checkOrderStatusTimer, trackingDriverTimer;
 
   final session = locator<Session>();
+  final newSocketProvider = locator<NewSocketProvider>();
 
   @override
   void initState() {
@@ -45,7 +48,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
-    Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
+    newSocketProvider.connectToSocket();
 
     var orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
@@ -108,6 +111,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
         });
       }
     });
+
+    log("location in orde page is:-->> ${widget.location.originAddress}");
   }
 
   @override
@@ -456,63 +461,128 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                               )
                             : SizedBox(
                                 height: 10,
-                              )
+                              ),
 
-                        //  Container(
-                        //     color: whiteColor,
-                        //     child: Padding(
-                        //       padding: const EdgeInsets.symmetric(
-                        //           horizontal: 6.0),
-                        //       child: Container(
-                        //           child: Row(
-                        //         mainAxisAlignment:
-                        //             MainAxisAlignment.spaceAround,
-                        //         children: [
-                        //           Column(
-                        //             mainAxisAlignment:
-                        //                 MainAxisAlignment.center,
-                        //             children: [
-                        //               Image.asset(
-                        //                 locationPngIcon,
-                        //                 height: 24.0,
-                        //                 width: 24.0,
-                        //                 fit: BoxFit.cover,
-                        //               ),
-                        //               SvgPicture.asset(dottedLine),
-                        //               SvgPicture.asset(
-                        //                 destinationSvgIcon,
-                        //                 height: 30.0,
-                        //                 width: 30.0,
-                        //                 fit: BoxFit.cover,
-                        //               ),
-                        //             ],
-                        //           ),
-                        //           Column(
-                        //             mainAxisAlignment:
-                        //                 MainAxisAlignment.spaceAround,
-                        //             children: [
-                        //               OriginWidget(
-                        //                 deviceWidth: _deviceSize.width,
-                        //                 isFromOrder: false,
-                        //               ),
-                        //               Container(
-                        //                 margin: EdgeInsets.zero,
-                        //                 width: _deviceSize.width * .8,
-                        //                 height: 1.0,
-                        //                 color: whiteEFEFEFColor,
-                        //               ),
-                        //               Container(
-                        //                 child: DestinationWidget(
-                        //                   deviceWidth: _deviceSize.width,
-                        //                   isFromOrder: false,
-                        //                 ),
-                        //               ),
-                        //             ],
-                        //           )
-                        //         ],
-                        //       )),
-                        //     ),
-                        //   ),
+                        Container(
+                          color: whiteColor,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 6.0),
+                            child: Container(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Column(
+                                  // mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      locationPngIcon,
+                                      height: 24.0,
+                                      width: 24.0,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    SvgPicture.asset(dottedLine),
+                                    SvgPicture.asset(
+                                      destinationSvgIcon,
+                                      height: 30.0,
+                                      width: 30.0,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    SizedBox(
+                                      width: _deviceSize.width * .8,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10.0),
+                                        child: Text(
+                                          widget.location.originAddress,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontFamily: 'poPPinRegular',
+                                              fontSize: 17.0,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+                                    // OriginWidget(
+                                    //   deviceWidth: _deviceSize.width,
+                                    //   isFromOrder: false,
+                                    // ),
+
+                                    // Flexible(
+                                    //   child: Container(
+                                    //     width: _deviceSize.width,
+                                    //     child: Text(
+                                    //       widget.location.originAddress,
+                                    //       softWrap: false,
+                                    //       overflow: TextOverflow.ellipsis,
+                                    //       style: const TextStyle(
+                                    //           fontFamily: 'poPPinRegular',
+                                    //           fontSize: 17.0,
+                                    //           color: Colors.black),
+                                    //     ),
+                                    //   ),
+                                    // ),
+
+                                    // Text(widget.location.originAddress),
+
+                                    Container(
+                                      margin: EdgeInsets.zero,
+                                      width: _deviceSize.width * .8,
+                                      height: 1.0,
+                                      color: whiteEFEFEFColor,
+                                    ),
+
+                                    SizedBox(
+                                      width: _deviceSize.width * .8,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10.0),
+                                        child: Text(
+                                          widget.location.destinationAddress,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontFamily: 'poPPinRegular',
+                                              fontSize: 17.0,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+
+                                    // Flexible(
+                                    //   child: Container(
+                                    //     width: _deviceSize.width,
+                                    //     child: Text(
+                                    //       widget.location.destinationAddress,
+                                    //       softWrap: false,
+                                    //       overflow: TextOverflow.fade,
+                                    //       style: const TextStyle(
+                                    //           fontFamily: 'poPPinRegular',
+                                    //           fontSize: 17.0,
+                                    //           color: Colors.black),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    // Container(
+                                    //   child: Text(
+                                    //       widget.location.destinationAddress),
+
+                                    //  DestinationWidget(
+                                    //   deviceWidth: _deviceSize.width,
+                                    //   isFromOrder: false,
+                                    // ),
+                                    // ),
+                                  ],
+                                )
+                              ],
+                            )),
+                          ),
+                        ),
 
                         /**Old Code  */
 
@@ -536,7 +606,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                         //           : const CurrentLocationOrderWidget(),
                         //       const BottomContaineOrder()
                         //     ]))
-                        ,
+
                         Spacer(),
                         Visibility(
                           visible: (provider.isOrderAccepted) ||
@@ -551,7 +621,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                               ),
                             ),
                             child: DriverInfoBottomSheet(
-                              // newMessgeCount: provider.unreadMessage,
+                              newMessgeCount:
+                                  newSocketProvider.unreadMessageCount,
                               reviewEvent: () {
                                 Navigator.push(
                                     context,
@@ -592,20 +663,20 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                 //   //     event.);
                                 // });
 
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        ReceiptScreen(),
-                                  ),
-                                  (route) => false,
-                                );
-                                // Navigator.push(
+                                // Navigator.pushAndRemoveUntil(
                                 //   context,
                                 //   MaterialPageRoute(
-                                //     builder: (context) => ReceiptScreen(),
+                                //     builder: (BuildContext context) =>
+                                //         ReceiptScreen(),
                                 //   ),
+                                //   (route) => false,
                                 // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ReceiptScreen(),
+                                  ),
+                                );
                               },
                               driverStatusText: provider.driverStatus,
                               category: provider.carModal,

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,13 +45,35 @@ class ProfileInformationDrawer extends StatelessWidget {
                             radius: 60,
                             backgroundImage: AssetImage(userAvatarImage),
                           )
-                        : CircleAvatar(
-                            backgroundColor: transparentColor,
-                            radius: 60,
-                            backgroundImage: NetworkImage(
-                              mergePhotoUrl(data.photo),
+                        : CachedNetworkImage(
+                            imageUrl: mergePhotoUrl(data.photo),
+                            imageBuilder: (context, imageProvider) => Container(
+                              height: 120,
+                              width: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
+                            progressIndicatorBuilder: (context, url, progress) {
+                              return CircularProgressIndicator(
+                                value: progress.progress,
+                              );
+                            },
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
+
+                    // CircleAvatar(
+                    //     backgroundColor: transparentColor,
+                    //     radius: 60,
+                    //     backgroundImage: NetworkImage(
+                    //       mergePhotoUrl(data.photo),
+                    //     ),
+                    //   ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(

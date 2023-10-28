@@ -239,7 +239,10 @@ class RatingList {
         senderId: json["sender_id"] ?? 0,
         receiverId: json["receiver_id"] ?? 0,
         orderId: json["order_id"] ?? 0,
-        rating: json["rating"] ?? "0.0",
+        rating: json["rating"] != null
+            ? double.parse(json["rating"]).toString()
+            // (json["rating"])
+            : "0.0",
         review: json["review"] ?? '',
         type: json["type"] ?? 1,
         status: json["status"] ?? 1,

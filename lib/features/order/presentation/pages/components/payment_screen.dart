@@ -5,6 +5,7 @@ import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
@@ -897,8 +898,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       log(e.toString());
                                     }
                                   },
-                                  loadingIndicator: const Center(
-                                    child: CircularProgressIndicator(),
+                                  loadingIndicator: Center(
+                                    child: LottieBuilder.asset(
+                                        'assets/icons/lottie_animation.json'),
+                                    // CircularProgressIndicator(),
                                   ),
                                 )
                               : SizedBox()

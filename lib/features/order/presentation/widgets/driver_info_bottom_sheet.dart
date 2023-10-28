@@ -19,7 +19,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
   final Function() viewReceiptEvent;
   final Function() messageEvent;
   final Function() reviewEvent;
-  // int newMessgeCount;
+  int newMessgeCount;
 
   final Function() callEvent;
 
@@ -36,7 +36,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
       required this.callEvent,
       required this.messageEvent,
       required this.reviewEvent,
-      // required this.newMessgeCount,
+      required this.newMessgeCount,
       required this.isReceiptVisible})
       : super(key: key);
 
@@ -98,31 +98,50 @@ class DriverInfoBottomSheet extends StatelessWidget {
                     callEvent,
                 // : () {},
               ),
-              CustomContactBtn(
-                  btnText: "Message",
-                  image: 'assets/icons/message_icon.svg',
-                  btnWidth: _deviceSize.width * .45,
-                  btnColor:
-                      // session.orderStatus == 1
-                      //     ? blue249DE0Color
-                      //     : session.orderStatus == 2
-                      //         ? blue249DE0Color
-                      //         : session.orderStatus == 3
-                      //             ?
-                      blue249DE0Color,
-                  // : grey606060Color,
-                  // btnColor: blue249DE0Color,
-                  event:
-                      //  session.orderStatus == 1
-                      //     ? messageEvent
-                      //     : session.orderStatus == 2
-                      //         ? messageEvent
-                      //         : session.orderStatus == 3
-                      //             ?
-                      messageEvent
+              Stack(
+                children: [
+                  CustomContactBtn(
+                      btnText: "Message",
+                      image: 'assets/icons/message_icon.svg',
+                      btnWidth: _deviceSize.width * .45,
+                      btnColor:
+                          // session.orderStatus == 1
+                          //     ? blue249DE0Color
+                          //     : session.orderStatus == 2
+                          //         ? blue249DE0Color
+                          //         : session.orderStatus == 3
+                          //             ?
+                          blue249DE0Color,
+                      // : grey606060Color,
+                      // btnColor: blue249DE0Color,
+                      event:
+                          //  session.orderStatus == 1
+                          //     ? messageEvent
+                          //     : session.orderStatus == 2
+                          //         ? messageEvent
+                          //         : session.orderStatus == 3
+                          //             ?
+                          messageEvent
 
-                  // : () {},
-                  ),
+                      // : () {},
+                      ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: blackColor, shape: BoxShape.circle),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Text(
+                          newMessgeCount.toString(),
+                          style: TextStyle(color: whiteColor),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
           Visibility(

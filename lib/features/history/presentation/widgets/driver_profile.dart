@@ -1,8 +1,8 @@
+import 'package:GetsbyRideshare/core/presentation/widgets/cache_network_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../core/utility/helper.dart';
 import '../../../order/presentation/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -54,11 +54,39 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
             child: Row(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(widget.driverImage == ''
-                      ? 'https://picsum.photos/250?image=9'
-                      : mergePhotoUrl(widget.driverImage)),
-                ),
+                CustomCacheNetworkImage(img: widget.driverImage, size: 40),
+                // widget.driverImage == ''
+                //     ? CircleAvatar(
+                //         backgroundColor: transparentColor,
+                //         radius: 20,
+                //         backgroundImage: AssetImage(userAvatarImage),
+                //       )
+                //     : CachedNetworkImage(
+                //         imageUrl: mergePhotoUrl(widget.driverImage),
+                //         imageBuilder: (context, imageProvider) => Container(
+                //           height: 40,
+                //           width: 40,
+                //           decoration: BoxDecoration(
+                //             shape: BoxShape.circle,
+                //             image: DecorationImage(
+                //               image: imageProvider,
+                //               fit: BoxFit.cover,
+                //             ),
+                //           ),
+                //         ),
+                //         progressIndicatorBuilder: (context, url, progress) {
+                //           return CircularProgressIndicator(
+                //             value: progress.progress,
+                //           );
+                //         },
+                //         errorWidget: (context, url, error) => Icon(Icons.error),
+                //       ),
+
+                // CircleAvatar(
+                //   backgroundImage: NetworkImage(widget.driverImage == ''
+                //       ? 'https://picsum.photos/250?image=9'
+                //       : mergePhotoUrl(widget.driverImage)),
+                // ),
                 Padding(
                   padding: EdgeInsets.only(left: _deviceSize.width * .02),
                   child: Column(
@@ -78,7 +106,7 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              widget.rating,
+                              double.tryParse(widget.rating).toString(),
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w600,
@@ -111,6 +139,7 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       widget.category,
