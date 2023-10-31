@@ -45,17 +45,21 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    newSocketProvider.connectToSocket();
     WidgetsBinding.instance.addObserver(this);
 
     // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
-    newSocketProvider.connectToSocket();
+    // newSocketProvider.connectToSocket();q
 
     var orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
     if (session.orderStatus != 0) {
+      log("session order status is not ==== 0");
+
       orderProvider.fetchDriverDetail().listen((eventDriverDetail) async {
         if (eventDriverDetail is GetDriverDetailLoaded) {
           orderProvider.updateDriverDetails(data: eventDriverDetail.data);
+          newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
         }
       });
     }
@@ -85,30 +89,16 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                   HomePage.routeName,
                   (route) => false,
                 );
-
-//Show dialog for order canceled
-                // showDialog(
-                //   barrierDismissible: false,
-                //   context: context,
-                //   builder: (context) {
-                //     return CustomSimpleDialog(
-                //         text: appLoc.orderCanceled,
-                //         onTap: () {
-                //           Navigator.pushNamedAndRemoveUntil(
-                //             context,
-                //             HomePage.routeName,
-                //             (route) => false,
-                //           );
-                //         });
-                //   },
-                // );
               } else if (event is UpdateStatusOrderFailure) {
                 log("Update Order Status Failed.......");
                 dismissLoading();
               }
             });
-          } else {}
+          }
         });
+      } else {
+        log("else called ");
+        newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
       }
     });
 
@@ -136,6 +126,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             body: Consumer<OrderProvider>(builder: (context, provider, _) {
+              // newSocketProvider
+              //     .getTotalUnreadCount(int.parse(session.driverId));
               if (checkOrderStatusTimer != null) {
                 checkOrderStatusTimer!.cancel();
               }
@@ -621,8 +613,10 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                               ),
                             ),
                             child: DriverInfoBottomSheet(
-                              newMessgeCount:
-                                  newSocketProvider.unreadMessageCount,
+                              newMessgeCount: Provider.of<NewSocketProvider>(
+                                      context,
+                                      listen: true)
+                                  .unreadMessageCount,
                               reviewEvent: () {
                                 Navigator.push(
                                     context,

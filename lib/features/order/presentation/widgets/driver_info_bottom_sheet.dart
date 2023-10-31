@@ -125,21 +125,23 @@ class DriverInfoBottomSheet extends StatelessWidget {
 
                       // : () {},
                       ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: blackColor, shape: BoxShape.circle),
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Text(
-                          newMessgeCount.toString(),
-                          style: TextStyle(color: whiteColor),
-                        ),
-                      ),
-                    ),
-                  )
+                  newMessgeCount != 0
+                      ? Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: blackColor, shape: BoxShape.circle),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Text(
+                                newMessgeCount.toString(),
+                                style: TextStyle(color: whiteColor),
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox()
                 ],
               ),
             ],

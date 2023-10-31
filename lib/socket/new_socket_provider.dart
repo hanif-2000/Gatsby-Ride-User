@@ -126,6 +126,22 @@ class NewSocketProvider with ChangeNotifier {
     // listenRequests();
   }
 
+  //Get total number of unread message
+  getTotalUnreadCount(int? receiverId) {
+    log("get total count");
+    final map = {
+      "userID": session.userId,
+      "serviceType": "UnreadCount",
+      "room": (int.parse(session.userId) > receiverId!)
+          ? '$receiverId-${session.userId}'
+          : '${session.userId}-$receiverId',
+      "UserType": 'Customer'
+    };
+    log("get total count:" + map.toString());
+    _socket!.send(jsonEncode(map));
+    listenRequests();
+  }
+
   sendChatMessage({
     String? message,
     int? receiverId,
@@ -209,6 +225,8 @@ class NewSocketProvider with ChangeNotifier {
 
   updateUnReadMessages({required int count}) {
     unreadMessageCount = count;
+
+    log("un read message count is:-->> $unreadMessageCount");
     notifyListeners();
   }
 }

@@ -37,6 +37,7 @@ class NotificationHelper {
     'channel ID',
     'channel name',
     playSound: true,
+    channelShowBadge: false,
     priority: Priority.max,
     importance: Importance.max,
     // color: Color(0xff000000),

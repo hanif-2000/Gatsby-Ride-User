@@ -66,18 +66,21 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    socketProvider.getTotalUnreadCount(int.parse(session.driverId));
     super.dispose();
     // socketProvider.clearChatList();
     // socketProvider.joinExitRoom(
     //     receiverId: int.parse(session.userId), type: 'unJoin');
 
-    socketProvider.joinExitRoom(
-      type: 'unJoin',
-      receiverId: int.parse(session.driverId),
-    );
-    WidgetsBinding.instance.removeObserver(this);
-    socketProvider.disconnectSocket();
-    socketProvider.connectToSocket();
+    Future.delayed(Duration(seconds: 1), () {
+      socketProvider.joinExitRoom(
+        type: 'unJoin',
+        receiverId: int.parse(session.driverId),
+      );
+      WidgetsBinding.instance.removeObserver(this);
+      socketProvider.disconnectSocket();
+      socketProvider.connectToSocket();
+    });
   }
 
   @override
