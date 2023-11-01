@@ -43,12 +43,14 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
+
+    // showLoading();
     // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
     socketProvider.joinExitRoom(
         receiverId: int.parse(session.driverId), type: "Join");
     // socketProvider.listenRequests();
 
-    socketProvider.markMessageAsRead(receiverId: int.parse(session.driverId));
+    // socketProvider.markMessageAsRead(receiverId: int.parse(session.driverId));
   }
 
   @override
@@ -60,27 +62,27 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         receiverId: int.parse(session.driverId),
       );
     } else if (state == AppLifecycleState.resumed) {
-      socketProvider.joinExitRoom(receiverId: int.parse(session.driverId));
+      socketProvider.joinExitRoom(
+          receiverId: int.parse(session.driverId), type: 'Join');
     }
   }
 
   @override
   void dispose() {
-    socketProvider.getTotalUnreadCount(int.parse(session.driverId));
+    log("dispoase called");
+
     super.dispose();
     // socketProvider.clearChatList();
     // socketProvider.joinExitRoom(
     //     receiverId: int.parse(session.userId), type: 'unJoin');
 
-    Future.delayed(Duration(seconds: 1), () {
-      socketProvider.joinExitRoom(
-        type: 'unJoin',
-        receiverId: int.parse(session.driverId),
-      );
-      WidgetsBinding.instance.removeObserver(this);
-      socketProvider.disconnectSocket();
-      socketProvider.connectToSocket();
-    });
+    socketProvider.joinExitRoom(
+      type: 'unJoin',
+      receiverId: int.parse(session.driverId),
+    );
+    WidgetsBinding.instance.removeObserver(this);
+    // socketProvider.disconnectSocket();
+    // socketProvider.connectToSocket();
   }
 
   @override

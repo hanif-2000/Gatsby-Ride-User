@@ -45,7 +45,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    newSocketProvider.connectToSocket();
+    // newSocketProvider.connectToSocket();
     WidgetsBinding.instance.addObserver(this);
 
     // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
@@ -62,6 +62,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
           newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
         }
       });
+      // newSocketProvider.listenRequests();
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {

@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../../../socket/new_socket_provider.dart';
 import '../../providers/home_provider.dart';
 import '../../widgets/bottom_sheet_book_ride.dart';
 
@@ -29,7 +28,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
-    Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
+    // Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
   }
 
   @override

@@ -70,80 +70,83 @@ class DriverInfoBottomSheet extends StatelessWidget {
               rating: rating,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Stack(
             children: [
-              CustomContactBtn(
-                btnText: "Call now",
-                image: 'assets/icons/call_icon.svg',
-                btnWidth: _deviceSize.width * .45,
-                btnColor:
-                    //  session.orderStatus == 1
-
-                    // ? green2DAA5FColor
-                    // : session.orderStatus == 2
-                    //     ? green2DAA5FColor
-                    //     : session.orderStatus == 3
-                    //         ?
-
-                    green2DAA5FColor,
-                // : grey606060Color,
-                event:
-                    // session.orderStatus == 1
-                    //     ? callEvent
-                    //     : session.orderStatus == 2
-                    //         ? callEvent
-                    //         : session.orderStatus == 3
-                    //             ?
-                    callEvent,
-                // : () {},
-              ),
-              Stack(
-                children: [
-                  CustomContactBtn(
-                      btnText: "Message",
-                      image: 'assets/icons/message_icon.svg',
-                      btnWidth: _deviceSize.width * .45,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomContactBtn(
+                      btnText: "Call now",
+                      image: 'assets/icons/call_icon.svg',
+                      btnWidth: _deviceSize.width * .44,
                       btnColor:
-                          // session.orderStatus == 1
-                          //     ? blue249DE0Color
-                          //     : session.orderStatus == 2
-                          //         ? blue249DE0Color
-                          //         : session.orderStatus == 3
-                          //             ?
-                          blue249DE0Color,
-                      // : grey606060Color,
-                      // btnColor: blue249DE0Color,
-                      event:
                           //  session.orderStatus == 1
-                          //     ? messageEvent
+
+                          // ? green2DAA5FColor
+                          // : session.orderStatus == 2
+                          //     ? green2DAA5FColor
+                          //     : session.orderStatus == 3
+                          //         ?
+
+                          green2DAA5FColor,
+                      // : grey606060Color,
+                      event:
+                          // session.orderStatus == 1
+                          //     ? callEvent
                           //     : session.orderStatus == 2
-                          //         ? messageEvent
+                          //         ? callEvent
                           //         : session.orderStatus == 3
                           //             ?
-                          messageEvent
-
+                          callEvent,
                       // : () {},
-                      ),
-                  newMessgeCount != 0
-                      ? Positioned(
-                          top: 0,
-                          right: 0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: blackColor, shape: BoxShape.circle),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Text(
-                                newMessgeCount.toString(),
-                                style: TextStyle(color: whiteColor),
-                              ),
-                            ),
-                          ),
-                        )
-                      : SizedBox()
-                ],
+                    ),
+                    CustomContactBtn(
+                        btnText: "Message",
+                        image: 'assets/icons/message_icon.svg',
+                        btnWidth: _deviceSize.width * .44,
+                        btnColor:
+                            // session.orderStatus == 1
+                            //     ? blue249DE0Color
+                            //     : session.orderStatus == 2
+                            //         ? blue249DE0Color
+                            //         : session.orderStatus == 3
+                            //             ?
+                            blue249DE0Color,
+                        // : grey606060Color,
+                        // btnColor: blue249DE0Color,
+                        event:
+                            //  session.orderStatus == 1
+                            //     ? messageEvent
+                            //     : session.orderStatus == 2
+                            //         ? messageEvent
+                            //         : session.orderStatus == 3
+                            //             ?
+                            messageEvent
+
+                        // : () {},
+                        ),
+                  ],
+                ),
               ),
+              newMessgeCount != 0
+                  ? Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: redf52d56Color, shape: BoxShape.circle),
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            newMessgeCount.toString(),
+                            style: TextStyle(color: whiteColor),
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox()
             ],
           ),
           Visibility(

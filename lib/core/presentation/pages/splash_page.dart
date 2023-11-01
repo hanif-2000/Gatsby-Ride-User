@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/login/presentation/pages/login_page.dart';
+import '../../../socket/new_socket_provider.dart';
 import '../../domain/entities/order_data_detail.dart';
 import '../../static/assets.dart';
 import '../../utility/helper.dart';
@@ -29,9 +30,12 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  final newSocketProvider = locator<NewSocketProvider>();
   @override
   void initState() {
     super.initState();
+
+    newSocketProvider.connectToSocket();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Timer(const Duration(seconds: 2), () async {
         // if (kDebugMode) {
