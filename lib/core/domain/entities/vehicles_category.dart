@@ -5,7 +5,7 @@ class VehiclesCategory extends Equatable {
   final String categoryCar, seat, totalFare;
   final double priceKm, minKm;
 
-  final dynamic time;
+  final dynamic time, pendingAmount, newTotal;
 
   const VehiclesCategory({
     required this.categoryId,
@@ -18,6 +18,8 @@ class VehiclesCategory extends Equatable {
     this.time,
     required this.totalFare,
     required this.priceKm,
+    required this.pendingAmount,
+    required this.newTotal,
   });
 
   toJson() {}
@@ -36,6 +38,8 @@ class VehiclesCategory extends Equatable {
         time,
         totalFare,
         priceKm,
-        minKm
+        minKm,
+        newTotal,
+        pendingAmount
       ];
 }

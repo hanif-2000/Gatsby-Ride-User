@@ -10,6 +10,8 @@ class CarDetailWidget extends StatelessWidget {
   final String carSeat;
   final String minimumFare;
   final String estimatedPrice;
+  final String pendingAmount;
+  final String newTotal;
 
   const CarDetailWidget(
       {Key? key,
@@ -20,6 +22,8 @@ class CarDetailWidget extends StatelessWidget {
       required this.carSeat,
       required this.minimumFare,
       required this.estimatedPrice,
+      required this.pendingAmount,
+      required this.newTotal,
       required this.techFee})
       : super(key: key);
 
@@ -121,6 +125,26 @@ class CarDetailWidget extends StatelessWidget {
                       style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Pending payment",
+                      style: TextStyle(
+                          color: black080808Color,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Current Ride Estimate",
+                      style: TextStyle(
+                          color: black080808Color,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
                 ],
               ),
               Column(
@@ -161,6 +185,26 @@ class CarDetailWidget extends StatelessWidget {
                       style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "CA \$ ${pendingAmount}",
+                      style: TextStyle(
+                          color: blackColor,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "CA \$ ${estimatedPrice}",
+                      style: TextStyle(
+                          color: blackColor,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -168,7 +212,7 @@ class CarDetailWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Estimated Price: CA\$ ${estimatedPrice}",
+              "Total Price: CA\$ ${newTotal}",
               style: TextStyle(color: black282828Color, fontSize: 18.0),
             ),
           ),

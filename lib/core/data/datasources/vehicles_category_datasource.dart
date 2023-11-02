@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/domain/entities/vehcles_category_list.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:dio/dio.dart';
 
 import '../models/vehicles_catagory_list_modal.dart';
@@ -53,11 +55,13 @@ class VehicleCategoryDataSourceImplementation
     String coordinates,
     String time,
   ) async {
+    Session session = locator<Session>();
     FormData data = FormData.fromMap({
       'distance': distance,
       'night_service': nightService,
       'coordinates': coordinates,
-      'time': time
+      'time': time,
+      'user_id': session.userId
     });
     String url = 'api/webservice/priceCategory';
 

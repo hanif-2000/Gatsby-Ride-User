@@ -12,6 +12,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
     required dynamic time,
     required String totalFare,
     required double minKm,
+    required dynamic newTotal,
+    required dynamic pendingAmount,
   }) : super(
           categoryId: id,
           categoryCar: category,
@@ -23,6 +25,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
           time: time,
           totalFare: totalFare,
           minKm: minKm,
+          newTotal: newTotal,
+          pendingAmount: pendingAmount,
         );
 
   factory VehiclesCategoryModel.fromJson(Map<String, dynamic> json) =>
@@ -37,6 +41,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
         totalFare: json['total_fair'],
         time: json['time'],
         minKm: json['min_km'],
+        pendingAmount: json['pending_amount'],
+        newTotal: json['new_total'],
       );
 
   @override
@@ -50,5 +56,7 @@ class VehiclesCategoryModel extends VehiclesCategory {
         "totalFare": totalFare,
         "time": time,
         "min_km": priceMin,
+        "newTotal": newTotal,
+        "pendingAmount": pendingAmount
       };
 }

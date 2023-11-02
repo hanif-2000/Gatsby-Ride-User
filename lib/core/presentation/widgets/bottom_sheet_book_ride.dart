@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
-import 'package:GetsbyRideshare/core/presentation/widgets/custom_vehicle_info.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/payment_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:dotted_line/dotted_line.dart';
@@ -18,6 +17,7 @@ import '../../utility/session_helper.dart';
 import '../providers/create_order_state.dart';
 import '../providers/vehicle_category_state.dart';
 import 'custom_button/custom_button_widget.dart';
+import 'custom_vehicle_info.dart';
 
 class BottomSheetBookRide extends StatelessWidget {
   const BottomSheetBookRide({Key? key}) : super(key: key);
@@ -97,12 +97,19 @@ class BottomSheetBookRide extends StatelessWidget {
                                         // time: "${provider.estimatedTimeToShow}",
                                         time: data[index].time.toString() +
                                             " min",
+                                        // price: data[index].totalFare.toString(),
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
                                         capacity: data[index].seat.toString(),
                                         provider: provider,
                                         vehicleDetail:
                                             provider.vehiclesDetailsList,
+
+                                        newTotal:
+                                            data[index].newTotal.toString(),
+                                        pendingAmount: data[index]
+                                            .pendingAmount
+                                            .toString(),
                                       ),
                                     ),
                                   );

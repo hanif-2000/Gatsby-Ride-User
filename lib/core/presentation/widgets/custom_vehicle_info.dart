@@ -11,6 +11,9 @@ class CustomVehicleInfo extends StatelessWidget {
   final String? vehicleType;
   final String? time;
   final String? price;
+  final String? newTotal;
+  final String? pendingAmount;
+
   final String? capacity;
   final VoidCallback? onTap;
   final int? index;
@@ -26,6 +29,8 @@ class CustomVehicleInfo extends StatelessWidget {
     this.capacity,
     this.onTap,
     this.index,
+    this.newTotal,
+    this.pendingAmount,
     required this.vehicleDetail,
     required this.provider,
   }) : super(key: key);
@@ -128,18 +133,20 @@ class CustomVehicleInfo extends StatelessWidget {
                     log("on tap info called");
 
                     showBottomSheet(
-                        estimatedPrice: price,
-                        minimumFare: provider.vehiclesDetailsList[index!]
-                            ["minimunFare"],
-                        context: context,
-                        baseFare: provider.vehiclesDetailsList[index!]
-                            ["baseFare"],
-                        carImg: provider.vehiclesDetailsList[index!]["carImg"],
-                        carSeat: provider.vehiclesDetailsList[index!]["seat"],
-                        perkm: provider.vehiclesDetailsList[index!]["perKm"],
-                        permin: provider.vehiclesDetailsList[index!]["perMin"],
-                        techFee: provider.vehiclesDetailsList[index!]
-                            ["techFee"]);
+                      estimatedPrice: price,
+                      minimumFare: provider.vehiclesDetailsList[index!]
+                          ["minimunFare"],
+                      context: context,
+                      baseFare: provider.vehiclesDetailsList[index!]
+                          ["baseFare"],
+                      carImg: provider.vehiclesDetailsList[index!]["carImg"],
+                      carSeat: provider.vehiclesDetailsList[index!]["seat"],
+                      perkm: provider.vehiclesDetailsList[index!]["perKm"],
+                      permin: provider.vehiclesDetailsList[index!]["perMin"],
+                      techFee: provider.vehiclesDetailsList[index!]["techFee"],
+                      newTotal: newTotal,
+                      pendingAmount: pendingAmount,
+                    );
                   },
                   child: Icon(Icons.info_outline)),
 
@@ -152,7 +159,7 @@ class CustomVehicleInfo extends StatelessWidget {
                     width: 40,
                   ),
                   Text(
-                    price!,
+                    double.parse(newTotal!).toStringAsFixed(2),
                     style: const TextStyle(
                         fontFamily: 'poPPinRegular',
                         fontWeight: FontWeight.w600,
@@ -177,6 +184,8 @@ class CustomVehicleInfo extends StatelessWidget {
       perkm,
       permin,
       estimatedPrice,
+      pendingAmount,
+      newTotal,
       minimumFare}) {
     showModalBottomSheet(
       barrierColor: Colors.transparent,
@@ -204,6 +213,8 @@ class CustomVehicleInfo extends StatelessWidget {
             perkM: perkm,
             techFee: techFee,
             minimumFare: minimumFare,
+            newTotal: newTotal,
+            pendingAmount: pendingAmount,
           )
         ]);
       },
