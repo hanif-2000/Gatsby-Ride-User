@@ -74,7 +74,10 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: black080808Color,
+            ),
           ),
         ),
         body: Stack(

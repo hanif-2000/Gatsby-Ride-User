@@ -144,7 +144,7 @@ class CustomVehicleInfo extends StatelessWidget {
                       perkm: provider.vehiclesDetailsList[index!]["perKm"],
                       permin: provider.vehiclesDetailsList[index!]["perMin"],
                       techFee: provider.vehiclesDetailsList[index!]["techFee"],
-                      newTotal: newTotal,
+                      newTotal: double.parse(newTotal!).toStringAsFixed(2),
                       pendingAmount: pendingAmount,
                     );
                   },

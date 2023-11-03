@@ -31,6 +31,8 @@ class PaymentScreen extends StatefulWidget {
   final String driverId;
   final dynamic grandTotal;
   final String vehicleCategory;
+  final dynamic pendingAmount;
+  final dynamic newTotal;
 
   final dynamic extraDistancePrice;
   // final dynamic extraMinPrice;
@@ -55,6 +57,8 @@ class PaymentScreen extends StatefulWidget {
     required this.grandTotal,
     required this.vehicleCategory,
     required this.distance,
+    this.pendingAmount,
+    this.newTotal,
   }) : super(key: key);
 
   @override
@@ -78,7 +82,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   updateTotalAmount({tip}) {
     setState(() {
-      totalAmountToPay = (double.parse(widget.totalPrice) + double.parse(tip))
+      totalAmountToPay = (double.parse(widget.newTotal) + double.parse(tip))
           .toStringAsFixed(2);
     });
   }
@@ -190,7 +194,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     log("selected card number is :$cardNumber");
 
     setState(() {
-      totalAmountToPay = widget.totalPrice;
+      totalAmountToPay = widget.newTotal;
     });
   }
 
@@ -199,6 +203,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     log("total amount to pay:-->> ${widget.totalPrice}");
     log("total amount to pay:-->> ${totalAmountToPay}");
+    log("new amount to pay:-->> ${widget.newTotal}");
 
     var _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -250,6 +255,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Divider(
                       color: whiteAccentColor,
                     ),
+
                     TextInRow(
                       firstText: 'Extra Distance',
                       // secondText: widget.extraDistance + " Km",
@@ -265,6 +271,26 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       // secondText: r'$' + widget.extraDistancePrice,
                       secondText: r'CA$ ' + "0",
                     ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+
+                    TextInRow(
+                      firstText: 'Actual Amount',
+                      secondText: 'CA\$ ' + widget.grandTotal.toString(),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: 'Pending Amount',
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: "CA\$" + " ${widget.pendingAmount}",
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+
                     // Divider(
                     //   color: whiteAccentColor,
                     // ),
@@ -301,13 +327,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     //   firstText: 'Service Price',
                     //   secondText: r'$0.00',
                     // ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
+                    // Divider(
+                    //   color: whiteAccentColor,
+                    // ),
                     TextInRow(
                       secondTextweight: FontWeight.w700,
                       firstText: 'Grand Total',
-                      secondText: r'CA$ ' + widget.totalPrice,
+                      secondText: r'CA$ ' + widget.newTotal,
                     ),
                   ],
                 ),

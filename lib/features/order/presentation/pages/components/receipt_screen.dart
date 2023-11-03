@@ -387,7 +387,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                 secondTextweight: FontWeight.w700,
                                 firstText: "Total amount to pay ",
                                 secondText:
-                                    r"CA$ " + data.orderReceipt![0].total,
+                                    r"CA$ " + data.orderReceipt![0].newTotal,
                               ),
                             ],
                           ),
@@ -408,6 +408,11 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PaymentScreen(
+                                    newTotal: data.orderReceipt![0].newTotal
+                                        .toString(),
+                                    pendingAmount: data
+                                        .orderReceipt![0].pendingAmount
+                                        .toString(),
                                     distance: data.orderReceipt![0].distance
                                         .toString(),
                                     vehicleCategory: data
