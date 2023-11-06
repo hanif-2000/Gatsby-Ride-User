@@ -50,6 +50,8 @@ class HistoryOrder {
   String? distance;
   String? total;
   dynamic grandTotal;
+  dynamic pendingAmount;
+  dynamic newTotal;
 
   DateTime orderTime;
   dynamic tip;
@@ -76,6 +78,8 @@ class HistoryOrder {
     required this.endAddress,
     required this.distance,
     required this.total,
+    required this.pendingAmount,
+    required this.newTotal,
     required this.orderTime,
     required this.tip,
     required this.status,
@@ -104,6 +108,8 @@ class HistoryOrder {
         distance: json["distance"] ?? '',
         total: json["total"] ?? "",
         grandTotal: json["grand_total"] ?? '0',
+        pendingAmount: json["pending_amount"] ?? 0.0,
+        newTotal: json["new_total"] ?? 0.0,
         orderTime: DateTime.parse(json["order_time"]),
         status: json["status"] ?? 0,
         timeSchool: json["time_school"] ?? '6',
@@ -131,6 +137,8 @@ class HistoryOrder {
         "end_address": endAddress,
         "distance": distance,
         "total": total,
+        "pendingAmount": pendingAmount,
+        "newTotal": newTotal,
         "grandTotal": grandTotal,
         "tip": tip,
         "order_time": orderTime.toIso8601String(),

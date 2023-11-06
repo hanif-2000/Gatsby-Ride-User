@@ -33,6 +33,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    var _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: whiteColor,
@@ -503,159 +504,233 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       )),
 
                   //Show Price Details
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Container(
-                      height: 200,
-                      color: whiteColor,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Container(
-                                  height: constraints.maxHeight * 0.65,
-                                  decoration: const BoxDecoration(
-                                    color: whiteColor,
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: secondaryColor, width: 0.3)),
-                                  ),
+
+                  widget.item.status == 7
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: Container(
+                            height: _deviceSize.height * .3,
+                            color: whiteColor,
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0),
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.stretch,
                                     children: [
-                                      //Distance
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(appLoc.distance,
-                                              style: const TextStyle(
-                                                  fontFamily: 'poPPinSemiBold',
-                                                  fontSize: 16)),
-                                          Text(
-                                            mergeDistanceTxt(
-                                              widget.item.distance!,
+                                      Container(
+                                        height: constraints.maxHeight * 0.65,
+                                        decoration: const BoxDecoration(
+                                          color: whiteColor,
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color: secondaryColor,
+                                                  width: 0.3)),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            //Distance
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(appLoc.distance,
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergeDistanceTxt(
+                                                    widget.item.distance!,
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "poPPinMedium",
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              fontFamily: "poPPinMedium",
-                                            ),
-                                          )
-                                        ],
-                                      ),
 
-                                      //Type of Taxi/Cab Type
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          const Text("Cab Type",
-                                              style: TextStyle(
-                                                  fontFamily: 'poPPinSemiBold',
-                                                  fontSize: 16)),
-                                          Text(
-                                            mergeTypeTaxi(
-                                              widget.item.category,
+                                            //Type of Taxi/Cab Type
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text("Cab Type",
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergeTypeTaxi(
+                                                    widget.item.category,
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "poPPinMedium",
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              fontFamily: "poPPinMedium",
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      // Row(
-                                      //   mainAxisAlignment:
-                                      //       MainAxisAlignment.spaceBetween,
-                                      //   crossAxisAlignment:
-                                      //       CrossAxisAlignment.center,
-                                      //   children: [
-                                      //     Text(appLoc.price,
-                                      //         style: const TextStyle(
-                                      //             fontFamily: 'poPPinSemiBold',
-                                      //             fontSize: 16)),
-                                      //     Text(
-                                      //       mergePriceTxt(widget.item.total!),
-                                      //       style: const TextStyle(
-                                      //         fontSize: 16.0,
-                                      //         fontFamily: "poPPinMedium",
-                                      //       ),
-                                      //     ),
-                                      //   ],
-                                      // ),
+                                            /** Current ride payment **/
 
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text("Tip",
-                                              style: const TextStyle(
-                                                  fontFamily: 'poPPinSemiBold',
-                                                  fontSize: 16)),
-                                          Text(
-                                            mergePriceTxt(widget.item.tip ==
-                                                    null
-                                                ? "0.0"
-                                                : widget.item.tip.toString()),
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              fontFamily: "poPPinMedium",
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Current Ride Payment",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(double.parse(
+                                                          widget.item.grandTotal
+                                                              .toString())
+                                                      .toStringAsFixed(2)),
+                                                  // mergePriceTxt(widget.item.tip ==
+                                                  //         null
+                                                  //     ? "0.0"
+                                                  //     : widget.item.tip.toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "poPPinMedium",
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
-                                      )
+/** Pending/Previous ride payment **/
+
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Pending Ride Payment",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(widget
+                                                      .item.pendingAmount),
+                                                  // mergePriceTxt(widget.item.tip ==
+                                                  //         null
+                                                  //     ? "0.0"
+                                                  //     : widget.item.tip.toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "poPPinMedium",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                            // Row(
+                                            //   mainAxisAlignment:
+                                            //       MainAxisAlignment.spaceBetween,
+                                            //   crossAxisAlignment:
+                                            //       CrossAxisAlignment.center,
+                                            //   children: [
+                                            //     Text(appLoc.price,
+                                            //         style: const TextStyle(
+                                            //             fontFamily: 'poPPinSemiBold',
+                                            //             fontSize: 16)),
+                                            //     Text(
+                                            //       mergePriceTxt(widget.item.total!),
+                                            //       style: const TextStyle(
+                                            //         fontSize: 16.0,
+                                            //         fontFamily: "poPPinMedium",
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // ),
+
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Tip",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(
+                                                      widget.item.tip == null
+                                                          ? "0.0"
+                                                          : widget.item.tip
+                                                              .toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "poPPinMedium",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              appLoc.total,
+                                              style: const TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 18,
+                                                color: blackColor,
+                                              ),
+                                            ),
+                                            Text(
+                                              'CA\$ ${widget.item.newTotal}'
+                                              // mergePriceTxt(widget.item.newTotal!)
+                                              // widget.item.tip == "0"
+                                              //     ? 'CA\$ ${widget.item.total} '
+                                              //     : 'CA\$ ${widget.item.grandTotal}'
+                                              ,
+                                              style: const TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 18,
+                                                color: blackColor,
+                                              ),
+                                            ),
+                                          ])
                                     ],
                                   ),
-                                ),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        appLoc.total,
-                                        style: const TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 18,
-                                          color: blackColor,
-                                        ),
-                                      ),
-                                      Text(
-                                        // mergePriceTxt(widget.item.total!),
-                                        widget.item.tip == "0"
-                                            ? 'CA\$ ${widget.item.total} '
-                                            : 'CA\$ ${widget.item.grandTotal}',
-                                        style: const TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 18,
-                                          color: blackColor,
-                                        ),
-                                      ),
-                                    ])
-                              ],
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                          ),
+                        )
+                      : SizedBox(),
 
                   // (getHistoryStatus(widget.item.status) == "Cancelled")
                   //     ? Padding(

@@ -98,7 +98,9 @@ String mergeDistanceTxt(String distance) {
 
 String mergePriceTxt(String price) {
   final session = locator<Session>();
-  String currency = session.currency;
+  // String currency = session.currency;
+  String currency = "CA\$ ";
+
   String result;
   result = '$currency$price ';
 
