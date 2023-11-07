@@ -489,6 +489,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
               widget.paymentMode == 2
                   ? CustomButton(
+                      borderRadius: 50.0,
                       borderColor: black080808Color,
                       text: Provider.of<PaymentProvider>(context, listen: false)
                                   .selectedCardNumber
@@ -733,6 +734,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
               widget.paymentMode == 1
                   ? CustomButton(
+                      borderRadius: 50.0,
                       text: "Pay With Cash",
                       isRounded: true,
                       event: () async {
@@ -956,9 +958,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         )
                       : SizedBox()
                   : SizedBox(),
+              SizedBox(
+                height: _deviceSize.height * .05,
+              ),
+
+              CustomButton(
+                  borderRadius: 50.0,
+                  isRounded: true,
+                  text: "Pay outside the app",
+                  event: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FeedBackScreen(
+                          name: widget.name,
+                          img: widget.img,
+                          carModal: widget.carModal,
+                          carNo: widget.carNo,
+                        ),
+                      ),
+                    );
+                  },
+                  bgColor: black080808Color),
 
               SizedBox(
-                height: _deviceSize.height * .1,
+                height: _deviceSize.height * .05,
               )
 
               // GooglePayButton(

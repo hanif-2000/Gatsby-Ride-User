@@ -9,9 +9,9 @@ String getRatingResponseModalToJson(GetRatingResponseModal data) =>
 class GetRatingResponseModal {
   int success;
   String message;
-  int rating;
-  List<ListElement> list;
-  int ratingCount;
+  int? rating;
+  List<ListElement>? list;
+  int? ratingCount;
 
   GetRatingResponseModal({
     required this.success,
@@ -26,8 +26,13 @@ class GetRatingResponseModal {
         success: json["success"],
         message: json["message"],
         rating: json["rating"],
-        list: List<ListElement>.from(
-            json["list"].map((x) => ListElement.fromJson(x))),
+        list: json["list"] != null
+            ? List<ListElement>.from(
+                json["list"].map(
+                  (x) => ListElement.fromJson(x),
+                ),
+              )
+            : [],
         ratingCount: json["ratingCount"],
       );
 
@@ -35,7 +40,11 @@ class GetRatingResponseModal {
         "success": success,
         "message": message,
         "rating": rating,
-        "list": List<dynamic>.from(list.map((x) => x.toJson())),
+        "list": List<dynamic>.from(
+          list!.map(
+            (x) => x.toJson(),
+          ),
+        ),
         "ratingCount": ratingCount,
       };
 }

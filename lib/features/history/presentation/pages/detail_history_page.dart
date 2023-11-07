@@ -159,8 +159,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                             () => TapGestureRecognizer()))
                         ..add(Factory<VerticalDragGestureRecognizer>(
                             () => VerticalDragGestureRecognizer())),
-                      myLocationButtonEnabled: true,
-                      zoomControlsEnabled: true,
+                      // myLocationButtonEnabled: true,
+                      // zoomControlsEnabled: true,
                       initialCameraPosition: const CameraPosition(
                         target: DEFAULT_LATLNG,
                         zoom: 14.4746,

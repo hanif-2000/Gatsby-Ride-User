@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:GetsbyRideshare/core/presentation/widgets/cache_network_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/payment_screen.dart';
@@ -14,7 +15,6 @@ import '../../../../../core/presentation/widgets/custom_button/custom_button_wid
 import '../../../../../core/static/assets.dart';
 import '../../../../../core/utility/injection.dart';
 import '../../../../../core/utility/session_helper.dart';
-import '../../../../testing/widgets/circular_image_container.dart';
 import '../../../../testing/widgets/text_in_row.dart';
 import '../../providers/get_receipt_state.dart';
 import 'package:pay/pay.dart';
@@ -191,11 +191,14 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           children: [
                             Row(
                               children: [
-                                CommonCircularImageContainer(
-                                  height: 45,
-                                  width: 45,
-                                  image: data.orderReceipt![0].image,
-                                ),
+                                CustomCacheNetworkImage(
+                                    img: data.orderReceipt![0].image, size: 45),
+
+                                // CommonCircularImageContainer(
+                                //   height: 45,
+                                //   width: 45,
+                                //   image: data.orderReceipt![0].image,
+                                // ),
                                 SizedBox(
                                   width: 11,
                                 ),
@@ -216,8 +219,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                       children: [
                                         Image.asset(starImage),
                                         CommonText(
-                                          text: data.orderReceipt![0].rating
-                                              .toString(),
+                                          text: " " +
+                                              data.orderReceipt![0].rating
+                                                  .toStringAsFixed(1),
                                           fontWeight: FontWeight.w600,
                                           fontColor: blackColor,
                                           fontFamily: "poPPinMedium",
@@ -230,6 +234,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               ],
                             ),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 CommonText(
                                   text: data.orderReceipt![0].carModel,

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/static/assets.dart';
 import '../../../../../core/utility/helper.dart';
 import '../../../../history/presentation/providers/ratings_state.dart';
 import '../../widgets/custom_rating_item.dart';
@@ -18,8 +19,7 @@ class RatingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    var _deviceSize = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
             backgroundColor: whiteColor,
@@ -74,15 +74,40 @@ class RatingsScreen extends StatelessWidget {
                           final data = (state.data as GetRatingLoaded).data;
 
                           log(data.toString());
-                          log("${data.list.length}");
+                          log("data length :-->. ${data.list!.length}");
 
                           dismissLoading();
-                          return
+                          return data.list!.length == 0
+                              ? Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset(
+                                          noRating,
+                                          width: _deviceSize.width / 2,
+                                          height: _deviceSize.width / 2,
+                                        ),
+                                        const Text(
+                                          "No Rating Yet, Please Give rating once ride completed",
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              :
                               // data.list.length < 1
                               // ?
                               SizedBox(
-                                  height: height,
-                                  width: width,
+                                  height: _deviceSize.height,
+                                  width: _deviceSize.width,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         right: 20, left: 20),
@@ -165,7 +190,7 @@ class RatingsScreen extends StatelessWidget {
                                         ),
                                         Expanded(
                                           child: ListView.builder(
-                                              itemCount: data.list.length,
+                                              itemCount: data.list!.length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
@@ -173,15 +198,16 @@ class RatingsScreen extends StatelessWidget {
                                                   date:
                                                       DateFormat('dd MMM yyyy')
                                                           .format(data
-                                                              .list[index]
+                                                              .list![index]
                                                               .createdAt)
                                                           .toString(),
-                                                  image: data.list[index].image,
-                                                  name: data.list[index].name,
+                                                  image:
+                                                      data.list![index].image,
+                                                  name: data.list![index].name,
                                                   rating:
-                                                      data.list[index].rating,
+                                                      data.list![index].rating,
                                                   reviews:
-                                                      data.list[index].review,
+                                                      data.list![index].review,
                                                 );
                                               }),
                                         ),

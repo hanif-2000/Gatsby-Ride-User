@@ -41,3 +41,4 @@ const String checkIconSvg = "assets/icons/check.svg";
 const String cashIconSvg = "assets/icons/cash.svg";
 const String googleIconSvg = "assets/icons/google.svg";
 const String searchingRideSvg = "assets/images/searching_ride.svg";
+const String noRating = "assets/icons/no_rating.png";

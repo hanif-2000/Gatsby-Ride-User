@@ -182,6 +182,7 @@ class HistoryProvider extends FormProvider {
 //Get Ratings and review list
   //Order Rating
   Stream<GetRatingState> getRatingsAndReviews({driverId}) async* {
+    log("driver id:   $driverId");
     yield GetRatingLoading();
     final formData = FormData.fromMap({"id": driverId, "type": 1});
     final result = await getRatings.execute(formData);

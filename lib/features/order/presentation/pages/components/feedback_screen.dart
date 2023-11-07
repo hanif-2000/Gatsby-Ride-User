@@ -197,6 +197,8 @@ class FeedBackScreen extends StatelessWidget {
                               } else if (event is SubmitRatingsLoaded) {
                                 log("Order Status LOADED--------");
 
+                                provider.commentsEditingController.clear();
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
