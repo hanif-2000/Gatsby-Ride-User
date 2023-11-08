@@ -286,6 +286,42 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
 
                           break;
 
+/** Ride canceled by DRIVER (Status 8)*/
+
+                        case Order.cancel:
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Ride Canceled by the Driver"),
+                                actions: [
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: black15141FColor,
+                                      ),
+                                      onPressed: () async {
+                                        var homeProvider =
+                                            Provider.of<HomeProvider>(context,
+                                                listen: false);
+                                        await homeProvider.clearState();
+                                        await provider.clearState();
+                                        Navigator.pop(context);
+
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            HomePage.routeName,
+                                            (route) => false);
+                                      },
+                                      child: Text("Find new Driver"))
+                                ],
+                              );
+                            },
+                          );
+                          log("status is --8");
+
+                          break;
+
                         /** Departure to Destination  (Status 5)*/
 
                         case Order.departureToDestination:

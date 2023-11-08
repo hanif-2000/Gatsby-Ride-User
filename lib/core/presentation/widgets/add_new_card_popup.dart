@@ -105,7 +105,7 @@ class AddNewCardPopUp extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                       color: grey9c9c9cColor,
                       fontSize: 12.0),
-                  placeholder: "Account Holder Name",
+                  placeholder: "Card Holder Name",
                   prefixIcon: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: SvgPicture.asset(
@@ -151,8 +151,7 @@ class AddNewCardPopUp extends StatelessWidget {
 
                     if (picked != null) {
                       log("picked:  ${picked}");
-                      String formattedDate =
-                          DateFormat('yyyy/MM').format(picked);
+                      String formattedDate = DateFormat('MM/yy').format(picked);
                       log(formattedDate);
 
                       provider.setExpiryDate = formattedDate;
@@ -205,7 +204,7 @@ class AddNewCardPopUp extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           color: grey9c9c9cColor,
                           fontSize: 12.0),
-                      placeholder: "Expiry Date (yyyy/mm)",
+                      placeholder: "Expiry Date (mm/yy)",
                       prefixIcon: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: SvgPicture.asset(

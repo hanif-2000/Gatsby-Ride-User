@@ -1,5 +1,6 @@
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CarDetailWidget extends StatelessWidget {
   final String baseFare;
@@ -29,10 +30,22 @@ class CarDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _deviceSize = MediaQuery.of(context).size;
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: _deviceSize.height * .02),
+              child: SvgPicture.asset(
+                'assets/icons/grey-dropdown-icon.svg',
+              ),
+            ),
+          ),
           Image.asset(
             carImg ?? "assets/icons/economy_car.png",
             height: 200,
