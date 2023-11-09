@@ -14,6 +14,7 @@ class VehiclesCategoryModel extends VehiclesCategory {
     required double minKm,
     required dynamic newTotal,
     required dynamic pendingAmount,
+    required dynamic isAvailable,
   }) : super(
           categoryId: id,
           categoryCar: category,
@@ -27,23 +28,24 @@ class VehiclesCategoryModel extends VehiclesCategory {
           minKm: minKm,
           newTotal: newTotal,
           pendingAmount: pendingAmount,
+          isAvailable: isAvailable,
         );
 
   factory VehiclesCategoryModel.fromJson(Map<String, dynamic> json) =>
       VehiclesCategoryModel(
-        id: json['id'],
-        category: json['category'],
-        priceKm: json['price_km'],
-        minPrice: json['min_price'],
-        seat: json['seat'],
-        extraKm: json['extra_km'],
-        drivers: json['drivers'],
-        totalFare: json['total_fair'],
-        time: json['time'],
-        minKm: json['min_km'],
-        pendingAmount: json['pending_amount'],
-        newTotal: json['new_total'],
-      );
+          id: json['id'],
+          category: json['category'],
+          priceKm: json['price_km'],
+          minPrice: json['min_price'],
+          seat: json['seat'],
+          extraKm: json['extra_km'],
+          drivers: json['drivers'],
+          totalFare: json['total_fair'],
+          time: json['time'],
+          minKm: json['min_km'],
+          pendingAmount: json['pending_amount'],
+          newTotal: json['new_total'],
+          isAvailable: json['is_available']);
 
   @override
   Map<String, dynamic> toJson() => {
@@ -57,6 +59,7 @@ class VehiclesCategoryModel extends VehiclesCategory {
         "time": time,
         "min_km": priceMin,
         "newTotal": newTotal,
-        "pendingAmount": pendingAmount
+        "pendingAmount": pendingAmount,
+        "isAvailable": isAvailable
       };
 }

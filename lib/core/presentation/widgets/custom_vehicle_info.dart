@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +17,7 @@ class CustomVehicleInfo extends StatelessWidget {
   final int? index;
   final HomeProvider provider;
   final List vehicleDetail;
+  final dynamic isAvailable;
 
   const CustomVehicleInfo({
     Key? key,
@@ -33,6 +32,7 @@ class CustomVehicleInfo extends StatelessWidget {
     this.pendingAmount,
     required this.vehicleDetail,
     required this.provider,
+    required this.isAvailable,
   }) : super(key: key);
 
   @override
@@ -130,23 +130,31 @@ class CustomVehicleInfo extends StatelessWidget {
 
               GestureDetector(
                   onTap: () {
-                    log("on tap info called");
+                    // log("on tap info called");
+
+                    // if (isAvailable == 'yes') {
+                    //   showToast(message: "DRIVER AVAILABLE");
+                    // }
+                    // {
+                    //   showToast(message: "DRIVER UnAVAILABLE");
+                    // }
 
                     showBottomSheet(
-                      estimatedPrice: price,
-                      minimumFare: provider.vehiclesDetailsList[index!]
-                          ["minimunFare"],
-                      context: context,
-                      baseFare: provider.vehiclesDetailsList[index!]
-                          ["baseFare"],
-                      carImg: provider.vehiclesDetailsList[index!]["carImg"],
-                      carSeat: provider.vehiclesDetailsList[index!]["seat"],
-                      perkm: provider.vehiclesDetailsList[index!]["perKm"],
-                      permin: provider.vehiclesDetailsList[index!]["perMin"],
-                      techFee: provider.vehiclesDetailsList[index!]["techFee"],
-                      newTotal: double.parse(newTotal!).toStringAsFixed(2),
-                      pendingAmount: pendingAmount,
-                    );
+                        estimatedPrice: price,
+                        minimumFare: provider.vehiclesDetailsList[index!]
+                            ["minimunFare"],
+                        context: context,
+                        baseFare: provider.vehiclesDetailsList[index!]
+                            ["baseFare"],
+                        carImg: provider.vehiclesDetailsList[index!]["carImg"],
+                        carSeat: provider.vehiclesDetailsList[index!]["seat"],
+                        perkm: provider.vehiclesDetailsList[index!]["perKm"],
+                        permin: provider.vehiclesDetailsList[index!]["perMin"],
+                        techFee: provider.vehiclesDetailsList[index!]
+                            ["techFee"],
+                        newTotal: double.parse(newTotal!).toStringAsFixed(2),
+                        pendingAmount: pendingAmount,
+                        isAvailable: isAvailable);
                   },
                   child: Icon(Icons.info_outline)),
 
@@ -186,6 +194,7 @@ class CustomVehicleInfo extends StatelessWidget {
       estimatedPrice,
       pendingAmount,
       newTotal,
+      isAvailable,
       minimumFare}) {
     showModalBottomSheet(
       barrierColor: Colors.transparent,
@@ -215,6 +224,7 @@ class CustomVehicleInfo extends StatelessWidget {
             minimumFare: minimumFare,
             newTotal: newTotal,
             pendingAmount: pendingAmount,
+            isAvailable: isAvailable,
           )
         ]);
       },

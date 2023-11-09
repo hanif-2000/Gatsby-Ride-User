@@ -140,6 +140,7 @@ class HomeProvider with ChangeNotifier {
   int selectedVehicleIndex = -1;
 
   String selectedVehicleId = '';
+  String isAvailable = '';
 
   List<VehiclesCategory> _vehiclesCategory = [];
 
@@ -597,6 +598,11 @@ class HomeProvider with ChangeNotifier {
   updatePriceAndCatagortId({required fare, required catagoryId}) {
     price = fare;
     selectedVehicleId = catagoryId;
+    notifyListeners();
+  }
+
+  updateIsAvailable({val}) {
+    isAvailable = val;
     notifyListeners();
   }
 

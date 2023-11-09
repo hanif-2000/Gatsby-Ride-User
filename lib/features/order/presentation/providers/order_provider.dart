@@ -132,6 +132,13 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  bool isCanceledByDriver = true;
+
+  updateCanceledBy({required bool isDriver}) {
+    isCanceledByDriver = isDriver;
+    notifyListeners();
+  }
+
   // updateUnReadMessages({required bool isNewMessage}) {
   //   log("update unread message called");
   //   if (isNewMessage) {

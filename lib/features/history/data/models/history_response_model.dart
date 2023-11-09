@@ -52,6 +52,7 @@ class HistoryOrder {
   dynamic grandTotal;
   dynamic pendingAmount;
   dynamic newTotal;
+  dynamic paymentStatus;
 
   DateTime orderTime;
   dynamic tip;
@@ -91,6 +92,7 @@ class HistoryOrder {
     required this.category,
     required this.ratingList,
     required this.grandTotal,
+    required this.paymentStatus,
   });
 
   factory HistoryOrder.fromJson(Map<String, dynamic> json) => HistoryOrder(
@@ -112,6 +114,7 @@ class HistoryOrder {
         newTotal: json["new_total"] ?? 0.0,
         orderTime: DateTime.parse(json["order_time"]),
         status: json["status"] ?? 0,
+        paymentStatus: json["payment_status"],
         timeSchool: json["time_school"] ?? '6',
         timeAfterSchool: json["time_after_school"] ?? '',
         paymentMethod: json["payment_method"],
@@ -148,6 +151,7 @@ class HistoryOrder {
         "payment_method": paymentMethod,
         "taxi_type": taxiType,
         "timestamp": timestamp,
+        "paymentStatus": paymentStatus,
         "category": category.toJson(),
         "rating_list": List<dynamic>.from(ratingList!.map((x) => x.toJson())),
       };

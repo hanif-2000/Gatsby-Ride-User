@@ -13,6 +13,7 @@ class CarDetailWidget extends StatelessWidget {
   final String estimatedPrice;
   final String pendingAmount;
   final String newTotal;
+  final String isAvailable;
 
   const CarDetailWidget(
       {Key? key,
@@ -25,6 +26,7 @@ class CarDetailWidget extends StatelessWidget {
       required this.estimatedPrice,
       required this.pendingAmount,
       required this.newTotal,
+      required this.isAvailable,
       required this.techFee})
       : super(key: key);
 
@@ -45,6 +47,14 @@ class CarDetailWidget extends StatelessWidget {
                 'assets/icons/grey-dropdown-icon.svg',
               ),
             ),
+          ),
+          Text(
+            isAvailable == 'yes'
+                ? "Vehicle is Available"
+                : "Vehicle is not Available",
+            style: TextStyle(
+                color:
+                    isAvailable == 'yes' ? green2DAA5FColor : redf52d56Color),
           ),
           Image.asset(
             carImg ?? "assets/icons/economy_car.png",

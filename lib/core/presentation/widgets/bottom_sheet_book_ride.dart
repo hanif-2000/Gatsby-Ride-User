@@ -89,6 +89,8 @@ class BottomSheetBookRide extends StatelessWidget {
 
                                         provider.updateSelectedVehicleIndex(
                                             index: index);
+                                        provider.updateIsAvailable(
+                                            val: data[index].isAvailable);
                                       },
                                       child: CustomVehicleInfo(
                                         index: index,
@@ -110,6 +112,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                         pendingAmount: data[index]
                                             .pendingAmount
                                             .toString(),
+                                        isAvailable: data[index].isAvailable,
                                       ),
                                     ),
                                   );
@@ -244,6 +247,12 @@ class BottomSheetBookRide extends StatelessWidget {
                                             showToast(
                                                 message:
                                                     appLoc.taxiTypeNotSelected);
+                                          } else if ((provider.isAvailable ==
+                                                  '') ||
+                                              provider.isAvailable == 'no') {
+                                            showToast(
+                                                message:
+                                                    "Selected vehicle is not available yet, Please select another");
                                           } else {
                                             provider
                                                 .submitOrder()

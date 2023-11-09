@@ -503,8 +503,42 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                             ),
                       )),
 
-                  //Show Price Details
+                  //Show payment status
 
+                  widget.item.status == 7
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: whiteAccentColor,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Payment Status",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  widget.item.paymentStatus == "no"
+                                      ? "Pending"
+                                      : "Paid",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: widget.item.paymentStatus == "no"
+                                          ? redf52d56Color
+                                          : green2DAA5FColor),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
+                  //Show Price Details
                   widget.item.status == 7
                       ? Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),

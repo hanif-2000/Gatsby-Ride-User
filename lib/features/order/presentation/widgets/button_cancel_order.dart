@@ -94,6 +94,7 @@ class ButtonCancelOrder extends StatelessWidget {
                           context: context,
                           size: _deviceSize,
                           onConfirm: () async {
+                            provider.updateCanceledBy(isDriver: false);
                             provider
                                 .submitStatusOrder(Order.cancel)
                                 .listen((event) async {
