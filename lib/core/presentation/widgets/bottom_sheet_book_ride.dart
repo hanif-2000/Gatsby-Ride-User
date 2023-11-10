@@ -195,16 +195,21 @@ class BottomSheetBookRide extends StatelessWidget {
                                                         'assets/icons/cash.svg')
                                                     : provider.paymentMethod ==
                                                             PaymentMethod
-                                                                .applePay
+                                                                .creditCard
                                                         ? SvgPicture.asset(
-                                                            'assets/icons/apple.svg')
+                                                            'assets/icons/mastercard.svg')
                                                         : provider.paymentMethod ==
                                                                 PaymentMethod
-                                                                    .googlePay
+                                                                    .applePay
                                                             ? SvgPicture.asset(
-                                                                'assets/icons/google.svg')
-                                                            : SvgPicture.asset(
-                                                                'assets/icons/cash.svg')),
+                                                                'assets/icons/apple.svg')
+                                                            : provider.paymentMethod ==
+                                                                    PaymentMethod
+                                                                        .googlePay
+                                                                ? SvgPicture.asset(
+                                                                    'assets/icons/google.svg')
+                                                                : SvgPicture.asset(
+                                                                    'assets/icons/cash.svg')),
                                             Text(
                                               provider.paymentMethod == null
                                                   ? "Select Payment"

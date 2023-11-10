@@ -27,8 +27,14 @@ class NewSocketProvider with ChangeNotifier {
         'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
     channel = WebSocketChannel.connect(wsUrl);
 
+    log("web socket connect url is : $wsUrl");
+
     await channel!.ready;
     listenToSocket();
+  }
+
+  disconnectSocket() {
+    channel!.sink.close();
   }
 
   listenToSocket() {

@@ -8,6 +8,7 @@ import 'package:GetsbyRideshare/features/profile/presentation/providers/create_p
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_state.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_state.dart';
+import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
@@ -22,6 +23,7 @@ class CreateProfileForm extends StatefulWidget {
 }
 
 class _CreateProfileFormState extends State<CreateProfileForm> {
+  var socketProvider = locator<NewSocketProvider>();
   //Upload profile Image
   uploadProfileImage() {
     final provider = context.read<UploadProfileImageProvider>();
@@ -79,6 +81,8 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
             final session = locator<Session>();
             session.setLoggedIn = true;
             showToast(message: appLoc.createProfileSuccessfully);
+            socketProvider.connectToSocket();
+
             Navigator.pushNamedAndRemoveUntil(
                 context, HomePage.routeName, (route) => false);
           } else {

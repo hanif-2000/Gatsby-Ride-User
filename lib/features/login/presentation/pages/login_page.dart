@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
@@ -26,6 +27,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var socketProvider = locator<NewSocketProvider>();
     return ChangeNotifierProvider<LoginProvider>(
       create: (ctx) => locator<LoginProvider>(),
       child: Scaffold(
@@ -286,6 +288,7 @@ class LoginPage extends StatelessWidget {
                               final session = locator<Session>();
                               session.setLoggedIn = true;
                               showToast(message: "Login Success");
+                              socketProvider.connectToSocket();
                               Navigator.pushNamedAndRemoveUntil(context,
                                   HomePage.routeName, (route) => false);
                               logMe(
@@ -420,6 +423,8 @@ class LoginPage extends StatelessWidget {
                                         final session = locator<Session>();
                                         session.setLoggedIn = true;
                                         showToast(message: appLoc.success);
+
+                                        socketProvider.connectToSocket();
                                         Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             HomePage.routeName,

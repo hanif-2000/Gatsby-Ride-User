@@ -109,15 +109,15 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
       child: Scaffold(
         backgroundColor: whiteColor,
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: blackColor,
-            ),
-          ),
+          // leading: IconButton(
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          //   icon: Icon(
+          //     Icons.arrow_back_ios,
+          //     color: blackColor,
+          //   ),
+          // ),
           elevation: 0.3,
           backgroundColor: whiteColor,
           centerTitle: true,
@@ -292,7 +292,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           secondText: data.orderReceipt![0].distance + "Km",
                         ),
                         TextInRow(
-                          firstText: appLoc.timeTaken,
+                          firstText: "Time Taken",
                           secondText: '${timeTaken} min',
                         ),
                         CommonText(

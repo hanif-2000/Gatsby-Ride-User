@@ -35,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
 
-    newSocketProvider.connectToSocket();
+    // newSocketProvider.connectToSocket();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Timer(const Duration(seconds: 2), () async {
         // if (kDebugMode) {
@@ -81,6 +81,7 @@ class _SplashPageState extends State<SplashPage> {
               break;
             case CurrencyLoaded:
               if (session.isLoggedIn) {
+                newSocketProvider.connectToSocket();
                 if (session.orderStatus == 100 || session.orderStatus == 8) {
                   Navigator.pushNamedAndRemoveUntil(
                       context, HomePage.routeName, (route) => false);
