@@ -63,33 +63,33 @@ class HomeProvider with ChangeNotifier {
 
   WebSocket? socket;
 
-  //Connec to Socket
-  connectToSocket() {
-    logMe(
-        'Socket ============= chat Token : ${session.chatToken} ================');
-    logMe(
-        'Socket ============= User Id Token :  ${session.userId} ================');
+  // //Connec to Socket
+  // connectToSocket() {
+  //   logMe(
+  //       'Socket ============= chat Token : ${session.chatToken} ================');
+  //   logMe(
+  //       'Socket ============= User Id Token :  ${session.userId} ================');
 
-    socket = WebSocket(Uri.parse(
+  //   socket = WebSocket(Uri.parse(
 
-        // 'ws://shakti.parastechnologies.in:8051?token=597011984&room=0&userID=1'
-        'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}'));
+  //       // 'ws://shakti.parastechnologies.in:8051?token=597011984&room=0&userID=1'
+  //       'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}'));
 
-    logMe('Socket ============= Connecting to Socket ================');
-    socket!.connection.listen((event) {
-      logMe('Socket on Listen ---> ${event.toString()}');
+  //   logMe('Socket ============= Connecting to Socket ================');
+  //   socket!.connection.listen((event) {
+  //     logMe('Socket on Listen ---> ${event.toString()}');
 
-      if (event is Connected) {
-        // listenRequests();
-        // sendRequest();
+  //     if (event is Connected) {
+  //       // listenRequests();
+  //       // sendRequest();
 
-        log("=====event======>>>>> " + event.toString());
-      } else if (event is Disconnected) {
-        log("Socket === Event is Disconnected ===");
-        log("Socket === reason ${event.reason}");
-      }
-    });
-  }
+  //       log("=====event======>>>>> " + event.toString());
+  //     } else if (event is Disconnected) {
+  //       log("Socket === Event is Disconnected ===");
+  //       log("Socket === reason ${event.reason}");
+  //     }
+  //   });
+  // }
 
   //send request to socket
 

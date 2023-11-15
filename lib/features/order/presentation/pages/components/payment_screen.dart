@@ -250,7 +250,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     TextInRow(
                       firstText: 'Estimated Amount',
-                      secondText: r'$' + widget.totalPrice.toString(),
+                      secondText: r'CA$ ' + widget.totalPrice.toString(),
                     ),
                     Divider(
                       color: whiteAccentColor,

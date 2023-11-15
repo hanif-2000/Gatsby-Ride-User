@@ -683,7 +683,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                     MaterialPageRoute(
                                         builder: (context) => ChatPage()));
                               },
-                              viewReceiptEvent: () {
+                              viewReceiptEvent: () async {
                                 // Navigator.push(
                                 //   context,
                                 //   MaterialPageRoute(

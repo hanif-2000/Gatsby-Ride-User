@@ -135,6 +135,22 @@ class SplashProvider with ChangeNotifier {
     // return permission;
   }
 
+  Future<void> requestNotificationPermissions() async {
+    final PermissionStatus status = await Permission.notification.request();
+
+    log("notification permission status is:-->> ${status}");
+    if (status.isGranted) {
+      // Notification permissions granted
+    } else if (status.isDenied) {
+      final PermissionStatus status1 = await Permission.notification.request();
+
+      // Notification permissions denied
+    } else if (status.isPermanentlyDenied) {
+      // Notification permissions permanently denied, open app settings
+      await openAppSettings();
+    }
+  }
+
   Future<String> requestLocationPermission() async {
     print('LocationRepository.requestLocationPermission started');
     late String permission;

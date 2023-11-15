@@ -70,6 +70,7 @@ class OrderDataSourceImplementation implements OrderDataSource {
     }
   }
 
+/** GET ORDER STATUS */
   @override
   Future<GetStatusResponseModel> getStatusOrder() async {
     final session = locator<Session>();
@@ -158,7 +159,7 @@ class OrderDataSourceImplementation implements OrderDataSource {
     }
   }
 
-  // Order Receipt
+  /**  Order Receipt */
 
   @override
   Future<OrderReceiptResponseModel> orderReceipt(FormData formData) async {
