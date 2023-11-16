@@ -683,11 +683,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         log("Card error is " + e.toString());
                                       }
                                     },
-                                    bgColor: black080808Color)
+                                    bgColor: blackColor)
                               ],
                             );
                           },
                         );
+
                         // var body = {
                         //   "card[number]":
                         //       Provider.of<PaymentProvider>(context, listen: false)
