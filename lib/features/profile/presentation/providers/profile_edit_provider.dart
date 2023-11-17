@@ -13,7 +13,7 @@ class ProfileEditProvider extends FormProvider {
   String? _imageUrl;
   String get imageUrl => _imageUrl ?? '';
 
-  TextEditingController selectedCountry = TextEditingController();
+  TextEditingController selectedCountry = TextEditingController(text: 'Canada');
 
   updateCountry({value}) {
     selectedCountry.text = value;

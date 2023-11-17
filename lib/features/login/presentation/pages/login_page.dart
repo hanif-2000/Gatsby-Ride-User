@@ -454,12 +454,18 @@ class LoginPage extends StatelessWidget {
                             await auth
                                 .signInWithCredential(oauthCredential)
                                 .then((value) {
+                              log("display name is:-->>${value.user!.displayName}");
+                              log(" user email is:-->>${value.user!.email}");
+                              log("user id  is:-->>${value.user!.uid}");
+
                               var provider = Provider.of<LoginProvider>(context,
                                   listen: false);
                               provider
                                   .updateSocialLoginData(
-                                userEmail: value.user!.email!,
-                                name: value.user!.displayName!,
+                                userEmail:
+                                    value.user!.email ?? credential.email!,
+                                name: value.user!.displayName ??
+                                    credential.familyName!,
                                 id: value.user!.uid,
                               )
                                   .then((value) {
