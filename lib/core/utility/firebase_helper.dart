@@ -1,21 +1,24 @@
-import 'package:appkey_taxiapp_user/core/utility/notification_service.dart';
-import 'package:appkey_taxiapp_user/core/utility/session_helper.dart';
+import 'dart:developer';
+import 'package:GetsbyRideshare/core/utility/notification_service.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import '../../firebase_options.dart';
-import 'global_function.dart';
 import 'helper.dart';
 import 'injection.dart';
 
 class FirebaseHelper {
   static late FirebaseMessaging messaging;
+
   static Future<void> init() async {
     logMe("Firebasee helperrrr");
     await Firebase.initializeApp(
+        name: 'gatsbyRideShare',
         options: DefaultFirebaseOptions.currentPlatform);
     messaging = FirebaseMessaging.instance;
+
     await permissionHandler().then((authorized) async {
+      log("IS AUTHORIZED:  $authorized");
       if (authorized) {
         await setupMessaging();
       }
@@ -34,6 +37,35 @@ class FirebaseHelper {
   static Future<void> incomingNotificationHandling() async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      log("on message listen:-->> ${message.data}");
+      log("on message listen:-->> ${message.notification!.title}");
+      log("on message listen:-->> ${message.notification!.bodyLocArgs}");
+      // if (message.notification!.title != 'New Order' ||
+      //     message.notification!.title != 'Booking Cancelled') {
+      //   var orderProvider = Provider.of<OrderProvider>(
+      //       locator<GlobalKey<NavigatorState>>().currentContext!,
+      //       listen: false);
+
+      //   orderProvider.updateUnReadMessages(isNewMessage: true);
+      // final GlobalKey<ScaffoldState> key = GlobalKey();
+
+      // Session session = locator<Session>();
+      // if (!session.isOrderRunning) {
+      //   homeProvider.getRequestListData().listen((event) {
+      //     log("event is -->> $event");
+      //     if (event is RequestListLoaded) {
+      //       logMe(
+      //           'Request list data loaded success----------> ${event.data.length}');
+      //       Navigator.pushNamedAndRemoveUntil(
+      //           locator<GlobalKey<NavigatorState>>().currentContext!,
+      //           HomePage.routeName,
+      //           (route) => false);
+      // }
+      //     });
+      //   }
+      // }
+
+      // fetchRemoteMessage(message);
       NotificationHelper _notificationService = NotificationHelper();
       _notificationService.showNotifications(message);
     });
@@ -58,7 +90,15 @@ class FirebaseHelper {
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
+
+  NotificationHelper _notificationService = NotificationHelper();
+  _notificationService.showNotifications(message);
+
+  log("Message _____ " + message.data.toString());
+
+  log("message data TITLE is ---${message.notification!.title}");
+  log("message data BODY is ---${message.data['message']}");
 
   logMe("Handling a background message: ${message.messageId}");
 }

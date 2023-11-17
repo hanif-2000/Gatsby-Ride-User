@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/presentation/pages/otp_verification_page.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/features/forgot_password/presentation/pages/otp_verification_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';

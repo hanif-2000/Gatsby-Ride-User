@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/price_category.dart';
+import 'package:GetsbyRideshare/core/domain/entities/price_category.dart';
 
 class PriceCategoryModel extends PriceCategory {
   const PriceCategoryModel({
@@ -7,22 +7,26 @@ class PriceCategoryModel extends PriceCategory {
     required num priceMin,
     required num seat,
     required num priceKm,
+    required dynamic pendingAmount,
+    required dynamic newTotal,
   }) : super(
-          categoryId: categoryId,
-          categoryCar: categoryCar,
-          priceMin: priceMin,
-          seat: seat,
-          priceKm: priceKm,
-        );
+            categoryId: categoryId,
+            categoryCar: categoryCar,
+            priceMin: priceMin,
+            seat: seat,
+            priceKm: priceKm,
+            pendingAmount: pendingAmount,
+            newTotal: newTotal);
 
   factory PriceCategoryModel.fromJson(Map<String, dynamic> json) =>
       PriceCategoryModel(
-        categoryId: json['id'],
-        categoryCar: json['category'],
-        priceMin: json['min_km'],
-        seat: json['seat'],
-        priceKm: json['price_km'],
-      );
+          categoryId: json['id'],
+          categoryCar: json['category'],
+          priceMin: json['min_km'],
+          seat: json['seat'],
+          priceKm: json['price_km'],
+          pendingAmount: json['pending_amount'],
+          newTotal: json['new_total']);
 
   @override
   Map<String, dynamic> toJson() => {
@@ -31,5 +35,7 @@ class PriceCategoryModel extends PriceCategory {
         "min_km": priceMin,
         "seat": seat,
         "price_km": priceKm,
+        "pendingAmount": pendingAmount,
+        "newTotal": newTotal,
       };
 }

@@ -2,10 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Taxi User</string>
+	<string>Gatsby Rideshare</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,13 +19,24 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>appkey_taxiapp_user</string>
+	<string>GetsbyRideshare</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1022060321341-0c5f614tgu3358is65esg6v6kat912mn</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
@@ -38,36 +55,34 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>プロフィールを更新し、チャットで画像を送信するには、アプリがデバイスのカメラとギャラリーにアクセスする権限を必要とします</string>
+	<string>This app need access to camera to capture profile picture</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>ルート案内機能およびその他の地図/GPS 関連パーツのユーザー位置を特定するには、位置情報の許可が必要です。</string>
+	<string>This app need access to location of user for navigation</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>ルート案内機能およびその他の地図/GPS 関連パーツのユーザー位置を特定するには、位置情報の許可が必要です。</string>
+	<string>This app need access to location of user for navigation</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>ルート案内機能およびその他の地図/GPS 関連パーツのユーザー位置を特定するには、位置情報の許可が必要です。</string>
+	<string>This app need access to location of user for navigation</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>プロフィールを更新し、チャットで画像を送信するには、アプリがデバイスのカメラとギャラリーにアクセスする権限を必要とします</string>
+	<string>This app need access to photo library to change profile picture</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>location</string>
+		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

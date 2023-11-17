@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/error/failure.dart';
 import '../../data/models/aboutus_response_model.dart';
 
 abstract class AboutUsState extends Equatable {

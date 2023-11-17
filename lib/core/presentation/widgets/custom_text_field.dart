@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/styles.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

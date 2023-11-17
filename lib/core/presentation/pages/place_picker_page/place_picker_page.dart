@@ -1,15 +1,16 @@
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/static/assets.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
 
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:provider/provider.dart';
+import 'dart:developer' as dev;
 
 import '../../../domain/entities/google_places.dart';
 import '../../providers/place_auto_complete_state.dart';
@@ -42,6 +43,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
   }
 
   _displayOverlay(Widget overlayChild) {
+    dev.log("Display overlay called");
     _clearOverlay();
     final screenWidth = MediaQuery.of(context).size.width;
     overlayEntry = OverlayEntry(
@@ -110,6 +112,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         showLeading: false,
                         height: kToolbarHeight - 12,
                         onSubmitted: (String query) async {
+                          dev.log("search query is -->> $query");
                           _displayOverlay(buildSearchingOverlay());
                           await provider.fetchGooglePlaces();
                           if (provider.state.runtimeType == PlaceAutoLoaded) {
@@ -119,10 +122,20 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                 buildPredictionOverlay(data, context));
                           }
                         },
-                        onChanged: (String _) {
+                        onChanged: (String val) async {
+                          dev.log("onchnaged called on search $val");
                           provider.changeValue = provider.controller.text;
                           if (provider.textFieldIsEmpty) {
                             _clearOverlay();
+                          }
+                          dev.log("search val onchanged is -->> $val");
+                          _displayOverlay(buildSearchingOverlay());
+                          await provider.fetchGooglePlaces();
+                          if (provider.state.runtimeType == PlaceAutoLoaded) {
+                            final data =
+                                (provider.state as PlaceAutoLoaded).data;
+                            _displayOverlay(
+                                buildPredictionOverlay(data, context));
                           }
                         },
                       ),
@@ -133,49 +146,65 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
               ),
               body: Stack(
                 children: [
-                  GoogleMap(
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    initialCameraPosition: CameraPosition(
-                      target: widget.addressType == AddressType.origin
-                          ? provider.originLatLng
-                          : provider.destinationLatLng,
-                      zoom: 18.0,
-                    ),
-                    mapType: MapType.normal,
-                    onMapCreated: (controller) {
-                      provider.googleMapController = controller;
+                  //show background google maps
+                  Listener(
+                    onPointerMove: (event) {
+                      provider.updateIsSearch(val: false);
+                      dev.log("On pointer moved called");
                     },
-                    onCameraMove: (CameraPosition cameraPositiona) {
-                      provider.cameraPosition = cameraPositiona;
-                    },
-                    onCameraIdle: () async {
-                      if (provider.cameraPosition != null) {
-                        provider.setAddressLoad(true);
-                        List<Placemark> placemarks =
-                            await placemarkFromCoordinates(
-                                provider.cameraPosition!.target.latitude,
-                                provider.cameraPosition!.target.longitude);
-                        if (widget.addressType == AddressType.origin) {
-                          provider.setOriginAddress =
-                              "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
-                          provider.setAddressLoad(false);
-                        } else {
-                          provider.setDestinationAddress =
-                              "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
-                          provider.setAddressLoad(false);
+                    child: GoogleMap(
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                      initialCameraPosition: CameraPosition(
+                        target: widget.addressType == AddressType.origin
+                            ? provider.originLatLng
+                            : provider.destinationLatLng,
+                        zoom: 18.0,
+                      ),
+                      mapType: MapType.normal,
+                      onMapCreated: (controller) {
+                        provider.googleMapController = controller;
+                      },
+                      onCameraMove: (CameraPosition cameraPositiona) {
+                        provider.cameraPosition = cameraPositiona;
+                      },
+                      onCameraIdle: () async {
+                        dev.log("On CAMERA ideal called");
+                        if (provider.cameraPosition != null) {
+                          provider.setAddressLoad(true);
+                          List<Placemark> placemarks =
+                              await placemarkFromCoordinates(
+                                  provider.cameraPosition!.target.latitude,
+                                  provider.cameraPosition!.target.longitude);
+                          if (widget.addressType == AddressType.origin) {
+                            FocusScope.of(context).unfocus();
+
+                            provider.setOriginAddress =
+                                "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
+
+                            provider.setAddressLoad(false);
+                          } else {
+                            FocusScope.of(context).unfocus();
+
+                            provider.setDestinationAddress =
+                                "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
+                            provider.setAddressLoad(false);
+                          }
                         }
-                      }
-                    },
+                      },
+                    ),
                   ),
+
                   Center(
                     child: Image.asset(
                       widget.addressType == AddressType.origin
-                          ? pickupIcon
+                          ? initialPickUpIcon
                           : destinationIcon,
-                      width: 50,
+                      width: 100,
                     ),
                   ),
+
+                  //Bottom Section
                   Positioned(
                       bottom: 0.0,
                       left: 0.0,
@@ -213,7 +242,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                           ),
                           const SizedBox(height: 10.0),
                           SizedBox(
-                            height: queryData.size.height * 0.2,
+                            height: queryData.size.height * 0.16,
                             child: Material(
                               type: MaterialType.canvas,
                               color: whiteColor,
@@ -230,7 +259,11 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                 child: Column(
                                   children: [
                                     Expanded(
-                                        flex: 3,
+                                      flex: 3,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          dev.log("address on tap called");
+                                        },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Center(
@@ -240,15 +273,20 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                                         CircularProgressIndicator(),
                                                   )
                                                 : AutoSizeText(
+                                                    // "sdf",
                                                     provider.addressSelected,
                                                     style: const TextStyle(
-                                                        fontSize: 23),
+                                                        fontSize: 20),
                                                     minFontSize: 10,
                                                     maxLines: 3,
                                                     textAlign: TextAlign.center,
                                                   ),
                                           ),
-                                        )),
+                                        ),
+                                      ),
+                                    ),
+
+                                    //Select this place button
                                     Expanded(
                                         flex: 2,
                                         child: SizedBox(
@@ -263,11 +301,14 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                               ),
                                               backgroundColor:
                                                   MaterialStateProperty.all(
-                                                      provider.isAddressLoading
-                                                          ? Colors.grey
-                                                          : primaryColor),
+                                                provider.isAddressLoading
+                                                    ? Colors.grey
+                                                    : blackColor,
+                                              ),
                                             ),
                                             onPressed: () {
+                                              dev.log(
+                                                  "on pressed called -------->>>..");
                                               if (!provider.isAddressLoading) {
                                                 if (widget.addressType ==
                                                     AddressType.origin) {
@@ -292,9 +333,9 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                                 Expanded(
                                                     child: Center(
                                                         child: AutoSizeText(
-                                                  appLoc.decideOnThePlace,
+                                                  "Select this place",
                                                   style: const TextStyle(
-                                                      fontSize: 24,
+                                                      fontSize: 20,
                                                       color: Colors.white),
                                                   maxLines: 1,
                                                 )))
@@ -353,6 +394,28 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                   name: mergeAddress(predictions[index].name,
                       predictions[index].formattedAddress),
                   onTap: () async {
+                    provider.updateIsSearch(val: true);
+
+                    provider.updateOriginTextShow(mergeAddress(
+                        predictions[index].name,
+                        predictions[index].formattedAddress));
+                    dev.log("On Tap on predict location called");
+                    FocusScope.of(context).unfocus();
+                    provider.clearController();
+
+                    dev.log("lat: ${predictions[index].geometry.location}");
+                    // setOriginAddress();
+                    // provider.updateOriginTextShow(mergeAddress(
+                    //     predictions[index].name,
+                    //     predictions[index].formattedAddress));
+
+                    dev.log(mergeAddress(predictions[index].name,
+                            predictions[index].formattedAddress)
+                        .toString());
+                    provider.addressSelected = mergeAddress(
+                            predictions[index].name,
+                            predictions[index].formattedAddress)
+                        .toString();
                     clearOverlay();
                     provider.googleMapController.moveCamera(
                         CameraUpdate.newCameraPosition(CameraPosition(
@@ -364,6 +427,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         target: LatLng(predictions[index].geometry.location.lat,
                             predictions[index].geometry.location.lng),
                         zoom: 18);
+                    FocusScope.of(context).unfocus();
                   },
                 );
               },
@@ -379,6 +443,16 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
             name: mergeAddress(
                 predictions[index].name, predictions[index].formattedAddress),
             onTap: () async {
+              provider.updateIsSearch(val: true);
+
+              provider.updateOriginTextShow(mergeAddress(
+                  predictions[index].name,
+                  predictions[index].formattedAddress));
+              dev.log("On Tap on when item < 4predict location called");
+              FocusScope.of(context).unfocus();
+              provider.clearController();
+
+              dev.log("lat: ${predictions[index].geometry.location}");
               clearOverlay();
               provider.googleMapController.moveCamera(
                   CameraUpdate.newCameraPosition(CameraPosition(

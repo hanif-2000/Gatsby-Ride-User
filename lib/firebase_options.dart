@@ -4,8 +4,6 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-import 'core/utility/helper.dart';
-
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
 /// Example:
@@ -20,7 +18,7 @@ class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for IOS - '
+        'DefaultFirebaseOptions have not been configured for web - '
         'you can reconfigure this by running the FlutterFire CLI again.',
       );
     }
@@ -31,7 +29,8 @@ class DefaultFirebaseOptions {
         return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
-          'DefaultFirebaseOptions are not supported for this platform.',
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
         throw UnsupportedError(
@@ -51,21 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAoD1p0Ostm3iyn-VQP7jlCdrkCI7nuQSQ',
-    appId: '1:492474005876:android:197dc080a48a10e47c5421',
-    messagingSenderId: '492474005876',
-    projectId: 'appkey-taxi-app',
-    storageBucket: 'appkey-taxi-app.appspot.com',
+    apiKey: 'AIzaSyDi62G7s0eXnCzwbDYYDIj8yDF0drF0_2M',
+    appId: '1:1022060321341:android:190f8c91e45b5201122854',
+    messagingSenderId: '1022060321341',
+    projectId: 'gatsbyrideshare',
+    storageBucket: 'gatsbyrideshare.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBpF_fGIG8_URW8NFE8o0V52kR-BwCjG48',
-    appId: '1:492474005876:ios:6f0fcf0589b4287d7c5421',
-    messagingSenderId: '492474005876',
-    projectId: 'appkey-taxi-app',
-    storageBucket: 'appkey-taxi-app.appspot.com',
-    iosClientId:
-        '492474005876-cge78i2u9tghqfeb9fpmusr9hd11qkii.apps.googleusercontent.com',
-    iosBundleId: 'appkey.user.taxi',
+    apiKey: 'AIzaSyCfjn2yfjBGo4armn1iI7l_LPwzh7uVOEk',
+    appId: '1:1022060321341:ios:e95ca84594193133122854',
+    messagingSenderId: '1022060321341',
+    projectId: 'gatsbyrideshare',
+    storageBucket: 'gatsbyrideshare.appspot.com',
+    androidClientId: '1022060321341-a480lq87svbk3m48oqice5v9ujbgn8nj.apps.googleusercontent.com',
+    iosClientId: '1022060321341-0c5f614tgu3358is65esg6v6kat912mn.apps.googleusercontent.com',
+    iosBundleId: 'getride.user.taxi',
   );
 }

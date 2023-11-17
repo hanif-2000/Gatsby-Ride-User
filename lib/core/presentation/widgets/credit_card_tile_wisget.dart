@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,9 +7,9 @@ class CreditCardTile extends StatelessWidget {
   final String assets;
   final String title;
   final Function onTap;
-  final bool selected;
+  bool selected;
 
-  const CreditCardTile(
+  CreditCardTile(
       {Key? key,
       required this.assets,
       required this.title,

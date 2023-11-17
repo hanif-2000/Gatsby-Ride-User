@@ -1,10 +1,14 @@
-import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/add_new_card_popup.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/credit_card_tile_wisget.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
+import 'dart:developer';
+
+import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/add_new_card_popup.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/credit_card_tile_wisget.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../utility/dummy_data.dart';
 
 class CreditCardExpansionTile extends StatelessWidget {
   final String assets;
@@ -40,6 +44,13 @@ class CreditCardExpansionTile extends StatelessWidget {
               ),
             ]),
         child: ExpansionTile(
+          onExpansionChanged: (value) {
+            log("on expansion chaenged===>>>  $value");
+
+            if (value) {
+              provider.getListOfCard();
+            }
+          },
           childrenPadding: EdgeInsets.zero,
           shape: const Border(),
           collapsedShape:
@@ -82,12 +93,13 @@ class CreditCardExpansionTile extends StatelessWidget {
                 child: Column(
                   children: [
                     ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
+                      // physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 2,
+                      itemCount: DummyData.dummyCardList.length,
                       itemBuilder: (context, index) {
                         return CreditCardTile(
-                          title: "*** *** *** 14 15 25",
+                          title:
+                              "*** *** *** ${DummyData.dummyCardList[index]["cardNumber"]}",
                           assets: 'assets/icons/logos_mastercard.svg',
                           onTap: () {
                             provider.setPaymentMethod =
@@ -106,8 +118,15 @@ class CreditCardExpansionTile extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         showDialog(
-                            context: context,
-                            builder: (_) => const AddNewCardPopUp());
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(32.0))),
+                                content: AddNewCardPopUp());
+                          },
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(

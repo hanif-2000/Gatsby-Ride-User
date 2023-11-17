@@ -1,8 +1,7 @@
-
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/injection.dart';
-import 'package:appkey_taxiapp_user/features/contact_us/presentation/providers/contactus_provider.dart';
-import 'package:appkey_taxiapp_user/features/contact_us/presentation/widgets/contact_us_form.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
+import 'package:GetsbyRideshare/features/contact_us/presentation/widgets/contact_us_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';

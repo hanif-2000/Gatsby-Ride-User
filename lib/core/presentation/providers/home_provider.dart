@@ -1,16 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui' as ui;
-
-import 'package:appkey_taxiapp_user/core/domain/usecases/get_total_price.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/price_category_state.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/total_price_state.dart';
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/static/order_status.dart';
-import 'package:appkey_taxiapp_user/core/utility/app_settings.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/usecases/create_oder.dart';
+import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
+import 'package:GetsbyRideshare/core/domain/usecases/get_total_price.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/price_category_state.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/total_price_state.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/vehicle_category_state.dart';
+import 'package:GetsbyRideshare/core/static/assets.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/domain/usecases/create_oder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,26 +19,32 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart' as lctn;
-
+import 'package:web_socket_client/web_socket_client.dart';
+import '../../data/models/google_route_response_modal.dart';
 import '../../domain/entities/price_category.dart';
 import '../../domain/usecases/get_price_category.dart';
+import '../../domain/usecases/get_vehicle_catagory.dart';
+import '../../static/order_status.dart';
 import '../../utility/direction_helper.dart';
 import '../../utility/injection.dart';
 import '../../utility/session_helper.dart';
 import 'create_order_state.dart';
 
 class HomeProvider with ChangeNotifier {
+  var dio = Dio();
+  //  var sessionToken = locator<Session>().sessionToken;
   //Constructor
   final GetTotalPrice getTotalPrice;
   final GetPriceCategory getPriceCategory;
   final CreateOrder createOrder;
+  final GetVehiclesCategory getVehicleCatagory;
 
   //Initial
   final lctn.Location locationService = lctn.Location();
-  CameraPosition kJapanCoordinate = const CameraPosition(
-    target: JAPAN_LATLNG,
-    zoom: 14.4746,
-  );
+  // CameraPosition kJapanCoordinate = CameraPosition(
+  //   target: LatLng(lat, long),
+  //   zoom: 14.4746,
+  // );
   TotalPriceState _stateLoadPrice = TotalPriceInitial();
 
   bool isDestinationSelected = false;
@@ -48,16 +55,80 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  String estimatedTimeToShow = '';
+
+  Session session = locator<Session>();
+
+//Socket
+
+  WebSocket? socket;
+
+  // //Connec to Socket
+  // connectToSocket() {
+  //   logMe(
+  //       'Socket ============= chat Token : ${session.chatToken} ================');
+  //   logMe(
+  //       'Socket ============= User Id Token :  ${session.userId} ================');
+
+  //   socket = WebSocket(Uri.parse(
+
+  //       // 'ws://shakti.parastechnologies.in:8051?token=597011984&room=0&userID=1'
+  //       'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}'));
+
+  //   logMe('Socket ============= Connecting to Socket ================');
+  //   socket!.connection.listen((event) {
+  //     logMe('Socket on Listen ---> ${event.toString()}');
+
+  //     if (event is Connected) {
+  //       // listenRequests();
+  //       // sendRequest();
+
+  //       log("=====event======>>>>> " + event.toString());
+  //     } else if (event is Disconnected) {
+  //       log("Socket === Event is Disconnected ===");
+  //       log("Socket === reason ${event.reason}");
+  //     }
+  //   });
+  // }
+
+  //send request to socket
+
+  sendRequest() {
+    socket!
+        // .send("serviceType: UserBookDriver, id: ${session.userId.toString()}");
+        .send(jsonEncode({
+      "serviceType": "UserBookDriver",
+      "UserID": "${session.userId.toString()}"
+    }));
+
+    socket!.connection.listen((state) => print('state: "$state"'));
+
+    log("send request");
+  }
+
+  bool isAccepted = false;
+
+  updateTermsAccepted(value) {
+    isAccepted = value;
+    notifyListeners();
+  }
+
+  double lat = 0.0;
+  double long = 0.0;
+
   late GoogleMapController googleMapController;
   // Completer<GoogleMapController> mapController = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   late LatLng originLatLng, destinationLatLng;
   late BitmapDescriptor driverMarker;
-  late BitmapDescriptor pickUpMarker, destinationMarker;
+  late BitmapDescriptor pickUpMarker, destinationMarker, initialPickMarker;
   String originAddress = '';
   bool destinationIsFilled = false;
+  bool originIsFilled = false;
   String destinationAddress = appLoc.destination;
-  String distance = "0", price = "0";
+  String distance = "0", price = "";
+  int estimatedTime = 0;
+  String time = '';
   late Text originText;
   late Text destinationText;
   List<LatLng> polylineCoordinates = [];
@@ -66,11 +137,19 @@ class HomeProvider with ChangeNotifier {
   PriceCategory? _selectedCategory;
   PaymentMethod? _paymentMethod;
 
+  int selectedVehicleIndex = -1;
+
+  String selectedVehicleId = '';
+  String isAvailable = '';
+
+  List<VehiclesCategory> _vehiclesCategory = [];
+
   // getter
   List<PriceCategory> get priceCategory => _priceCategory;
   PriceCategory? get selectedCategory => _selectedCategory;
   PaymentMethod? get paymentMethod => _paymentMethod;
   TotalPriceState get stateLoadPrice => _stateLoadPrice;
+  List<VehiclesCategory> get vehicleCategory => _vehiclesCategory;
 
   //setter
   set setSelectedCategory(val) {
@@ -78,9 +157,17 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //Update Estimated Time
+  updateEstimatedTime(val) {
+    estimatedTime = val;
+    notifyListeners();
+  }
+
   set setPaymentMethod(val) {
     _paymentMethod = val;
+
     notifyListeners();
+    log("Selected Payment Method is========>>>${_paymentMethod}");
   }
 
   set newState(TotalPriceState state) {
@@ -91,30 +178,90 @@ class HomeProvider with ChangeNotifier {
   //clear state
   clearState() async {
     await sessionClearOrder();
+    session.setOrderStatus = 100;
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";
     price = "0";
     _selectedCategory = null;
     _paymentMethod = null;
+
     markers.clear();
+    selectedVehicleIndex = -1;
+
+    originIsFilled = false;
+
     notifyListeners();
   }
+
+  //Update Selected Vehicle Index
+  updateSelectedVehicleIndex({index}) {
+    selectedVehicleIndex = index;
+    notifyListeners();
+  }
+
+  List carsImageList = [
+    "assets/icons/economy_car.png",
+    "assets/icons/xl_car.png",
+    "assets/icons/tesla_car.png"
+  ];
+
+  List vehiclesDetailsList = [
+    {
+      "carImg": "assets/icons/economy_car.png",
+      "minimunFare": "5.00",
+      "baseFare": "1.70",
+      "techFee": "3.00",
+      "perKm": "1.30",
+      "perMin": "0.30",
+      "seat": "4"
+    },
+    {
+      "carImg": "assets/icons/xl_car.png",
+      "minimunFare": "10.00",
+      "baseFare": "2.00",
+      "techFee": "3.00",
+      "perKm": "1.65",
+      "perMin": "0.35",
+      "seat": "4-6"
+    },
+    {
+      "carImg": "assets/icons/tesla_car.png",
+      "minimunFare": "10.00",
+      "baseFare": "2.00",
+      "techFee": "3.00",
+      "perKm": "1.65",
+      "perMin": "0.35",
+      "seat": "4-6"
+    }
+  ];
 
   //constructor
   HomeProvider(
       {required this.getTotalPrice,
       required this.getPriceCategory,
-      required this.createOrder}) {
+      required this.createOrder,
+      required this.getVehicleCatagory}) {
     getBytesFromAsset(driverMarkerIcon, 70).then((value) {
       driverMarker = BitmapDescriptor.fromBytes(value);
     });
-    getBytesFromAsset(pickupIcon, 100).then((value) async {
+    getBytesFromAsset(initialPickUpIcon, 250).then((value) async {
       pickUpMarker = BitmapDescriptor.fromBytes(value);
     });
     getBytesFromAsset(destinationIcon, 100).then((value) async {
       destinationMarker = BitmapDescriptor.fromBytes(value);
     });
+    getBytesFromAsset(initialPickUpIcon, 250).then((value) async {
+      initialPickMarker = BitmapDescriptor.fromBytes(value);
+    });
+
+    final session = locator<Session>();
+    updateLatLong(
+      latitude: double.parse(session.currentLat),
+      longitude: double.parse(session.currentLong),
+    );
+
+    // connectToSocket();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -127,7 +274,17 @@ class HomeProvider with ChangeNotifier {
         .asUint8List();
   }
 
+//updat LatLong initially
+  updateLatLong({required double latitude, required double longitude}) {
+    lat = latitude;
+
+    long = longitude;
+    notifyListeners();
+  }
+
+//Set current location in map intially
   setCurrentLocation() async {
+    log("Get current location  called");
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
@@ -160,7 +317,10 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+//Get Current Location
   getCurrentLocation() async {
+    log("get current location home provider =-===>");
+
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
@@ -192,6 +352,7 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+// Get address from lat and long
   getAddressFromLatLng() async {
     try {
       List<Placemark> p = await placemarkFromCoordinates(
@@ -225,12 +386,15 @@ class HomeProvider with ChangeNotifier {
       lat = originLatLng.latitude.toString();
       long = originLatLng.longitude.toString();
       markers[markerId] = marker;
+
+      originIsFilled = true;
       notifyListeners();
     } catch (e) {
       logMe(e);
     }
   }
 
+// Set initial Marker in Map i.e Current Location
   setAddressFromLatLng() async {
     try {
       List<Placemark> p = await placemarkFromCoordinates(
@@ -240,12 +404,15 @@ class HomeProvider with ChangeNotifier {
 
       MarkerId markerId = const MarkerId("origin");
       final Marker marker = Marker(
+        anchor: const Offset(0.5, 0.5),
         markerId: markerId,
         position: LatLng(originLatLng.latitude, originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),
-        icon: pickUpMarker,
+        icon: initialPickMarker,
         onTap: () {},
       );
+      originIsFilled = true;
+      notifyListeners();
 
       googleMapController
           .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -270,11 +437,13 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+// Show marker on Map according to latlong and addresstype
   displayResult(LatLng latlng, String address, AddressType addressType) async {
     final MarkerId markerId =
         MarkerId(addressType == AddressType.origin ? "origin" : "destination");
     try {
       final Marker marker = Marker(
+        anchor: const Offset(0.5, 0.5),
         markerId: markerId,
         position: latlng,
         icon: addressType == AddressType.origin
@@ -291,6 +460,9 @@ class HomeProvider with ChangeNotifier {
           overflow: TextOverflow.ellipsis,
         );
         originLatLng = latlng;
+
+        originIsFilled = true;
+
         if (destinationIsFilled) {
           await setPolylinesDirection(originLatLng, destinationLatLng);
         }
@@ -331,34 +503,65 @@ class HomeProvider with ChangeNotifier {
 
         Polyline polyline = Polyline(
             polylineId: const PolylineId("jalur"),
-            color: Colors.lightBlue,
+            color: blackColor,
             points: polylineCoordinates,
             width: 6,
             startCap: Cap.roundCap,
             endCap: Cap.roundCap);
         polylines.add(polyline);
-        setPriceAndDistance();
+        // setPriceAndDistance();
+        setActualDistance();
         notifyListeners();
       }
     });
   }
 
-  setPriceAndDistance() async {
-    final double distanceInDouble =
-        await getDistance(originLatLng, destinationLatLng);
-    var distanceKm =
-        ((distanceInDouble) / 1000.roundToDouble()).toStringAsFixed(2);
-    distance = distanceKm;
-    notifyListeners();
+  setActualDistance() async {
+    try {
+      // Get real distance
+      var response = await Dio().get(
+          'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destinationLatLng.latitude},${destinationLatLng.longitude}&origins=${originLatLng.latitude},${originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
+      log(" response of real distance:--->>> ${response.data}");
+
+      var data = GoogleRouteDistanceResponseModal.fromJson(response.data);
+      distance = data.rows[0].elements[0].distance.text;
+      estimatedTime = data.rows[0].elements[0].duration.value;
+      estimatedTimeToShow = data.rows[0].elements[0].duration.text;
+
+      session.setEstimatedDistance =
+          data.rows[0].elements[0].distance.value.toString();
+      session.setEstimatedTime =
+          data.rows[0].elements[0].duration.value.toStringAsFixed(1);
+
+      notifyListeners();
+
+      log("session distnace:--${session.estimatedDistance}");
+      log("session duration:--${session.estimatedTime}");
+    } catch (e) {
+      print(e);
+    }
   }
+
+  // setPriceAndDistance() async {
+  //   final double distanceInDouble =
+  //       await getDistance(originLatLng, destinationLatLng);
+  //   var distanceKm =
+  //       ((distanceInDouble) / 1000.roundToDouble()).toStringAsFixed(2);
+  //   distance = distanceKm;
+  //   notifyListeners();
+  // }
 
   Stream<TotalPriceState> fetchTotalPrice() async* {
     showLoading();
-    final double distanceInDouble =
-        await getDistance(originLatLng, destinationLatLng);
-    var distanceKm =
-        ((distanceInDouble) / 1000.roundToDouble()).toStringAsFixed(2);
-    var distanceMeter = double.parse(distanceKm) * 1000;
+    // final double distanceInDouble =
+    //     await getDistance(originLatLng, destinationLatLng);
+    // var distanceKm =
+    //     ((distanceInDouble) / 1000.roundToDouble()).toStringAsFixed(2);
+    // var distanceMeter = double.parse(distanceKm) * 1000;
+
+    var distanceMeter = double.parse(distance);
+
+    log("Distance meter is;;;->>$distanceMeter");
     newState = TotalPriceLoading();
     DateFormat dateFormat = DateFormat.Hm();
     DateTime now = DateTime.now();
@@ -391,10 +594,52 @@ class HomeProvider with ChangeNotifier {
     );
   }
 
+  //Update Fare Price and vehicle Catagory
+  updatePriceAndCatagortId({required fare, required catagoryId}) {
+    price = fare;
+    selectedVehicleId = catagoryId;
+    notifyListeners();
+  }
+
+  updateIsAvailable({val}) {
+    isAvailable = val;
+    notifyListeners();
+  }
+
+//Get all the Vehicles Catagories
+  Stream<VehiclesCategoryState> fetchVehicleCategory() async* {
+    log("-->>> distance privce --->>>>   $distance");
+    log("estimated time is:  $estimatedTime");
+
+    //Convert seconds to minute and round off
+
+    String newTime = (estimatedTime / 60).toStringAsFixed(1);
+
+    String dist = distance.split(' ').first;
+    yield VehiclesCategoryLoading();
+
+    final result = await getVehicleCatagory(dist, "0",
+        "${originLatLng.latitude},${originLatLng.longitude}", newTime);
+    yield* result.fold(
+      (failure) async* {
+        yield VehiclesCategoryFailure(failure: failure);
+      },
+      (data) async* {
+        _vehiclesCategory = data.data;
+        logMe("_priceCategory");
+        logMe(_vehiclesCategory);
+        yield VehiclesCategoryLoaded(data: _vehiclesCategory);
+      },
+    );
+
+    log("--------****************" + vehicleCategory.toString());
+  }
+
+//Old Method to get vehicles Catagories
   Stream<PriceCategoryState> fetchPriceCategory() async* {
     yield PriceCategoryLoading();
 
-    final result = await getPriceCategory();
+    final result = await getPriceCategory("10", "0", "30.7046083,76.6843826");
     yield* result.fold(
       (failure) async* {
         yield PriceCategoryFailure(failure: failure);
@@ -408,36 +653,79 @@ class HomeProvider with ChangeNotifier {
     );
   }
 
+//update selected car category
+
+// Create or Submit Order
   Stream<CreateOrderState> submitOrder() async* {
+    String newTime = (estimatedTime / 60).toStringAsFixed(1);
+    log("Submit order Clicked");
     yield CreateOrderLoading();
     String txtLatLngOrigin =
         '${originLatLng.latitude},${originLatLng.longitude}';
     String txtLatLngDestination =
         '${destinationLatLng.latitude},${destinationLatLng.longitude}';
 
+    log(txtLatLngOrigin.toString());
+    log(txtLatLngDestination.toString());
+    log(originAddress.toString());
+    log(destinationAddress.toString());
+    log(distance.toString());
+    log(price.toString());
+    log(_paymentMethod.toString());
+    log(selectedVehicleId.toString());
+    log("estimated distacnce while send order is:-->> $distance");
+    log("estimated time while send order is:-->> $newTime");
+
     final formData = FormData.fromMap({
       'start_coordinate': txtLatLngOrigin,
       'end_coordinate': txtLatLngDestination,
       'start_address': originAddress,
       'end_address': destinationAddress,
-      'distance': distance,
+      'distance': distance.split(' ').first,
       'total': price,
-      'payment_method': _paymentMethod == PaymentMethod.cash ? "1" : "2",
-      'vehicle_category_id': _selectedCategory!.categoryId.toString(),
+      'estimated_time': newTime,
+      'payment_method': (_paymentMethod == PaymentMethod.cash)
+          ? "1"
+          : (_paymentMethod == PaymentMethod.creditCard)
+              ? "2"
+              : (_paymentMethod == PaymentMethod.googlePay)
+                  ? "3"
+                  : "4",
+      'vehicle_category_id': selectedVehicleId.toString(),
     });
+
+    log(formData.toString());
     logMe("formData");
-    logMe(_selectedCategory!.categoryId.toString());
+    // logMe(_selectedCategory!.categoryId.toString());
     final result = await createOrder.execute(formData);
     yield* result.fold((failure) async* {
       logMe("failure");
       logMe(failure);
       yield CreateOrderFailure(failure: failure);
     }, (data) async* {
-      logMe("Order Created ${data.orderId}");
+      logMe("Order Created ${data.id}");
       final session = locator<Session>();
-      session.setOrderId = data.orderId.toString();
+      session.setOrderId = data.id.toString();
       session.setOrderStatus = Order.lookingDriver;
       yield CreateOrderLoaded(data: data);
     });
   }
+
+// Get List of credit cards
+  getListOfCard() async {
+    var url =
+        'https://php.parastechnologies.in/taxi/public/api/webservice/card/list';
+
+    var res = await dio.get(
+      url,
+      options:
+          Options(headers: {"Authorization": "Bearer ${session.sessionToken}"}),
+    );
+
+    log("list of card are====>>>" + res.toString());
+  }
+
+  //Add credit card
+
+  addCreditCard() {}
 }

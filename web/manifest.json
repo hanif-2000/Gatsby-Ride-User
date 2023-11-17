@@ -1,6 +1,6 @@
 {
-    "name": "appkey_taxiapp_user",
-    "short_name": "appkey_taxiapp_user",
+    "name": "GetsbyRideshare",
+    "short_name": "GetsbyRideshare",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

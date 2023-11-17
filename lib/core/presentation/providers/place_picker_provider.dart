@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/domain/usecases/get_google_place.dart';
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/domain/usecases/get_google_place.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
@@ -33,14 +34,33 @@ class PlacePickerProvider with ChangeNotifier {
   bool isCurrentLoading = false;
   bool isAddressLoading = false;
 
+  String newAddressSelected = '';
+
+  String originTextToShow = '';
+  String destinationTextToShow = '';
+
   bool get textFieldIsEmpty => _controller.text.isEmpty;
+
+  bool isSearch = false;
+
+  updateIsSearch({val}) {
+    isSearch = val;
+    notifyListeners();
+  }
 
   PlacePickerProvider({required this.getGooglePlace});
 
   String _changeValue = "";
 
+  updateNewAddress(val) {
+    newAddressSelected = val;
+    notifyListeners();
+  }
+
   set setOriginAddress(val) {
-    addressSelected = val;
+    log("origin value is:-->> $val");
+
+    addressSelected = isSearch ? originTextToShow : val;
     isCurrentLoading = false;
     originLatLng = LatLng(
         cameraPosition!.target.latitude, cameraPosition!.target.longitude);
@@ -55,7 +75,9 @@ class PlacePickerProvider with ChangeNotifier {
   }
 
   set setDestinationAddress(val) {
-    addressSelected = val;
+    log("destination value is:-->> $val");
+
+    addressSelected = isSearch ? originTextToShow : val;
     isCurrentLoading = false;
     destinationLatLng = LatLng(
         cameraPosition!.target.latitude, cameraPosition!.target.longitude);
@@ -122,6 +144,18 @@ class PlacePickerProvider with ChangeNotifier {
 
   setAddressLoad(value) {
     isAddressLoading = value;
+    notifyListeners();
+  }
+
+  updateOriginTextShow(val) {
+    originTextToShow = val;
+    notifyListeners();
+
+    log("orofin text:  $originTextToShow");
+  }
+
+  updateDestinationTextShow(val) {
+    destinationTextToShow = val;
     notifyListeners();
   }
 

@@ -1,7 +1,7 @@
-import 'package:appkey_taxiapp_user/core/static/enums.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
-import 'package:appkey_taxiapp_user/core/utility/extension.dart';
+import 'package:GetsbyRideshare/core/utility/extension.dart';
 
 import 'components/dialog_button.dart';
 import 'components/dialog_container.dart';

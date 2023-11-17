@@ -73,7 +73,7 @@ String mergeAddress(String placeName, String address) {
 
 String mergeTypeTaxi(history.CategoryClass category) {
   String result;
-  String categoryName = category.category;
+  String categoryName = category.category!;
   String seat = category.seat.toString();
   result = "$categoryName ($seat ${appLoc.people})";
   return result;
@@ -98,7 +98,9 @@ String mergeDistanceTxt(String distance) {
 
 String mergePriceTxt(String price) {
   final session = locator<Session>();
-  String currency = session.currency;
+  // String currency = session.currency;
+  String currency = "CA\$ ";
+
   String result;
   result = '$currency$price ';
 
@@ -116,7 +118,7 @@ Future<double> getDistance(
 
 showLoading() {
   SmartDialog.showLoading(
-    animationType: SmartAnimationType.centerFade_otherSlide,
+    animationType: SmartAnimationType.fade,
     backDismiss: false,
     builder: (context) => const CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
@@ -129,6 +131,7 @@ dismissLoading() {
 
 void showToast({required String message, Color? color}) {
   Fluttertoast.showToast(
+      gravity: ToastGravity.TOP,
       backgroundColor: color ?? Colors.black,
       msg: message,
       toastLength: Toast.LENGTH_LONG,
@@ -172,8 +175,12 @@ String getPaymentMethod(history.HistoryOrder data) {
   String result;
   if (data.paymentMethod == "1") {
     result = appLoc.cash;
+  } else if (data.paymentMethod == "2") {
+    result = "Credit Card";
+  } else if (data.paymentMethod == "3") {
+    result = "Google Pay";
   } else {
-    result = appLoc.creditDebit;
+    result = "Apple Pay";
   }
   return result;
 }

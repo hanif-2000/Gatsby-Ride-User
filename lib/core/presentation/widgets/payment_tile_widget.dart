@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -71,12 +71,12 @@ class PaymentTile extends StatelessWidget {
                       ? const Icon(
                           Icons.radio_button_on_outlined,
                           color: yellowE5A829Color,
-                          size: 35,
+                          size: 30,
                         )
                       : const Icon(
                           Icons.radio_button_off_outlined,
                           color: greyB6B6B6Color,
-                          size: 35,
+                          size: 30,
                         )
                 ],
               ))

@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
+import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:flutter/material.dart';
 
 class CircleImageNetwork extends StatelessWidget {

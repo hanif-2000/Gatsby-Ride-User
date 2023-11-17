@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/features/about_us/data/models/aboutus_response_model.dart';
+import 'package:GetsbyRideshare/features/about_us/data/models/aboutus_response_model.dart';
 import 'package:dio/dio.dart';
 
 abstract class AboutUsDataSource {

@@ -3,12 +3,12 @@ import 'package:equatable/equatable.dart';
 class CreateOrderResponseModel extends Equatable {
   final int success;
   final String? message;
-  final int orderId;
+  final int id;
 
   const CreateOrderResponseModel({
     required this.success,
     this.message,
-    required this.orderId,
+    required this.id,
   });
 
   @override
@@ -17,9 +17,9 @@ class CreateOrderResponseModel extends Equatable {
   factory CreateOrderResponseModel.fromJson(Map<String, dynamic> json) =>
       CreateOrderResponseModel(
         message: json['message'] ?? '',
-        success: json['success'] ?? 1,
-        orderId: json['id'],
+        success: json['success'] ?? -5,
+        id: json['id'] ?? 0,
       );
   Map<String, dynamic> toJson() =>
-      {'message': message ?? '', 'success': success, 'id': orderId};
+      {'message': message ?? '', 'success': success, 'id': id};
 }

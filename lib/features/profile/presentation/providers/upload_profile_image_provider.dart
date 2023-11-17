@@ -1,7 +1,7 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/profile/domain/usecases/upload_profile_image.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_state.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/profile/domain/usecases/upload_profile_image.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_state.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
 

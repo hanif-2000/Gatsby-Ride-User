@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/domain/entities/currency.dart';
+import 'package:GetsbyRideshare/core/domain/entities/currency.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../domain/repositories/currency_repository.dart';

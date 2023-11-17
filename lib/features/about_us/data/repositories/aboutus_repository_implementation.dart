@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/about_us/data/datasources/aboutus_data_source.dart';
-import 'package:appkey_taxiapp_user/features/about_us/data/models/aboutus_response_model.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/about_us/data/datasources/aboutus_data_source.dart';
+import 'package:GetsbyRideshare/features/about_us/data/models/aboutus_response_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

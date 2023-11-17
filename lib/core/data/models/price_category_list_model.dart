@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/data/models/price_category_model.dart';
-import 'package:appkey_taxiapp_user/core/domain/entities/price_category.dart';
-import 'package:appkey_taxiapp_user/core/domain/entities/price_category_list.dart';
+import 'package:GetsbyRideshare/core/data/models/price_category_model.dart';
+import 'package:GetsbyRideshare/core/domain/entities/price_category.dart';
+import 'package:GetsbyRideshare/core/domain/entities/price_category_list.dart';
 
 class PriceCategoryListModel extends PriceCategoryList {
   const PriceCategoryListModel({

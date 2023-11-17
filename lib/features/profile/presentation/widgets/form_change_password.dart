@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/login/presentation/pages/login_page.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/change_password_provider.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/features/login/presentation/pages/login_page.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/change_password_provider.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
@@ -50,9 +50,9 @@ class _FormChangePasswordState extends State<FormChangePassword> {
                         ),
                       ),
                     ),
-                    const Center(
+                    Center(
                       child: Text(
-                        "Reset your password",
+                        appLoc.resetYourPassword,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: "poPPinSemiBold",
@@ -62,8 +62,8 @@ class _FormChangePasswordState extends State<FormChangePassword> {
                         ),
                       ),
                     ),
-                    const Text(
-                      "At least 8 characters, with uppercase and lowercase letters",
+                    Text(
+                      appLoc.atLeast8CharactersAndLetters,
                       // appLoc.welcome.toUpperCase(),
                       textAlign: TextAlign.center,
                       softWrap: true,
@@ -101,7 +101,7 @@ class _FormChangePasswordState extends State<FormChangePassword> {
                     mediumVerticalSpacing(),
 
                     CustomTextField(
-                      placeholder: "Confirm Password",
+                      placeholder: appLoc.confirmPassword,
                       // placeholder: appLoc.confirmPassword,
                       // title: appLoc.confirmPassword,
                       controller: provider.confirmPasswordController,

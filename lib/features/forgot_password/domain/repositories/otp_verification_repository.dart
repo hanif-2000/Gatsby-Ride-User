@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/error/failure.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/data/models/otp_verification_response_modal.dart';
+import 'package:GetsbyRideshare/core/error/failure.dart';
+import 'package:GetsbyRideshare/features/forgot_password/data/models/otp_verification_response_modal.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

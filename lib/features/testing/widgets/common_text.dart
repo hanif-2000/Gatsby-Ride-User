@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:flutter/material.dart';
 
 class CommonText extends StatelessWidget {
@@ -27,6 +27,7 @@ class CommonText extends StatelessWidget {
         color: fontColor ?? blackColor,
         fontSize: fontSize,
       ),
+      textAlign: TextAlign.center,
     );
   }
 }

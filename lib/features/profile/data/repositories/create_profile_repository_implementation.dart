@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/profile/data/datasources/create_profile_data_source.dart';
-import 'package:appkey_taxiapp_user/features/profile/domain/repositories/create_profile_repository.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/profile/data/datasources/create_profile_data_source.dart';
+import 'package:GetsbyRideshare/features/profile/domain/repositories/create_profile_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

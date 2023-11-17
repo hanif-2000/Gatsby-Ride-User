@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 
 import '../../../../core/utility/injection.dart';
@@ -5,7 +7,20 @@ import '../../../../core/utility/session_helper.dart';
 import '../models/login_response_model.dart';
 
 abstract class LoginDataSource {
-  Future<LoginDataModel?> doLogin(String email, String password);
+  Future<LoginResponseModel?> doLogin(
+    String email,
+    String password,
+    String loginType,
+    String deviceType,
+  );
+
+  Future<LoginResponseModel?> doLoginSocial(
+    String email,
+    String firstName,
+    String lastName,
+    String loginType,
+    String deviceType,
+  );
 }
 
 class LoginDataSourceImplementation implements LoginDataSource {
@@ -14,12 +29,24 @@ class LoginDataSourceImplementation implements LoginDataSource {
   LoginDataSourceImplementation({required this.dio});
 
   @override
-  Future<LoginDataModel?> doLogin(String email, String password) async {
+  Future<LoginResponseModel?> doLogin(
+    String email,
+    String password,
+    String loginType,
+    String deviceType,
+  ) async {
     String url = 'api/webservice/login';
     final session = locator<Session>();
     String fcmToken = session.sessionFcmToken;
-    FormData data = FormData.fromMap(
-        {'email': email, 'password': password, 'fcm_token': fcmToken});
+
+    log("fcm token : " + fcmToken.toString());
+    FormData data = FormData.fromMap({
+      'email': email,
+      'password': password,
+      'fcm_token': fcmToken,
+      'login_type': loginType,
+      'device_type': deviceType
+    });
 
     try {
       final response = await dio.post(
@@ -28,12 +55,66 @@ class LoginDataSourceImplementation implements LoginDataSource {
       );
       final model = LoginResponseModel.fromJson(response.data);
       final session = locator<Session>();
+
+      log("response" + response.data.toString());
+
       if (model.data != null) {
         session.setUserId = model.data!.userId.toString();
         session.setToken = model.token!;
-        return model.data;
+        session.setChatToken = model.data!.chatToken!;
+        return model;
       } else {
-        return null;
+        return model;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //Social Login
+
+  @override
+  Future<LoginResponseModel?> doLoginSocial(
+    String email,
+    String firstName,
+    String lastName,
+    String loginType,
+    String deviceType,
+  ) async {
+    String url = 'api/webservice/login';
+    final session = locator<Session>();
+    String fcmToken = session.sessionFcmToken;
+
+    log(fcmToken.toString());
+    FormData data = FormData.fromMap({
+      'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
+      'fcm_token': fcmToken,
+      'login_type': loginType,
+      'device_type': deviceType,
+      'country': 'Canada'
+    });
+
+    log("----Social login ----> ${data.fields}");
+
+    try {
+      final response = await dio.post(
+        url,
+        data: data,
+      );
+      final model = LoginResponseModel.fromJson(response.data);
+      final session = locator<Session>();
+
+      log("response" + response.data.toString());
+
+      if (model.data != null) {
+        session.setUserId = model.data!.userId.toString();
+        session.setToken = model.token!;
+        session.setChatToken = model.data!.chatToken!;
+        return model;
+      } else {
+        return model;
       }
     } catch (e) {
       rethrow;

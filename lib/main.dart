@@ -1,18 +1,22 @@
-import 'package:appkey_taxiapp_user/core/presentation/pages/splash_page.dart';
-import 'package:appkey_taxiapp_user/core/routes/route.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/contact_us/presentation/providers/contactus_provider.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/forgot_password_provider.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/otp_verification_provider.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/create_profile_provider.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/providers/upload_profile_image_provider.dart';
+import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
+import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
+import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
+import 'package:GetsbyRideshare/features/login/presentation/providers/login_provider.dart';
+import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
+import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
+import 'core/presentation/pages/splash_page.dart';
 import 'core/presentation/providers/home_provider.dart';
 import 'core/presentation/providers/place_picker_provider.dart';
 import 'core/presentation/providers/splash_provider.dart';
+import 'core/routes/route.dart';
+import 'core/static/colors.dart';
 import 'core/utility/firebase_helper.dart';
 import 'core/utility/helper.dart';
 import 'core/utility/injection.dart';
@@ -30,6 +34,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Stripe.publishableKey =
+  //     'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
+
   // getKeyHash();
 
   try {
@@ -85,6 +92,21 @@ Future<void> main() async {
             ChangeNotifierProvider<ContactusProvider>(
               create: (context) => locator<ContactusProvider>(),
             ),
+            ChangeNotifierProvider<LoginProvider>(
+              create: (context) => locator<LoginProvider>(),
+            ),
+            // ChangeNotifierProvider<SocketProvider>(
+            //   create: (context) => locator<SocketProvider>(),
+            // ),
+            ChangeNotifierProvider<PaymentProvider>(
+              create: (context) => locator<PaymentProvider>(),
+            ),
+            // ChangeNotifierProvider<ChatProvider>(
+            //   create: (context) => locator<ChatProvider>(),
+            // ),
+            ChangeNotifierProvider<NewSocketProvider>(
+              create: (context) => locator<NewSocketProvider>(),
+            ),
           ],
           builder: (context, _) => const MyApp(),
         ),
@@ -128,7 +150,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: locator<GlobalKey<NavigatorState>>(),
-      title: 'Flutter Demo',
+      title: 'GatsbyRideShare',
       theme: ThemeData(
         colorScheme:
             ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color
@@ -141,9 +163,10 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
+        MonthYearPickerLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('en', ''),
+        Locale('en', 'US'),
       ],
       // Initialize routes
       onGenerateRoute: generateRoute,
@@ -155,7 +178,7 @@ class MyApp extends StatelessWidget {
     );
 
     // return MaterialApp(
-    //   home: MapSample(),
+    //   home: PaymentScreen(),
     // );
   }
 }

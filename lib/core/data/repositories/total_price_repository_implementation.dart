@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/data/datasources/total_price_datasource.dart';
-import 'package:appkey_taxiapp_user/core/domain/entities/total_price.dart';
-import 'package:appkey_taxiapp_user/core/domain/repositories/total_price_repository.dart';
+import 'package:GetsbyRideshare/core/data/datasources/total_price_datasource.dart';
+import 'package:GetsbyRideshare/core/domain/entities/total_price.dart';
+import 'package:GetsbyRideshare/core/domain/repositories/total_price_repository.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../error/failure.dart';

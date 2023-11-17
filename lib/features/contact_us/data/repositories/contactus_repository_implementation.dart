@@ -1,7 +1,7 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/contact_us/data/datasources/contactus_data_source.dart';
-import 'package:appkey_taxiapp_user/features/contact_us/data/models/contactus_response_modal.dart';
-import 'package:appkey_taxiapp_user/features/contact_us/domain/repositories/contactus_repository.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/contact_us/data/datasources/contactus_data_source.dart';
+import 'package:GetsbyRideshare/features/contact_us/data/models/contactus_response_modal.dart';
+import 'package:GetsbyRideshare/features/contact_us/domain/repositories/contactus_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

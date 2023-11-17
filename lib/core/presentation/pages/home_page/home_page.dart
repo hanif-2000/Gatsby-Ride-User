@@ -1,15 +1,18 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/presentation/widgets/bottom_sheet_book_ride.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_button/custom_button_widget.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/destination_widget.dart';
-import 'package:appkey_taxiapp_user/core/presentation/widgets/origin_widget.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/origin_widget.dart';
+import 'package:GetsbyRideshare/core/static/assets.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/home_provider.dart';
+import '../../widgets/bottom_sheet_book_ride.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,6 +27,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
+    // Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
   }
 
   @override
@@ -52,7 +57,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     mapType: MapType.normal,
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,
-                    initialCameraPosition: map.kJapanCoordinate,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(map.lat, map.long),
+                      zoom: 14.4746,
+                    ),
                     onMapCreated: (GoogleMapController controller) async {
                       map.googleMapController = controller;
                       await map.setCurrentLocation();
@@ -69,18 +77,67 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              child: Column(
-                                children: [
-                                  OriginWidget(
-                                    deviceWidth: _deviceSize.width,
-                                    isFromOrder: false,
-                                  ),
-                                  DestinationWidget(
-                                    deviceWidth: _deviceSize.width,
-                                    isFromOrder: false,
-                                  ),
-                                ],
-                              ),
+                              color: whiteColor,
+                              child: map.originAddress == ''
+                                  ? Center(
+                                      child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 20.0),
+                                      child: CircularProgressIndicator(),
+                                    ))
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6.0),
+                                      child: Container(
+                                          child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                locationPngIcon,
+                                                height: 24.0,
+                                                width: 24.0,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              SvgPicture.asset(dottedLine),
+                                              SvgPicture.asset(
+                                                destinationSvgIcon,
+                                                height: 30.0,
+                                                width: 30.0,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              OriginWidget(
+                                                deviceWidth: _deviceSize.width,
+                                                isFromOrder: false,
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.zero,
+                                                width: _deviceSize.width * .8,
+                                                height: 1.0,
+                                                color: whiteEFEFEFColor,
+                                              ),
+                                              Container(
+                                                child: DestinationWidget(
+                                                  deviceWidth:
+                                                      _deviceSize.width,
+                                                  isFromOrder: false,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )),
+                                    ),
                             ),
 
                             /** Below is the new UI*/
@@ -91,26 +148,67 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: CustomButton(
-                                  text: const Text(
-                                    "Confirm",
+                                  text: Text(
+                                    appLoc.confirm,
                                     style: TextStyle(
                                       fontFamily: 'poPPinSemiBold',
                                       fontWeight: FontWeight.w600,
                                       color: whiteColor,
                                     ),
                                   ),
-                                  event: () {
-                                    showModalBottomSheet(
-                                      useRootNavigator: true,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      // backgroundColor: ,
-                                      context: context,
-                                      builder: (context) {
-                                        return const BottomSheetBookRide();
-                                      },
-                                    );
+                                  event: () async {
+                                    log("origin" + map.originLatLng.toString());
+                                    log("destination" +
+                                        map.destinationLatLng.toString());
+                                    log(map.distance.toString());
+
+                                    log(map.originIsFilled.toString());
+                                    log(map.destinationIsFilled.toString());
+
+                                    if (!map.originIsFilled ||
+                                        !map.destinationIsFilled) {
+                                      showToast(message: "Select Address");
+                                    } else {
+                                      // try {
+                                      //   // Get real distance
+                                      //   var response = await Dio().get(
+                                      //       'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${map.destinationLatLng.latitude},${map.destinationLatLng.longitude}&origins=${map.originLatLng.latitude},${map.originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
+                                      //   log(" response of real distance:--->>> ${response.data}");
+
+                                      //   var data = routeModal
+                                      //           .GoogleRouteDistanceResponseModal
+                                      //       .fromJson(response.data);
+                                      // } catch (e) {
+                                      //   print(e);
+                                      // }
+                                      map
+                                          .fetchVehicleCategory()
+                                          .listen((event) {
+                                        log("========>>>>>>" +
+                                            event.toString());
+                                      });
+
+                                      showModalBottomSheet(
+                                        barrierColor: Colors.transparent,
+                                        useRootNavigator: true,
+                                        // isScrollControlled: true,
+                                        constraints: BoxConstraints(
+                                            maxHeight:
+                                                _deviceSize.height * .45),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(16.0),
+                                            topRight: Radius.circular(16.0),
+                                          ),
+                                        ),
+                                        backgroundColor: whiteColor,
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                              child: BottomSheetBookRide());
+                                        },
+                                      );
+                                    }
                                   },
                                   buttonHeight: 50,
                                   isRounded: true,

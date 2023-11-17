@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:appkey_taxiapp_user/core/utility/app_settings.dart';
+import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:http/http.dart' as http;
 
 import '../data/models/point_latlng_model.dart';

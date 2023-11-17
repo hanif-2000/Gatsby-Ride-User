@@ -1,13 +1,13 @@
 import 'dart:developer';
 
-import 'package:appkey_taxiapp_user/core/presentation/widgets/custom_text_field.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/dimens.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/presentation/pages/forgot_password_page.dart';
+import 'package:GetsbyRideshare/core/presentation/widgets/custom_text_field.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/dimens.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/forgot_password/presentation/pages/forgot_password_page.dart';
+import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../core/static/enums.dart';
@@ -25,6 +25,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  var socketProvider = locator<NewSocketProvider>();
   void submit() {
     FocusManager.instance.primaryFocus?.unfocus();
     final provider = context.read<LoginProvider>();
@@ -37,6 +38,8 @@ class _LoginFormState extends State<LoginForm> {
           break;
         case LoginFailure:
           final msg = (state as LoginFailure).failure;
+
+          // log("-------->>>>>>" + msg.toString());
           dismissLoading();
 
           showToast(message: msg);
@@ -46,7 +49,9 @@ class _LoginFormState extends State<LoginForm> {
 
           final session = locator<Session>();
           session.setLoggedIn = true;
-          showToast(message: appLoc.success);
+          showToast(message: "Login Success");
+
+          socketProvider.connectToSocket();
           Navigator.pushNamedAndRemoveUntil(
               context, HomePage.routeName, (route) => false);
           logMe("Authorization Token: ${session.sessionToken}");

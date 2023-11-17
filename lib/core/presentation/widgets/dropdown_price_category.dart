@@ -1,6 +1,6 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/price_category.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/domain/entities/price_category.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +29,7 @@ class DropdowndPriceCategory extends StatelessWidget {
             onChanged: (PriceCategory? item) {
               provider.setSelectedCategory = item;
               if (provider.destinationIsFilled) {
-                provider.fetchTotalPrice().listen((event) {});
+                // provider.fetchTotalPrice().listen((event) {});
               }
             },
             items: priceCategory.map((PriceCategory category) {

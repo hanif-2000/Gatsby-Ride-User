@@ -1,12 +1,11 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/price_category.dart';
-import 'package:appkey_taxiapp_user/features/order/domain/entities/order_detail.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/order_detail.dart';
 
 class DetailOrderModel extends OrderDetail {
   const DetailOrderModel({
     required int orderId,
     required int driverId,
     required int userId,
-    required int totalPrice,
+    required dynamic totalPrice,
     required String startCoordinate,
     required String endCoordinate,
     required String startAddress,

@@ -1,7 +1,6 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/utility/extension.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/extension.dart';
 import 'package:flutter/material.dart';
-
 
 class CustomSimpleDialog extends StatelessWidget {
   final String text;

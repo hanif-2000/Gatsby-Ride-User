@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(appkey_taxiapp_user LANGUAGES CXX)
+project(GetsbyRideshare LANGUAGES CXX)
 
-set(BINARY_NAME "appkey_taxiapp_user")
+set(BINARY_NAME "GetsbyRideshare")
 
 cmake_policy(SET CMP0063 NEW)
 

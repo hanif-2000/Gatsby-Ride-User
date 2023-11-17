@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/presentation/providers/form_provider.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/presentation/providers/otp_verification_state.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/form_provider.dart';
+import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_state.dart';
 import 'package:dio/dio.dart';
 
 import '../../domain/usecases/otp_verification.dart';

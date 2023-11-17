@@ -1,11 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="getride.user.taxi">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
    <application
-        android:label="Taxi User"
+        android:label="Gatsby Rideshare"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAh44zG-nwjUK3-C0IR8lLpw2uBZfVukVY"/>
+            android:value="AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs"/>
+
+            <!-- AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -22,10 +29,14 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <meta-data
+              android:name="com.google.android.gms.wallet.api.enabled"
+              android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

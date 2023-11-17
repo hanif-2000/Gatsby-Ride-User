@@ -1,13 +1,24 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/dimens.dart';
-import 'package:appkey_taxiapp_user/features/register/presentation/pages/register_page.dart';
+import 'dart:developer';
+import 'dart:io';
+import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keychain/flutter_keychain.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../core/static/assets.dart';
+import '../../../../core/static/colors.dart';
+import '../../../../core/static/dimens.dart';
+import '../../../../core/utility/helper.dart';
 import '../../../../core/utility/injection.dart';
+import '../../../../core/utility/session_helper.dart';
+import '../../../register/presentation/pages/register_page.dart';
 import '../providers/login_provider.dart';
+import '../providers/login_state.dart';
 import '../widgets/login_form.dart';
 
 class LoginPage extends StatelessWidget {
@@ -16,8 +27,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => locator<LoginProvider>(),
+    var socketProvider = locator<NewSocketProvider>();
+    return ChangeNotifierProvider<LoginProvider>(
+      create: (ctx) => locator<LoginProvider>(),
       child: Scaffold(
         backgroundColor: whiteColor,
         // appBar: CustomAppTtitleBar(
@@ -173,29 +185,362 @@ class LoginPage extends StatelessWidget {
                   bgColor: blue3B5998Color,
                 ),
               ),
+
               const SizedBox(
-                height: 40,
+                height: 10,
               ),
-              Center(
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, HomePage.routeName, (route) => false);
-                  },
-                  child: const Text(
-                    'Skip for now',
+
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: sizeMedium,
+                  right: sizeMedium,
+                  bottom: sizeMedium,
+                ),
+                child: CustomButton(
+                  text: const Text(
+                    "Sign in with Google",
                     style: TextStyle(
-                      fontFamily: 'poPPinRegular',
+                      fontFamily: "poPPinSemiBold",
+                      fontWeight: FontWeight.w600,
+                      color: blackColor,
                       fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: greyA2A0A8Color,
                     ),
                   ),
+                  image: SvgPicture.asset('assets/icons/google.svg'),
+                  event: () async {
+                    final GoogleSignIn _googleSignIn =
+                        GoogleSignIn(signInOption: SignInOption.standard);
+
+                    // Trigger the authentication flow
+                    final GoogleSignInAccount? googleUser =
+                        await _googleSignIn.signIn();
+
+                    log("google user:--> $googleUser");
+
+                    // Obtain the auth details from the request
+                    final GoogleSignInAuthentication? googleAuth =
+                        await googleUser?.authentication;
+
+                    log("Google auth$googleAuth");
+
+                    // Create a new credential
+                    final credential = GoogleAuthProvider.credential(
+                      accessToken: googleAuth?.accessToken,
+                      idToken: googleAuth?.idToken,
+                    );
+                    log("Credential$credential");
+                    final FirebaseAuth auth = FirebaseAuth.instance;
+                    // // Trigger the authentication flow
+                    // final GoogleSignInAccount? googleUser =
+                    //     await GoogleSignIn().signIn();
+
+                    // // Obtain the auth details from the request
+                    // final GoogleSignInAuthentication? googleAuth =
+                    //     await googleUser?.authentication;
+
+                    // log("Google auth " + googleAuth.toString());
+
+                    // // Create a new credential
+                    // final credential = GoogleAuthProvider.credential(
+                    //   accessToken: googleAuth?.accessToken,
+                    //   idToken: googleAuth?.idToken,
+                    // );
+                    // log("Credential " + credential.toString());
+
+                    // Once signed in, return the UserCredential
+                    await auth.signInWithCredential(credential).then((value) {
+                      log("value is -->> $value");
+
+                      log("email is :-->> ${value.user!.email}");
+                      log("name is :-->> ${value.user!.displayName}");
+                      log("google name is :-->> ${googleUser!.displayName!}");
+
+                      log("uid is :-->> ${value.user!.uid}");
+
+                      var provider =
+                          Provider.of<LoginProvider>(context, listen: false);
+                      provider
+                          .updateSocialLoginData(
+                        userEmail: value.user!.email!,
+                        name:
+                            value.user!.displayName ?? googleUser.displayName!,
+                        id: value.user!.uid,
+                      )
+                          .then((value) {
+                        provider.doLoginApiSocial().listen((state) async {
+                          log(state.toString());
+                          switch (state.runtimeType) {
+                            case LoginLoading:
+                              showLoading();
+
+                              break;
+                            case LoginFailure:
+                              final msg = (state as LoginFailure).failure;
+
+                              // log("-------->>>>>>" + msg.toString());
+                              dismissLoading();
+
+                              showToast(message: msg);
+                              break;
+                            case LoginSuccess:
+                              dismissLoading();
+
+                              final session = locator<Session>();
+                              session.setLoggedIn = true;
+                              showToast(message: "Login Success");
+                              socketProvider.connectToSocket();
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  HomePage.routeName, (route) => false);
+                              logMe(
+                                  "Authorization Token: ${session.sessionToken}");
+                              break;
+                          }
+                        });
+                      });
+                      log("value" + value.toString());
+                    });
+                  },
+                  buttonHeight: 50,
+                  // buttonHeight: MediaQuery.of(context).size.height * 0.080,
+                  isRounded: true,
+                  bgColor: greyC8C7CCColor,
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+
+// Sign in with apple
+
+              Platform.isIOS
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                        left: sizeMedium,
+                        right: sizeMedium,
+                        bottom: sizeMedium,
+                      ),
+                      child: CustomButton(
+                        text: const Text(
+                          "Sign in with Apple",
+                          style: TextStyle(
+                            fontFamily: "poPPinSemiBold",
+                            fontWeight: FontWeight.w600,
+                            color: whiteColor,
+                            fontSize: 15,
+                          ),
+                        ),
+                        image: SvgPicture.asset('assets/icons/apple.svg'),
+                        event: () async {
+                          final FirebaseAuth auth = FirebaseAuth.instance;
+
+                          final credential =
+                              await SignInWithApple.getAppleIDCredential(
+                            scopes: [
+                              AppleIDAuthorizationScopes.email,
+                              AppleIDAuthorizationScopes.fullName,
+                            ],
+                          );
+                          final oauthCredential =
+                              OAuthProvider("apple.com").credential(
+                            idToken: credential.identityToken,
+                          );
+
+                          // Navigator.pop(context);
+                          log('Email - ${credential.email}');
+                          log('Name - ${credential.givenName}');
+                          log('Code - ${credential.authorizationCode}');
+                          log('userIdentifier - ${credential.userIdentifier}');
+                          log('Token - ${credential.identityToken}');
+
+                          log("apple credentials: $credential");
+
+                          if (credential.email == null ||
+                              credential.email == '') {
+                            var value = await FlutterKeychain.get(
+                                key: "${credential.userIdentifier}");
+                            if (value != null) {
+                              log('User detail --> $value');
+                              String name =
+                                  value.split(':').first.split('/').first;
+                              String lastName =
+                                  value.split(':').first.split('/').last;
+                              String email = value.split(':').last;
+
+                              final oauthCredential =
+                                  OAuthProvider("apple.com").credential(
+                                idToken: credential.identityToken,
+                              );
+
+                              //  AuthCredential savedCredential= AuthorizationAppleID(000364.a2aa5cb11a3a4f288b26927d0f28fb1e.0445, apps, Davaloper, appsdeveloper22@gmail.com, null)
+
+                              log('name - $name');
+                              log('Email - $email');
+                              log('lastname-$lastName');
+
+                              // auth.signInWithCredential(oauthCredential).then((value) {
+                              //   log("value $value");
+
+                              //   loginApi(
+                              //       socialId: value.user!.uid,
+                              //       loginType: Constants.apple,
+                              //       firstName: name,
+                              //       lastName: lastName,
+                              //       profilePic: '');
+                              // });
+
+                              await auth
+                                  .signInWithCredential(oauthCredential)
+                                  .then((value) {
+                                var provider = Provider.of<LoginProvider>(
+                                    context,
+                                    listen: false);
+                                provider
+                                    .updateSocialLoginData(
+                                  userEmail: value.user!.email ?? email,
+                                  name: value.user!.displayName ??
+                                      "$name $lastName",
+                                  id: value.user!.uid,
+                                )
+                                    .then((value) {
+                                  provider
+                                      .doLoginApiSocial()
+                                      .listen((state) async {
+                                    log(state.toString());
+                                    switch (state.runtimeType) {
+                                      case LoginLoading:
+                                        showLoading();
+
+                                        break;
+                                      case LoginFailure:
+                                        final msg =
+                                            (state as LoginFailure).failure;
+
+                                        // log("-------->>>>>>" + msg.toString());
+                                        dismissLoading();
+
+                                        showToast(message: msg);
+                                        break;
+                                      case LoginSuccess:
+                                        dismissLoading();
+
+                                        final session = locator<Session>();
+                                        session.setLoggedIn = true;
+                                        showToast(message: appLoc.success);
+
+                                        socketProvider.connectToSocket();
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            HomePage.routeName,
+                                            (route) => false);
+                                        logMe(
+                                            "Authorization Token: ${session.sessionToken}");
+                                        break;
+                                    }
+                                  });
+                                });
+                                log("value" + value.toString());
+                              });
+
+                              return true;
+                            } else {
+                              return true;
+                            }
+                          } else {
+                            await FlutterKeychain.put(
+                                key: credential.userIdentifier!,
+                                value:
+                                    "${credential.givenName}/${credential.familyName}:${credential.email}");
+                            log('Saved in Keychain.....');
+
+                            log("oauthcredential: $oauthCredential");
+
+                            await auth
+                                .signInWithCredential(oauthCredential)
+                                .then((value) {
+                              log("display name is:-->>${value.user!.displayName}");
+                              log(" user email is:-->>${value.user!.email}");
+                              log("user id  is:-->>${value.user!.uid}");
+
+                              var provider = Provider.of<LoginProvider>(context,
+                                  listen: false);
+                              provider
+                                  .updateSocialLoginData(
+                                userEmail:
+                                    value.user!.email ?? credential.email!,
+                                name: value.user!.displayName ??
+                                    credential.familyName!,
+                                id: value.user!.uid,
+                              )
+                                  .then((value) {
+                                provider
+                                    .doLoginApiSocial()
+                                    .listen((state) async {
+                                  log(state.toString());
+                                  switch (state.runtimeType) {
+                                    case LoginLoading:
+                                      showLoading();
+
+                                      break;
+                                    case LoginFailure:
+                                      final msg =
+                                          (state as LoginFailure).failure;
+
+                                      // log("-------->>>>>>" + msg.toString());
+                                      dismissLoading();
+
+                                      showToast(message: msg);
+                                      break;
+                                    case LoginSuccess:
+                                      dismissLoading();
+
+                                      final session = locator<Session>();
+                                      session.setLoggedIn = true;
+                                      showToast(message: appLoc.success);
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          HomePage.routeName, (route) => false);
+                                      logMe(
+                                          "Authorization Token: ${session.sessionToken}");
+                                      break;
+                                  }
+                                });
+                              });
+                              log("value" + value.toString());
+                            });
+
+                            // userModel = SocialUserModel(
+                            //   credential.givenName,
+                            //   credential.userIdentifier,
+                            //   credential.email,
+                            //   '',
+                            // );
+                            return true;
+                          }
+                        },
+                        buttonHeight: 50,
+                        // buttonHeight: MediaQuery.of(context).size.height * 0.080,
+                        isRounded: true,
+                        bgColor: black080808Color,
+                      ),
+                    )
+                  : SizedBox(),
+
+              // Center(
+              //   child: InkWell(
+              //     onTap: () {
+              //       Navigator.pushNamedAndRemoveUntil(
+              //           context, HomePage.routeName, (route) => false);
+              //     },
+              //     child: const Text(
+              //       'Skip for now',
+              //       style: TextStyle(
+              //         fontFamily: 'poPPinRegular',
+              //         fontSize: 15,
+              //         fontWeight: FontWeight.w400,
+              //         color: greyA2A0A8Color,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
 
               // mediumVerticalSpacing(),
               //

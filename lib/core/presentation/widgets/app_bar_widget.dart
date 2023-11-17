@@ -1,6 +1,8 @@
-import 'package:appkey_taxiapp_user/features/about_us/presentation/pages/aboutus_page.dart';
-import 'package:appkey_taxiapp_user/features/history/presentation/pages/history_page.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/pages/profile_page.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/features/about_us/presentation/pages/aboutus_page.dart';
+import 'package:GetsbyRideshare/features/history/presentation/pages/history_page.dart';
+import 'package:GetsbyRideshare/features/profile/presentation/pages/profile_page.dart';
+import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
 import 'package:flutter/material.dart';
 
 import '../../../features/login/presentation/pages/login_page.dart';
@@ -19,6 +21,7 @@ class AppBarLoggedIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var socketProvider = locator<NewSocketProvider>();
     return SizedBox(
         width: boxConstraints.maxWidth * 0.6,
         height: appbarHeight,
@@ -74,6 +77,7 @@ class AppBarLoggedIn extends StatelessWidget {
                     context: context,
                     builder: (_) => CustomLogoutDialog(
                       positiveAction: () async {
+                        socketProvider.disconnectSocket();
                         await sessionLogOut().then((_) => Navigator.of(context)
                             .pushNamedAndRemoveUntil(
                                 SplashPage.routeName, (route) => false));

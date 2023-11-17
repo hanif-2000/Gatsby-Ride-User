@@ -1,4 +1,4 @@
-import 'package:appkey_taxiapp_user/features/profile/data/models/edit_profile_response_model.dart';
+import 'package:GetsbyRideshare/features/profile/data/models/edit_profile_response_model.dart';
 import 'package:dio/dio.dart';
 
 abstract class UploadProfileImageDataSource {

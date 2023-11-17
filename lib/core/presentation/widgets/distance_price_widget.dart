@@ -1,9 +1,9 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/total_price.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/home_provider.dart';
-import 'package:appkey_taxiapp_user/core/presentation/providers/total_price_state.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/styles.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/domain/entities/total_price.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/total_price_state.dart';
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/styles.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

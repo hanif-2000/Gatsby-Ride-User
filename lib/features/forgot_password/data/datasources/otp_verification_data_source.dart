@@ -1,5 +1,4 @@
-import 'package:appkey_taxiapp_user/features/forgot_password/data/models/forgot_password_response_model.dart';
-import 'package:appkey_taxiapp_user/features/forgot_password/data/models/otp_verification_response_modal.dart';
+import 'package:GetsbyRideshare/features/forgot_password/data/models/otp_verification_response_modal.dart';
 import 'package:dio/dio.dart';
 
 abstract class OtpVerificationDataSource {

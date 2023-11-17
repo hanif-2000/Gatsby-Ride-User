@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/utility/extension.dart';
-import 'package:appkey_taxiapp_user/features/profile/data/models/edit_profile_response_model.dart';
+import 'package:GetsbyRideshare/core/utility/extension.dart';
+import 'package:GetsbyRideshare/features/profile/data/models/edit_profile_response_model.dart';
 import 'package:dio/dio.dart';
 
 import '../models/profile_response_model.dart';
@@ -61,7 +61,7 @@ class ProfileDataSourceImplementation implements ProfileDataSource {
   @override
   Future<EditProfileResponseModel> updatePassword(FormData formData) async {
     // String url = 'api/webservice/update-password-user';
-    String url = 'api/webservice/customer/password/reset';
+    String url = '                         ';
     dio.withToken();
     try {
       final response = await dio.post(url, data: formData);

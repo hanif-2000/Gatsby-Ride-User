@@ -1,8 +1,11 @@
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/core/static/styles.dart';
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/history/presentation/widgets/history_item.dart';
+import 'dart:developer';
+
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/styles.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/history/presentation/widgets/history_item.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/history_state.dart';
@@ -56,13 +59,25 @@ class _HistoryPageState extends State<HistoryPage> {
                 builder: (context, state) {
                   switch (state.data.runtimeType) {
                     case HistoryLoading:
-                      return const Center(child: CircularProgressIndicator());
+                      log("history loading called");
+                      return Center(
+                        child: LottieBuilder.asset(
+                            'assets/icons/lottie_animation.json'),
+                      );
+
+                    // const Center(child: CircularProgressIndicator());
                     case HistoryFailure:
+                      log("history failure called");
+
                       final failure = (state.data as HistoryFailure).failure;
                       showToast(message: failure);
                       return const SizedBox.shrink();
                     case HistoryLoaded:
+                      log("history loadeed called");
+
                       final _data = (state.data as HistoryLoaded).data;
+
+                      log("history data is====>>>${_data}");
                       if (_data.isEmpty) {
                         return Center(
                           child: Text(

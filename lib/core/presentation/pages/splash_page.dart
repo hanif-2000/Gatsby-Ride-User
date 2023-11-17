@@ -1,18 +1,25 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/login/presentation/pages/login_page.dart';
+import '../../../socket/new_socket_provider.dart';
+import '../../domain/entities/order_data_detail.dart';
 import '../../static/assets.dart';
 import '../../utility/helper.dart';
 import '../../utility/injection.dart';
 import '../../utility/session_helper.dart';
 import '../providers/currency_state.dart';
 import '../providers/splash_provider.dart';
+import 'home_page/home_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -23,28 +30,125 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  final newSocketProvider = locator<NewSocketProvider>();
   @override
   void initState() {
     super.initState();
+
+    // newSocketProvider.connectToSocket();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Timer(const Duration(seconds: 2), () async {
-        if (kDebugMode) {
-          log("This text showing after 2seconds");
-          log(checkPermission().toString());
-        }
+        // if (kDebugMode) {
+        //   checkPermission().then((value) {
+        //     return log(value.toString());
+        //   });
+        //   // log("This text showing after 2seconds");
+        //   // log(checkPermission().toString());
+        // }
 
         // if (await checkPermission()) {
-        //   await sessionClearOrder();
+        // log("Check Permission value----" + checkPermission().toString());
+        // await sessionClearOrder();
 
         context.read<SplashProvider>().fetchCurrency().listen((state) async {
+          // Permission.notification.isDenied.then((value) async {
+          //   if (value) {
+          //     Permission.notification.request();
+          //   }
+          // });
+
+          if (Platform.isAndroid) {
+            PermissionStatus status = await Permission.notification.request();
+            if (status.isGranted) {
+              log("notification permissin is granetd");
+              // notification permission is granted
+            } else {
+              // Permission.notification.request();
+              log("ask for notification permission ");
+              AppSettings.openAppSettings(type: AppSettingsType.notification);
+              // Open settings to enable notification permission
+            }
+          }
+
+          final session = locator<Session>();
+          // log("session token" + session.sessionToken.toString());
+          // log("order id" + session.orderId.toString());
+
+          log("state runtime type:==" + state.runtimeType.toString());
+
           switch (state.runtimeType) {
             case CurrencyLoading:
               break;
             case CurrencyLoaded:
-              Navigator.pushNamedAndRemoveUntil(
-                  context, LoginPage.routeName, (route) => false);
+              if (session.isLoggedIn) {
+                newSocketProvider.connectToSocket();
+                if (session.orderStatus == 100 || session.orderStatus == 8) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, HomePage.routeName, (route) => false);
+                } else {
+                  log("orogin lat lat :->> ${session.originLat}");
+                  log("orogin lat long :->> ${session.originLong}");
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPage(
+                        location: OrderDataDetail(
+                          destinationAddress: session.destinationAddress,
+                          originAddress: session.originAddress,
+                          originLatLng:
+                              LatLng(session.originLat, session.originLong),
+                          destinationLatLng: LatLng(
+                              session.destinationLat, session.destinationLong),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                //   if (session.orderStatus != 100 || session.orderStatus != 8) {
+
+                //     // OrderDataDetail(destinationAddress: session.destinationAddress,originAddress: session.originAddress,
+                //     //   originLatLng: LatLng(session.originLat, session.originLong),destinationLatLng: LatLng(session.destinationLat, session.destinationLong
+
+                //     // Navigator.pushNamedAndRemoveUntil(
+                //     //     context, OrderPage.routeName, (route) => false);
+
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => OrderPage(
+                //           location: OrderDataDetail(
+                //             destinationAddress: session.destinationAddress,
+                //             originAddress: session.originAddress,
+                //             originLatLng:
+                //                 LatLng(session.originLat, session.originLong),
+                //             destinationLatLng: LatLng(
+                //                 session.destinationLat, session.destinationLong),
+                //           ),
+                //         ),
+                //       ),
+                //     );
+                //   } else {
+                //     Navigator.pushNamedAndRemoveUntil(
+                //         context, HomePage.routeName, (route) => false);
+                //   }
+              } else {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, LoginPage.routeName, (route) => false);
+              }
+
+              // if(session.isLoggedIn){
+              //   if(session.orderStatus=)
               // Navigator.pushNamedAndRemoveUntil(
-              //     context, HomePage.routeName, (route) => false);
+              //     context, OrderPage.routeName, (route) => false);
+              // }
+              // session.isLoggedIn
+              //     ? Navigator.pushNamedAndRemoveUntil(
+              //         context, HomePage.routeName, (route) => false)
+              //     : Navigator.pushNamedAndRemoveUntil(
+              //         context, LoginPage.routeName, (route) => false);
+
               break;
           }
         });

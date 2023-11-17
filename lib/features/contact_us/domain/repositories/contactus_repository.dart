@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/error/failure.dart';
-import 'package:appkey_taxiapp_user/features/contact_us/data/models/contactus_response_modal.dart';
+import 'package:GetsbyRideshare/core/error/failure.dart';
+import 'package:GetsbyRideshare/features/contact_us/data/models/contactus_response_modal.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

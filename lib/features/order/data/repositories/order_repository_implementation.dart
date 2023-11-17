@@ -1,7 +1,8 @@
-import 'package:appkey_taxiapp_user/core/utility/helper.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/create_order_response_model.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/get_status_response.dart';
-import 'package:appkey_taxiapp_user/features/order/data/models/status_oder_response_model.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/order/data/models/create_order_response_model.dart';
+import 'package:GetsbyRideshare/features/order/data/models/get_status_response.dart';
+import 'package:GetsbyRideshare/features/order/data/models/order_receipt_response_modal.dart';
+import 'package:GetsbyRideshare/features/order/data/models/status_oder_response_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
@@ -11,6 +12,7 @@ import '../../domain/entities/order_detail.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../datasources/order_data_source.dart';
 import '../models/driver_location_response_model.dart';
+import '../models/submit_rating_response_modal.dart';
 
 class OrderRepositoryImplementation implements OrderRepository {
   final OrderDataSource dataSource;
@@ -85,4 +87,43 @@ class OrderRepositoryImplementation implements OrderRepository {
       return Left(ServerFailure(message: e.message));
     }
   }
+
+//Submit Ratings
+  @override
+  Future<Either<Failure, SubmitRatingsResponseModel>> submitRating(
+      FormData formData) async {
+    try {
+      final data = await dataSource.submitRatings(formData);
+      return Right(data);
+    } on DioError catch (e) {
+      logMe("Failure Submit Ratings repository ${e.toString()}");
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+//Order receipt
+  @override
+  Future<Either<Failure, OrderReceiptResponseModel>> orderReceipt(
+      FormData formData) async {
+    try {
+      final data = await dataSource.orderReceipt(formData);
+      return Right(data);
+    } on DioError catch (e) {
+      logMe("Failure Submit Ratings repository ${e.toString()}");
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  // //Payment
+  // @override
+  // Future<Either<Failure, OrderPaymentResponseModal>> orderPayment(
+  //     FormData formData) async {
+  //   try {
+  //     final data = await dataSource.orderPayment(formData);
+  //     return Right(data);
+  //   } on DioError catch (e) {
+  //     logMe("Failure Submit Ratings repository ${e.toString()}");
+  //     return Left(ServerFailure(message: e.message));
+  //   }
+  // }
 }

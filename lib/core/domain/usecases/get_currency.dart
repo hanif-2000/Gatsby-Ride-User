@@ -1,5 +1,5 @@
-import 'package:appkey_taxiapp_user/core/domain/entities/currency.dart';
-import 'package:appkey_taxiapp_user/core/domain/repositories/currency_repository.dart';
+import 'package:GetsbyRideshare/core/domain/entities/currency.dart';
+import 'package:GetsbyRideshare/core/domain/repositories/currency_repository.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../error/failure.dart';

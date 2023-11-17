@@ -7,7 +7,20 @@ import '../repositories/login_repository.dart';
 abstract class LoginUseCase<Type> {
   // return statusCode when fails
   // return token when succeed
-  Future<Either<Failure, LoginDataModel?>> call(String email, String password);
+  Future<Either<Failure, LoginResponseModel?>> call(
+    String email,
+    String password,
+    String loginType,
+    String deviceType,
+  );
+
+  Future<Either<Failure, LoginResponseModel?>> callSocial(
+    String email,
+    String firstName,
+    String lastName,
+    String loginType,
+    String deviceType,
+  );
 }
 
 class DoLogin implements LoginUseCase<String> {
@@ -16,9 +29,38 @@ class DoLogin implements LoginUseCase<String> {
   DoLogin({required this.repository});
 
   @override
-  Future<Either<Failure, LoginDataModel?>> call(
-      String email, String password) async {
-    final result = await repository.doLogin(email, password);
+  Future<Either<Failure, LoginResponseModel?>> call(
+    String email,
+    String password,
+    String loginType,
+    String deviceType,
+  ) async {
+    final result = await repository.doLogin(
+      email,
+      password,
+      loginType,
+      deviceType,
+    );
+    return result.fold((l) => Left(l), (r) {
+      return Right(r);
+    });
+  }
+
+  @override
+  Future<Either<Failure, LoginResponseModel?>> callSocial(
+    String email,
+    String firstName,
+    String lastName,
+    String loginType,
+    String deviceType,
+  ) async {
+    final result = await repository.doLoginSocial(
+      email,
+      firstName,
+      lastName,
+      loginType,
+      deviceType,
+    );
     return result.fold((l) => Left(l), (r) {
       return Right(r);
     });

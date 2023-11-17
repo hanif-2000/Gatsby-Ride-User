@@ -1,11 +1,14 @@
-import 'package:appkey_taxiapp_user/core/static/assets.dart';
-import 'package:appkey_taxiapp_user/core/static/colors.dart';
-import 'package:appkey_taxiapp_user/features/profile/presentation/pages/profile_page.dart';
+import 'dart:developer';
+
+import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../../features/profile/presentation/providers/profile_provider.dart';
 import '../../../features/profile/presentation/providers/profile_state.dart';
+import '../../static/assets.dart';
 import '../../utility/helper.dart';
 
 class ProfileInformationDrawer extends StatelessWidget {
@@ -16,6 +19,7 @@ class ProfileInformationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
+
     return StreamBuilder<ProfileState>(
         stream: context.read<ProfileProvider>().fetchProfile(),
         builder: (context, state) {
@@ -31,20 +35,45 @@ class ProfileInformationDrawer extends StatelessWidget {
             case ProfileLoaded:
               logMe("loaded");
               final data = (state.data as ProfileLoaded).data;
+              log("photo data----->>>>>" + data.photo.toString());
               return Column(
                 children: [
                   Container(
-                    child: data.photo == null
+                    child: (data.photo == '') || (data.photo == null)
                         ? const CircleAvatar(
+                            backgroundColor: transparentColor,
                             radius: 60,
                             backgroundImage: AssetImage(userAvatarImage),
                           )
-                        : CircleAvatar(
-                            radius: 60,
-                            backgroundImage: NetworkImage(
-                              mergePhotoUrl(data.photo),
+                        : CachedNetworkImage(
+                            imageUrl: mergePhotoUrl(data.photo),
+                            imageBuilder: (context, imageProvider) => Container(
+                              height: 120,
+                              width: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
+                            progressIndicatorBuilder: (context, url, progress) {
+                              return CircularProgressIndicator(
+                                value: progress.progress,
+                              );
+                            },
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
+
+                    // CircleAvatar(
+                    //     backgroundColor: transparentColor,
+                    //     radius: 60,
+                    //     backgroundImage: NetworkImage(
+                    //       mergePhotoUrl(data.photo),
+                    //     ),
+                    //   ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -62,10 +91,19 @@ class ProfileInformationDrawer extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        ProfilePage.routeName,
-                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const EditProfilePage())).then((value) {
+                        if (value != null) {
+                          // provider.refreshProfile();
+                        }
+                      });
+                      // Navigator.pushReplacementNamed(
+                      //   context,
+                      //   ProfilePage.routeName,
+                      // );
                     },
                     child: const Text(
                       "Edit Profile",
