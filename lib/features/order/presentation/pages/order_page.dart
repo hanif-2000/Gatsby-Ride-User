@@ -296,7 +296,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                                   builder: (context) {
                                     return AlertDialog(
                                       title:
-                                          Text("Ride Canceled by the Driver"),
+                                          Text("Ride cancelled by the Driver"),
                                       actions: [
                                         ElevatedButton(
                                             style: ElevatedButton.styleFrom(
