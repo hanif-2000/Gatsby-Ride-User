@@ -55,6 +55,7 @@ class VehicleCategoryDataSourceImplementation
     String coordinates,
     String time,
   ) async {
+    log("get vehicle catagory called");
     Session session = locator<Session>();
     FormData data = FormData.fromMap({
       'distance': distance,

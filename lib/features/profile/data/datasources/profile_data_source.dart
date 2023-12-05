@@ -1,4 +1,5 @@
 import 'package:GetsbyRideshare/core/utility/extension.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/profile/data/models/edit_profile_response_model.dart';
 import 'package:dio/dio.dart';
 
@@ -25,7 +26,13 @@ class ProfileDataSourceImplementation implements ProfileDataSource {
       final response = await dio.get(
         url,
       );
+
+      if ((response.data["success"] == 0) &&
+          (response.data["message"] == "Account Suspended")) {
+        showToast(message: "Account Suspended");
+      }
       final model = ProfileResponseModel.fromJson(response.data);
+
       return model.user;
     } catch (e) {
       rethrow;
