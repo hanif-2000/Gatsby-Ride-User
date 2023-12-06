@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/domain/entities/vehcles_category_list.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:dio/dio.dart';
@@ -76,6 +77,11 @@ class VehicleCategoryDataSourceImplementation
       );
 
       log("bikbbu" + response.data.toString());
+
+      if ((response.data["success"] == 0) &&
+          (response.data["message"] == "Account Suspended")) {
+        showToast(message: 'Account Suspended');
+      }
       return VehiclesCategoryListModel.fromJson(response.data);
       // return VehicleCategoryModal.fromJson(response.data);
     } catch (e) {

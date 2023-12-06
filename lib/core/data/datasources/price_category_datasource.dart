@@ -38,7 +38,7 @@ class PriceCategoryDataSourceImplementation implements PriceCategoryDataSource {
         data: data,
       );
 
-      log("bikbbu" + response.data.toString());
+      log("bikbbu-price" + response.data.toString());
       return PriceCategoryListModel.fromJson(response.data);
       // return VehicleCategoryModal.fromJson(response.data);
     } catch (e) {

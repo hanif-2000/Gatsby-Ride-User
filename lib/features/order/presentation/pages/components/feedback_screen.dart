@@ -183,38 +183,37 @@ class FeedBackScreen extends StatelessWidget {
                           ),
                         ),
                         event: () {
-                          if (provider.ratingGiven == 10.0) {
-                            showToast(message: appLoc.pleaseGiveRating);
-                          } else {
-                            //  SubmitRatingsResponseModel data=   provider.submitRatingsReview().;
+                          // if (provider.ratingGiven == 10.0) {
+                          //   // showToast(message: appLoc.pleaseGiveRating);
+                          // } else
 
-                            provider
-                                .submitRatingsReview()
-                                .listen((event) async {
-                              if (event is SubmitRatingsLoading) {
-                                showLoading();
-                                log("LOADING");
-                              } else if (event is SubmitRatingsLoaded) {
-                                log("Order Status LOADED--------");
+                          // {
+                          //  SubmitRatingsResponseModel data=   provider.submitRatingsReview().;
 
-                                provider.commentsEditingController.clear();
+                          provider.submitRatingsReview().listen((event) async {
+                            if (event is SubmitRatingsLoading) {
+                              showLoading();
+                              log("LOADING");
+                            } else if (event is SubmitRatingsLoaded) {
+                              log("Order Status LOADED--------");
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        RatingSubmittedScreen(),
-                                  ),
-                                );
+                              provider.commentsEditingController.clear();
 
-                                dismissLoading();
-                              } else if (event is SubmitRatingsFailure) {
-                                showToast(message: "submission falied");
-                                log("Update Order Status Failed.......");
-                                dismissLoading();
-                              }
-                            });
-                          }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RatingSubmittedScreen(),
+                                ),
+                              );
+
+                              dismissLoading();
+                            } else if (event is SubmitRatingsFailure) {
+                              showToast(message: "submission falied");
+                              log("Update Order Status Failed.......");
+                              dismissLoading();
+                            }
+                          });
+                          // }
 
                           // Navigator.push(
                           //     context,

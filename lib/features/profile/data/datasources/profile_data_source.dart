@@ -2,6 +2,7 @@ import 'package:GetsbyRideshare/core/utility/extension.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/profile/data/models/edit_profile_response_model.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 import '../models/profile_response_model.dart';
 
@@ -29,6 +30,8 @@ class ProfileDataSourceImplementation implements ProfileDataSource {
 
       if ((response.data["success"] == 0) &&
           (response.data["message"] == "Account Suspended")) {
+        final GlobalKey<NavigatorState> navigatorKey =
+            GlobalKey<NavigatorState>();
         showToast(message: "Account Suspended");
       }
       final model = ProfileResponseModel.fromJson(response.data);
