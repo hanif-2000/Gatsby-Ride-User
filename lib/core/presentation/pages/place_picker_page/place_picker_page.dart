@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
@@ -172,10 +174,13 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         dev.log("On CAMERA ideal called");
                         if (provider.cameraPosition != null) {
                           provider.setAddressLoad(true);
+
                           List<Placemark> placemarks =
                               await placemarkFromCoordinates(
                                   provider.cameraPosition!.target.latitude,
                                   provider.cameraPosition!.target.longitude);
+
+                          log("placemark from coordinates:-->> $placemarks");
                           if (widget.addressType == AddressType.origin) {
                             FocusScope.of(context).unfocus();
 

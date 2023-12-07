@@ -135,12 +135,15 @@ class CardPaymentExpansionTile extends StatelessWidget {
                                         //     PaymentMethod.creditCard;
                                         // Navigator.pop(context);
                                       },
-                                      selected: (context
-                                                  .read<PaymentProvider>()
-                                                  .selectedCardId ==
-                                              _data.data[index].id)
-                                          ? true
-                                          : false
+                                      selected: provider.paymentMethod !=
+                                              PaymentMethod.creditCard
+                                          ? false
+                                          : (context
+                                                      .read<PaymentProvider>()
+                                                      .selectedCardId ==
+                                                  _data.data[index].id)
+                                              ? true
+                                              : false
 
                                       //  provider.paymentMethod == null
                                       //     ? false

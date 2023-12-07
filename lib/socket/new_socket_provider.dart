@@ -108,6 +108,8 @@ class NewSocketProvider with ChangeNotifier {
       jsonEncode(map),
     );
 
+    // listenToSocket();
+
     // dismissLoading();
 
     // dismissLoading();
