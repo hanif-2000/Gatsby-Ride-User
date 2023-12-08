@@ -246,10 +246,12 @@ class OrderProvider with ChangeNotifier {
       initialMarker = BitmapDescriptor.fromBytes(value);
     });
 
-    updateLatLong(
-      latitude: double.parse(session.currentLat),
-      longitude: double.parse(session.currentLong),
-    );
+    if (session.currentLat != '') {
+      updateLatLong(
+        latitude: double.parse(session.currentLat),
+        longitude: double.parse(session.currentLong),
+      );
+    }
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

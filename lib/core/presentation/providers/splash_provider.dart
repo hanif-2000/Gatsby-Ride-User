@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:GetsbyRideshare/core/domain/usecases/get_currency.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/currency_state.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -30,6 +31,17 @@ class SplashProvider with ChangeNotifier {
     log("Order Id : " + session.orderId.toString());
     log("Chat Token : " + session.chatToken.toString());
     log("Session Token : " + session.sessionToken.toString());
+    log("Session Fcm Token : " + session.sessionFcmToken.toString());
+
+    if (session.sessionFcmToken == '') {
+      FirebaseMessaging _firebaseMessaging =
+          FirebaseMessaging.instance; // Change here
+      _firebaseMessaging.getToken().then((token) {
+        session.setFcmToken = token!;
+        notifyListeners();
+        print("fcm token token is $token");
+      });
+    }
     log("Session Fcm Token : " + session.sessionFcmToken.toString());
     log("Currency: " + session.currency.toString());
     log("Driver ID : " + session.driverId.toString());

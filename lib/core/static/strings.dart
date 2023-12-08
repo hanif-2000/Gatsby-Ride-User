@@ -10,6 +10,8 @@ const String ESTIMATED_DISTANCE = 'estimated_distance';
 const String ESTIMATED_TIME = 'estimated_time';
 
 const String FCM_TOKEN = 'fcm_token';
+const String FCM_OLD_TOKEN = 'fcm_old_token';
+
 const String ORDER_STATUS = 'order_status';
 const String DRIVER_ID = 'driver_id';
 const String CURRENT_LAT = 'current_lat';

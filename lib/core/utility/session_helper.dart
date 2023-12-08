@@ -8,6 +8,8 @@ abstract class Session {
   set setToken(String token);
   set setChatToken(int token);
   set setFcmToken(String fcmToken);
+  set setOldFcmToken(String fcmToken);
+
   set setCurrency(String currency);
   set setOrderStatus(int orderStatus);
   set setDriverId(String driverId);
@@ -34,6 +36,8 @@ abstract class Session {
 
   String get sessionToken;
   String get sessionFcmToken;
+  String get sessionOldFcmToken;
+
   String get currency;
   String get driverId;
   String get userId;
@@ -97,6 +101,11 @@ class SessionHelper implements Session {
   @override
   set setFcmToken(String fcmToken) {
     pref.setString(FCM_TOKEN, fcmToken);
+  }
+
+  @override
+  set setOldFcmToken(String fcmOldToken) {
+    pref.setString(FCM_OLD_TOKEN, fcmOldToken);
   }
 
   @override
@@ -173,6 +182,9 @@ class SessionHelper implements Session {
   String get sessionFcmToken => pref.getString(FCM_TOKEN) ?? '';
 
   @override
+  String get sessionOldFcmToken => pref.getString(FCM_OLD_TOKEN) ?? '';
+
+  @override
   String get driverId => pref.getString(DRIVER_ID) ?? '';
 
   @override
@@ -192,7 +204,10 @@ class SessionHelper implements Session {
 
   @override
   Future<void> clearSession() async {
+    setOldFcmToken = pref.getString(FCM_TOKEN)!;
+
     await pref.clear();
+    setFcmToken = sessionFcmToken;
   }
 
   @override

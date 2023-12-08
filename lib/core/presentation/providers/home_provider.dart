@@ -256,10 +256,16 @@ class HomeProvider with ChangeNotifier {
     });
 
     final session = locator<Session>();
-    updateLatLong(
-      latitude: double.parse(session.currentLat),
-      longitude: double.parse(session.currentLong),
-    );
+
+    log("session.currentLat is :${session.currentLat}");
+    log("session.currentLong is :${session.currentLong}");
+
+    if (session.currentLat != '') {
+      updateLatLong(
+        latitude: double.parse(session.currentLat),
+        longitude: double.parse(session.currentLong),
+      );
+    }
 
     // connectToSocket();
   }
