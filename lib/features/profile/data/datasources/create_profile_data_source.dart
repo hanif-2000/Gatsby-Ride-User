@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/utility/extension.dart';
 import 'package:GetsbyRideshare/features/profile/data/models/edit_profile_response_model.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +17,8 @@ class CreateProfileDataSourceImplementation implements CreateProfileDataSource {
   Future<EditProfileResponseModel> createProfile(FormData formData) async {
     String url = "api/webservice/customer/create/profile";
     dio.withToken();
+
+    log("create profile formdata is:${formData.fields} ");
     try {
       final response = await dio.post(url, data: formData);
       final model = EditProfileResponseModel.fromJson(response.data);

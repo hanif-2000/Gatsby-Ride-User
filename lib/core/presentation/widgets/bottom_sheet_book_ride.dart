@@ -213,8 +213,22 @@ class BottomSheetBookRide extends StatelessWidget {
                                             Text(
                                               provider.paymentMethod == null
                                                   ? "Select Payment"
-                                                  : provider
-                                                      .paymentMethod!.name,
+                                                  : provider.paymentMethod! ==
+                                                          PaymentMethod.cash
+                                                      ? "Cash"
+                                                      : provider.paymentMethod! ==
+                                                              PaymentMethod
+                                                                  .creditCard
+                                                          ? "CreditCard"
+                                                          : provider.paymentMethod! ==
+                                                                  PaymentMethod
+                                                                      .googlePay
+                                                              ? "Google Pay"
+                                                              : provider.paymentMethod! ==
+                                                                      PaymentMethod
+                                                                          .applePay
+                                                                  ? "Apple Pay"
+                                                                  : "Select Payment",
                                               style: TextStyle(
                                                 fontFamily: 'poPPinMedium',
                                                 fontSize: 16.0,

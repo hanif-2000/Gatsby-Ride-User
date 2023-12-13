@@ -23,6 +23,7 @@ class RegisterProvider extends FormProvider {
       'email': email,
       'password': password,
       'device_type': sessionHelper.device,
+      'fcm_token': sessionHelper.sessionFcmToken,
     });
     final result = await doRegister.call(formData);
     logMe('result123---');

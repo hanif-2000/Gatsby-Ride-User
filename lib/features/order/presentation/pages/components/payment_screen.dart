@@ -557,7 +557,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       listen: false)
                                                   .selectedCardExpiry
                                                   .split('/')
-                                                  .last
+                                                  .first
                                               : '10',
                                           "card[exp_year]": Provider.of<
                                                               PaymentProvider>(
@@ -571,7 +571,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       listen: false)
                                                   .selectedCardExpiry
                                                   .split('/')
-                                                  .first
+                                                  .last
                                               : '36',
                                           "card[cvc]": int.parse(
                                               textEditingController.text)
@@ -663,6 +663,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                                         if (res.statusCode == 402) {
                                           dismissLoading();
+                                          Navigator.pop(context);
                                           log("card details incorrect");
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(const SnackBar(
@@ -730,7 +731,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
               // Spacer(),
               SizedBox(
-                height: _deviceSize.height * .1,
+                height: _deviceSize.height * .05,
               ),
 
               widget.paymentMode == 1

@@ -11,7 +11,9 @@ class FirebaseHelper {
   static late FirebaseMessaging messaging;
 
   static Future<void> init() async {
-    logMe("Firebasee helperrrr");
+    logMe("Firebasee helperrrr init");
+    log("Firebasee helperrrr init");
+
     await Firebase.initializeApp(
         name: 'gatsbyRideShare',
         options: DefaultFirebaseOptions.currentPlatform);
@@ -26,6 +28,8 @@ class FirebaseHelper {
   }
 
   static Future<void> setupMessaging() async {
+    log("Firebasee helperrrr init setupMessaging");
+
     await messaging.getToken().then((token) async {
       final session = locator<Session>();
       logMe("firebase-token: $token");
@@ -35,6 +39,8 @@ class FirebaseHelper {
   }
 
   static Future<void> incomingNotificationHandling() async {
+    log("Firebasee helperrrr init incomingNotificationHandling");
+
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log("on message listen:-->> ${message.data}");
@@ -72,9 +78,10 @@ class FirebaseHelper {
   }
 
   static Future<bool> permissionHandler() async {
+    log("Firebasee helperrrr permission handler called");
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
-      announcement: false,
+      announcement: true,
       badge: true,
       carPlay: false,
       criticalAlert: false,
@@ -88,6 +95,7 @@ class FirebaseHelper {
 }
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  log("Firebasee helperrrr firebase messgae background handler");
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   // await Firebase.initializeApp();
@@ -96,7 +104,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   _notificationService.showNotifications(message);
 
   log("Message _____ " + message.data.toString());
-
   log("message data TITLE is ---${message.notification!.title}");
   log("message data BODY is ---${message.data['message']}");
 

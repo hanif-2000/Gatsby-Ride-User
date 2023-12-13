@@ -127,8 +127,8 @@ class FeedBackScreen extends StatelessWidget {
                           updateOnDrag: true,
                           unratedColor: greyEFEFF4Color,
                           glow: false,
-                          initialRating: 0,
-                          minRating: 0,
+                          initialRating: provider.ratingGiven,
+                          minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: true,
                           itemCount: 5,
@@ -198,6 +198,11 @@ class FeedBackScreen extends StatelessWidget {
                               log("Order Status LOADED--------");
 
                               provider.commentsEditingController.clear();
+
+                              provider.updateRatingComment(
+                                rating: 1,
+                                comment: '',
+                              );
 
                               Navigator.push(
                                 context,

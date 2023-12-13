@@ -80,7 +80,7 @@ class OrderProvider with ChangeNotifier {
 
   String orderId = '';
 
-  double ratingGiven = 10.0;
+  double ratingGiven = 1;
   String commentGiven = '';
 
   bool isOrderAccepted = false;
