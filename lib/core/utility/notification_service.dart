@@ -33,15 +33,14 @@ class NotificationHelper {
   }
 
   final AndroidNotificationDetails _androidNotificationDetails =
-      const AndroidNotificationDetails(
-    'channel ID',
-    'channel name',
-    playSound: true,
-    channelShowBadge: false,
-    priority: Priority.max,
-    importance: Importance.max,
-    // color: Color(0xff000000),
-  );
+      const AndroidNotificationDetails('channel ID', 'channel name',
+          playSound: true,
+          channelShowBadge: false,
+          priority: Priority.max,
+          importance: Importance.max,
+          enableVibration: true
+          // color: Color(0xff000000),
+          );
 
   Future<void> showNotifications(RemoteMessage message) async {
     if (message.notification != null) {

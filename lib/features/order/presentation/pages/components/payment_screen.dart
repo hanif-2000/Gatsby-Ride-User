@@ -587,6 +587,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           data: body,
                                         );
 
+                                        log("card payment response code is:-->> ${res.statusCode}");
+                                        log("card payment response code is:-->>${res.data}");
+
                                         if (res.statusCode == 200) {
                                           log(res.data.toString());
                                           log('token response :-->>${res.data["id"]}');
@@ -605,6 +608,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           };
 
                                           log(body.toString());
+                                          log("session token is:-->> ${sessionToken}");
 
                                           var response = await dio.post(
                                             'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',

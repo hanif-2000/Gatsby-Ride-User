@@ -23,6 +23,11 @@ class FirebaseHelper {
       log("IS AUTHORIZED:  $authorized");
       if (authorized) {
         await setupMessaging();
+      } else {
+        await setupMessaging();
+        // await permissionHandler().then((value) async => {
+        //       if (authorized) {await setupMessaging()}
+        //     });
       }
     });
   }
