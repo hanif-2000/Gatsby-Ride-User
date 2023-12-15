@@ -23,14 +23,26 @@ class NewSocketProvider with ChangeNotifier {
   WebSocketChannel? channel;
 
   connectToSocket() async {
-    final wsUrl = Uri.parse(
-        'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
-    channel = WebSocketChannel.connect(wsUrl);
+    try {
+      final wsUrl = Uri.parse(
+          'ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
+      channel = WebSocketChannel.connect(wsUrl);
 
-    log("web socket connect url is : $wsUrl");
+      log("web socket connect url is : $wsUrl");
+      log("web socket connect url is : $channel");
 
-    await channel!.ready;
-    listenToSocket();
+      await channel!.ready;
+      listenToSocket();
+    } catch (e) {
+      // showDialog(
+      //   barrierDismissible: false,
+      //   context: context,
+      //   builder: (context) {
+      //     return CustomSimpleDialog(text: "socket error $e", onTap: () {});
+      //   },
+      // );
+      log("connect to socket error :$e");
+    }
   }
 
   disconnectSocket() {
@@ -81,6 +93,13 @@ class NewSocketProvider with ChangeNotifier {
         log("websoceet data is:-->>${data}");
       },
       onError: (error) => print("errot is" + error),
+      onDone: () {
+        Future.delayed(Duration(seconds: 5)).then(
+          (value) {
+            connectToSocket();
+          },
+        );
+      },
     );
 
     log("res is res:${res.length}");
