@@ -130,24 +130,7 @@ class AddNewCardPopUp extends StatelessWidget {
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
                         initialMonthYearPickerMode: MonthYearPickerMode.year,
-                        lastDate: DateTime(DateTime.now().year + 30)
-                        // showCupertinoDialog<void>(
-                        //   context: context,
-                        //   builder: (BuildContext context) {
-                        //     return Container(
-                        //       height: 200,
-                        //       child: CupertinoDatePicker(
-                        //         mode: CupertinoDatePickerMode.date,
-                        //         initialDateTime: DateTime.now(),
-                        //         onDateTimeChanged: (DateTime newDate) {
-                        //           // setState(() {
-                        //           //   _selectedDate = newDate;
-                        //           // });
-                        //         },
-                        //       ),
-                        //     );
-                        //   },
-                        );
+                        lastDate: DateTime(DateTime.now().year + 30));
 
                     if (picked != null) {
                       log("picked:  ${picked}");
