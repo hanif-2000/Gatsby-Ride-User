@@ -617,6 +617,17 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                           ),
                         ),
 
+                        // Column(
+                        //   children: [
+                        //     Text(
+                        //         "Driver latlong realtime: ${provider.driverLat}" +
+                        //             " , " +
+                        //             "${provider.driverLng}"),
+                        //     Text(
+                        //         "Polyline is: ${provider.polylineCoordinates}"),
+                        //   ],
+                        // ),
+
                         /**Old Code  */
 
                         // OriginWidget(

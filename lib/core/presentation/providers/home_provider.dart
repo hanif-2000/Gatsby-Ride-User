@@ -368,6 +368,7 @@ class HomeProvider with ChangeNotifier {
 
       MarkerId markerId = const MarkerId("origin");
       final Marker marker = Marker(
+        anchor: const Offset(0.5, 0.5),
         markerId: markerId,
         position: LatLng(originLatLng.latitude, originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),

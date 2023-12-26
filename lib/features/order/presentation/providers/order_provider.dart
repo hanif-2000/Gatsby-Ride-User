@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:ui' as ui;
-
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
 import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
@@ -296,6 +295,7 @@ class OrderProvider with ChangeNotifier {
       MarkerId markerIdOrigin = const MarkerId("origin");
       MarkerId markerIdDestination = const MarkerId("destination");
       final Marker markerOrigin = Marker(
+        anchor: const Offset(0.5, 0.5),
         markerId: markerIdOrigin,
         position: LatLng(orderDataDetail.originLatLng.latitude,
             orderDataDetail.originLatLng.longitude),
@@ -306,6 +306,7 @@ class OrderProvider with ChangeNotifier {
         onTap: () {},
       );
       final Marker markerDestination = Marker(
+        anchor: const Offset(0.5, 0.5),
         markerId: markerIdDestination,
         position: LatLng(orderDataDetail.destinationLatLng.latitude,
             orderDataDetail.destinationLatLng.longitude),
@@ -379,17 +380,19 @@ class OrderProvider with ChangeNotifier {
         .then((result) {
       if (result.isNotEmpty) {
         polylineCoordinates = [];
+        polylineCoordinates.clear();
         for (var point in result) {
           polylineCoordinates.add(LatLng(point.latitude, point.longitude));
         }
 
         Polyline polyline = Polyline(
             polylineId: const PolylineId("jalur"),
-            color: Colors.lightBlue,
+            color: Colors.black,
             points: polylineCoordinates,
             width: 6,
             startCap: Cap.roundCap,
             endCap: Cap.roundCap);
+
         polylines.add(polyline);
 
         log(polylines.toString());
@@ -559,23 +562,24 @@ class OrderProvider with ChangeNotifier {
     }, (data) async* {
       var latLong = data.longLat;
       var split = latLong.split(",");
-      var latDriver = double.parse(split[0]);
-      var lngDriver = double.parse(split[1]);
+      var newlatDriver = double.parse(split[0]);
+      var newlngDriver = double.parse(split[1]);
 
       log("fetchDriverLocation:-->> _driverLat ${_driverLat} ");
-      log("fetchDriverLocation:-->> latDriver ${latDriver} ");
+      log("fetchDriverLocation:-->> latDriver ${newlatDriver} ");
       log("fetchDriverLocation:-->> _driverLng ${_driverLng} ");
-      log("fetchDriverLocation:-->> lngDriver ${lngDriver} ");
+      log("fetchDriverLocation:-->> lngDriver ${newlngDriver} ");
 
-      if (_driverLat != latDriver && _driverLng != lngDriver) {
-        _driverLat = latDriver;
-        _driverLng = lngDriver;
+      if (_driverLat != newlatDriver && _driverLng != newlngDriver) {
+        _driverLat = newlatDriver;
+        _driverLng = newlngDriver;
         _driverLocation = data;
+        notifyListeners();
         logMe("Listen True");
         await trackingDriver(true);
       } else {
         logMe("Listen False");
-        await trackingDriver(false);
+        await trackingDriver(true);
       }
 
       yield GetDriverLocationLoaded(data: data);
@@ -604,14 +608,18 @@ class OrderProvider with ChangeNotifier {
 
     // creating a new MARKER
     final Marker marker = Marker(
+      anchor: const Offset(0.5, 0.5),
       markerId: markerId,
       position: LatLng(latDriver, lngDriver),
       icon: driverMarker,
       rotation: bearing.toDouble(),
+      infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
       onTap: () {},
     );
     //add to marker list
     markers[markerId] = marker;
+
+    notifyListeners();
 
     if (isFirstTracking) {
       if (listenLocation) {
