@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
-import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +30,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
-  var socketProvider = locator<NewSocketProvider>();
+  var socketProvider = locator<LatestSocketProvider>();
 
   // var orderProvider = locator<OrderProvider>();
   // var chatProvider = locator<ChatProvider>();
@@ -151,7 +151,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           ),
         ),
         // backgroundColor: Colors.grey,
-        body: Consumer<NewSocketProvider>(builder: (context, provider, _) {
+        body: Consumer<LatestSocketProvider>(builder: (context, provider, _) {
           return Column(
             children: [
               // Container(

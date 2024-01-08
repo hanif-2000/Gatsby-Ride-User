@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
-import 'package:app_settings/app_settings.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../../../features/login/presentation/pages/login_page.dart';
-import '../../../socket/new_socket_provider.dart';
 import '../../domain/entities/order_data_detail.dart';
 import '../../static/assets.dart';
 import '../../utility/helper.dart';
@@ -28,7 +25,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final newSocketProvider = locator<NewSocketProvider>();
+  final newSocketProvider = locator<LatestSocketProvider>();
   @override
   void initState() {
     super.initState();
@@ -55,18 +52,18 @@ class _SplashPageState extends State<SplashPage> {
           //   }
           // });
 
-          if (Platform.isAndroid) {
-            PermissionStatus status = await Permission.notification.request();
-            if (status.isGranted) {
-              log("notification permissin is granetd");
-              // notification permission is granted
-            } else {
-              // Permission.notification.request();
-              log("ask for notification permission ");
-              AppSettings.openAppSettings(type: AppSettingsType.notification);
-              // Open settings to enable notification permission
-            }
-          }
+          // if (Platform.isAndroid) {
+          //   // PermissionStatus status = await Permission.notification.request();
+          //   // if (status.isGranted) {
+          //   //   log("notification permissin is granetd");
+          //   //   // notification permission is granted
+          //   // } else {
+          //   //   // Permission.notification.request();
+          //   //   log("ask for notification permission ");
+          //   //   AppSettings.openAppSettings(type: AppSettingsType.notification);
+          //   //   // Open settings to enable notification permission
+          //   // }
+          // }
 
           final session = locator<Session>();
           // log("session token" + session.sessionToken.toString());
@@ -79,7 +76,7 @@ class _SplashPageState extends State<SplashPage> {
               break;
             case CurrencyLoaded:
               if (session.isLoggedIn) {
-                newSocketProvider.connectToSocket();
+                newSocketProvider.connectToSocket(context);
                 if (session.orderStatus == 100 || session.orderStatus == 8) {
                   Navigator.pushNamedAndRemoveUntil(
                       context, HomePage.routeName, (route) => false);

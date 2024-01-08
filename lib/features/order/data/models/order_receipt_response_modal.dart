@@ -52,8 +52,9 @@ class OrderReceiptDataModel extends Equatable {
   dynamic newTotal;
 
   String grandTotal;
-  // String extraTime;
-  // String extraKmPrice;
+  String extraTime;
+  String extraTimePrice;
+
   String extraDistance;
   String extraDistancePrice;
   DateTime orderTime;
@@ -83,6 +84,8 @@ class OrderReceiptDataModel extends Equatable {
     required this.image,
     required this.userName,
     required this.userPhone,
+    required this.extraTime,
+    required this.extraTimePrice,
     required this.rating,
     required this.plateNumber,
     required this.vehicleName,
@@ -121,7 +124,11 @@ class OrderReceiptDataModel extends Equatable {
         vehicleCategory,
         carModel,
         pendingAmount,
-        newTotal
+        newTotal,
+        extraDistance,
+        extraDistancePrice,
+        extraTime,
+        extraTimePrice
       ];
 
   factory OrderReceiptDataModel.fromJson(Map<String, dynamic> json) =>
@@ -147,6 +154,8 @@ class OrderReceiptDataModel extends Equatable {
         carModel: json["car_model"] ?? "",
         pendingAmount: json["pending_amount"] ?? 0.0,
         newTotal: json["new_total"] ?? 0.0,
+        extraTime: json["extra_time"] ?? '0',
+        extraTimePrice: json["extra_time_price"] ?? '0',
 
         paymentMethod: json["payment_method"] ?? 1,
         vehicleCategory: VehicleCategory.fromJson(json["vehicle_category"]),
@@ -183,6 +192,8 @@ class OrderReceiptDataModel extends Equatable {
         "grand_total": grandTotal,
         "pendingAmount": pendingAmount,
         "newTotal": newTotal,
+        "extra_time": extraTime,
+        "extra_time_price": extraTimePrice,
 
         // "extra_time": extraTime,
         // "extra_km_price": extraKmPrice,

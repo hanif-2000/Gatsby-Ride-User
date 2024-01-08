@@ -414,6 +414,10 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PaymentScreen(
+                                    extraTime: data.orderReceipt![0].extraTime,
+
+                                    extraTimePrice:
+                                        data.orderReceipt![0].extraTimePrice,
                                     newTotal: data.orderReceipt![0].newTotal
                                         .toString(),
                                     pendingAmount: data

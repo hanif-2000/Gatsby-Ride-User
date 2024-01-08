@@ -5,7 +5,7 @@ import 'package:GetsbyRideshare/features/login/presentation/providers/login_prov
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
-import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -104,8 +104,8 @@ Future<void> main() async {
             // ChangeNotifierProvider<ChatProvider>(
             //   create: (context) => locator<ChatProvider>(),
             // ),
-            ChangeNotifierProvider<NewSocketProvider>(
-              create: (context) => locator<NewSocketProvider>(),
+            ChangeNotifierProvider<LatestSocketProvider>(
+              create: (context) => locator<LatestSocketProvider>(),
             ),
           ],
           builder: (context, _) => const MyApp(),

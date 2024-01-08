@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
@@ -16,6 +15,7 @@ import '../../../../core/static/dimens.dart';
 import '../../../../core/utility/helper.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
+import '../../../../socket/latest_socket_provider.dart';
 import '../../../register/presentation/pages/register_page.dart';
 import '../providers/login_provider.dart';
 import '../providers/login_state.dart';
@@ -27,7 +27,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var socketProvider = locator<NewSocketProvider>();
+    var socketProvider = locator<LatestSocketProvider>();
     return ChangeNotifierProvider<LoginProvider>(
       create: (ctx) => locator<LoginProvider>(),
       child: Scaffold(
@@ -288,7 +288,7 @@ class LoginPage extends StatelessWidget {
                               final session = locator<Session>();
                               session.setLoggedIn = true;
                               showToast(message: "Login Success");
-                              socketProvider.connectToSocket();
+                              socketProvider.connectToSocket(context);
                               Navigator.pushNamedAndRemoveUntil(context,
                                   HomePage.routeName, (route) => false);
                               logMe(
@@ -424,7 +424,7 @@ class LoginPage extends StatelessWidget {
                                         session.setLoggedIn = true;
                                         showToast(message: appLoc.success);
 
-                                        socketProvider.connectToSocket();
+                                        socketProvider.connectToSocket(context);
                                         Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             HomePage.routeName,

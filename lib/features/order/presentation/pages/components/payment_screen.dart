@@ -35,9 +35,9 @@ class PaymentScreen extends StatefulWidget {
   final dynamic newTotal;
 
   final dynamic extraDistancePrice;
-  // final dynamic extraMinPrice;
+  final dynamic extraTimePrice;
   final dynamic extraDistance;
-  // final dynamic extraTime;
+  final dynamic extraTime;
   final String distance;
 
   const PaymentScreen({
@@ -51,9 +51,9 @@ class PaymentScreen extends StatefulWidget {
     required this.orderId,
     required this.driverId,
     required this.extraDistance,
-    // required this.extraTime,
+    required this.extraTime,
     required this.extraDistancePrice,
-    // required this.extraMinPrice,
+    required this.extraTimePrice,
     required this.grandTotal,
     required this.vehicleCategory,
     required this.distance,
@@ -276,8 +276,28 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
 
                     TextInRow(
+                      firstText: 'Extra Time',
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: widget.extraTime + " min",
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: widget.vehicleCategory == "2"
+                          ? r"Extra Time Price 0.35 /min"
+                          : r"Extra Time Price 0.30 /min",
+                      // secondText: r'$' + widget.extraDistancePrice,
+                      secondText: r'CA$ ' + widget.extraTimePrice,
+                    ),
+
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+
+                    TextInRow(
                       firstText: 'Actual Amount',
-                      secondText: 'CA\$ ' + widget.grandTotal.toString(),
+                      secondText: 'CA\$ ' + widget.totalPrice.toString(),
                     ),
                     Divider(
                       color: whiteAccentColor,
