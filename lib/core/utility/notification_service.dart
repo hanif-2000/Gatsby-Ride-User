@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -21,7 +20,7 @@ class NotificationHelper {
 
     const initializationSettingsAndroid =
         AndroidInitializationSettings(iconNotification);
-    const initializationSettingsIos = IOSInitializationSettings(
+    const initializationSettingsIos = DarwinInitializationSettings(
         requestSoundPermission: false,
         requestAlertPermission: false,
         requestBadgePermission: false);
@@ -31,7 +30,7 @@ class NotificationHelper {
             iOS: initializationSettingsIos);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: selectNotification);
+        onDidReceiveNotificationResponse: selectNotification);
   }
 
   final AndroidNotificationDetails _androidNotificationDetails =
@@ -62,7 +61,7 @@ class NotificationHelper {
     }
   }
 
-  void selectNotification(String? payload) async {
+  void selectNotification(NotificationResponse ? payload) async {
     //handle your logic here
   }
 }
