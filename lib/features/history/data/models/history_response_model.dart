@@ -48,6 +48,10 @@ class HistoryOrder {
   String? startAddress;
   String? endAddress;
   String? distance;
+  String? extraDistance;
+  String? extraDistancePrice;
+  String? extraTime;
+  String? extraTimePrice;
   String? total;
   dynamic grandTotal;
   dynamic pendingAmount;
@@ -81,6 +85,10 @@ class HistoryOrder {
     required this.total,
     required this.pendingAmount,
     required this.newTotal,
+    required this.extraDistance,
+    required this.extraDistancePrice,
+    required this.extraTime,
+    required this.extraTimePrice,
     required this.orderTime,
     required this.tip,
     required this.status,
@@ -115,6 +123,24 @@ class HistoryOrder {
         orderTime: DateTime.parse(json["order_time"]),
         status: json["status"] ?? 0,
         paymentStatus: json["payment_status"],
+        extraDistance:
+            ((json["extra_distance"] != null) || (json["extra_distance"] != ''))
+                ? json["extra_distance"]
+                : '0',
+        extraDistancePrice: ((json["extra_distance_price"] != null) ||
+                (json["extra_distance_price"] != ''))
+            ? json["extra_distance_price"]
+            : '0',
+        extraTime: ((json["extra_time"] != null) || (json["extra_time"] != ''))
+            ? json["extra_time"]
+            : '0',
+        extraTimePrice: ((json["extra_time_price"] != null) ||
+                (json["extra_time_price"] != ''))
+            ? json["extra_time_price"]
+            : '0',
+        // extraDistancePrice: json["extra_distance_price"],
+        // extraTime: json["extra_time"],
+        // extraTimePrice: json["extra_time_price"],
         timeSchool: json["time_school"] ?? '6',
         timeAfterSchool: json["time_after_school"] ?? '',
         paymentMethod: json["payment_method"],
@@ -227,7 +253,7 @@ class RatingList {
   int receiverId;
   int orderId;
   String rating;
-  String? review;
+  dynamic review;
   int type;
   int status;
   DateTime createdAt;

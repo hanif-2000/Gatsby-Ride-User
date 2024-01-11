@@ -278,7 +278,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       firstText: 'Extra Time',
                       // secondText: widget.extraDistance + " Km",
-                      secondText: widget.extraTime + " min",
+                      secondText: (widget.extraTime == '')
+                          ? "0 Min"
+                          : "${(int.parse(widget.extraTime)) / 60}" + " min",
                     ),
                     Divider(
                       color: whiteAccentColor,
@@ -288,7 +290,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ? r"Extra Time Price 0.35 /min"
                           : r"Extra Time Price 0.30 /min",
                       // secondText: r'$' + widget.extraDistancePrice,
-                      secondText: r'CA$ ' + widget.extraTimePrice,
+                      secondText: ((widget.extraTimePrice != null) ||
+                              (widget.extraTimePrice != '') ||
+                              (widget.extraTimePrice != '0'))
+                          ? r'CA$ ' + (widget.extraTimePrice)
+                          : r'CA$ 0',
                     ),
 
                     Divider(
@@ -306,6 +312,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       firstText: 'Pending Amount',
                       // secondText: widget.extraDistance + " Km",
                       secondText: "CA\$" + " ${widget.pendingAmount}",
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: 'Extra Distance',
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: widget.extraDistance == ''
+                          ? '0 Km'
+                          : "${widget.extraDistance} Km",
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: 'Extra Distance Price',
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: "CA\$" + "${widget.extraDistancePrice} Min",
                     ),
                     Divider(
                       color: whiteAccentColor,
