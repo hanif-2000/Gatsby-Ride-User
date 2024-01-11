@@ -626,7 +626,7 @@ class HomeProvider with ChangeNotifier {
     yield VehiclesCategoryLoading();
 
     final result = await getVehicleCatagory(dist, "0",
-        "${originLatLng.latitude},${originLatLng.longitude}", newTime);
+        "${originLatLng.latitude},${originLatLng.longitude}", estimatedTime.toString());
     yield* result.fold(
       (failure) async* {
         yield VehiclesCategoryFailure(failure: failure);
