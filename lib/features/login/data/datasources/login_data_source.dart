@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
@@ -36,14 +37,12 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String deviceType,
   ) async {
     String url = 'api/webservice/login';
-    final session = locator<Session>();
-    String fcmToken = session.sessionFcmToken;
-
-    log("fcm token : " + fcmToken.toString());
+   final deviceToken = await FirebaseMessaging.instance.getToken()??"";
+   log("fcm token : " + deviceToken.toString());
     FormData data = FormData.fromMap({
       'email': email,
       'password': password,
-      'fcm_token': fcmToken,
+      'fcm_token': deviceToken,
       'login_type': loginType,
       'device_type': deviceType
     });

@@ -1,11 +1,10 @@
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/utility/notification_service.dart';
-import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../firebase_options.dart';
 import 'helper.dart';
-import 'injection.dart';
+
 
 class FirebaseHelper {
   static late FirebaseMessaging messaging;
@@ -13,13 +12,9 @@ class FirebaseHelper {
   static Future<void> init() async {
     logMe("Firebasee helperrrr init");
     log("Firebasee helperrrr init");
-
-    await Firebase.initializeApp(
-        name: 'gatsbyRideShare',
-        options: DefaultFirebaseOptions.currentPlatform);
     messaging = FirebaseMessaging.instance;
-
-    await permissionHandler().then((authorized) async {
+    await incomingNotificationHandling();
+ /*   await permissionHandler().then((authorized) async {
       log("IS AUTHORIZED:  $authorized");
       if (authorized) {
         await setupMessaging();
@@ -29,9 +24,9 @@ class FirebaseHelper {
         //       if (authorized) {await setupMessaging()}
         //     });
       }
-    });
+    });*/
   }
-
+/*
   static Future<void> setupMessaging() async {
     log("Firebasee helperrrr init setupMessaging");
 
@@ -41,7 +36,7 @@ class FirebaseHelper {
       session.setFcmToken = token!;
     });
     await incomingNotificationHandling();
-  }
+  }*/
 
   static Future<void> incomingNotificationHandling() async {
     log("Firebasee helperrrr init incomingNotificationHandling");

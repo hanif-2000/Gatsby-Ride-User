@@ -53,7 +53,7 @@ class SplashProvider with ChangeNotifier {
   }
 
   Stream<CurrencyState> fetchCurrency() async* {
-    checkLocationAndPermission();
+   await checkLocationAndPermission();
     // getCurrentLocation();
 
     getDeviceType();

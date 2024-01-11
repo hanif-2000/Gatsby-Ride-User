@@ -5,7 +5,9 @@ import 'package:GetsbyRideshare/features/login/presentation/providers/login_prov
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
+import 'package:GetsbyRideshare/firebase_options.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -31,9 +33,11 @@ import 'features/profile/presentation/providers/profile_edit_provider.dart';
 import 'features/profile/presentation/providers/profile_provider.dart';
 import 'dart:async';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
   // Stripe.publishableKey =
   //     'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
 
@@ -41,8 +45,9 @@ Future<void> main() async {
 
   try {
     await init();
-
-    locator.isReady<Session>().then((_) async {
+    await FirebaseHelper.init();
+    await FirebaseMessaging.instance.requestPermission();
+    await locator.isReady<Session>().then((_) async {
       await NotificationHelper().init();
       runApp(
         MultiProvider(
@@ -111,36 +116,13 @@ Future<void> main() async {
           builder: (context, _) => const MyApp(),
         ),
       );
-      await FirebaseHelper.init().then((_) {});
+
     });
   } catch (e) {
     logMe(e);
   }
 }
 
-// Platform messages are asynchronous, so we initialize in an async method.
-// Future<void> getKeyHash() async {
-//   String keyHash;
-//   // Platform messages may fail, so we use a try/catch PlatformException.
-//   // We also handle the message potentially returning null.
-//   try {
-//     keyHash = await FlutterFacebookKeyhash.getFaceBookKeyHash ??
-//         'Unknown platform KeyHash';
-//   } on PlatformException {
-//     keyHash = 'Failed to get Kay Hash.';
-//   }
-
-//   log("KEY HASH IS===============>>>>>>>>>>>>>" + keyHash);
-
-// If the widget was removed from the tree while the asynchronous platform
-// message was in flight, we want to discard the reply rather than calling
-// setState to update our non-existent appearance.
-// if (!mounted) return;
-
-// setState(() {
-//   _keyHash = keyHash;
-// });
-// }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

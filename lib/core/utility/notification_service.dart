@@ -16,10 +16,9 @@ class NotificationHelper {
 
   Future<void> init() async {
     const String iconNotification = '@mipmap/launcher_icon';
-
     const initializationSettingsAndroid =
         AndroidInitializationSettings(iconNotification);
-    const initializationSettingsIos = IOSInitializationSettings(
+    const initializationSettingsIos = DarwinInitializationSettings(
         requestSoundPermission: false,
         requestAlertPermission: false,
         requestBadgePermission: false);
@@ -29,7 +28,7 @@ class NotificationHelper {
             iOS: initializationSettingsIos);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: selectNotification);
+        onDidReceiveNotificationResponse: selectNotification);
   }
 
   final AndroidNotificationDetails _androidNotificationDetails =
@@ -62,7 +61,7 @@ class NotificationHelper {
     }
   }
 
-  void selectNotification(String? payload) async {
+  void selectNotification(NotificationResponse? payload) async {
     //handle your logic here
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -32,7 +33,8 @@ class _SplashPageState extends State<SplashPage> {
 
     // newSocketProvider.connectToSocket();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Timer(const Duration(seconds: 2), () async {
+      Timer(const Duration(seconds: 3), () async {
+
         // if (kDebugMode) {
         //   checkPermission().then((value) {
         //     return log(value.toString());
