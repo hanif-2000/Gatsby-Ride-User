@@ -288,7 +288,7 @@ class HomeProvider with ChangeNotifier {
   }
 
 //Set current location in map intially
-  setCurrentLocation() async {
+  Future<void> setCurrentLocation() async {
     print("Get current location  called");
     try {
       bool serviceStatus = await locationService.serviceEnabled();
@@ -308,7 +308,7 @@ class HomeProvider with ChangeNotifier {
           bool serviceStatusResult = await locationService.requestService();
           logMe("Service status activated after request: $serviceStatusResult");
           if (serviceStatusResult) {
-            setCurrentLocation();
+            await setCurrentLocation();
           }
         } catch (e) {
           logMe(e.toString());
@@ -404,8 +404,7 @@ class HomeProvider with ChangeNotifier {
 // Set initial Marker in Map i.e Current Location
   Future<void> setAddressFromLatLng() async {
     try {
-      List<Placemark> p = await placemarkFromCoordinates(
-          originLatLng.latitude, originLatLng.longitude);
+      List<Placemark> p = await placemarkFromCoordinates(originLatLng.latitude, originLatLng.longitude);
 
       Placemark place = p[0];
 
@@ -420,17 +419,13 @@ class HomeProvider with ChangeNotifier {
       );
       originIsFilled = true;
       notifyListeners();
-
-      googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      await googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(originLatLng.latitude, originLatLng.longitude),
         zoom: 16,
       )));
 
-      originAddress =
-          "${place.street}, ${place.subLocality}, ${place.locality}";
-      destinationAddress =
-          "${place.street}, ${place.subLocality}, ${place.locality}";
+      originAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
+      destinationAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
       originText = Text(
         originAddress,
         softWrap: false,

@@ -1,3 +1,4 @@
+import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/data/datasources/contactus_data_source.dart';
 import 'package:GetsbyRideshare/features/contact_us/data/repositories/contactus_repository_implementation.dart';
 import 'package:GetsbyRideshare/features/contact_us/domain/repositories/contactus_repository.dart';
@@ -118,8 +119,7 @@ Future<void> init() async {
 
   //external
   locator.registerLazySingleton<Dio>(() => DioClient().dio);
-  locator.registerLazySingletonAsync<Session>(() async =>
-      SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
+  locator.registerLazySingletonAsync<Session>(() async => SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
   locator.registerLazySingletonAsync<SharedPreferences>(
       () async => await SharedPreferences.getInstance());
   locator.registerLazySingleton<GlobalKey<NavigatorState>>(
@@ -383,6 +383,8 @@ Future<void> init() async {
   );
   locator.registerFactory<ProfileEditProvider>(
       () => ProfileEditProvider(updateProfile: locator()));
+
+
   locator.registerFactory<ChangeEmailProvider>(
       () => ChangeEmailProvider(updateEmail: locator()));
   locator.registerFactory<ChangePasswordProvider>(
@@ -402,5 +404,6 @@ Future<void> init() async {
 
   // locator.registerFactory<SocketProvider>(() => SocketProvider());
   locator.registerFactory<LatestSocketProvider>(() => LatestSocketProvider());
+  locator.registerFactory<LogOutProvider>(() => LogOutProvider());
   // locator.registerFactory<ChatProvider>(() => ChatProvider());
 }

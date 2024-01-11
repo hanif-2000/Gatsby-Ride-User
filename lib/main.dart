@@ -1,3 +1,4 @@
+import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
@@ -111,6 +112,9 @@ Future<void> main() async {
             // ),
             ChangeNotifierProvider<LatestSocketProvider>(
               create: (context) => locator<LatestSocketProvider>(),
+            ),
+            ChangeNotifierProvider<LogOutProvider>(
+              create: (context) => locator<LogOutProvider>(),
             ),
           ],
           builder: (context, _) => const MyApp(),
