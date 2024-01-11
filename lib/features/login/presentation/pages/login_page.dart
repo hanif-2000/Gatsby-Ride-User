@@ -288,7 +288,7 @@ class LoginPage extends StatelessWidget {
                               final session = locator<Session>();
                               session.setLoggedIn = true;
                               showToast(message: "Login Success");
-                              socketProvider.connectToSocket(context);
+                             // socketProvider.connectToSocket(context);
                               Navigator.pushNamedAndRemoveUntil(context,
                                   HomePage.routeName, (route) => false);
                               logMe(
@@ -424,7 +424,7 @@ class LoginPage extends StatelessWidget {
                                         session.setLoggedIn = true;
                                         showToast(message: appLoc.success);
 
-                                        socketProvider.connectToSocket(context);
+                                     //   socketProvider.connectToSocket(context);
                                         Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             HomePage.routeName,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:GetsbyRideshare/core/presentation/pages/splash_page.dart';
+import 'package:GetsbyRideshare/features/login/presentation/pages/login_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
@@ -48,7 +49,7 @@ class AppInterceptor extends Interceptor {
       await sessionLogOut().then(
         (_) => Navigator.pushNamedAndRemoveUntil(
           locator<GlobalKey<NavigatorState>>().currentContext!,
-          SplashPage.routeName,
+          LoginPage.routeName,
           (route) => false,
         ),
       );

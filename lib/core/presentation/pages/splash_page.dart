@@ -26,7 +26,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final newSocketProvider = locator<LatestSocketProvider>();
+
   @override
   void initState() {
     super.initState();
@@ -78,7 +78,6 @@ class _SplashPageState extends State<SplashPage> {
               break;
             case CurrencyLoaded:
               if (session.isLoggedIn) {
-                newSocketProvider.connectToSocket(context);
                 if (session.orderStatus == 100 || session.orderStatus == 8) {
                   Navigator.pushNamedAndRemoveUntil(
                       context, HomePage.routeName, (route) => false);

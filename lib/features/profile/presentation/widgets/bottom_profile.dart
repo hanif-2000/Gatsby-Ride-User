@@ -12,6 +12,8 @@ import '../../../../core/static/styles.dart';
 import '../../../../core/utility/helper.dart';
 import 'package:provider/provider.dart';
 
+import '../../../login/presentation/pages/login_page.dart';
+
 class BottomProfile extends StatefulWidget {
   const BottomProfile({
     Key? key,
@@ -85,7 +87,7 @@ class _BottomProfileState extends State<BottomProfile> {
                             positiveAction: () async {
                               await sessionLogOut().then((_) =>
                                   Navigator.of(context).pushNamedAndRemoveUntil(
-                                      SplashPage.routeName, (route) => false));
+                                      LoginPage.routeName, (route) => false));
                             },
                           ),
                         );

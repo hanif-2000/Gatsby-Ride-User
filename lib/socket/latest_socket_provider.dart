@@ -25,6 +25,7 @@ class LatestSocketProvider extends ChangeNotifier {
   List<ChatModel> _chatMessagesList = [];
 
   int unreadMessageCount = 0;
+  bool isLoading = false;
 
   List<ChatModel> get chatMessageList => _chatMessagesList;
 
@@ -49,7 +50,7 @@ class LatestSocketProvider extends ChangeNotifier {
         log("************ Connectd ***********");
 
         listenSocketRequests(context);
-      } else {
+      }else {
         log("************ DisConnectd ***********");
       }
     });
@@ -63,6 +64,8 @@ class LatestSocketProvider extends ChangeNotifier {
     markMessageAsRead(receiverId: receiverId);
     log("join socket called $type");
     if (type == 'Join') {
+      isLoading = true;
+      notifyListeners();
     } else if (type == 'unJoin') {
       getTotalUnreadCount(receiverId);
       // clearChatList();
@@ -92,6 +95,8 @@ class LatestSocketProvider extends ChangeNotifier {
       log('-----Event  ${response.toString()}');
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'MessageList') {
+        isLoading = false ;
+        notifyListeners();
         log("messgae type is MESSAGE LIST");
         log('Message list data-----> ${response['data']}');
 

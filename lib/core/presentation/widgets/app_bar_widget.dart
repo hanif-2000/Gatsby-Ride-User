@@ -80,7 +80,7 @@ class AppBarLoggedIn extends StatelessWidget {
                         socketProvider.disconnectSocket();
                         await sessionLogOut().then((_) => Navigator.of(context)
                             .pushNamedAndRemoveUntil(
-                                SplashPage.routeName, (route) => false));
+                                LoginPage.routeName, (route) => false));
                       },
                     ),
                   );

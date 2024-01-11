@@ -2,6 +2,7 @@ import 'package:GetsbyRideshare/core/presentation/widgets/profile_drawer.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/pages/contact_us_page.dart';
 import 'package:GetsbyRideshare/features/history/presentation/pages/history_page.dart';
+import 'package:GetsbyRideshare/features/login/presentation/pages/login_page.dart';
 import 'package:GetsbyRideshare/features/privacy_policy/privacy_policy_page.dart';
 import 'package:GetsbyRideshare/features/terms_and_conditions/terms_and_conditions.dart';
 // import 'package:easy_upi_payment/easy_upi_payment.dart';
@@ -162,9 +163,11 @@ class HomeDrawerPage extends StatelessWidget {
                       context: context,
                       builder: (_) => CustomLogoutDialog(
                         positiveAction: () async {
+                          print("object");
+                     /*
                           await sessionLogOut().then((_) =>
                               Navigator.of(context).pushNamedAndRemoveUntil(
-                                  SplashPage.routeName, (route) => false));
+                                  LoginPage.routeName, (route) => false));*/
                         },
                       ),
                     );

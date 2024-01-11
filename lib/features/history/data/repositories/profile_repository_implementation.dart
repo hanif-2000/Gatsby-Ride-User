@@ -35,4 +35,6 @@ class HistoryRepositoryImplementation implements HistoryRepository {
       return Left(ServerFailure(message: e.message));
     }
   }
+
+
 }

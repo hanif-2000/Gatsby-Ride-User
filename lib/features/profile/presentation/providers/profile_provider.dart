@@ -47,6 +47,8 @@ class ProfileProvider extends FormProvider {
     });
   }
 
+
+
   setProfileData() async {
     fetchProfile().listen((state) {
       if (state is ProfileLoaded) {

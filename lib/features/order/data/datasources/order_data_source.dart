@@ -21,7 +21,6 @@ abstract class OrderDataSource {
   Future<UpdateStatusOrderResponseModel> updateStatusOrder(FormData formData);
   Future<SubmitRatingsResponseModel> submitRatings(FormData formData);
   Future<OrderReceiptResponseModel> orderReceipt(FormData formData);
-
   Future<GetStatusResponseModel> getStatusOrder();
   Future<OrderDetail> getDetailOrder();
   Future<DriverDetail> getDriverDetail();

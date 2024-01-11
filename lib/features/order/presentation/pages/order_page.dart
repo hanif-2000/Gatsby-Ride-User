@@ -45,9 +45,8 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    // newSocketProvider.connectToSocket();
     WidgetsBinding.instance.addObserver(this);
-
+    newSocketProvider.connectToSocket(context);
     // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
     // newSocketProvider.connectToSocket();q
 
@@ -111,6 +110,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
     super.dispose();
     checkOrderStatusTimer?.cancel();
     trackingDriverTimer?.cancel();
+    newSocketProvider.disconnectSocket();
     WidgetsBinding.instance.removeObserver(this);
   }
 

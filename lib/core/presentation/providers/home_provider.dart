@@ -283,14 +283,13 @@ class HomeProvider with ChangeNotifier {
 //updat LatLong initially
   updateLatLong({required double latitude, required double longitude}) {
     lat = latitude;
-
     long = longitude;
     notifyListeners();
   }
 
 //Set current location in map intially
   setCurrentLocation() async {
-    log("Get current location  called");
+    print("Get current location  called");
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
@@ -298,11 +297,12 @@ class HomeProvider with ChangeNotifier {
         logMe("locationData");
         logMe(locationData);
         originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-        destinationLatLng =
-            LatLng(locationData.latitude!, locationData.longitude!);
-        setAddressFromLatLng();
+        destinationLatLng = LatLng(locationData.latitude!, locationData.longitude!);
+        await setAddressFromLatLng();
         //onlocation change
-        locationService.onLocationChanged.listen((event) {});
+        locationService.onLocationChanged.listen((event) {
+
+        });
       } else {
         try {
           bool serviceStatusResult = await locationService.requestService();
@@ -402,7 +402,7 @@ class HomeProvider with ChangeNotifier {
   }
 
 // Set initial Marker in Map i.e Current Location
-  setAddressFromLatLng() async {
+  Future<void> setAddressFromLatLng() async {
     try {
       List<Placemark> p = await placemarkFromCoordinates(
           originLatLng.latitude, originLatLng.longitude);
@@ -626,7 +626,7 @@ class HomeProvider with ChangeNotifier {
     yield VehiclesCategoryLoading();
 
     final result = await getVehicleCatagory(dist, "0",
-        "${originLatLng.latitude},${originLatLng.longitude}", estimatedTime.toString());
+        "${originLatLng.latitude},${originLatLng.longitude}", newTime);
     yield* result.fold(
       (failure) async* {
         yield VehiclesCategoryFailure(failure: failure);
