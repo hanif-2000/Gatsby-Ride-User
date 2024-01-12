@@ -26,8 +26,37 @@ class DetailHistoryPage extends StatefulWidget {
 }
 
 class _DetailHistoryPageState extends State<DetailHistoryPage> {
+  var extraTimeTaken = "0 hr 0 Min 0 Sec";
+
+  convertSecondsToMinutes() {
+    if (widget.item.extraTime != '') {
+      int seconds = int.parse(widget
+          .item.extraTime!); // Replace this with your desired number of seconds
+
+      int minutes = seconds ~/ 60;
+      int remainingSeconds = seconds % 60;
+
+      int hours = minutes ~/ 60;
+      int remainingMinutes = minutes % 60;
+
+      print('$seconds seconds is equivalent to:');
+      print(
+          '$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
+
+      setState(() {
+        extraTimeTaken = "$hours"
+            ' hr '
+            '$remainingMinutes'
+            ' min '
+            '$remainingSeconds'
+            ' sec ';
+      });
+    } else {}
+  }
+
   @override
   void initState() {
+    convertSecondsToMinutes();
     super.initState();
   }
 
@@ -303,7 +332,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               style: TextStyle(
                                                 fontFamily: 'poPPinSemiBold',
                                                 fontWeight: FontWeight.w600,
-                                                fontSize: 18,
+                                                fontSize: 16,
                                               ),
                                             ),
                                           ),
@@ -365,7 +394,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               style: TextStyle(
                                                   fontFamily: 'poPPinSemiBold',
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize: 18),
+                                                  fontSize: 16),
                                             ),
                                           ),
                                           const SizedBox(height: 2.0),
@@ -490,7 +519,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                             //       style: const TextStyle(
                             //           fontFamily: 'Yu Ghotic',
                             //           fontWeight: FontWeight.bold,
-                            //           fontSize: 18),
+                            //           fontSize: 16),
                             //     ),
                             //     smallVerticalSpacing(),
                             //     Text(
@@ -543,7 +572,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       ? Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
                           child: Container(
-                            height: _deviceSize.height * .3,
+                            height: _deviceSize.height * .45,
                             color: whiteColor,
                             child: LayoutBuilder(
                               builder: (context, constraints) {
@@ -590,12 +619,14 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   ),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 )
                                               ],
                                             ),
-
+                                            SizedBox(
+                                              height: 8.0,
+                                            ),
                                             //Type of Taxi/Cab Type
                                             Row(
                                               mainAxisAlignment:
@@ -615,13 +646,15 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   ),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 )
                                               ],
                                             ),
                                             /** Current ride payment **/
-
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -645,12 +678,15 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   //     : widget.item.tip.toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 ),
                                               ],
                                             ),
 /** Pending/Previous ride payment **/
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
 
                                             Row(
                                               mainAxisAlignment:
@@ -673,13 +709,16 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   //     : widget.item.tip.toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 ),
                                               ],
                                             ),
 
 //etxra timne
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
 
                                             Row(
                                               mainAxisAlignment:
@@ -700,11 +739,11 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                           (widget.item
                                                                   .extraTime) ==
                                                               '0')
-                                                      ? "0 Min"
-                                                      : '${(int.parse(widget.item.extraTime!)) / 60} Min',
+                                                      ? "0 hr 0 min 0 sec"
+                                                      : '$extraTimeTaken',
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 )
 
@@ -734,6 +773,9 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                 //   ),
                                                 // ),
                                               ],
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
                                             ),
 
                                             // PriceTile(
@@ -776,12 +818,14 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   //     : widget.item.tip.toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 ),
                                               ],
                                             ),
-
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
                                             //extra distance
 
                                             Row(
@@ -806,12 +850,14 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                       : '${(widget.item.extraDistance)} Km',
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 )
                                               ],
                                             ),
-
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -840,7 +886,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   //     : widget.item.tip.toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 ),
                                               ],
@@ -865,7 +911,9 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             //     ),
                                             //   ],
                                             // ),
-
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -886,13 +934,16 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                               .toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ],
                                         ),
+                                      ),
+                                      SizedBox(
+                                        height: 6.0,
                                       ),
                                       Row(
                                           mainAxisAlignment:
@@ -905,7 +956,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               style: const TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontWeight: FontWeight.w700,
-                                                fontSize: 18,
+                                                fontSize: 16,
                                                 color: blackColor,
                                               ),
                                             ),
@@ -919,7 +970,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               style: const TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontWeight: FontWeight.w700,
-                                                fontSize: 18,
+                                                fontSize: 16,
                                                 color: blackColor,
                                               ),
                                             ),

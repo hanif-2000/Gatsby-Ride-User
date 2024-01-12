@@ -72,6 +72,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   bool isPaymentSuccess = false;
 
+  var extraTimeTaken = "0 hr 0 min 0 sec";
+
+  convertSecondsToMinutes() {
+    if (widget.extraTime != '') {
+      int seconds = int.parse(
+          widget.extraTime); // Replace this with your desired number of seconds
+
+      int minutes = seconds ~/ 60;
+      int remainingSeconds = seconds % 60;
+
+      int hours = minutes ~/ 60;
+      int remainingMinutes = minutes % 60;
+
+      print('$seconds seconds is equivalent to:');
+      print(
+          '$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
+
+      setState(() {
+        extraTimeTaken = "$hours"
+            ' hr '
+            '$remainingMinutes'
+            ' min '
+            '$remainingSeconds'
+            ' sec ';
+      });
+    } else {}
+  }
+
   updatePaymentSuccess() {
     setState(() {
       isPaymentSuccess = true;
@@ -193,6 +221,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     log("selected card number is :$cardNumber");
 
+    convertSecondsToMinutes();
+
     setState(() {
       totalAmountToPay = widget.newTotal;
     });
@@ -276,12 +306,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
 
                     TextInRow(
-                      firstText: 'Extra Time',
-                      // secondText: widget.extraDistance + " Km",
-                      secondText: (widget.extraTime == '')
-                          ? "0 Min"
-                          : "${(int.parse(widget.extraTime)) / 60}" + " min",
-                    ),
+                        firstText: 'Extra Time',
+                        // secondText: widget.extraDistance + " Km",
+                        secondText: extraTimeTaken
+                        //  (widget.extraTime == '')
+                        //     ? "0 Min"
+                        //     : "${(int.parse(widget.extraTime)) / 60}" + " min",
+                        ),
                     Divider(
                       color: whiteAccentColor,
                     ),
@@ -329,7 +360,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       firstText: 'Extra Distance Price',
                       // secondText: widget.extraDistance + " Km",
-                      secondText: "CA\$" + "${widget.extraDistancePrice} Min",
+                      secondText: "CA\$ " + "${widget.extraDistancePrice} ",
                     ),
                     Divider(
                       color: whiteAccentColor,

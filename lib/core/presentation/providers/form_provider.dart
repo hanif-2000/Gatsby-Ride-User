@@ -191,7 +191,8 @@ class FormProvider with ChangeNotifier {
       },
       failedCallBack: (error) {
         logMe(error);
-        showToast(message: error);
+
+        // showToast(message: error);
         setImageError = error;
         setImageFile = null;
         setReturnData = false;

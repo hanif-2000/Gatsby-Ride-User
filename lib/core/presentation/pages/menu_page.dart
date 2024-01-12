@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/presentation/widgets/profile_drawer.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/pages/contact_us_page.dart';
@@ -5,16 +7,18 @@ import 'package:GetsbyRideshare/features/history/presentation/pages/history_page
 import 'package:GetsbyRideshare/features/login/presentation/pages/login_page.dart';
 import 'package:GetsbyRideshare/features/privacy_policy/privacy_policy_page.dart';
 import 'package:GetsbyRideshare/features/terms_and_conditions/terms_and_conditions.dart';
+import 'package:dio/dio.dart';
 // import 'package:easy_upi_payment/easy_upi_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../utility/helper.dart';
+import '../../utility/injection.dart';
+import '../../utility/session_helper.dart';
 import '../providers/logout_provider.dart';
 import '../widgets/close_button.dart';
 import '../widgets/custom_dialog_logout.dart';
 import '../widgets/drawer_button.dart';
-import 'splash_page.dart';
 
 class HomeDrawerPage extends StatelessWidget {
   const HomeDrawerPage({
@@ -24,185 +28,219 @@ class HomeDrawerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<LogOutProvider>(builder: (context, provider, _) {
-        return SafeArea(
-          child: SizedBox(
-            width: double.infinity,
-            child: Drawer(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Align(
-                        alignment: Alignment.topLeft,
-                        child: CloseDrawerButtonWidget()),
+      return SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: Drawer(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Align(
+                      alignment: Alignment.topLeft,
+                      child: CloseDrawerButtonWidget()),
 
-                    // User Profile
-                    const ProfileInformationDrawer(),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: ListView(
-                        children: [
-                          // History
-                          DrawerButtonItemWidget(
-                            title: appLoc.history,
-                            onTap: () {
-                              Navigator.pushNamed(context, HistoryPage.routeName);
-                              // Navigator.pushReplacementNamed(
-                              //   context,
-                              //   HistoryPage.routeName,
-                              // );
-                            },
-                          ),
+                  // User Profile
+                  const ProfileInformationDrawer(),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: ListView(
+                      children: [
+                        // History
+                        DrawerButtonItemWidget(
+                          title: appLoc.history,
+                          onTap: () {
+                            Navigator.pushNamed(context, HistoryPage.routeName);
+                            // Navigator.pushReplacementNamed(
+                            //   context,
+                            //   HistoryPage.routeName,
+                            // );
+                          },
+                        ),
 
-                          // //Information
-                          // DrawerButtonItemWidget(
-                          //   title: appLoc.profile,
-                          //   onTap: () {
-                          //     Navigator.pushReplacementNamed(
-                          //       context,
-                          //       ProfilePage.routeName,
-                          //     );
-                          //   },
-                          // ),
+                        // //Information
+                        // DrawerButtonItemWidget(
+                        //   title: appLoc.profile,
+                        //   onTap: () {
+                        //     Navigator.pushReplacementNamed(
+                        //       context,
+                        //       ProfilePage.routeName,
+                        //     );
+                        //   },
+                        // ),
 
-                          //Contact Us
-                          DrawerButtonItemWidget(
-                            title: appLoc.contactUs,
-                            onTap: () {
-                              Navigator.pushNamed(context, ContactUsPage.routeName);
-                              // Navigator.pushReplacementNamed(
-                              //   context,
-                              //   ContactUsPage.routeName,
-                              // );
-                            },
-                          ),
+                        //Contact Us
+                        DrawerButtonItemWidget(
+                          title: appLoc.contactUs,
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, ContactUsPage.routeName);
+                            // Navigator.pushReplacementNamed(
+                            //   context,
+                            //   ContactUsPage.routeName,
+                            // );
+                          },
+                        ),
 
 //Privacy Policy
-                          DrawerButtonItemWidget(
-                            title: appLoc.privacyPolicy,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const PrivacyPolicyPage(),
-                                ),
-                              );
-                            },
-                          ),
+                        DrawerButtonItemWidget(
+                          title: appLoc.privacyPolicy,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PrivacyPolicyPage(),
+                              ),
+                            );
+                          },
+                        ),
 
-                          //Terms and Conditions
+                        //Terms and Conditions
 
-                          DrawerButtonItemWidget(
-                            title: appLoc.termAndConditions,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const TermsAndConditionsPage(),
-                                ),
-                              );
-                            },
-                          ),
+                        DrawerButtonItemWidget(
+                          title: appLoc.termAndConditions,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const TermsAndConditionsPage(),
+                              ),
+                            );
+                          },
+                        ),
 
-                          //Testing Button for payment
+                        //Testing Button for payment
 
-                          // DrawerButtonItemWidget(
-                          //   title: "Testing Payment",
-                          //   onTap: () {
-                          //     sendPayment();
-                          //     // Navigator.push(
-                          //     //   context,
-                          //     //   MaterialPageRoute(
-                          //     //     builder: (context) => PaymentHomePage(),
-                          //     //   ),
-                          //     // );
-                          //   },
-                          // ),
+                        // DrawerButtonItemWidget(
+                        //   title: "Testing Payment",
+                        //   onTap: () {
+                        //     sendPayment();
+                        //     // Navigator.push(
+                        //     //   context,
+                        //     //   MaterialPageRoute(
+                        //     //     builder: (context) => PaymentHomePage(),
+                        //     //   ),
+                        //     // );
+                        //   },
+                        // ),
 
-                          //ABOUT US
-                          // DrawerButtonItemWidget(
-                          //   title: appLoc.we,
-                          //   onTap: () {
-                          //     Navigator.pushReplacementNamed(
-                          //       context,
-                          //       AboutUsPage.routeName,
-                          //     );
-                          //   },
-                          // ),
+                        //ABOUT US
+                        // DrawerButtonItemWidget(
+                        //   title: appLoc.we,
+                        //   onTap: () {
+                        //     Navigator.pushReplacementNamed(
+                        //       context,
+                        //       AboutUsPage.routeName,
+                        //     );
+                        //   },
+                        // ),
 
-                          //LogOut
-                          // DrawerButtonItemWidget(
-                          //   title: appLoc.logout,
-                          //   onTap: () {
-                          //     showDialog(
-                          //       context: context,
-                          //       builder: (_) => CustomLogoutDialog(
-                          //         positiveAction: () async {
-                          //           await sessionLogOut().then((_) =>
-                          //               Navigator.of(context)
-                          //                   .pushNamedAndRemoveUntil(
-                          //                       SplashPage.routeName,
-                          //                       (route) => false));
-                          //         },
-                          //       ),
-                          //     );
-                          //   },
-                          // ),
-                        ],
-                      ),
+                        //LogOut
+                        // DrawerButtonItemWidget(
+                        //   title: appLoc.logout,
+                        //   onTap: () {
+                        //     showDialog(
+                        //       context: context,
+                        //       builder: (_) => CustomLogoutDialog(
+                        //         positiveAction: () async {
+                        //           await sessionLogOut().then((_) =>
+                        //               Navigator.of(context)
+                        //                   .pushNamedAndRemoveUntil(
+                        //                       SplashPage.routeName,
+                        //                       (route) => false));
+                        //         },
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                      ],
                     ),
-                    InkWell(
-                      onTap: () {
-                        showDialog(
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDialog(
                           context: context,
-                          builder: (_) => CustomLogoutDialog(
-                            positiveAction: () async {
-                              print("object");
-                              Navigator.pop(context);
-                              showLoading();
-                              bool success = await Provider.of<LogOutProvider>(context, listen: false).logOutUser();
-                              dismissLoading();
-                              print("object =====>>>>> $success");
-                              if(success){
-                              await sessionLogOut().then((_) =>
-                                  Navigator.of(context).pushNamedAndRemoveUntil(
-                                      LoginPage.routeName, (route) => false));
-                              }
+                          builder: (_) =>
+                              CustomLogoutDialog(positiveAction: () async {
+                                Navigator.pop(context);
+                                var dio = Dio();
+                                String logOutUrl =
+                                    'https://php.parastechnologies.in/taxi/public/api/webservice/driver/logout';
+                                final session = locator<Session>();
+                                // var provider = Provider.of<HomeProvider>(context, listen: false);
+                                showLoading();
+                                // provider.updateStatus(isFromLogout: true).listen((event) async {
+                                //   if(event is ChangeStatusLoaded){
+                                var response = await dio.get(
+                                  logOutUrl,
+                                  options: Options(headers: {
+                                    "Authorization":
+                                        "Bearer ${session.sessionToken}"
+                                  }),
+                                );
+                                log("my response data is:  ${response.data}");
+                                dismissLoading();
+                                if (response.statusCode == 200 &&
+                                    response.data["message"] ==
+                                        "Logout successfully") {
+                                  await sessionLogOut().then(
+                                    (_) => Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            LoginPage.routeName,
+                                            (route) => false),
+                                  );
+                                  // }else{
+                                  //   showToast(message: "Something went Wrong");
+                                  // }
+                                  // }
 
-
-                            },
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          appLoc.logout,
-                          style: TextStyle(
-                            color: grey858585Color,
-                            fontSize: 17.0,
-                            fontWeight: FontWeight.w400,
-                          ),
+                                  /*    if (event is ChangeStatusLoaded) {
+                                  await sessionLogOut().then(
+                                    (_) => Navigator.of(context).pushNamedAndRemoveUntil(SplashPage.routeName,
+                                            (route) => false),
+                                  );
+                                } else {
+                                  await sessionLogOut().then(
+                                    (_) => Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            SplashPage.routeName,
+                                            (route) => false),
+                                  );
+                                }*/
+                                  //   },
+                                  // );
+                                }
+                                ;
+                              }));
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        appLoc.logout,
+                        style: TextStyle(
+                          color: grey858585Color,
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
-        );
-      }
-    );
+        ),
+      );
+    });
   }
 
   void sendPayment() async {
