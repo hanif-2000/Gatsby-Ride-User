@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,8 @@ class ButtonCancelOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
-    return Consumer<OrderProvider>(builder: (context, provider, _) {
+    return Consumer2(builder: (context, OrderProvider orderProvider,
+        LatestSocketProvider socketProvider, _) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 8),
         child: SizedBox(
@@ -34,6 +36,7 @@ class ButtonCancelOrder extends StatelessWidget {
                   ),
                 ),
                 event: () {
+                  socketProvider.cancelRideByCustomer();
 //Testing driver fetch bottom sheet
 
 //                   showModalBottomSheet(
@@ -94,8 +97,8 @@ class ButtonCancelOrder extends StatelessWidget {
                           context: context,
                           size: _deviceSize,
                           onConfirm: () async {
-                            provider.updateCanceledBy(isDriver: false);
-                            provider
+                            orderProvider.updateCanceledBy(isDriver: false);
+                            orderProvider
                                 .submitStatusOrder(Order.cancel)
                                 .listen((event) async {
                               if (event is UpdateStatusOrderLoading) {
@@ -110,9 +113,9 @@ class ButtonCancelOrder extends StatelessWidget {
                                 await homeProvider.clearState();
                                 dismissLoading();
 
-                                log("order status code is:--->> ${provider.session.orderStatus}");
+                                log("order status code is:--->> ${orderProvider.session.orderStatus}");
 
-                                provider.session.setOrderStatus = 100;
+                                orderProvider.session.setOrderStatus = 100;
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
                                   HomePage.routeName,

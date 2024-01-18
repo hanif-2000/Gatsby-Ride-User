@@ -24,6 +24,7 @@ import 'package:GetsbyRideshare/features/order/presentation/providers/update_sta
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lctn;
 import 'package:url_launcher/url_launcher.dart';
@@ -45,6 +46,7 @@ class OrderProvider with ChangeNotifier {
 
   //Initial
   final lctn.Location locationService = lctn.Location();
+  late StreamSubscription<Position>? locationbackSubscription;
   // CameraPosition kJapanCoordinate = const CameraPosition(
   //   target: JAPAN_LATLNG,
   //   zoom: 14.4746,

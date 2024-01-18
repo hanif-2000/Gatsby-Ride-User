@@ -46,21 +46,23 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    newSocketProvider.connectToSocket(context);
+    // newSocketProvider.connectToSocket(context);
     // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
     // newSocketProvider.connectToSocket();q
 
     var orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
+    log("order status is:  -->> ${session.orderStatus}");
+
     if (session.orderStatus != 0) {
       log("session order status is not ==== 0");
 
-      orderProvider.fetchDriverDetail().listen((eventDriverDetail) async {
-        if (eventDriverDetail is GetDriverDetailLoaded) {
-          orderProvider.updateDriverDetails(data: eventDriverDetail.data);
-          newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
-        }
-      });
+      // orderProvider.fetchDriverDetail().listen((eventDriverDetail) async {
+      //   if (eventDriverDetail is GetDriverDetailLoaded) {
+      //     orderProvider.updateDriverDetails(data: eventDriverDetail.data);
+      //     newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
+      //   }
+      // });
       // newSocketProvider.listenRequests();
     }
 

@@ -277,7 +277,19 @@ class BottomSheetBookRide extends StatelessWidget {
                                                 message:
                                                     "Selected vehicle is not available yet, Please select another");
                                           } else {
-                                            socketProvider.createRideRequest(
+                                            final OrderDataDetail
+                                                orderDataDetail = OrderDataDetail(
+                                                    originLatLng:
+                                                        provider.originLatLng,
+                                                    destinationLatLng: provider
+                                                        .destinationLatLng,
+                                                    originAddress:
+                                                        provider.originAddress,
+                                                    destinationAddress: provider
+                                                        .destinationAddress);
+                                            /*** NEW RIDE REQUEST SEND VIA SOCKET */
+                                            socketProvider
+                                                .createRideRequest(
                                               originLatLng:
                                                   "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
                                               destinationLatLng:
@@ -312,7 +324,22 @@ class BottomSheetBookRide extends StatelessWidget {
                                                                       .applePay
                                                               ? 4
                                                               : 1,
-                                            );
+                                            )
+                                                .then((value) {
+                                              if (value) {
+                                                Navigator
+                                                    .pushNamedAndRemoveUntil(
+                                                        context,
+                                                        OrderPage.routeName,
+                                                        (route) => false,
+                                                        arguments:
+                                                            orderDataDetail);
+                                              } else {
+                                                showToast(
+                                                    message:
+                                                        "Something went wrong Please try again");
+                                              }
+                                            });
                                             // provider
                                             //     .submitOrder()
                                             //     .listen((event) async {

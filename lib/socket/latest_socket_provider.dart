@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 import '../core/utility/helper.dart';
@@ -48,7 +49,6 @@ class LatestSocketProvider extends ChangeNotifier {
     _socket!.connection.listen((event) {
       if (event is Connected) {
         log("************ Connectd ***********");
-
         listenSocketRequests(context);
       } else {
         log("************ DisConnectd ***********");
@@ -260,7 +260,7 @@ class LatestSocketProvider extends ChangeNotifier {
 
   /** Send RIDE REQUEST to Drivers **/
 
-  createRideRequest({
+  Future<bool> createRideRequest({
     required originLatLng,
     required destinationLatLng,
     required vehicleCatagory,
@@ -270,22 +270,92 @@ class LatestSocketProvider extends ChangeNotifier {
     required distance,
     required total,
     required payment_method,
-  }) {
-    final map = {
-      'serviceType': 'UserBookDriver',
-      'UserID': session.userId,
-      'vehicle_category_id': vehicleCatagory,
-      'start_coordinate': originLatLng,
-      'end_coordinate': destinationLatLng,
-      'start_address': startAddress,
-      'end_address': endAddress,
-      'estimated_time': estimatedTime,
-      'distance': distance,
-      'total': total,
-      'payment_method': payment_method,
-    };
+  }) async {
+    try {
+      final map = {
+        'serviceType': 'UserBookDriver',
+        'UserID': session.userId,
+        'vehicle_category_id': vehicleCatagory,
+        'start_coordinate': originLatLng,
+        'end_coordinate': destinationLatLng,
+        'start_address': startAddress,
+        'end_address': endAddress,
+        'estimated_time': estimatedTime,
+        'distance': distance,
+        'total': total,
+        'payment_method': payment_method,
+      };
 
-    logMe('Send New ride request -- > ${map.toString()}');
+      logMe('Send New ride request -- > ${map.toString()}');
+      _socket!.send(jsonEncode(map));
+
+      return true;
+    } catch (e) {
+      print('Error creating ride request: $e');
+      return false;
+    }
+  }
+
+  // Future<bool>createRideRequest({
+  //   required originLatLng,
+  //   required destinationLatLng,
+  //   required vehicleCatagory,
+  //   required startAddress,
+  //   required endAddress,
+  //   required estimatedTime,
+  //   required distance,
+  //   required total,
+  //   required payment_method,
+  // }) {
+  //   final map = {
+  //     'serviceType': 'UserBookDriver',
+  //     'UserID': session.userId,
+  //     'vehicle_category_id': vehicleCatagory,
+  //     'start_coordinate': originLatLng,
+  //     'end_coordinate': destinationLatLng,
+  //     'start_address': startAddress,
+  //     'end_address': endAddress,
+  //     'estimated_time': estimatedTime,
+  //     'distance': distance,
+  //     'total': total,
+  //     'payment_method': payment_method,
+  //   };
+
+  //   logMe('Send New ride request -- > ${map.toString()}');
+  //   _socket!.send(jsonEncode(map));
+
+  // }
+
+  /// * UPDATE LAT LONG --------->>>>>..
+
+  updateLatLng(double lat, double long) async {
+    print("current latlong:${lat},${long}");
+
+    final map = {
+      'serviceType': 'UpdatedLatLong',
+      'UserID': session.userId,
+      'type': 'customer',
+      'Latitude': lat,
+      'Longitude': long,
+      'OrderID': session.orderId
+    };
+    logMe('UPADTE LATLONG -- > ${map.toString()}');
+    print('UPADTE LATLONG -- > ${map.toString()}');
+
+    _socket!.send(jsonEncode(map));
+  }
+
+  /** -------------------*************************** CANCEL RIDE BY CUSTOMER  ******************----------------- */
+
+  cancelRideByCustomer() {
+    final map = {
+      'serviceType': 'CancelByUser',
+      'UserID': session.userId,
+      'OrderID': session.orderId
+    };
+    logMe('cancelRideByCustomer -- > ${map.toString()}');
+    print('cancelRideByCustomer -- > ${map.toString()}');
+
     _socket!.send(jsonEncode(map));
   }
 }
