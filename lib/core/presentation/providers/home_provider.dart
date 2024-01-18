@@ -93,18 +93,18 @@ class HomeProvider with ChangeNotifier {
 
   //send request to socket
 
-  sendRequest() {
-    socket!
-        // .send("serviceType: UserBookDriver, id: ${session.userId.toString()}");
-        .send(jsonEncode({
-      "serviceType": "UserBookDriver",
-      "UserID": "${session.userId.toString()}"
-    }));
+  // sendRequest() {
+  //   socket!
+  //       // .send("serviceType: UserBookDriver, id: ${session.userId.toString()}");
+  //       .send(jsonEncode({
+  //     "serviceType": "UserBookDriver",
+  //     "UserID": "${session.userId.toString()}"
+  //   }));
 
-    socket!.connection.listen((state) => print('state: "$state"'));
+  //   socket!.connection.listen((state) => print('state: "$state"'));
 
-    log("send request");
-  }
+  //   log("send request");
+  // }
 
   bool isAccepted = false;
 
@@ -297,12 +297,11 @@ class HomeProvider with ChangeNotifier {
         logMe("locationData");
         logMe(locationData);
         originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-        destinationLatLng = LatLng(locationData.latitude!, locationData.longitude!);
+        destinationLatLng =
+            LatLng(locationData.latitude!, locationData.longitude!);
         await setAddressFromLatLng();
         //onlocation change
-        locationService.onLocationChanged.listen((event) {
-
-        });
+        locationService.onLocationChanged.listen((event) {});
       } else {
         try {
           bool serviceStatusResult = await locationService.requestService();
@@ -404,7 +403,8 @@ class HomeProvider with ChangeNotifier {
 // Set initial Marker in Map i.e Current Location
   Future<void> setAddressFromLatLng() async {
     try {
-      List<Placemark> p = await placemarkFromCoordinates(originLatLng.latitude, originLatLng.longitude);
+      List<Placemark> p = await placemarkFromCoordinates(
+          originLatLng.latitude, originLatLng.longitude);
 
       Placemark place = p[0];
 
@@ -419,13 +419,16 @@ class HomeProvider with ChangeNotifier {
       );
       originIsFilled = true;
       notifyListeners();
-      await googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      await googleMapController
+          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(originLatLng.latitude, originLatLng.longitude),
         zoom: 16,
       )));
 
-      originAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
-      destinationAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
+      originAddress =
+          "${place.street}, ${place.subLocality}, ${place.locality}";
+      destinationAddress =
+          "${place.street}, ${place.subLocality}, ${place.locality}";
       originText = Text(
         originAddress,
         softWrap: false,

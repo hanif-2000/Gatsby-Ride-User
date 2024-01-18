@@ -50,7 +50,7 @@ class LatestSocketProvider extends ChangeNotifier {
         log("************ Connectd ***********");
 
         listenSocketRequests(context);
-      }else {
+      } else {
         log("************ DisConnectd ***********");
       }
     });
@@ -95,7 +95,7 @@ class LatestSocketProvider extends ChangeNotifier {
       log('-----Event  ${response.toString()}');
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'MessageList') {
-        isLoading = false ;
+        isLoading = false;
         notifyListeners();
         log("messgae type is MESSAGE LIST");
         log('Message list data-----> ${response['data']}');
@@ -255,6 +255,37 @@ class LatestSocketProvider extends ChangeNotifier {
       'driverID': session.userId,
     };
     logMe('reject request socket -- > ${map.toString()}');
+    _socket!.send(jsonEncode(map));
+  }
+
+  /** Send RIDE REQUEST to Drivers **/
+
+  createRideRequest({
+    required originLatLng,
+    required destinationLatLng,
+    required vehicleCatagory,
+    required startAddress,
+    required endAddress,
+    required estimatedTime,
+    required distance,
+    required total,
+    required payment_method,
+  }) {
+    final map = {
+      'serviceType': 'UserBookDriver',
+      'UserID': session.userId,
+      'vehicle_category_id': vehicleCatagory,
+      'start_coordinate': originLatLng,
+      'end_coordinate': destinationLatLng,
+      'start_address': startAddress,
+      'end_address': endAddress,
+      'estimated_time': estimatedTime,
+      'distance': distance,
+      'total': total,
+      'payment_method': payment_method,
+    };
+
+    logMe('Send New ride request -- > ${map.toString()}');
     _socket!.send(jsonEncode(map));
   }
 }

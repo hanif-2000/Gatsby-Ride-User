@@ -133,7 +133,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                 checkOrderStatusTimer!.cancel();
               }
 
-              checkOrderStatusTimer = Timer.periodic(const Duration(seconds: 3),
+              checkOrderStatusTimer = Timer.periodic(const Duration(seconds: 4),
                   (Timer timer) async {
                 provider.fetchOrderStatus().listen((state) async {
                   log("called every 3 seconds");
@@ -470,7 +470,7 @@ class _OrderPageState extends State<OrderPage> with WidgetsBindingObserver {
                     zoomControlsEnabled: true,
                     initialCameraPosition: CameraPosition(
                       target: LatLng(provider.lat, provider.long),
-                      zoom: 14.4746,
+                      zoom: 19,
                     ),
                     onMapCreated: (GoogleMapController controller) async {
                       provider.googleMapController = controller;

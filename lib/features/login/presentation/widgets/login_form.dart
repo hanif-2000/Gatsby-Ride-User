@@ -51,7 +51,7 @@ class _LoginFormState extends State<LoginForm> {
           session.setLoggedIn = true;
           showToast(message: "Login Success");
 
-         // socketProvider.connectToSocket(context);
+          socketProvider.connectToSocket(context);
           Navigator.pushNamedAndRemoveUntil(
               context, HomePage.routeName, (route) => false);
           logMe("Authorization Token: ${session.sessionToken}");

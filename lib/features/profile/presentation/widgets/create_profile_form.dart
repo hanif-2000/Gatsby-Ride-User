@@ -82,7 +82,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
             final session = locator<Session>();
             session.setLoggedIn = true;
             showToast(message: appLoc.createProfileSuccessfully);
-            //   socketProvider.connectToSocket(context);
+            socketProvider.connectToSocket(context);
             Navigator.pushNamedAndRemoveUntil(
                 context, HomePage.routeName, (route) => false);
           } else {

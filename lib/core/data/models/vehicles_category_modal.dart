@@ -15,6 +15,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
     required dynamic newTotal,
     required dynamic pendingAmount,
     required dynamic isAvailable,
+    required dynamic estimatedTime,
+    required dynamic estimatedDistance,
   }) : super(
           categoryId: id,
           categoryCar: category,
@@ -29,23 +31,28 @@ class VehiclesCategoryModel extends VehiclesCategory {
           newTotal: newTotal,
           pendingAmount: pendingAmount,
           isAvailable: isAvailable,
+          estimatedTime: estimatedTime,
+          estimatedDistance: estimatedDistance,
         );
 
   factory VehiclesCategoryModel.fromJson(Map<String, dynamic> json) =>
       VehiclesCategoryModel(
-          id: json['id'],
-          category: json['category'],
-          priceKm: json['price_km'],
-          minPrice: json['min_price'],
-          seat: json['seat'],
-          extraKm: json['extra_km'],
-          drivers: json['drivers'],
-          totalFare: json['total_fair'],
-          time: json['time'],
-          minKm: json['min_km'],
-          pendingAmount: json['pending_amount'],
-          newTotal: json['new_total'],
-          isAvailable: json['is_available']);
+        id: json['id'],
+        category: json['category'],
+        priceKm: json['price_km'],
+        minPrice: json['min_price'],
+        seat: json['seat'],
+        extraKm: json['extra_km'],
+        drivers: json['drivers'],
+        totalFare: json['total_fair'],
+        time: json['time'],
+        minKm: json['min_km'],
+        pendingAmount: json['pending_amount'],
+        newTotal: json['new_total'],
+        isAvailable: json['is_available'],
+        estimatedDistance: json['estimated_distance'],
+        estimatedTime: json['estimated_time'],
+      );
 
   @override
   Map<String, dynamic> toJson() => {
@@ -60,6 +67,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
         "min_km": priceMin,
         "newTotal": newTotal,
         "pendingAmount": pendingAmount,
-        "isAvailable": isAvailable
+        "isAvailable": isAvailable,
+        "estimatedTime": estimatedTime,
+        "estimatedDistance": estimatedDistance,
       };
 }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/payment_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -79,6 +80,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                         EdgeInsets.symmetric(horizontal: 0.0),
                                     child: InkWell(
                                       onTap: () {
+                                        log("on tap on vehicle called");
                                         provider.updatePriceAndCatagortId(
                                             fare: data[index]
                                                 .totalFare
@@ -97,7 +99,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                         vehicleImage:
                                             "${provider.carsImageList[index]}",
                                         // time: "${provider.estimatedTimeToShow}",
-                                        time: data[index].time.toString() + " min",
+                                        time: data[index].time.toString() +
+                                            " min",
                                         // price: data[index].totalFare.toString(),
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
@@ -247,7 +250,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                       height: _deviceSize.height * .03,
                                     ),
 
-                                    //Book Now Button
+                                    //***  --------->>>>>>> BOOK NOW BUTTON <<<<<<<<<-------------**\
                                     CustomButton(
                                       text: const Text(
                                         "Book Now",
@@ -258,6 +261,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                         ),
                                       ),
                                       event: () {
+                                        var socketProvider =
+                                            locator<LatestSocketProvider>();
                                         if (provider.paymentMethod != null) {
                                           if (provider.price.isEmpty ||
                                               provider
@@ -272,67 +277,103 @@ class BottomSheetBookRide extends StatelessWidget {
                                                 message:
                                                     "Selected vehicle is not available yet, Please select another");
                                           } else {
-                                            provider
-                                                .submitOrder()
-                                                .listen((event) async {
-                                              if (event is CreateOrderLoading) {
-                                                showLoading();
-                                              } else if (event
-                                                  is CreateOrderLoaded) {
-                                                dismissLoading();
-                                                // showToast(
-                                                //     message: appLoc
-                                                //         .orderCreatedSuccessfully);
+                                            socketProvider.createRideRequest(
+                                              originLatLng:
+                                                  "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
+                                              destinationLatLng:
+                                                  "${provider.destinationLatLng.latitude},${provider.destinationLatLng.longitude}",
+                                              vehicleCatagory:
+                                                  provider.selectedVehicleId,
+                                              startAddress:
+                                                  provider.originAddress,
+                                              endAddress:
+                                                  provider.destinationAddress,
+                                              estimatedTime: data[0]
+                                                  .estimatedTime
+                                                  .toString(),
+                                              distance: data[0]
+                                                  .estimatedDistance
+                                                  .toString(),
+                                              total: provider.price,
+                                              payment_method: provider
+                                                          .paymentMethod! ==
+                                                      PaymentMethod.cash
+                                                  ? 1
+                                                  : provider.paymentMethod! ==
+                                                          PaymentMethod
+                                                              .creditCard
+                                                      ? 2
+                                                      : provider.paymentMethod! ==
+                                                              PaymentMethod
+                                                                  .googlePay
+                                                          ? 3
+                                                          : provider.paymentMethod! ==
+                                                                  PaymentMethod
+                                                                      .applePay
+                                                              ? 4
+                                                              : 1,
+                                            );
+                                            // provider
+                                            //     .submitOrder()
+                                            //     .listen((event) async {
+                                            //   if (event is CreateOrderLoading) {
+                                            //     showLoading();
+                                            //   } else if (event
+                                            //       is CreateOrderLoaded) {
+                                            //     dismissLoading();
+                                            //     // showToast(
+                                            //     //     message: appLoc
+                                            //     //         .orderCreatedSuccessfully);
 
-                                                // provider.sendRequest();
-                                                var session =
-                                                    locator<Session>();
+                                            //     // provider.sendRequest();
+                                            //     var session =
+                                            //         locator<Session>();
 
-                                                session.setOriginAddress =
-                                                    provider.originAddress;
-                                                session.setDestinationAddress =
-                                                    provider.destinationAddress;
-                                                session.setOriginLat = provider
-                                                    .originLatLng.latitude;
-                                                session.setOriginLong = provider
-                                                    .originLatLng.longitude;
-                                                session.setDestinationLat =
-                                                    provider.destinationLatLng
-                                                        .latitude;
-                                                session.setDestinationLong =
-                                                    provider.destinationLatLng
-                                                        .longitude;
+                                            //     session.setOriginAddress =
+                                            //         provider.originAddress;
+                                            //     session.setDestinationAddress =
+                                            //         provider.destinationAddress;
+                                            //     session.setOriginLat = provider
+                                            //         .originLatLng.latitude;
+                                            //     session.setOriginLong = provider
+                                            //         .originLatLng.longitude;
+                                            //     session.setDestinationLat =
+                                            //         provider.destinationLatLng
+                                            //             .latitude;
+                                            //     session.setDestinationLong =
+                                            //         provider.destinationLatLng
+                                            //             .longitude;
 
-                                                log("first time order origin lat long:-->> ${provider.originLatLng}");
-                                                log("first time order origin lat long:-->> ${provider.originLatLng.latitude}");
-                                                log("first time order origin lat long:-->> ${provider.originLatLng.longitude}");
+                                            //     log("first time order origin lat long:-->> ${provider.originLatLng}");
+                                            //     log("first time order origin lat long:-->> ${provider.originLatLng.latitude}");
+                                            //     log("first time order origin lat long:-->> ${provider.originLatLng.longitude}");
 
-                                                final OrderDataDetail
-                                                    orderDataDetail = OrderDataDetail(
-                                                        originLatLng: provider
-                                                            .originLatLng,
-                                                        destinationLatLng: provider
-                                                            .destinationLatLng,
-                                                        originAddress: provider
-                                                            .originAddress,
-                                                        destinationAddress: provider
-                                                            .destinationAddress);
+                                            //     final OrderDataDetail
+                                            //         orderDataDetail = OrderDataDetail(
+                                            //             originLatLng: provider
+                                            //                 .originLatLng,
+                                            //             destinationLatLng: provider
+                                            //                 .destinationLatLng,
+                                            //             originAddress: provider
+                                            //                 .originAddress,
+                                            //             destinationAddress: provider
+                                            //                 .destinationAddress);
 
-                                                // log("session origin latitude:-->> ${session.originLat}");
-                                                // log("session origin longitude:-->> ${session.originLong}");
+                                            //     // log("session origin latitude:-->> ${session.originLat}");
+                                            //     // log("session origin longitude:-->> ${session.originLong}");
 
-                                                Navigator
-                                                    .pushNamedAndRemoveUntil(
-                                                        context,
-                                                        OrderPage.routeName,
-                                                        (route) => false,
-                                                        arguments:
-                                                            orderDataDetail);
-                                              } else if (event
-                                                  is CreateOrderFailure) {
-                                                dismissLoading();
-                                              }
-                                            });
+                                            //     Navigator
+                                            //         .pushNamedAndRemoveUntil(
+                                            //             context,
+                                            //             OrderPage.routeName,
+                                            //             (route) => false,
+                                            //             arguments:
+                                            //                 orderDataDetail);
+                                            //   } else if (event
+                                            //       is CreateOrderFailure) {
+                                            //     dismissLoading();
+                                            //   }
+                                            // });
                                           }
 
                                           log(provider.originAddress

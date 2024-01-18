@@ -47,8 +47,10 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     // showLoading();
     // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
-    socketProvider.joinExitRoom(
-        receiverId: int.parse(session.driverId), type: "Join");
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      socketProvider.joinExitRoom(
+          receiverId: int.parse(session.driverId), type: "Join");
+    });
     // socketProvider.listenRequests();
 
     // socketProvider.markMessageAsRead(receiverId: int.parse(session.driverId));
@@ -159,7 +161,9 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               child: SizedBox(
                 height: 50,
                 width: 50,
-                child: CupertinoActivityIndicator(color: black15141FColor,),
+                child: CupertinoActivityIndicator(
+                  color: black15141FColor,
+                ),
               ),
             ),
             replacement: Column(
@@ -238,8 +242,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                               reverse: true,
                               itemCount: provider.chatMessageList.length,
                               itemBuilder: (context, index) {
-                                return provider
-                                            .chatMessageList[index].senderType ==
+                                return provider.chatMessageList[index]
+                                            .senderType ==
                                         'Driver'
                                     ? ReceiverTile(
                                         title: provider

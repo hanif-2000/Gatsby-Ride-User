@@ -295,9 +295,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: whiteAccentColor,
                     ),
                     TextInRow(
-                      firstText: widget.vehicleCategory == "2"
-                          ? r"Extra Distance Price 1.65 /km"
-                          : r"Extra Distance Price 1.30 /km",
+                      firstText: widget.vehicleCategory == "1"
+                          ? r"Extra Distance Price 1.30 /km"
+                          : r"Extra Distance Price 1.65 /km",
                       // secondText: r'$' + widget.extraDistancePrice,
                       secondText: r'CA$ ' + "0",
                     ),
@@ -317,9 +317,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: whiteAccentColor,
                     ),
                     TextInRow(
-                      firstText: widget.vehicleCategory == "2"
-                          ? r"Extra Time Price 0.35 /min"
-                          : r"Extra Time Price 0.30 /min",
+                      firstText: widget.vehicleCategory == "1"
+                          ? r"Extra Time Price 0.30 /min"
+                          : r"Extra Time Price 0.35 /min",
                       // secondText: r'$' + widget.extraDistancePrice,
                       secondText: ((widget.extraTimePrice != null) ||
                               (widget.extraTimePrice != '') ||

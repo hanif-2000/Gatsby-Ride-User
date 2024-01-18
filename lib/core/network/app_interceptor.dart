@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:GetsbyRideshare/core/presentation/pages/splash_page.dart';
 import 'package:GetsbyRideshare/features/login/presentation/pages/login_page.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +45,7 @@ class AppInterceptor extends Interceptor {
 
     if (statusCode == HttpStatus.unprocessableEntity) {
       dismissLoading();
+
       await sessionLogOut().then(
         (_) => Navigator.pushNamedAndRemoveUntil(
           locator<GlobalKey<NavigatorState>>().currentContext!,

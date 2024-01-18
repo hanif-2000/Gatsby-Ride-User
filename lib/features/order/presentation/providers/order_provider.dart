@@ -80,6 +80,8 @@ class OrderProvider with ChangeNotifier {
   String orderId = '';
 
   double ratingGiven = 1;
+  double zoom = 15;
+
   String commentGiven = '';
 
   bool isOrderAccepted = false;
@@ -321,7 +323,7 @@ class OrderProvider with ChangeNotifier {
           .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(orderDataDetail.originLatLng.latitude,
             orderDataDetail.originLatLng.longitude),
-        zoom: 18,
+        zoom: zoom,
       )));
 
       originAddress = orderDataDetail.originAddress;
@@ -590,7 +592,7 @@ class OrderProvider with ChangeNotifier {
     googleMapController
         .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
       target: LatLng(_driverLat, _driverLng),
-      zoom: 18,
+      zoom: zoom,
     )));
   }
 
@@ -628,7 +630,7 @@ class OrderProvider with ChangeNotifier {
         googleMapController
             .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target: LatLng(latDriver, lngDriver),
-          zoom: 18,
+          zoom: zoom,
         )));
       }
     } else {
@@ -636,7 +638,7 @@ class OrderProvider with ChangeNotifier {
         googleMapController
             .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target: LatLng(latDriver, lngDriver),
-          zoom: 18,
+          zoom: zoom,
         )));
 
         if (isWithDriver) {
