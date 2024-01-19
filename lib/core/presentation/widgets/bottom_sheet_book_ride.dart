@@ -3,19 +3,18 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/payment_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/new_order_page.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../../features/order/presentation/pages/order_page.dart';
 import '../../domain/entities/order_data_detail.dart';
 import '../../static/enums.dart';
 import '../../utility/helper.dart';
 import '../../utility/injection.dart';
-import '../../utility/session_helper.dart';
-import '../providers/create_order_state.dart';
 import '../providers/vehicle_category_state.dart';
 import 'custom_button/custom_button_widget.dart';
 import 'custom_vehicle_info.dart';
@@ -327,10 +326,14 @@ class BottomSheetBookRide extends StatelessWidget {
                                             )
                                                 .then((value) {
                                               if (value) {
+                                                var session =
+                                                    locator<Session>();
+                                                session.setOrderStatus = 0;
+
                                                 Navigator
                                                     .pushNamedAndRemoveUntil(
                                                         context,
-                                                        OrderPage.routeName,
+                                                        NewOrderPage.routeName,
                                                         (route) => false,
                                                         arguments:
                                                             orderDataDetail);

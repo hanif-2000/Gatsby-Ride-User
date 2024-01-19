@@ -3,12 +3,12 @@ import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 import '../core/utility/helper.dart';
 import '../core/utility/injection.dart';
 import '../features/order/data/models/chat_modal.dart';
+import 'modals/booking_response_model.dart';
 
 class LatestSocketProvider extends ChangeNotifier {
   static final LatestSocketProvider _provider = LatestSocketProvider.internal();
@@ -27,7 +27,7 @@ class LatestSocketProvider extends ChangeNotifier {
 
   int unreadMessageCount = 0;
   bool isLoading = false;
-
+  BookingDataModel? bookingDataModel;
   List<ChatModel> get chatMessageList => _chatMessagesList;
 
   updateUnreadCount(val) {
@@ -50,8 +50,14 @@ class LatestSocketProvider extends ChangeNotifier {
       if (event is Connected) {
         log("************ Connectd ***********");
         listenSocketRequests(context);
-      } else {
+      } else if (event is Connecting) {
+        log("************ Connecting ***********");
+      } else if (event is Disconnected) {
         log("************ DisConnectd ***********");
+      } else if (event is Reconnecting) {
+        log("************ ReConnecting ***********");
+      } else {
+        log("-----******** EVENT IS **** ${event}");
       }
     });
   }
@@ -93,6 +99,23 @@ class LatestSocketProvider extends ChangeNotifier {
       //  Decoding data
       final response = jsonDecode(event);
       log('-----Event  ${response.toString()}');
+
+      // <----------- Checking When request come ---------> //
+      if (response['type'] == 'CustomerBookRequest') {
+        bookingDataModel = BookingDataModel.fromJson(response);
+        // bookingList.add(bookingDataModel!.data);
+
+        log("order id is :--->> ${bookingDataModel!.data.id} and Customer Id  is:--->> ${bookingDataModel!.data.customerId}");
+        print(
+            "order id is :--->> ${bookingDataModel!.data.id} and Customer Id  is:--->> ${bookingDataModel!.data.customerId}");
+
+        if (bookingDataModel!.data.customerId == session.userId) {
+          session.setOrderId = bookingDataModel!.data.id;
+        }
+
+        notifyListeners();
+      }
+
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'MessageList') {
         isLoading = false;
@@ -347,15 +370,21 @@ class LatestSocketProvider extends ChangeNotifier {
 
   /** -------------------*************************** CANCEL RIDE BY CUSTOMER  ******************----------------- */
 
-  cancelRideByCustomer() {
-    final map = {
-      'serviceType': 'CancelByUser',
-      'UserID': session.userId,
-      'OrderID': session.orderId
-    };
-    logMe('cancelRideByCustomer -- > ${map.toString()}');
-    print('cancelRideByCustomer -- > ${map.toString()}');
+  Future<bool> cancelRideByCustomer() async {
+    try {
+      final map = {
+        'serviceType': 'CancelByUser',
+        'UserID': session.userId,
+        'OrderID': session.orderId
+      };
+      logMe('cancelRideByCustomer -- > ${map.toString()}');
+      print('cancelRideByCustomer -- > ${map.toString()}');
 
-    _socket!.send(jsonEncode(map));
+      _socket!.send(jsonEncode(map));
+
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

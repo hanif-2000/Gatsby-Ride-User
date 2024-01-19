@@ -6,7 +6,6 @@ import 'package:GetsbyRideshare/features/forgot_password/presentation/pages/forg
 import 'package:GetsbyRideshare/features/history/presentation/pages/detail_history_page.dart';
 import 'package:GetsbyRideshare/features/history/presentation/pages/history_page.dart';
 import 'package:GetsbyRideshare/features/login/presentation/pages/login_page.dart';
-import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/pages/change_email_page.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/pages/change_password_page.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/pages/edit_profile_page.dart';
@@ -16,6 +15,7 @@ import 'package:flutter/material.dart';
 
 import '../../features/forgot_password/presentation/pages/otp_verification_page.dart';
 import '../../features/history/data/models/history_response_model.dart';
+import '../../features/order/presentation/pages/new_order_page.dart';
 import '../../features/profile/presentation/pages/create_profile_page.dart';
 import '../presentation/pages/splash_page.dart';
 
@@ -63,10 +63,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (_) => DetailHistoryPage(
                 item: args,
               ));
-    case OrderPage.routeName:
+    case NewOrderPage.routeName:
       final args = settings.arguments as OrderDataDetail;
       return MaterialPageRoute(
-          builder: (_) => OrderPage(
+          builder: (_) => NewOrderPage(
                 location: args,
               ));
 

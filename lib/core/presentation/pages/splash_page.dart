@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../features/login/presentation/pages/login_page.dart';
-import '../../domain/entities/order_data_detail.dart';
 import '../../static/assets.dart';
 import '../../utility/helper.dart';
 import '../../utility/injection.dart';
@@ -86,22 +82,24 @@ class _SplashPageState extends State<SplashPage> {
                   log("orogin lat lat :->> ${session.originLat}");
                   log("orogin lat long :->> ${session.originLong}");
                   socketProvider.connectToSocket(context);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, HomePage.routeName, (route) => false);
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OrderPage(
-                        location: OrderDataDetail(
-                          destinationAddress: session.destinationAddress,
-                          originAddress: session.originAddress,
-                          originLatLng:
-                              LatLng(session.originLat, session.originLong),
-                          destinationLatLng: LatLng(
-                              session.destinationLat, session.destinationLong),
-                        ),
-                      ),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => OrderPage(
+                  //       location: OrderDataDetail(
+                  //         destinationAddress: session.destinationAddress,
+                  //         originAddress: session.originAddress,
+                  //         originLatLng:
+                  //             LatLng(session.originLat, session.originLong),
+                  //         destinationLatLng: LatLng(
+                  //             session.destinationLat, session.destinationLong),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // );
                 }
 
                 //   if (session.orderStatus != 100 || session.orderStatus != 8) {

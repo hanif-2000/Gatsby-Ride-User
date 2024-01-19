@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui' as ui;
 import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
@@ -15,6 +14,7 @@ import 'package:GetsbyRideshare/features/order/domain/usecases/create_oder.dart'
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -290,6 +290,24 @@ class HomeProvider with ChangeNotifier {
 //Set current location in map intially
   Future<void> setCurrentLocation() async {
     print("Get current location  called");
+
+    SmartDialog.showLoading(
+      animationType: SmartAnimationType.fade,
+      backDismiss: false,
+      msg: 'Fetching Current location...',
+      alignment: Alignment.center,
+      // builder: (_) {
+      //   return Container(
+      //     height: 100,
+      //     child: Column(children: [
+      //       CircularProgressIndicator(),
+      //       Icon(Icons.location_on),
+      //       Text("Fetching Location...")
+      //     ]),
+      //   );
+      // },
+    );
+
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
@@ -313,7 +331,9 @@ class HomeProvider with ChangeNotifier {
           logMe(e.toString());
         }
       }
+      SmartDialog.dismiss();
     } on PlatformException catch (e) {
+      SmartDialog.dismiss();
       if (e.toString() == 'PERMISSION_DENIED') {
         logMe(e.toString());
       } else if (e.code == 'SERVICE_STATUS_ERROR') {
