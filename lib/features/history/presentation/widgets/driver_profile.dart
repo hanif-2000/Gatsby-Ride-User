@@ -11,7 +11,7 @@ class DriverProfileWidget extends StatefulWidget {
   final String driverId;
   final String driverName;
   final String driverImage;
-  final String rating;
+  final dynamic rating;
   final String platerNumber;
 
   final VoidCallback? onClickOnReview;
@@ -106,7 +106,8 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              double.tryParse(widget.rating).toString(),
+                              // double.tryParse(widget.rating).toString(),
+                              widget.rating.toString(),
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w600,

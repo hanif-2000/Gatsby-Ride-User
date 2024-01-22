@@ -145,6 +145,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       color: blackColor,
                     ),
                     onPressed: () {
+                      log("on click on go back");
+
                       Navigator.pop(context);
                     },
                   ),

@@ -32,7 +32,7 @@ class _NewOrderPageState extends State<NewOrderPage>
   // Timer? checkOrderStatusTimer, trackingDriverTimer;
 
   final session = locator<Session>();
-  final newSocketProvider = locator<LatestSocketProvider>();
+  // final newSocketProvider = locator<LatestSocketProvider>();
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _NewOrderPageState extends State<NewOrderPage>
         showSearchingVehiclesBottomSheet(context);
       } else {
         log("else called ");
-        newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
+        // newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
       }
     });
 
@@ -80,8 +80,15 @@ class _NewOrderPageState extends State<NewOrderPage>
         child: SafeArea(
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            body: Consumer2(builder: (context, OrderProvider provider,
-                LatestSocketProvider latestSocketProvider, _) {
+            body: Consumer2<OrderProvider, LatestSocketProvider>(builder:
+                (context, OrderProvider provider,
+                    LatestSocketProvider latestSocketProvider, _) {
+              if (latestSocketProvider.currentOrderStatus == 1) {
+                Navigator.pop(context, true);
+
+                log("order status is: ${latestSocketProvider.currentOrderStatus}");
+              }
+
               // newSocketProvider
               //     .getTotalUnreadCount(int.parse(session.driverId));
               // if (checkOrderStatusTimer != null) {
@@ -608,8 +615,9 @@ class _NewOrderPageState extends State<NewOrderPage>
 
                         Spacer(),
                         Visibility(
-                          visible: (provider.isOrderAccepted) ||
-                              (session.orderStatus != 0),
+                          visible:
+                              (latestSocketProvider.currentOrderStatus != 0) ||
+                                  (session.orderStatus != 0),
                           // visible: true,
                           child: Container(
                             decoration: BoxDecoration(
@@ -620,10 +628,8 @@ class _NewOrderPageState extends State<NewOrderPage>
                               ),
                             ),
                             child: DriverInfoBottomSheet(
-                              newMessgeCount: Provider.of<LatestSocketProvider>(
-                                      context,
-                                      listen: true)
-                                  .unreadMessageCount,
+                              newMessgeCount:
+                                  latestSocketProvider.unreadMessageCount,
                               reviewEvent: () {
                                 Navigator.push(
                                     context,
@@ -679,15 +685,60 @@ class _NewOrderPageState extends State<NewOrderPage>
                                   ),
                                 );
                               },
-                              driverStatusText: provider.driverStatus,
-                              category: provider.carModal,
-                              driverId: provider.driverId,
-                              driverImage: provider.driverImg,
-                              driverName: provider.driverName,
-                              platerNumber: provider.plateNumber,
-                              rating: provider.ratings,
+                              driverStatusText: (latestSocketProvider
+                                          .currentOrderStatus ==
+                                      1)
+                                  ? "Driver is arriving"
+                                  : (latestSocketProvider.currentOrderStatus ==
+                                          2)
+                                      ? "Driver is on the way"
+                                      : (latestSocketProvider
+                                                  .currentOrderStatus ==
+                                              3)
+                                          ? "Driver reached your location"
+                                          : (latestSocketProvider
+                                                      .currentOrderStatus ==
+                                                  5)
+                                              ? "Departure to your Destination"
+                                              : (latestSocketProvider
+                                                          .currentOrderStatus ==
+                                                      7)
+                                                  ? "Ride is Completed"
+                                                  : "",
+                              // category: provider.carModal,
+                              // driverId: provider.driverId,
+                              // driverImage: provider.driverImg,
+                              // driverName: provider.driverName,
+                              // platerNumber: provider.plateNumber,
+                              // rating: provider.ratings,
+                              // isReceiptVisible:
+                              //     ((session.orderStatus == 7)) ? true : false,
+                              // isReceiptVisible: true,
+
+                              category: latestSocketProvider
+                                      .acceptResponseModel?.data.vehicleName ??
+                                  '',
+                              driverId: latestSocketProvider
+                                      .acceptResponseModel?.data.driverId ??
+                                  "",
+                              driverImage: latestSocketProvider
+                                      .acceptResponseModel?.data.profilePhoto ??
+                                  "",
+                              driverName: latestSocketProvider
+                                      .acceptResponseModel?.data.name ??
+                                  '',
+                              platerNumber: latestSocketProvider
+                                      .acceptResponseModel?.data.plateNumber ??
+                                  '',
+                              rating: latestSocketProvider
+                                      .acceptResponseModel?.data.driverRating
+                                      .toString() ??
+                                  '',
                               isReceiptVisible:
-                                  ((session.orderStatus == 7)) ? true : false,
+                                  ((latestSocketProvider.currentOrderStatus ==
+                                          7))
+                                      ? true
+                                      : false,
                               // isReceiptVisible: true,
                             ),
                           ),

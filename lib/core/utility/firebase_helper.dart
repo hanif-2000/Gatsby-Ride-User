@@ -1,10 +1,7 @@
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/utility/notification_service.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import '../../firebase_options.dart';
 import 'helper.dart';
-
 
 class FirebaseHelper {
   static late FirebaseMessaging messaging;
@@ -14,7 +11,7 @@ class FirebaseHelper {
     log("Firebasee helperrrr init");
     messaging = FirebaseMessaging.instance;
     await incomingNotificationHandling();
- /*   await permissionHandler().then((authorized) async {
+    /*   await permissionHandler().then((authorized) async {
       log("IS AUTHORIZED:  $authorized");
       if (authorized) {
         await setupMessaging();
@@ -44,7 +41,7 @@ class FirebaseHelper {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log("on message listen:-->> ${message.data}");
-      log("on message listen:-->> ${message.notification!.title}");
+      log("on message listen title:-->> ${message.notification!.title}");
       log("on message listen:-->> ${message.notification!.bodyLocArgs}");
       // if (message.notification!.title != 'New Order' ||
       //     message.notification!.title != 'Booking Cancelled') {

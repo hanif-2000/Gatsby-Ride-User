@@ -11,7 +11,7 @@ String acceptResponseModelToJson(AcceptResponseModel data) =>
     json.encode(data.toJson());
 
 class AcceptResponseModel {
-  bool response;
+  dynamic response;
   String message;
   String type;
   Data data;
@@ -43,7 +43,7 @@ class Data {
   dynamic id;
   String startAddress;
   String endAddress;
-  double distance;
+  dynamic distance;
   dynamic paymentMethod;
   dynamic estimatedTime;
   dynamic actualTime;
@@ -98,7 +98,7 @@ class Data {
         plateNumber: json["plate_number"] ?? "",
         vehicleName: json["vehicle_name"] ?? "",
         carModel: json["car_model"] ?? "",
-        driverRating: json["DriverRating"] ?? "",
+        driverRating: json["DriverRating"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -119,6 +119,6 @@ class Data {
         "plate_number": plateNumber,
         "vehicle_name": vehicleName,
         "car_model": carModel,
-        "DriverRating": driverRating,
+        "DriverRating": driverRating.toString(),
       };
 }

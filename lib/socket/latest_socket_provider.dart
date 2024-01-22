@@ -1,10 +1,15 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:GetsbyRideshare/core/presentation/pages/home_page/home_page.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/socket/modals/accept_response_model.dart';
+import 'package:GetsbyRideshare/socket/modals/order_status_response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
+import '../core/presentation/providers/home_provider.dart';
 import '../core/utility/helper.dart';
 import '../core/utility/injection.dart';
 import '../features/order/data/models/chat_modal.dart';
@@ -19,16 +24,24 @@ class LatestSocketProvider extends ChangeNotifier {
 
   LatestSocketProvider.internal();
   final session = locator<Session>();
+  var _homeProvider = locator<HomeProvider>();
+  var _orderProvider = locator<OrderProvider>();
 
   var unreadCount = '0';
   final chatController = TextEditingController();
+  BuildContext currentCxt =
+      locator<GlobalKey<NavigatorState>>().currentContext!;
 
   List<ChatModel> _chatMessagesList = [];
+  int currentOrderStatus = 0;
 
   int unreadMessageCount = 0;
   bool isLoading = false;
   BookingDataModel? bookingDataModel;
+  AcceptResponseModel? acceptResponseModel;
+
   List<ChatModel> get chatMessageList => _chatMessagesList;
+  OrderStatusResponseModel? orderStatusResponseModel;
 
   updateUnreadCount(val) {
     unreadCount = val;
@@ -114,6 +127,129 @@ class LatestSocketProvider extends ChangeNotifier {
         }
 
         notifyListeners();
+      }
+
+      /// *************** RIDE ACCEPTED ********* -------
+
+      if (response['type'] == 'Accept') {
+        log("****************************      DRIVER ACCEPTED THE RIDE *************************");
+        acceptResponseModel = AcceptResponseModel.fromJson(response);
+        session.setOrderId = acceptResponseModel!.data.id;
+        session.setDriverId = acceptResponseModel!.data.driverId;
+        session.setOrderStatus = 1;
+        currentOrderStatus = 1;
+
+        notifyListeners();
+
+        log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
+      }
+
+      /// *************** DEPARTURE TO CUSTOMER ********* -------
+      if (response['type'] == 'DepartToCustomer') {
+        log("****************************      DRIVER DEPARTURE TO CUSTOMER *************************");
+
+        acceptResponseModel = AcceptResponseModel.fromJson(response);
+        session.setOrderId = acceptResponseModel!.data.id;
+        session.setOrderStatus = 2;
+        session.setDriverId = acceptResponseModel!.data.driverId;
+
+        currentOrderStatus = 2;
+
+        notifyListeners();
+        log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
+      }
+
+      /// *************** REACH TO CUSTOMER LOCATION  ********* -------
+      if (response['type'] == 'reachLocation') {
+        log("****************************      DRIVER REACH YOUR LOCATION *************************");
+
+        acceptResponseModel = AcceptResponseModel.fromJson(response);
+        session.setOrderId = acceptResponseModel!.data.id;
+        session.setOrderStatus = 3;
+        session.setDriverId = acceptResponseModel!.data.driverId;
+
+        currentOrderStatus = 3;
+
+        notifyListeners();
+        log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
+      }
+
+      /// *************** START TRIP  ********* -------
+
+      if (response['type'] == 'startTrip') {
+        log("****************************      DRIVER START THE RIDE *************************");
+
+        acceptResponseModel = AcceptResponseModel.fromJson(response);
+        session.setOrderId = acceptResponseModel!.data.id;
+        session.setOrderStatus = 5;
+        session.setDriverId = acceptResponseModel!.data.driverId;
+
+        currentOrderStatus = 5;
+
+        notifyListeners();
+        log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
+      }
+
+      /// *************** END TRIP  ********* -------
+
+      if (response['type'] == 'endTrip') {
+        log("****************************      DRIVER END THE RIDE *************************");
+
+        acceptResponseModel = AcceptResponseModel.fromJson(response);
+        session.setOrderId = acceptResponseModel!.data.id;
+        session.setOrderStatus = 7;
+        currentOrderStatus = 7;
+
+        notifyListeners();
+        log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
+      }
+
+      /// *************** DRIVER CANCEL THE RIDE  ********* -------
+
+      if (response['type'] == 'Reject') {
+        log("****************************      DRIVER CANCEL THE RIDE *************************");
+
+        if (response["data"]["driverID"] != null) {
+          acceptResponseModel = AcceptResponseModel.fromJson(response);
+          session.setOrderId = acceptResponseModel!.data.id;
+          session.setOrderStatus = 8;
+          currentOrderStatus = 8;
+
+          notifyListeners();
+          showDialog(
+            context: currentCxt,
+            builder: (BuildContext context) {
+              // return object of type Dialog
+              return AlertDialog(
+                title: Text("Ride is Cancelled by the Driver"),
+                // content: new Text("sdf"),
+                actions: [
+                  // usually buttons at the bottom of the dialog
+                  ElevatedButton(
+                    child: Text("Find Next Driver"),
+                    onPressed: () async {
+                      await _homeProvider.clearState();
+                      await _orderProvider.clearState();
+                      Navigator.pop(context);
+
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, HomePage.routeName, (route) => false);
+
+                      // Navigator.of(currentCxt).pop();
+                      // Navigator.pushAndRemoveUntil(
+                      //     currentCxt,
+                      //     MaterialPageRoute(
+                      //       builder: (currentCxt) => HomePage(),
+                      //     ),
+                      //     (route) => false);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
+        }
       }
 
       // <----------- Checking When request come ---------> //
