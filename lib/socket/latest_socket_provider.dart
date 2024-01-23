@@ -52,6 +52,13 @@ class LatestSocketProvider extends ChangeNotifier {
   List<ChatModel> _chatMessagesList = [];
   int currentOrderStatus = 0;
 
+  bool isOrderAccepted = false;
+
+  updateIsOrderAccepted({required bool val}) {
+    isOrderAccepted = val;
+    notifyListeners();
+  }
+
   int unreadMessageCount = 0;
   bool isLoading = false;
   BookingDataModel? bookingDataModel;
@@ -97,8 +104,6 @@ class LatestSocketProvider extends ChangeNotifier {
   double zoom = 15;
 
   String commentGiven = '';
-
-  bool isOrderAccepted = false;
 
   TextEditingController commentsEditingController = TextEditingController();
 
@@ -204,16 +209,15 @@ class LatestSocketProvider extends ChangeNotifier {
         log("****************************      DRIVER UPDATED THE LAT LNG *************************");
         driverUpdatedPositionModel =
             DriverUpdatedPositionModel.fromJson(response);
+        notifyListeners();
         // session.setOrderId = acceptResponseModel!.data.id;
         // session.setDriverId = acceptResponseModel!.data.driverId;
-        // session.setOrderStatus = 1;
+        session.setOrderStatus = 1;
         // currentOrderStatus = 1;
         await trackingDriver(
             listenLocation: true,
             lat: driverUpdatedPositionModel!.latitude,
             long: driverUpdatedPositionModel!.longitude);
-
-        notifyListeners();
 
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
@@ -225,6 +229,7 @@ class LatestSocketProvider extends ChangeNotifier {
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id;
         session.setDriverId = acceptResponseModel!.data.driverId;
+        updateIsOrderAccepted(val: true);
         session.setOrderStatus = 1;
         currentOrderStatus = 1;
 
@@ -907,11 +912,11 @@ class LatestSocketProvider extends ChangeNotifier {
     // } else
     //  {
     if (listenLocation) {
-      await googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(latDriver, lngDriver),
-        zoom: zoom,
-      )));
+      // await googleMapController
+      //     .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      //   target: LatLng(latDriver, lngDriver),
+      //   zoom: zoom,
+      // )));
 
       if (isWithDriver) {
         log("driver:-  is with driver. $isWithDriver");

@@ -49,7 +49,7 @@ class _NewOrderPageState extends State<NewOrderPage>
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (session.orderStatus == 0) {
-        showSearchingVehiclesBottomSheet(context);
+        showSearchingVehiclesBottomSheet(context, newSocketProvider);
       } else {
         log("else called ");
         // newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
@@ -82,11 +82,12 @@ class _NewOrderPageState extends State<NewOrderPage>
             resizeToAvoidBottomInset: false,
             body: Consumer<LatestSocketProvider>(builder:
                 (context, LatestSocketProvider latestSocketProvider, _) {
-              if (latestSocketProvider.currentOrderStatus == 1) {
+              if (latestSocketProvider.isOrderAccepted) {
                 Navigator.pop(context, true);
+                latestSocketProvider.updateIsOrderAccepted(val: false);
 
                 log("order status is: ${latestSocketProvider.currentOrderStatus}");
-              }
+              } else {}
 
               // newSocketProvider
               //     .getTotalUnreadCount(int.parse(session.driverId));
@@ -753,7 +754,8 @@ class _NewOrderPageState extends State<NewOrderPage>
         ));
   }
 
-  showSearchingVehiclesBottomSheet(BuildContext context) {
+  showSearchingVehiclesBottomSheet(
+      BuildContext context, LatestSocketProvider latestSocketProvider) {
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -773,6 +775,10 @@ class _NewOrderPageState extends State<NewOrderPage>
           return SearchingRideBottomSheet();
         }).whenComplete(() {
       log("THis is called after open Bottom sheet");
+    }).then((value) {
+      if (value) {
+        latestSocketProvider.updateIsOrderAccepted(val: false);
+      }
     });
   }
 
