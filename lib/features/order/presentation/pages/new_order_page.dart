@@ -1,9 +1,7 @@
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
-import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
@@ -32,20 +30,22 @@ class _NewOrderPageState extends State<NewOrderPage>
   // Timer? checkOrderStatusTimer, trackingDriverTimer;
 
   final session = locator<Session>();
-  // final newSocketProvider = locator<LatestSocketProvider>();
+
+  final newSocketProvider = locator<LatestSocketProvider>();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    newSocketProvider.updateBitsImage();
 
     // var orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
     log("order status is:  -->> ${session.orderStatus}");
 
-    if (session.orderStatus != 0) {
-      log("session order status is not ==== 0");
-    }
+    // if (session.orderStatus != 0) {
+    //   log("session order status is not ==== 0");
+    // }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (session.orderStatus == 0) {
@@ -62,7 +62,7 @@ class _NewOrderPageState extends State<NewOrderPage>
   @override
   void dispose() {
     super.dispose();
-    // checkOrderStatusTimer?.cancel();
+    // checkOrderStatusTimer?.cancel();%
     // trackingDriverTimer?.cancel();
     // newSocketProvider.disconnectSocket();
     WidgetsBinding.instance.removeObserver(this);
@@ -80,9 +80,8 @@ class _NewOrderPageState extends State<NewOrderPage>
         child: SafeArea(
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            body: Consumer2<OrderProvider, LatestSocketProvider>(builder:
-                (context, OrderProvider provider,
-                    LatestSocketProvider latestSocketProvider, _) {
+            body: Consumer<LatestSocketProvider>(builder:
+                (context, LatestSocketProvider latestSocketProvider, _) {
               if (latestSocketProvider.currentOrderStatus == 1) {
                 Navigator.pop(context, true);
 
@@ -431,15 +430,18 @@ class _NewOrderPageState extends State<NewOrderPage>
                     myLocationButtonEnabled: true,
                     zoomControlsEnabled: true,
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(provider.lat, provider.long),
+                      target: LatLng(
+                          latestSocketProvider.lat, latestSocketProvider.long),
                       zoom: 19,
                     ),
                     onMapCreated: (GoogleMapController controller) async {
-                      provider.googleMapController = controller;
-                      await provider.setCurrentLocation(widget.location);
+                      latestSocketProvider.googleMapController = controller;
+                      await latestSocketProvider
+                          .setCurrentLocation(widget.location);
                     },
-                    polylines: provider.polylines,
-                    markers: Set<Marker>.of(provider.markers.values),
+                    polylines: latestSocketProvider.polylines,
+                    markers:
+                        Set<Marker>.of(latestSocketProvider.markers.values),
                   ),
 
                   // Address Text Fields
@@ -450,13 +452,13 @@ class _NewOrderPageState extends State<NewOrderPage>
                           children: <Widget>[
                         /** New code  */
 
-                        provider.orderStatus != OrderStatus.lookingDriver
-                            ? SizedBox(
-                                height: 10,
-                              )
-                            : SizedBox(
-                                height: 10,
-                              ),
+                        // latestSocketProvider.orderStatus != OrderStatus.lookingDriver
+                        //     ? SizedBox(
+                        //         height: 10,
+                        //       )
+                        //     : SizedBox(
+                        //         height: 10,
+                        //       ),
 
                         Container(
                           color: whiteColor,
@@ -639,7 +641,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                               },
 
                               callEvent: () {
-                                provider.callDriver();
+                                latestSocketProvider.callDriver();
                               },
                               messageEvent: () {
                                 log("OnClick on MESSAGE event");
@@ -776,7 +778,7 @@ class _NewOrderPageState extends State<NewOrderPage>
 
   // showDriverFoundBottomSheet(
   //     {required BuildContext context,
-  //     required DriverDetail driverDetails,
+  //     required  driverDetails,
   //     required String driverStatusText,
   //     required OrderProvider provider}) {
   //   showModalBottomSheet(

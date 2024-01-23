@@ -1,9 +1,9 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/cache_network_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../order/presentation/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 
 class DriverProfileWidget extends StatefulWidget {
@@ -45,7 +45,7 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
 
-    return Consumer<OrderProvider>(builder: (context, provider, _) {
+    return Consumer<LatestSocketProvider>(builder: (context, provider, _) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

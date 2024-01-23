@@ -3,7 +3,6 @@ import 'package:GetsbyRideshare/core/presentation/widgets/cache_network_widget.d
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/payment_screen.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +14,7 @@ import '../../../../../core/presentation/widgets/custom_button/custom_button_wid
 import '../../../../../core/static/assets.dart';
 import '../../../../../core/utility/injection.dart';
 import '../../../../../core/utility/session_helper.dart';
+import '../../../../../socket/latest_socket_provider.dart';
 import '../../../../testing/widgets/text_in_row.dart';
 import '../../providers/get_receipt_state.dart';
 import 'package:pay/pay.dart';
@@ -131,7 +131,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
           ),
         ),
         body: StreamBuilder<GetReceiptState>(
-          stream: context.read<OrderProvider>().orderReceiptApi(),
+          stream: context.read<LatestSocketProvider>().orderReceiptApi(),
           builder: (context, state) {
             log("order state: $state");
             switch (state.data.runtimeType) {

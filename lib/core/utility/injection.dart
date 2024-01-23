@@ -59,7 +59,6 @@ import '../../features/order/domain/usecases/get_order_detail.dart';
 import '../../features/order/domain/usecases/get_receipt.dart';
 import '../../features/order/domain/usecases/get_status_order.dart';
 import '../../features/order/domain/usecases/update_status_order.dart';
-import '../../features/order/presentation/providers/order_provider.dart';
 import '../../features/profile/data/datasources/profile_data_source.dart';
 import '../../features/profile/data/repositories/create_profile_repository_implementation.dart';
 import '../../features/profile/data/repositories/profile_repository_implementation.dart';
@@ -119,7 +118,8 @@ Future<void> init() async {
 
   //external
   locator.registerLazySingleton<Dio>(() => DioClient().dio);
-  locator.registerLazySingletonAsync<Session>(() async => SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
+  locator.registerLazySingletonAsync<Session>(() async =>
+      SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
   locator.registerLazySingletonAsync<SharedPreferences>(
       () async => await SharedPreferences.getInstance());
   locator.registerLazySingleton<GlobalKey<NavigatorState>>(
@@ -350,16 +350,16 @@ Future<void> init() async {
       getVehicleCatagory: locator<GetVehiclesCategory>(),
     ),
   );
-  locator.registerFactory(
-    () => OrderProvider(
-        updateStatusOrder: locator<UpdateStatusOrder>(),
-        getDriverDetail: locator<GetDriverDetail>(),
-        getDriverLocation: locator<GetDriverLocation>(),
-        getOrderDetail: locator<GetOrderDetail>(),
-        getStatusOrder: locator<GetStatusOrder>(),
-        submitRatings: locator<SubmitRatings>(),
-        orderReceipt: locator<GetOrderReceipt>()),
-  );
+  // locator.registerFactory(
+  //   () => OrderProvider(
+  //       updateStatusOrder: locator<UpdateStatusOrder>(),
+  //       getDriverDetail: locator<GetDriverDetail>(),
+  //       getDriverLocation: locator<GetDriverLocation>(),
+  //       getOrderDetail: locator<GetOrderDetail>(),
+  //       getStatusOrder: locator<GetStatusOrder>(),
+  //       submitRatings: locator<SubmitRatings>(),
+  //       orderReceipt: locator<GetOrderReceipt>()),
+  // );
 
   locator.registerFactory<PlacePickerProvider>(
       () => PlacePickerProvider(getGooglePlace: locator<GetGooglePlace>()));
@@ -383,7 +383,6 @@ Future<void> init() async {
   );
   locator.registerFactory<ProfileEditProvider>(
       () => ProfileEditProvider(updateProfile: locator()));
-
 
   locator.registerFactory<ChangeEmailProvider>(
       () => ChangeEmailProvider(updateEmail: locator()));

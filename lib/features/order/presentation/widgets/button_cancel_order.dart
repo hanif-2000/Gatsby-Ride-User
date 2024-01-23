@@ -1,7 +1,6 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,7 +14,7 @@ class ButtonCancelOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
-    return Consumer2(builder: (context, OrderProvider orderProvider,
+    return Consumer2(builder: (context, LatestSocketProvider orderProvider,
         LatestSocketProvider socketProvider, _) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 8),

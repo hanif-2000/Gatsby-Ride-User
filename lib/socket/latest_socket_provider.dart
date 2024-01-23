@@ -1,18 +1,30 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
+import 'dart:ui' as ui;
 import 'package:GetsbyRideshare/core/presentation/pages/home_page/home_page.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/socket/modals/accept_response_model.dart';
+import 'package:GetsbyRideshare/socket/modals/driver_updated_position_model.dart';
 import 'package:GetsbyRideshare/socket/modals/order_status_response_model.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_client/web_socket_client.dart';
-
+import 'package:location/location.dart' as lctn;
+import '../core/domain/entities/order_data_detail.dart';
 import '../core/presentation/providers/home_provider.dart';
+import '../core/static/assets.dart';
+import '../core/utility/direction_helper.dart';
 import '../core/utility/helper.dart';
 import '../core/utility/injection.dart';
 import '../features/order/data/models/chat_modal.dart';
+import '../features/order/domain/entities/driver_detail.dart';
+import '../features/order/presentation/providers/get_receipt_state.dart';
+import '../features/order/presentation/providers/submit_ratings_state.dart';
 import 'modals/booking_response_model.dart';
 
 class LatestSocketProvider extends ChangeNotifier {
@@ -25,8 +37,13 @@ class LatestSocketProvider extends ChangeNotifier {
   LatestSocketProvider.internal();
   final session = locator<Session>();
   var _homeProvider = locator<HomeProvider>();
-  var _orderProvider = locator<OrderProvider>();
 
+  final lctn.Location locationService = lctn.Location();
+  late StreamSubscription<Position>? locationbackSubscription;
+  // CameraPosition kJapanCoordinate = const CameraPosition(
+  //   target: JAPAN_LATLNG,
+  //   zoom: 14.4746,
+  // );
   var unreadCount = '0';
   final chatController = TextEditingController();
   BuildContext currentCxt =
@@ -39,6 +56,7 @@ class LatestSocketProvider extends ChangeNotifier {
   bool isLoading = false;
   BookingDataModel? bookingDataModel;
   AcceptResponseModel? acceptResponseModel;
+  DriverUpdatedPositionModel? driverUpdatedPositionModel;
 
   List<ChatModel> get chatMessageList => _chatMessagesList;
   OrderStatusResponseModel? orderStatusResponseModel;
@@ -48,6 +66,56 @@ class LatestSocketProvider extends ChangeNotifier {
     notifyListeners();
 
     log("unrad count :-->> $unreadCount");
+  }
+
+  DriverDetail? _driverDetail;
+  DriverDetail? get driverDetail => _driverDetail;
+
+  // DriverLocationResponseModel? _driverLocation;
+
+  double _driverLat = 0.0;
+  double _driverLng = 0.0;
+
+  late GoogleMapController googleMapController;
+  // OrderStatus _orderStatus = OrderStatus.lookingDriver;
+  late LatLng originLatLng, destinationLatLng;
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  late BitmapDescriptor driverMarker;
+  late BitmapDescriptor pickUpMarker, destinationMarker, initialMarker;
+  String originAddress = '';
+  bool isFirstTracking = true;
+  bool isWithDriver = false;
+  String destinationAddress = "Destination";
+  late Text originText;
+  late Text destinationText;
+  List<LatLng> polylineCoordinates = [];
+  Set<Polyline> polylines = {};
+
+  String orderId = '';
+
+  double ratingGiven = 1;
+  double zoom = 15;
+
+  String commentGiven = '';
+
+  bool isOrderAccepted = false;
+
+  TextEditingController commentsEditingController = TextEditingController();
+
+  updateBitsImage() {
+    getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
+      pickUpMarker = BitmapDescriptor.fromBytes(value);
+    });
+    getBytesFromAsset(destinationIcon, 100).then((value) async {
+      destinationMarker = BitmapDescriptor.fromBytes(value);
+    });
+    getBytesFromAsset(carIconAsset, 90).then((value) {
+      driverMarker = BitmapDescriptor.fromBytes(value);
+    });
+
+    getBytesFromAsset(initialPickUpIcon, 300).then((value) {
+      initialMarker = BitmapDescriptor.fromBytes(value);
+    });
   }
 
   //
@@ -108,7 +176,7 @@ class LatestSocketProvider extends ChangeNotifier {
   }
 
   void listenSocketRequests(BuildContext context) {
-    _socket!.messages.listen((event) {
+    _socket!.messages.listen((event) async {
       //  Decoding data
       final response = jsonDecode(event);
       log('-----Event  ${response.toString()}');
@@ -127,6 +195,27 @@ class LatestSocketProvider extends ChangeNotifier {
         }
 
         notifyListeners();
+      }
+
+      /// *************** DRIVER UPDATED LAT LONG ********* -------
+
+      if (response['type'] == 'UpdatedLatLong') {
+        log(response['type']);
+        log("****************************      DRIVER UPDATED THE LAT LNG *************************");
+        driverUpdatedPositionModel =
+            DriverUpdatedPositionModel.fromJson(response);
+        // session.setOrderId = acceptResponseModel!.data.id;
+        // session.setDriverId = acceptResponseModel!.data.driverId;
+        // session.setOrderStatus = 1;
+        // currentOrderStatus = 1;
+        await trackingDriver(
+            listenLocation: true,
+            lat: driverUpdatedPositionModel!.latitude,
+            long: driverUpdatedPositionModel!.longitude);
+
+        notifyListeners();
+
+        log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
       /// *************** RIDE ACCEPTED ********* -------
@@ -229,7 +318,7 @@ class LatestSocketProvider extends ChangeNotifier {
                     child: Text("Find Next Driver"),
                     onPressed: () async {
                       await _homeProvider.clearState();
-                      await _orderProvider.clearState();
+                      // await _orderProvider.clearState();
                       Navigator.pop(context);
 
                       Navigator.pushNamedAndRemoveUntil(
@@ -521,6 +610,318 @@ class LatestSocketProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  ///**********  HANDLE GOOGLE MAPS AND ORDER PROVIDER DATA HERE */
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
+
+  setCurrentLocation(OrderDataDetail orderDataDetail) async {
+    log("set current location called");
+    try {
+      bool serviceStatus = await locationService.serviceEnabled();
+      if (serviceStatus) {
+        setAddressFromLatLng(orderDataDetail);
+      } else {
+        try {
+          bool serviceStatusResult = await locationService.requestService();
+          logMe("Service status activated after request: $serviceStatusResult");
+          if (serviceStatusResult) {
+            setCurrentLocation(orderDataDetail);
+          }
+        } catch (e) {
+          logMe(e.toString());
+        }
+      }
+    } on PlatformException catch (e) {
+      if (e.toString() == 'PERMISSION_DENIED') {
+        logMe(e.toString());
+      } else if (e.code == 'SERVICE_STATUS_ERROR') {
+        logMe(e.message);
+      }
+    }
+  }
+
+  setAddressFromLatLng(OrderDataDetail orderDataDetail) async {
+    log("set address from lat long  ORDER DETAILS : ${orderDataDetail}");
+    try {
+      MarkerId markerIdOrigin = const MarkerId("origin");
+      MarkerId markerIdDestination = const MarkerId("destination");
+      final Marker markerOrigin = Marker(
+        anchor: const Offset(0.5, 0.5),
+        markerId: markerIdOrigin,
+        position: LatLng(orderDataDetail.originLatLng.latitude,
+            orderDataDetail.originLatLng.longitude),
+        infoWindow: const InfoWindow(title: "Origin"),
+        icon: await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
+          return initialMarker = BitmapDescriptor.fromBytes(value);
+        }),
+        onTap: () {},
+      );
+      final Marker markerDestination = Marker(
+        anchor: const Offset(0.5, 0.5),
+        markerId: markerIdDestination,
+        position: LatLng(orderDataDetail.destinationLatLng.latitude,
+            orderDataDetail.destinationLatLng.longitude),
+        infoWindow: const InfoWindow(title: "Destination"),
+        icon: await getBytesFromAsset(destinationIcon, 100).then((value) {
+          return destinationMarker = BitmapDescriptor.fromBytes(value);
+        }),
+        onTap: () {},
+      );
+
+      googleMapController
+          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(orderDataDetail.originLatLng.latitude,
+            orderDataDetail.originLatLng.longitude),
+        zoom: zoom,
+      )));
+
+      originAddress = orderDataDetail.originAddress;
+      destinationAddress = orderDataDetail.destinationAddress;
+      originLatLng = orderDataDetail.originLatLng;
+      destinationLatLng = orderDataDetail.destinationLatLng;
+      originText = Text(
+        originAddress,
+        softWrap: false,
+        overflow: TextOverflow.ellipsis,
+      );
+      markers[markerIdOrigin] = markerOrigin;
+      markers[markerIdDestination] = markerDestination;
+      notifyListeners();
+    } catch (e) {
+      logMe(e);
+    }
+  }
+
+  removeMarker() async {
+    MarkerId markerDriver = const MarkerId("driver");
+    MarkerId markerOrigin = const MarkerId("origin");
+    markers.remove(markerOrigin);
+    markers.remove(markerDriver);
+    isWithDriver = true;
+    polylines.clear();
+    notifyListeners();
+  }
+
+  //clear state
+  clearState() async {
+    await sessionClearOrder();
+    polylines.clear();
+    markers.clear();
+    isWithDriver = false;
+    isFirstTracking = true;
+    // _orderStatus = OrderStatus.lookingDriver;
+
+    notifyListeners();
+  }
+
+  /** Driver Details */
+  String driverName = '';
+  String ratings = '';
+  String carModal = '';
+  String plateNumber = '';
+  String phoneNumber = '';
+  String driverId = '';
+  String driverImg = '';
+  String driverStatus = "Fetching Driver";
+
+  double lat = 0.0;
+  double long = 0.0;
+
+//Call Driver
+  callDriver() async {
+    final call = Uri.parse('tel:${_driverDetail!.phone}');
+    launchUrl(call);
+  }
+
+  set changeFirstTracking(val) {
+    isFirstTracking = val;
+    notifyListeners();
+  }
+
+// Set polylines Direction
+  setPolylinesDirection(LatLng origin, LatLng destination) async {
+    log("polyline :" + origin.latitude.toString());
+    log("polyline :" + destination.latitude.toString());
+
+    await DirectionHelper()
+        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
+            destination.latitude, destination.longitude)
+        .then((result) {
+      if (result.isNotEmpty) {
+        polylineCoordinates = [];
+        polylineCoordinates.clear();
+        for (var point in result) {
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        }
+
+        Polyline polyline = Polyline(
+            polylineId: const PolylineId("jalur"),
+            color: Colors.black,
+            points: polylineCoordinates,
+            width: 6,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap);
+
+        polylines.add(polyline);
+
+        log("Polylines are:-->> " + polylines.toString());
+        notifyListeners();
+      }
+    });
+  }
+
+  // // Update rating and comments
+  updateRatingComment({double? rating, String? comment}) {
+    ratingGiven = rating!;
+    commentGiven = comment!;
+    notifyListeners();
+  }
+
+  moveCameraToDriver() {
+    googleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: LatLng(_driverLat, _driverLng),
+      zoom: zoom,
+    )));
+  }
+
+//   //Order Receipt
+  Stream<GetReceiptState> orderReceiptApi() async* {
+    // log("estimated distance :-->> ${session.estimatedDistance}");
+    // log("estimated time :-->> ${session.estimatedTime}");
+
+    // yield GetReceiptLoading();
+    // final formData = FormData.fromMap({
+    //   "id": session.orderId,
+    //   // "distance": (int.parse(session.estimatedDistance) / 1000),
+    //   // "time": (int.parse(session.estimatedTime) / 60).round()
+    // });
+    // log("form data of order is --->> $formData");
+    // final result = await orderReceipt.execute(formData);
+    // yield* result.fold((failure) async* {
+    //   logMe("failure");
+    //   logMe(failure);
+    //   yield GetReceiptFailure(failure: failure);
+    // }, (result) async* {
+    //   yield GetReceiptLoaded(data: result);
+    // });
+    // updateReachedDestination();
+    // notifyListeners();
+  }
+
+  //Submit Ratings Review
+  Stream<SubmitRatingsState> submitRatingsReview() async* {
+    log(commentGiven.toString());
+    log(ratingGiven.toString());
+
+    yield SubmitRatingsLoading();
+    final formData = FormData.fromMap({
+      "id": driverId,
+      "order_id": session.orderId,
+      "rating": ratingGiven,
+      "review": commentsEditingController.text,
+      "type": 1
+    });
+    // final result = await submitRatings.execute(formData);
+    // yield* result.fold((failure) async* {
+    //   logMe("failure");
+    //   logMe(failure);
+    //   yield SubmitRatingsFailure(failure: failure);
+    // }, (data) async* {
+    //   yield SubmitRatingsLoaded(data: data);
+    // });
+  }
+
+  updateIsWithDriver() {
+    log("update is with driver called");
+    if ((session.orderStatus == 3) ||
+        (session.orderStatus == 4) ||
+        (session.orderStatus == 5) ||
+        (session.orderStatus == 6) ||
+        (currentOrderStatus == 3) ||
+        (currentOrderStatus == 4) ||
+        (currentOrderStatus == 5)) {
+      isWithDriver = true;
+      notifyListeners();
+    }
+  }
+
+  // /**  Tracking Driver */
+  Future<void> trackingDriver(
+      {required bool listenLocation,
+      required double lat,
+      required double long}) async {
+    updateIsWithDriver();
+    log("driver:- tracking driver called-->>>>>. ${lat} ${long}");
+    log("driver:- is listenLocation :$listenLocation");
+
+    log("is first tracking :--------************------>>>.. $isFirstTracking");
+    // var latLong = {driverLatLng};
+    // var split = latLong.split(",");
+    // var bearing = _driverLocation!.bearing;
+    // var latDriver = double.parse(split[0]);
+    // var lngDriver = double.parse(split[1]);
+
+    var latDriver = lat;
+    var lngDriver = long;
+
+    // var latDriver driverLatLng.
+    MarkerId markerId = const MarkerId("driver");
+
+    // creating a new MARKER
+    final Marker marker = Marker(
+      anchor: const Offset(0.5, 0.5),
+      markerId: markerId,
+      position: LatLng(latDriver, lngDriver),
+      icon: driverMarker,
+      rotation: 0.0,
+      infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
+      onTap: () {},
+    );
+    //add to marker list
+    markers[markerId] = marker;
+
+    notifyListeners();
+
+    // if (isFirstTracking) {
+    //   if (listenLocation) {
+    //     logMe("session.driverLat $_driverLng");
+    //     logMe("session.driverLng $_driverLat");
+    //     await googleMapController
+    //         .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    //       target: LatLng(latDriver, lngDriver),
+    //       zoom: zoom,
+    //     )));
+    //   }
+    // } else
+    //  {
+    if (listenLocation) {
+      await googleMapController
+          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(latDriver, lngDriver),
+        zoom: zoom,
+      )));
+
+      if (isWithDriver) {
+        log("driver:-  is with driver. $isWithDriver");
+        setPolylinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
+      } else {
+        log("driver:-  is not with driver. $isWithDriver");
+
+        setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
+      }
+      // }
     }
   }
 }

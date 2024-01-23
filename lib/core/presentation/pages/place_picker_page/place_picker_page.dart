@@ -348,6 +348,12 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                             ),
                                           ),
                                         )),
+
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              .1,
+                                    )
                                   ],
                                 ),
                               ),

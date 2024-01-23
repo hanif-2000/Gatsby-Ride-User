@@ -1,7 +1,7 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -33,8 +33,8 @@ class RatingSubmittedScreen extends StatelessWidget {
               },
             ),
           ),
-          body: Consumer<OrderProvider>(builder: (BuildContext context,
-              OrderProvider orderProvider, Widget? child) {
+          body: Consumer<LatestSocketProvider>(builder: (BuildContext context,
+              LatestSocketProvider orderProvider, Widget? child) {
             return Container(
               width: size.width,
               child: Padding(

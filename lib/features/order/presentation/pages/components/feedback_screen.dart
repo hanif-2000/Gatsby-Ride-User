@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../../core/presentation/providers/home_provider.dart';
-import '../../providers/order_provider.dart';
+import '../../../../../socket/latest_socket_provider.dart';
 import '../../providers/submit_ratings_state.dart';
 
 class FeedBackScreen extends StatelessWidget {
@@ -49,7 +49,7 @@ class FeedBackScreen extends StatelessWidget {
               color: blackColor,
             ),
           ),
-          body: Consumer<OrderProvider>(
+          body: Consumer<LatestSocketProvider>(
             builder: (context, provider, child) {
               return Padding(
                 padding:
@@ -248,9 +248,9 @@ class FeedBackScreen extends StatelessWidget {
                                 context,
                                 listen: false);
 
-                            var orderProvider = Provider.of<OrderProvider>(
-                                context,
-                                listen: false);
+                            var orderProvider =
+                                Provider.of<LatestSocketProvider>(context,
+                                    listen: false);
                             await homeProvider.clearState();
                             await orderProvider.clearState();
 

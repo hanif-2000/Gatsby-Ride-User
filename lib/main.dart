@@ -27,7 +27,6 @@ import 'core/utility/notification_service.dart';
 import 'core/utility/session_helper.dart';
 import 'features/about_us/presentation/providers/aboutus_provider.dart';
 import 'features/history/presentation/providers/history_provider.dart';
-import 'features/order/presentation/providers/order_provider.dart';
 import 'features/profile/presentation/providers/change_email_provider.dart';
 import 'features/profile/presentation/providers/change_password_provider.dart';
 import 'features/profile/presentation/providers/profile_edit_provider.dart';
@@ -38,7 +37,8 @@ import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+      name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
   // Stripe.publishableKey =
   //     'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
 
@@ -59,9 +59,9 @@ Future<void> main() async {
             ChangeNotifierProvider<HomeProvider>(
               create: (context) => locator<HomeProvider>(),
             ),
-            ChangeNotifierProvider<OrderProvider>(
-              create: (context) => locator<OrderProvider>(),
-            ),
+            // ChangeNotifierProvider<OrderProvider>(
+            //   create: (context) => locator<OrderProvider>(),
+            // ),
             ChangeNotifierProvider<PlacePickerProvider>(
               create: (context) => locator<PlacePickerProvider>(),
             ),
@@ -120,13 +120,11 @@ Future<void> main() async {
           builder: (context, _) => const MyApp(),
         ),
       );
-
     });
   } catch (e) {
     logMe(e);
   }
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../utility/global_function.dart';
@@ -22,7 +22,7 @@ class DestinationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isFromOrder) {
-      return Consumer<OrderProvider>(builder: (context, map, _) {
+      return Consumer<LatestSocketProvider>(builder: (context, map, _) {
         if (map.originAddress == '') {
           return const SizedBox();
         } else {

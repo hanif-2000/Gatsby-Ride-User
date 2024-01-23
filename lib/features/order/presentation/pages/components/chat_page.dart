@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +111,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       CommonCircularImageContainer(
                         height: 45,
                         width: 45,
-                        image: Provider.of<OrderProvider>(context).driverImg,
+                        image: Provider.of<LatestSocketProvider>(context)
+                            .driverImg,
                       ),
                       SizedBox(
                         width: 11,
@@ -121,8 +121,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CommonText(
-                            text:
-                                Provider.of<OrderProvider>(context).driverName,
+                            text: Provider.of<LatestSocketProvider>(context)
+                                .driverName,
                             fontWeight: FontWeight.w500,
                             fontColor: blackColor,
                             fontFamily: "poPPinMedium",
