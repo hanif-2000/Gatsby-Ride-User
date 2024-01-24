@@ -41,6 +41,8 @@ class FirebaseHelper {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log("on message listen:-->> ${message.data}");
+      print("on message listen:-->> ${message.data}");
+
       // log("on message listen title:-->> ${message.notification!.title}");
       // log("on message listen:-->> ${message.notification!.bodyLocArgs}");
       // if (message.notification!.title != 'New Order' ||

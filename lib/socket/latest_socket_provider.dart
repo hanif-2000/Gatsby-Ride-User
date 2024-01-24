@@ -23,6 +23,7 @@ import '../core/utility/helper.dart';
 import '../core/utility/injection.dart';
 import '../features/order/data/models/chat_modal.dart';
 import '../features/order/domain/entities/driver_detail.dart';
+import '../features/order/presentation/pages/components/new_receipt_model.dart';
 import '../features/order/presentation/providers/get_receipt_state.dart';
 import '../features/order/presentation/providers/submit_ratings_state.dart';
 import 'modals/booking_response_model.dart';
@@ -97,6 +98,7 @@ class LatestSocketProvider extends ChangeNotifier {
   late Text destinationText;
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
+  ReceiptData? receiptData;
 
   String orderId = '';
 
@@ -130,20 +132,29 @@ class LatestSocketProvider extends ChangeNotifier {
   Future<dynamic> connectToSocket(BuildContext context) async {
     log("-------->CONNECTING TO SOCKET <--------");
     log('-------> uri === ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
-    _socket = WebSocket(Uri.parse(
-        "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
+    _socket = WebSocket(
+        Uri.parse(
+          "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}",
+        ),
+        backoff: ConstantBackoff(Duration(seconds: 5)));
     _socket!.connection.listen((event) {
       if (event is Connected) {
         log("************ Connectd ***********");
+        print("************ Connectd ***********");
+
         listenSocketRequests(context);
       } else if (event is Connecting) {
         log("************ Connecting ***********");
+        print("************ Connecting ***********");
       } else if (event is Disconnected) {
         log("************ DisConnectd ***********");
       } else if (event is Reconnecting) {
         log("************ ReConnecting ***********");
+      } else if (event is Reconnected) {
+        listenSocketRequests(context);
       } else {
         log("-----******** EVENT IS **** ${event}");
+        print("-----******** EVENT IS **** ${event}");
       }
     });
   }
@@ -174,6 +185,20 @@ class LatestSocketProvider extends ChangeNotifier {
           : '${session.userId}-$receiverId',
     };
     logMe('Join Exit room socket -- > ${map.toString()}');
+
+    try {
+      _socket!.connection.listen((event) {
+        if (event is Connected) {
+          _socket!.send(json.encode(map));
+          print(map.toString());
+
+          notifyListeners();
+        }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+
     _socket!.send(
       jsonEncode(map),
     );
@@ -232,6 +257,7 @@ class LatestSocketProvider extends ChangeNotifier {
         updateIsOrderAccepted(val: true);
         session.setOrderStatus = 1;
         currentOrderStatus = 1;
+        updateIsWithDriver(val: false);
 
         notifyListeners();
 
@@ -246,6 +272,7 @@ class LatestSocketProvider extends ChangeNotifier {
         session.setOrderId = acceptResponseModel!.data.id;
         session.setOrderStatus = 2;
         session.setDriverId = acceptResponseModel!.data.driverId;
+        updateIsWithDriver(val: false);
 
         currentOrderStatus = 2;
 
@@ -261,6 +288,7 @@ class LatestSocketProvider extends ChangeNotifier {
         session.setOrderId = acceptResponseModel!.data.id;
         session.setOrderStatus = 3;
         session.setDriverId = acceptResponseModel!.data.driverId;
+        updateIsWithDriver(val: true);
 
         currentOrderStatus = 3;
 
@@ -277,6 +305,7 @@ class LatestSocketProvider extends ChangeNotifier {
         session.setOrderId = acceptResponseModel!.data.id;
         session.setOrderStatus = 5;
         session.setDriverId = acceptResponseModel!.data.driverId;
+        updateIsWithDriver(val: true);
 
         currentOrderStatus = 5;
 
@@ -290,6 +319,7 @@ class LatestSocketProvider extends ChangeNotifier {
         log("****************************      DRIVER END THE RIDE *************************");
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
+        receiptData = ReceiptData.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id;
         session.setOrderStatus = 7;
         currentOrderStatus = 7;
@@ -323,7 +353,7 @@ class LatestSocketProvider extends ChangeNotifier {
                     child: Text("Find Next Driver"),
                     onPressed: () async {
                       await _homeProvider.clearState();
-                      // await _orderProvider.clearState();
+
                       Navigator.pop(context);
 
                       Navigator.pushNamedAndRemoveUntil(
@@ -539,8 +569,24 @@ class LatestSocketProvider extends ChangeNotifier {
         'payment_method': payment_method,
       };
 
+      try {
+        _socket!.connection.listen((event) {
+          if ((event is Connected) || (event is Reconnected)) {
+            _socket!.send(json.encode(map));
+            print(map.toString());
+
+            logMe(
+                ' CONNECTED:-->> Send New ride request -- > ${map.toString()}');
+
+            notifyListeners();
+          }
+        });
+      } catch (e) {
+        print(e.toString());
+      }
+
       logMe('Send New ride request -- > ${map.toString()}');
-      _socket!.send(jsonEncode(map));
+      // _socket!.send(jsonEncode(map));
 
       return true;
     } catch (e) {
@@ -848,18 +894,18 @@ class LatestSocketProvider extends ChangeNotifier {
     // });
   }
 
-  updateIsWithDriver() {
+  updateIsWithDriver({required bool val}) {
     log("update is with driver called");
-    if ((session.orderStatus == 3) ||
-        (session.orderStatus == 4) ||
-        (session.orderStatus == 5) ||
-        (session.orderStatus == 6) ||
-        (currentOrderStatus == 3) ||
-        (currentOrderStatus == 4) ||
-        (currentOrderStatus == 5)) {
-      isWithDriver = true;
-      notifyListeners();
-    }
+    // if ((session.orderStatus == 3) ||
+    //     (session.orderStatus == 4) ||-----******** EVENT IS ****
+    //     (session.orderStatus == 5) ||
+    //     (session.orderStatus == 6) ||
+    //     (currentOrderStatus == 3) ||
+    //     (currentOrderStatus == 4) ||
+    //     (currentOrderStatus == 5)) {
+    isWithDriver = val;
+    notifyListeners();
+    // }
   }
 
   // /**  Tracking Driver */
@@ -867,7 +913,7 @@ class LatestSocketProvider extends ChangeNotifier {
       {required bool listenLocation,
       required double lat,
       required double long}) async {
-    updateIsWithDriver();
+    // updateIsWithDriver();
     log("driver:- tracking driver called-->>>>>. ${lat} ${long}");
     log("driver:- is listenLocation :$listenLocation");
 

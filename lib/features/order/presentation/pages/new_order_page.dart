@@ -13,7 +13,7 @@ import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
-import 'components/receipt_screen.dart';
+import 'new_receipt_page.dart';
 
 class NewOrderPage extends StatefulWidget {
   final OrderDataDetail location;
@@ -84,7 +84,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                 (context, LatestSocketProvider latestSocketProvider, _) {
               if (latestSocketProvider.isOrderAccepted) {
                 Navigator.pop(context, true);
-                latestSocketProvider.updateIsOrderAccepted(val: false);
+                // latestSocketProvider.updateIsOrderAccepted(val: false);
 
                 log("order status is: ${latestSocketProvider.currentOrderStatus}");
               } else {}

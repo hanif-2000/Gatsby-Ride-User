@@ -45,17 +45,19 @@ class NotificationHelper {
     if (message.notification != null) {
       await flutterLocalNotificationsPlugin.show(
         0,
-        message.notification?.title,
-        message.notification?.body != null
-            ? message.notification?.body
-            : message.data['message'],
+        message.data['title'],
+        message.data['message'],
+        // message.notification?.title,%
+        // message.notification?.body != null
+        //     ? message.notification?.body
+        //     : message.data['message'],
         NotificationDetails(android: _androidNotificationDetails),
       );
     } else {
       await flutterLocalNotificationsPlugin.show(
         0,
-        message.data['action'],
-        '',
+        message.data['title'],
+        message.data['message'],
         NotificationDetails(android: _androidNotificationDetails),
       );
     }
