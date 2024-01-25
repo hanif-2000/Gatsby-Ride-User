@@ -49,6 +49,7 @@ android {
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -75,5 +76,6 @@ dependencies {
     implementation "dev.shreyaspatil.EasyUpiPayment:EasyUpiPayment:3.0.3"
     implementation 'com.stripe:stripe-android:20.28.2'
     implementation 'com.stripe:stripe-android:17.1.1'
+    implementation 'com.android.support:multidex:2.0.1'
 
 }

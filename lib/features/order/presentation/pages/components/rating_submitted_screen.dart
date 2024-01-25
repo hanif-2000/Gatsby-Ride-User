@@ -1,6 +1,8 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -66,7 +68,12 @@ class RatingSubmittedScreen extends StatelessWidget {
                       isRounded: true,
                       text: appLoc.done,
                       event: () async {
+                        var session = locator<Session>();
                         // orderProvider.submitRatingsReview();
+                        session.setIsRunningOrder = false;
+                        session.setOrderStatus = 100;
+                        session.clearOrderSession();
+
                         var homeProvider =
                             Provider.of<HomeProvider>(context, listen: false);
                         await homeProvider.clearState();

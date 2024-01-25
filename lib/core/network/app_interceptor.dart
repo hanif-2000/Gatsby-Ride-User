@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:GetsbyRideshare/features/login/presentation/pages/login_page.dart';
@@ -42,10 +43,23 @@ class AppInterceptor extends Interceptor {
     //   final session = locator<Session>();
     //   session.setLoggedIn = false;
     // }
-
+    log("--->>>>>> status coder is :${statusCode} --------*****00");
     if (statusCode == HttpStatus.unprocessableEntity) {
       dismissLoading();
 
+      await sessionLogOut().then(
+        (_) => Navigator.pushNamedAndRemoveUntil(
+          locator<GlobalKey<NavigatorState>>().currentContext!,
+          LoginPage.routeName,
+          (route) => false,
+        ),
+      );
+      // final session = locator<Session>();
+      // session.setLoggedIn = false;
+    }
+    if (statusCode == HttpStatus.notFound) {
+      print("====not found called==>>");
+      dismissLoading();
       await sessionLogOut().then(
         (_) => Navigator.pushNamedAndRemoveUntil(
           locator<GlobalKey<NavigatorState>>().currentContext!,

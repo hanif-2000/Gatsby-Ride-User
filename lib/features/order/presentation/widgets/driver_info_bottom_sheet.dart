@@ -1,7 +1,9 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/custom_contact_btn.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
@@ -44,130 +46,150 @@ class DriverInfoBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
     final session = locator<Session>();
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 10.0,
-        vertical: 20.0,
-      ),
-      child: Column(
-        children: [
-          Text(
-            driverStatusText,
-            style: TextStyle(
-              fontSize: 14.0,
-              fontFamily: "poPPinMedium",
-            ),
+    return Consumer<LatestSocketProvider>(
+      builder: (context, provider, _) {
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 20.0,
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0),
-            child: DriverProfileWidget(
-              onClickOnReview: reviewEvent,
-              category: category,
-              driverId: driverId,
-              driverImage: driverImage,
-              driverName: driverName,
-              platerNumber: platerNumber,
-              rating: rating,
-            ),
-          ),
-          Visibility(
-            visible: !isReceiptVisible,
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomContactBtn(
-                        btnText: "Call now",
-                        image: 'assets/icons/call_icon.svg',
-                        btnWidth: _deviceSize.width * .44,
-                        btnColor:
-                            //  session.orderStatus == 1
+          child: Column(
+            children: [
+              Text(
+                ((provider.currentOrderStatus == 1) ||
+                        (session.orderStatus == 1))
+                    ? "Driver is arriving"
+                    : ((provider.currentOrderStatus == 2) ||
+                            (session.orderStatus == 2))
+                        ? "Driver is on the way"
+                        : ((provider.currentOrderStatus == 3) ||
+                                (session.orderStatus == 3))
+                            ? "Driver reached your location"
+                            : ((provider.currentOrderStatus == 5) ||
+                                    (session.orderStatus == 5))
+                                ? "Departure to your Destination"
+                                : ((provider.currentOrderStatus == 7) ||
+                                        (session.orderStatus == 7))
+                                    ? "Ride is Completed"
+                                    : "",
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontFamily: "poPPinMedium",
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: DriverProfileWidget(
+                  onClickOnReview: reviewEvent,
+                  category: category,
+                  driverId: driverId,
+                  driverImage: driverImage,
+                  driverName: driverName,
+                  platerNumber: platerNumber,
+                  rating: rating,
+                ),
+              ),
+              Visibility(
+                visible: !isReceiptVisible,
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomContactBtn(
+                            btnText: "Call now",
+                            image: 'assets/icons/call_icon.svg',
+                            btnWidth: _deviceSize.width * .44,
+                            btnColor:
+                                //  session.orderStatus == 1
 
-                            // ? green2DAA5FColor
-                            // : session.orderStatus == 2
-                            //     ? green2DAA5FColor
-                            //     : session.orderStatus == 3
-                            //         ?
+                                // ? green2DAA5FColor
+                                // : session.orderStatus == 2
+                                //     ? green2DAA5FColor
+                                //     : session.orderStatus == 3
+                                //         ?
 
-                            green2DAA5FColor,
-                        // : grey606060Color,
-                        event:
-                            // session.orderStatus == 1
-                            //     ? callEvent
-                            //     : session.orderStatus == 2
-                            //         ? callEvent
-                            //         : session.orderStatus == 3
-                            //             ?
-                            callEvent,
-                        // : () {},
-                      ),
-                      CustomContactBtn(
-                          btnText: "Message",
-                          image: 'assets/icons/message_icon.svg',
-                          btnWidth: _deviceSize.width * .44,
-                          btnColor:
-                              // session.orderStatus == 1
-                              //     ? blue249DE0Color
-                              //     : session.orderStatus == 2
-                              //         ? blue249DE0Color
-                              //         : session.orderStatus == 3
-                              //             ?
-                              blue249DE0Color,
-                          // : grey606060Color,
-                          // btnColor: blue249DE0Color,
-                          event:
-                              //  session.orderStatus == 1
-                              //     ? messageEvent
-                              //     : session.orderStatus == 2
-                              //         ? messageEvent
-                              //         : session.orderStatus == 3
-                              //             ?
-                              messageEvent
-
-                          // : () {},
+                                green2DAA5FColor,
+                            // : grey606060Color,
+                            event:
+                                // session.orderStatus == 1
+                                //     ? callEvent
+                                //     : session.orderStatus == 2
+                                //         ? callEvent
+                                //         : session.orderStatus == 3
+                                //             ?
+                                callEvent,
+                            // : () {},
                           ),
-                    ],
+                          CustomContactBtn(
+                              btnText: "Message",
+                              image: 'assets/icons/message_icon.svg',
+                              btnWidth: _deviceSize.width * .44,
+                              btnColor:
+                                  // session.orderStatus == 1
+                                  //     ? blue249DE0Color
+                                  //     : session.orderStatus == 2
+                                  //         ? blue249DE0Color
+                                  //         : session.orderStatus == 3
+                                  //             ?
+                                  blue249DE0Color,
+                              // : grey606060Color,
+                              // btnColor: blue249DE0Color,
+                              event:
+                                  //  session.orderStatus == 1
+                                  //     ? messageEvent
+                                  //     : session.orderStatus == 2
+                                  //         ? messageEvent
+                                  //         : session.orderStatus == 3
+                                  //             ?
+                                  messageEvent
+
+                              // : () {},
+                              ),
+                        ],
+                      ),
+                    ),
+                    newMessgeCount != 0
+                        ? Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: redf52d56Color,
+                                  shape: BoxShape.circle),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Text(
+                                  newMessgeCount.toString(),
+                                  style: TextStyle(color: whiteColor),
+                                ),
+                              ),
+                            ),
+                          )
+                        : SizedBox()
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: isReceiptVisible,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.0,
+                  ),
+                  child: CustomButton(
+                    isRounded: true,
+                    text: "View Receipt",
+                    event: viewReceiptEvent,
+                    bgColor: blackColor,
                   ),
                 ),
-                newMessgeCount != 0
-                    ? Positioned(
-                        top: 0,
-                        right: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: redf52d56Color, shape: BoxShape.circle),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Text(
-                              newMessgeCount.toString(),
-                              style: TextStyle(color: whiteColor),
-                            ),
-                          ),
-                        ),
-                      )
-                    : SizedBox()
-              ],
-            ),
-          ),
-          Visibility(
-            visible: isReceiptVisible,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 8.0,
               ),
-              child: CustomButton(
-                isRounded: true,
-                text: "View Receipt",
-                event: viewReceiptEvent,
-                bgColor: blackColor,
-              ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

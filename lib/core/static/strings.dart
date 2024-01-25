@@ -2,6 +2,8 @@
 
 const String SESSION_TOKEN = 'session_token';
 const String IS_LOGGED_IN = 'is_logged_in';
+const String IS_RUNNING_ORDER = 'is_running_order';
+
 const String CURRENCY = 'currency';
 const String CHAT_TOKEN = 'chat_token';
 const String ORDER_ID = 'orderId';
@@ -17,7 +19,8 @@ const String DRIVER_ID = 'driver_id';
 const String CURRENT_LAT = 'current_lat';
 const String CURRENT_LONG = 'current_long';
 const String DEVICE = 'device';
-
+const String SESSION_ORDER_DETAILS = 'sessionOrderDetails';
+const String SESSION_Driver_DETAILS = 'sessionCustomerDetails';
 const String ORIGIN_ADDRESS = 'origin_address';
 const String DESTINATION_ADDRESS = 'destination_address';
 const String ORIGIN_LAT = 'origin_lat';

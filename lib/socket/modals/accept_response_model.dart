@@ -41,8 +41,10 @@ class AcceptResponseModel {
 
 class Data {
   dynamic id;
-  String startAddress;
-  String endAddress;
+  String? startCoordinate;
+  String? endCoordinate;
+  String? startAddress;
+  String? endAddress;
   dynamic distance;
   dynamic paymentMethod;
   dynamic estimatedTime;
@@ -50,14 +52,19 @@ class Data {
   dynamic total;
   dynamic pendingAmount;
   dynamic driverId;
-  String name;
+  String? name;
   dynamic profilePhoto;
   dynamic latitude;
   dynamic longitude;
-  String plateNumber;
-  String vehicleName;
-  String carModel;
+  String? plateNumber;
+  String? vehicleName;
+  String? carModel;
   dynamic driverRating;
+  dynamic phoneNumber;
+  dynamic extraDistance;
+  dynamic extraDistancePrice;
+  dynamic extraTime;
+  dynamic extraTimePrice;
 
   Data({
     required this.id,
@@ -78,6 +85,11 @@ class Data {
     required this.vehicleName,
     required this.carModel,
     required this.driverRating,
+    this.phoneNumber,
+    required this.extraDistance,
+    required this.extraDistancePrice,
+    required this.extraTime,
+    required this.extraTimePrice,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -99,6 +111,11 @@ class Data {
         vehicleName: json["vehicle_name"] ?? "",
         carModel: json["car_model"] ?? "",
         driverRating: json["DriverRating"] ?? 0,
+        phoneNumber: json["phone"] ?? "8547851456",
+        extraDistance: json["extra_distance"] ?? "0",
+        extraDistancePrice: json["extra_distance_price"] ?? '0',
+        extraTime: json["extra_time"],
+        extraTimePrice: json["extra_time_price"] ?? "0",
       );
 
   Map<String, dynamic> toJson() => {
@@ -120,5 +137,10 @@ class Data {
         "vehicle_name": vehicleName,
         "car_model": carModel,
         "DriverRating": driverRating.toString(),
+        "phoneNumber": phoneNumber,
+        // "extra_distance": extraDistance,
+        // "extra_distance_price": extraDistancePrice,
+        // "extra_time": extraTime,
+        // "extra_time_price": extraTimePrice,
       };
 }

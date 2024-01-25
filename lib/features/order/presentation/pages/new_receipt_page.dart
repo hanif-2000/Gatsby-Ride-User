@@ -7,7 +7,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../../core/static/assets.dart';
@@ -147,7 +146,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           Row(
                             children: [
                               CustomCacheNetworkImage(
-                                  img: provider.receiptData!.image, size: 45),
+                                  img: provider
+                                      .acceptResponseModel!.data.profilePhoto,
+                                  size: 45),
 
                               // CommonCircularImageContainer(
                               //   height: 45,
@@ -161,7 +162,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CommonText(
-                                    text: provider.receiptData!.name,
+                                    text: provider
+                                            .acceptResponseModel!.data.name ??
+                                        '',
                                     fontWeight: FontWeight.w500,
                                     fontColor: blackColor,
                                     fontFamily: "poPPinMedium",
@@ -175,7 +178,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                       Image.asset(starImage),
                                       CommonText(
                                         text: " " +
-                                            provider.receiptData!.driverRating,
+                                            provider.acceptResponseModel!.data
+                                                .driverRating
+                                                .toString(),
                                         fontWeight: FontWeight.w600,
                                         fontColor: blackColor,
                                         fontFamily: "poPPinMedium",
@@ -191,14 +196,14 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               CommonText(
-                                text: provider.receiptData!.name,
+                                text: provider.acceptResponseModel!.data.name,
                                 fontWeight: FontWeight.w400,
                                 fontColor: grey585858Color,
                                 fontFamily: "poPPinMedium",
                                 fontSize: 12,
                               ),
                               CommonText(
-                                text: provider.receiptData!.name,
+                                text: provider.acceptResponseModel!.data.name,
                                 fontWeight: FontWeight.w500,
                                 fontColor: blackColor,
                                 fontFamily: "poPPinMedium",
@@ -215,34 +220,36 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                         fontFamily: "poPPinMedium",
                         fontSize: 16,
                       ),
-                      TextInRow(
-                        firstText: appLoc.date,
-                        secondText: DateFormat.yMMMd().format(
-                            (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
-                                    provider.receiptData!.orderTime.toString(),
-                                    true))
-                                .toLocal()),
+                      // TextInRow(
+                      //   firstText: appLoc.date,
+                      //   secondText: DateFormat.yMMMd().format(
+                      //       (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                      //               provider.acceptResponseModel!.data.t,
+                      //               true))
+                      //           .toLocal()),
 
-                        // DateFormat('dd MMM yyyy')
-                        //     .format(provider.receiptData!.orderTime)
-                        //     .toString(),
-                      ),
-                      TextInRow(
-                        firstText: appLoc.time,
-                        secondText: DateFormat.jm().format(
-                            (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
-                                    provider.receiptData!.orderTime.toString(),
-                                    true))
-                                .toLocal()),
+                      //   // DateFormat('dd MMM yyyy')
+                      //   //     .format(provider.acceptResponseModel!.orderTime)
+                      //   //     .toString(),
+                      // ),
+                      // TextInRow(
+                      //   firstText: appLoc.time,
+                      //   secondText: DateFormat.jm().format(
+                      //       (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                      //               provider.acceptResponseModel!.data
+                      //                   .toString()?? DateTime.now().toString(),
+                      //               true))
+                      //           .toLocal()),
 
-                        //  DateFormat('h:mma')
-                        //     .format(provider.receiptData!.orderTime)
-                        //     .toString(),
-                      ),
+                      //   //  DateFormat('h:mma')
+                      //   //     .format(provider.acceptResponseModel!.orderTime)
+                      //   //     .toString(),
+                      // ),
                       TextInRow(
                         firstText: appLoc.totalDistance,
-                        secondText:
-                            provider.receiptData!.distance.toString() + " Km",
+                        secondText: provider.acceptResponseModel!.data.distance
+                                .toString() +
+                            " Km",
                       ),
                       TextInRow(
                         firstText: "Time Taken",
@@ -267,21 +274,27 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           ),
                           Row(
                             children: [
-                              provider.receiptData!.paymentMethod == 1
+                              provider.acceptResponseModel!.data
+                                          .paymentMethod ==
+                                      1
                                   ? SvgPicture.asset(
                                       cashIconSvg,
                                       height: 30,
                                       width: 30,
                                       fit: BoxFit.fill,
                                     )
-                                  : provider.receiptData!.paymentMethod == 2
+                                  : provider.acceptResponseModel!.data
+                                              .paymentMethod ==
+                                          2
                                       ? SvgPicture.asset(
                                           creditIcon,
                                           height: 30,
                                           width: 30,
                                           fit: BoxFit.fill,
                                         )
-                                      : provider.receiptData!.paymentMethod == 3
+                                      : provider.acceptResponseModel!.data
+                                                  .paymentMethod ==
+                                              3
                                           ? SvgPicture.asset(
                                               googleIconSvg,
                                               height: 30,
@@ -298,11 +311,16 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                 width: 10.0,
                               ),
                               CommonText(
-                                text: provider.receiptData!.paymentMethod == 1
+                                text: provider.acceptResponseModel!.data
+                                            .paymentMethod ==
+                                        1
                                     ? appLoc.cash
-                                    : provider.receiptData!.paymentMethod == 2
+                                    : provider.acceptResponseModel!.data
+                                                .paymentMethod ==
+                                            2
                                         ? "Credit Card"
-                                        : provider.receiptData!.paymentMethod ==
+                                        : provider.acceptResponseModel!.data
+                                                    .paymentMethod ==
                                                 3
                                             ? "Google Pay"
                                             : "Online",
@@ -327,7 +345,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                             // TextInRow(
                             //   firstText: appLoc.price,
                             //   secondText:
-                            //       r"$" + "${provider.receiptData!.total}",
+                            //       r"$" + "${provider.acceptResponseModel!.total}",
                             // ),
                             // Divider(
                             //   color: whiteAccentColor,
@@ -342,8 +360,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                             TextInRow(
                               secondTextweight: FontWeight.w700,
                               firstText: "Total amount to pay ",
-                              secondText:
-                                  r"CA$ " + provider.receiptData!.newTotal,
+                              secondText: r"CA$ " +
+                                  provider.acceptResponseModel!.data.total
+                                      .toStringAsFixed(2),
                             ),
                           ],
                         ),
@@ -364,45 +383,55 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PaymentScreen(
-                                  extraTime: provider.receiptData!.extraTime,
+                                  extraTime: provider.acceptResponseModel!.data
+                                          .extraTime ??
+                                      "",
 
-                                  extraTimePrice:
-                                      provider.receiptData!.extraTimePrice,
-                                  newTotal:
-                                      provider.receiptData!.newTotal.toString(),
-                                  pendingAmount: provider
-                                      .receiptData!.pendingAmount
+                                  extraTimePrice: provider
+                                      .acceptResponseModel!.data.extraTimePrice,
+                                  newTotal: provider
+                                      .acceptResponseModel!.data.total
                                       .toString(),
-                                  distance:
-                                      provider.receiptData!.distance.toString(),
+                                  pendingAmount: provider
+                                      .acceptResponseModel!.data.pendingAmount
+                                      .toString(),
+                                  distance: provider
+                                      .acceptResponseModel!.data.distance
+                                      .toString(),
                                   vehicleCategory: 1.toString(),
                                   name: provider.driverName,
-                                  img: provider.receiptData!.image,
+                                  img: provider
+                                      .acceptResponseModel!.data.profilePhoto,
                                   carModal: provider.carModal,
                                   carNo: provider.plateNumber,
-                                  totalPrice: provider.receiptData!.total,
-                                  paymentMode:
-                                      provider.receiptData!.paymentMethod,
+                                  totalPrice:
+                                      provider.acceptResponseModel!.data.total,
+                                  paymentMode: provider
+                                      .acceptResponseModel!.data.paymentMethod,
                                   driverId: provider.driverId,
-                                  orderId: provider.receiptData!.id,
-                                  extraDistance:
-                                      provider.receiptData!.extraDistance,
-                                  extraDistancePrice:
-                                      provider.receiptData!.extraDistancePrice,
+                                  orderId: provider.acceptResponseModel!.data.id
+                                      .toString(),
+                                  extraDistance: provider
+                                      .acceptResponseModel!.data.extraDistance,
+                                  extraDistancePrice: provider
+                                      .acceptResponseModel!
+                                      .data
+                                      .extraDistancePrice,
                                   // extraMinPrice:
-                                  //     provider.receiptData!.extraKmPrice,
-                                  // extraTime: provider.receiptData!.extraTime,
-                                  grandTotal: provider.receiptData!.newTotal,
+                                  //     provider.acceptResponseModel!.extraKmPrice,
+                                  // extraTime: provider.acceptResponseModel!.extraTime,
+                                  grandTotal:
+                                      provider.acceptResponseModel!.data.total,
                                 ),
                               ));
                           // Navigator.push(
                           //   context,
                           //   MaterialPageRoute(
                           //     builder: (context) => FeedBackScreen(
-                          //       name: provider.receiptData!.userName,
-                          //       img: provider.receiptData!.image,
-                          //       carModal: provider.receiptData!.carModel,
-                          //       carNo: provider.receiptData!.plateNumber,
+                          //       name: provider.acceptResponseModel!.userName,
+                          //       img: provider.acceptResponseModel!.image,
+                          //       carModal: provider.acceptResponseModel!.carModel,
+                          //       carNo: provider.acceptResponseModel!.plateNumber,
                           //     ),
                           //   ),
                           // );
@@ -417,7 +446,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       //     future: _googlePayConfigFuture,
                       //     builder: (context, snapshot) => snapshot.hasData
                       //         ? (Platform.isAndroid)
-                      //             ? provider.receiptData!.paymentMethod != 1
+                      //             ? provider.acceptResponseModel!.paymentMethod != 1
                       //                 ? GooglePayButton(
                       //                     paymentConfiguration:
                       //                         snapshot.data!,
@@ -446,11 +475,11 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       //                       var body = {
                       //                         'token': cardToken,
                       //                         'order_id':
-                      //                             provider.receiptData!.id,
+                      //                             provider.acceptResponseModel!.id,
                       //                         "driver_id": data
                       //                             .orderReceipt![0].driverId,
                       //                         "amount":
-                      //                             provider.receiptData!.total
+                      //                             provider.acceptResponseModel!.total
                       //                       };
 
                       //                       log(body.toString());
@@ -497,7 +526,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       //         : const SizedBox.shrink()),
                       // // Example pay button configured using a string
                       // (Platform.isIOS)
-                      //     ? provider.receiptData!.paymentMethod != 1
+                      //     ? provider.acceptResponseModel!.paymentMethod != 1
                       //         ? ApplePayButton(
                       //             // paymentConfigurationAsset: 'assets/icons/car.png',
                       //             paymentConfiguration:

@@ -1,16 +1,24 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/origin_widget.dart';
 import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import '../../../../features/order/data/models/driver_detail_model.dart';
+import '../../../../features/order/domain/entities/order_detail.dart';
+import '../../../../features/order/presentation/pages/new_order_page.dart';
 import '../../providers/home_provider.dart';
 import '../../widgets/bottom_sheet_book_ride.dart';
 
@@ -23,12 +31,74 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  late OrderDetail previousOrderDetails;
+  // late OrderDataDetail _orderDataDetail;
+
+  var socketProvider = locator<LatestSocketProvider>();
+
+  late DriverDetailModel previousDriverDetails;
+
+  Future<void> convertOrderAndDriverDetailsIntoObject() async {
+    log("session order details are:-->. ${session.orderDetails}");
+    // Decode JSON into a Map
+    Map<String, dynamic> jsonOrderMap = json.decode(session.orderDetails);
+    Map<String, dynamic> jsonDriverMap = json.decode(session.DriverDetails);
+
+    log("session order details are jsonOrderMap:-->. ${jsonOrderMap}");
+    log("session driver details are jsonOrderMap:-->. ${jsonDriverMap}");
+
+    setState(() {
+      // _orderDataDetail = OrderDataDetail.fromJson(jsonOrderMap);
+      previousOrderDetails = OrderDetail.fromJson(jsonOrderMap);
+
+      previousDriverDetails = DriverDetailModel.fromJson(jsonDriverMap);
+    });
+    socketProvider.updateDriverDetails(
+      driverNam: previousDriverDetails.name,
+      rating: previousDriverDetails.rating.toString(),
+      carModa: previousDriverDetails.model,
+      plateNumbe: previousDriverDetails.plat,
+      driverI: previousDriverDetails.id.toString(),
+      phoneNumbe: previousDriverDetails.phone,
+      driverRate: "1.0",
+      vehicleNam: "cd hd",
+      driverIm: previousDriverDetails.image!,
+    );
+  }
+
   @override
   void initState() {
+    log("************ IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
     // Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showLoading();
+      if (session.isRunningOrder) {
+        convertOrderAndDriverDetailsIntoObject().then((value) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, NewOrderPage.routeName, (route) => false,
+              arguments: OrderDataDetail(
+                  originAddress: previousOrderDetails.startAddress,
+                  destinationAddress: previousOrderDetails.endAddress,
+                  originLatLng: LatLng(
+                      (double.parse(previousOrderDetails.startCoordinate
+                          .split(',')
+                          .first)),
+                      (double.parse(previousOrderDetails.startCoordinate
+                          .split(',')
+                          .last))),
+                  destinationLatLng: LatLng(
+                      (double.parse(
+                          previousOrderDetails.endCoordinate.split(',').first)),
+                      (double.parse(previousOrderDetails.endCoordinate
+                          .split(',')
+                          .last)))));
+        });
+      }
+    });
   }
 
   @override
@@ -36,6 +106,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
+
+  Session session = locator<Session>();
 
   @override
   Widget build(BuildContext context) {

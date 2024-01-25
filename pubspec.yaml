@@ -59,7 +59,7 @@ dependencies:
  
   # upi_india: ^3.0.1
   # easy_upi_payment: ^0.1.4
-  flutter_stripe: ^9.3.0
+
   google_directions_api: ^0.9.1
   permission_handler: ^11.0.0
   firebase_auth: ^4.16.0
@@ -77,6 +77,10 @@ dependencies:
   provider: ^6.0.3
 
 
+
+dependency_overrides:
+  flutter_stripe: ^9.2.2
+  stripe_android: "9.5.0+1"
 
   # credit_card: ^0.1.8
   # upi_pay: ^1.0.1

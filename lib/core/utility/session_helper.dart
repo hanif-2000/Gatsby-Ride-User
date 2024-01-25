@@ -4,6 +4,8 @@ import '../static/strings.dart';
 
 abstract class Session {
   set setLoggedIn(bool login);
+  set setIsRunningOrder(bool login);
+
   set setOrderId(String orderId);
   set setToken(String token);
   set setChatToken(int token);
@@ -26,8 +28,12 @@ abstract class Session {
   set setOriginLong(double originLong);
   set setDestinationLat(double destinationLat);
   set setDestinationLong(double destinationLong);
+  set setOrderDetails(orderDetails);
+  set setDriverDetails(DriverDetails);
 
   bool get isLoggedIn;
+  bool get isRunningOrder;
+
   String get orderId;
   int get chatToken;
 
@@ -54,6 +60,12 @@ abstract class Session {
   double get destinationLat;
   double get destinationLong;
 
+  /// * GET ORDER DETAILS
+  String get orderDetails;
+
+  /// * GET Driver DETAILS
+  String get DriverDetails;
+
   Future<void> clearSession();
   Future<void> clearOrderSession();
 }
@@ -63,9 +75,30 @@ class SessionHelper implements Session {
 
   SessionHelper({required this.pref});
 
+  /// * save order details--------*/
+
+  @override
+  set setOrderDetails(sessionOrder) {
+    pref.setString(SESSION_ORDER_DETAILS, sessionOrder);
+  }
+
+  ///******** Save Driver DETAILS-------  */
+  ///
+
+  @override
+  set setDriverDetails(sessionDriverDetails) {
+    pref.setString(SESSION_Driver_DETAILS, sessionDriverDetails);
+  }
+
   @override
   set setLoggedIn(bool login) {
     pref.setBool(IS_LOGGED_IN, login);
+  }
+
+/*** RUNNING ORDER CHECK */
+  @override
+  set setIsRunningOrder(bool isRunningOrder) {
+    pref.setBool(IS_RUNNING_ORDER, isRunningOrder);
   }
 
   @override
@@ -170,10 +203,27 @@ class SessionHelper implements Session {
   bool get isLoggedIn => pref.getBool(IS_LOGGED_IN) ?? false;
 
   @override
+  bool get isRunningOrder => pref.getBool(IS_RUNNING_ORDER) ?? false;
+
+  @override
   int get chatToken => pref.getInt(CHAT_TOKEN) ?? 0;
 
   @override
   String get sessionToken => pref.getString(SESSION_TOKEN) ?? '';
+
+  /// **** order dewtails
+
+  @override
+  String get orderDetails =>
+      pref.getString(SESSION_ORDER_DETAILS) ??
+      'session order details are null ';
+
+  /// * Driver details
+
+  @override
+  String get DriverDetails =>
+      pref.getString(SESSION_Driver_DETAILS) ??
+      'session Driver details are null';
 
   @override
   String get userId => pref.getString(USER_ID) ?? '';
@@ -217,6 +267,8 @@ class SessionHelper implements Session {
     await pref.remove(DRIVER_ID);
     await pref.remove(ESTIMATED_DISTANCE);
     await pref.remove(ESTIMATED_TIME);
+    await pref.remove(SESSION_Driver_DETAILS);
+    await pref.remove(SESSION_ORDER_DETAILS);
   }
 
   @override

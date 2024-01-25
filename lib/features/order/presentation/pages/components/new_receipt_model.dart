@@ -15,14 +15,14 @@ class NewReceiptModel {
   String message;
   String type;
   int orderId;
-  ReceiptData receiptData;
+  ReceiptData data;
 
   NewReceiptModel({
     required this.response,
     required this.message,
     required this.type,
     required this.orderId,
-    required this.receiptData,
+    required this.data,
   });
 
   factory NewReceiptModel.fromJson(Map<String, dynamic> json) =>
@@ -31,7 +31,7 @@ class NewReceiptModel {
         message: json["message"],
         type: json["type"],
         orderId: json["OrderID"],
-        receiptData: ReceiptData.fromJson(json["data"]),
+        data: ReceiptData.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -39,7 +39,7 @@ class NewReceiptModel {
         "message": message,
         "type": type,
         "OrderID": orderId,
-        "data": receiptData.toJson(),
+        "data": data.toJson(),
       };
 }
 
@@ -47,33 +47,28 @@ class ReceiptData {
   dynamic id;
   String startAddress;
   String endAddress;
-  double distance;
+  dynamic distance;
   dynamic paymentMethod;
-  double estimatedTime;
+  dynamic estimatedTime;
   dynamic actualTime;
+  DateTime createdAt;
   dynamic total;
   dynamic pendingAmount;
-  dynamic customerId;
   dynamic driverId;
-
+  String carModel;
+  dynamic insuranceNumber;
   String name;
   String image;
   dynamic longitude;
   dynamic latitude;
   dynamic phone;
-  dynamic priceKm;
-  dynamic priceMin;
-  dynamic baseFare;
-  dynamic minKm;
-  dynamic minPrice;
+  String plateNumber;
+  String vehicleName;
   dynamic driverRating;
-  dynamic orderTime;
-  dynamic extraTime;
   dynamic extraDistance;
   dynamic extraDistancePrice;
+  String extraTime;
   dynamic extraTimePrice;
-  dynamic newTotal;
-  dynamic tip;
 
   ReceiptData({
     required this.id,
@@ -83,60 +78,52 @@ class ReceiptData {
     required this.paymentMethod,
     required this.estimatedTime,
     required this.actualTime,
+    required this.createdAt,
     required this.total,
     required this.pendingAmount,
-    required this.customerId,
+    required this.driverId,
+    required this.carModel,
+    required this.insuranceNumber,
     required this.name,
     required this.image,
     required this.longitude,
     required this.latitude,
     required this.phone,
-    required this.priceKm,
-    required this.priceMin,
-    required this.baseFare,
-    required this.minKm,
-    required this.minPrice,
+    required this.plateNumber,
+    required this.vehicleName,
     required this.driverRating,
-    required this.orderTime,
     required this.extraDistance,
     required this.extraDistancePrice,
     required this.extraTime,
     required this.extraTimePrice,
-    required this.newTotal,
-    required this.tip,
-    required this.driverId,
   });
 
   factory ReceiptData.fromJson(Map<String, dynamic> json) => ReceiptData(
         id: json["id"] ?? '',
         startAddress: json["start_address"] ?? '',
-        endAddress: json["end_address"] ?? "",
+        endAddress: json["end_address"],
         distance: json["distance"] ?? '',
-        paymentMethod: json["payment_method"] ?? "1",
-        estimatedTime: json["estimated_time"] ?? '',
+        paymentMethod: json["payment_method"],
+        estimatedTime: json["estimated_time"] ?? "",
         actualTime: json["actual_time"] ?? '',
+        createdAt: DateTime.parse(json["created_at"]),
         total: json["total"] ?? "",
         pendingAmount: json["pending_amount"] ?? "",
-        customerId: json["customerID"] ?? "",
+        driverId: json["driverID"] ?? "",
+        carModel: json["car_model"] ?? "",
+        insuranceNumber: json["insurance_number"] ?? "",
         name: json["name"] ?? "",
         image: json["image"] ?? "",
         longitude: json["Longitude"] ?? "",
         latitude: json["Latitude"] ?? "",
         phone: json["phone"] ?? "",
-        priceKm: json["price_km"] ?? "",
-        priceMin: json["price_min"] ?? '',
-        baseFare: json["base_fare"] ?? '',
-        minKm: json["min_km"] ?? '',
-        minPrice: json["min_price"] ?? "",
-        driverRating: json["DriverRating"] ?? "0",
-        orderTime: json["orderTime"] ?? DateTime.now(),
-        extraDistance: json["extraDistance"] ?? "",
-        extraDistancePrice: json["extraDistancePrice"] ?? "",
-        extraTime: json["extraTime"] ?? "",
-        extraTimePrice: json["extraTimePrice"] ?? "",
-        newTotal: json["newTotal"] ?? "",
-        tip: json["tip"] ?? '',
-        driverId: json["driverId"] ?? '',
+        plateNumber: json["plate_number"] ?? "",
+        vehicleName: json["vehicle_name"] ?? "",
+        driverRating: json["DriverRating"] ?? "",
+        extraDistance: json["extra_distance"] ?? "",
+        extraDistancePrice: json["extra_distance_price"] ?? "",
+        extraTime: json["extra_time"] ?? "",
+        extraTimePrice: json["extra_time_price"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {
@@ -147,26 +134,23 @@ class ReceiptData {
         "payment_method": paymentMethod,
         "estimated_time": estimatedTime,
         "actual_time": actualTime,
+        "created_at": createdAt.toIso8601String(),
         "total": total,
         "pending_amount": pendingAmount,
-        "customerID": customerId,
+        "driverID": driverId,
+        "car_model": carModel,
+        "insurance_number": insuranceNumber,
         "name": name,
         "image": image,
         "Longitude": longitude,
         "Latitude": latitude,
         "phone": phone,
-        "price_km": priceKm,
-        "price_min": priceMin,
-        "base_fare": baseFare,
-        "min_km": minKm,
-        "min_price": minPrice,
-        "driverRating": driverRating,
-        "extraDistance": extraDistance,
-        "extraDistancePrice": extraDistancePrice,
-        "extraTime": extraTime,
-        "extraTimePrice": extraTimePrice,
-        "newTotal": newTotal,
-        "tip": tip,
-        "driverId": driverId,
+        "plate_number": plateNumber,
+        "vehicle_name": vehicleName,
+        "DriverRating": driverRating,
+        "extra_distance": extraDistance,
+        "extra_distance_price": extraDistancePrice,
+        "extra_time": extraTime,
+        "extra_time_price": extraTimePrice,
       };
 }

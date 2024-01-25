@@ -324,7 +324,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       secondText: ((widget.extraTimePrice != null) ||
                               (widget.extraTimePrice != '') ||
                               (widget.extraTimePrice != '0'))
-                          ? r'CA$ ' + (widget.extraTimePrice)
+                          ? r'CA$ ' + (widget.extraTimePrice.toString())
                           : r'CA$ 0',
                     ),
 

@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
+import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
@@ -32,10 +34,12 @@ class _NewOrderPageState extends State<NewOrderPage>
   final session = locator<Session>();
 
   final newSocketProvider = locator<LatestSocketProvider>();
+  final homeProvider = locator<HomeProvider>();
 
   @override
   void initState() {
     super.initState();
+    dismissLoading();
     WidgetsBinding.instance.addObserver(this);
     newSocketProvider.updateBitsImage();
 
@@ -48,6 +52,7 @@ class _NewOrderPageState extends State<NewOrderPage>
     // }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      homeProvider.clearOldRideData();
       if (session.orderStatus == 0) {
         showSearchingVehiclesBottomSheet(context, newSocketProvider);
       } else {
@@ -673,14 +678,14 @@ class _NewOrderPageState extends State<NewOrderPage>
                                 //   //     event.);
                                 // });
 
-                                // Navigator.pushAndRemoveUntil(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (BuildContext context) =>
-                                //         ReceiptScreen(),
-                                //   ),
-                                //   (route) => false,
-                                // );
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        ReceiptScreen(),
+                                  ),
+                                  (route) => false,
+                                );
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -688,24 +693,30 @@ class _NewOrderPageState extends State<NewOrderPage>
                                   ),
                                 );
                               },
-                              driverStatusText: (latestSocketProvider
-                                          .currentOrderStatus ==
-                                      1)
+                              driverStatusText: ((latestSocketProvider
+                                              .currentOrderStatus ==
+                                          1) ||
+                                      (session.orderStatus == 1))
                                   ? "Driver is arriving"
-                                  : (latestSocketProvider.currentOrderStatus ==
-                                          2)
+                                  : ((latestSocketProvider.currentOrderStatus ==
+                                              2) ||
+                                          (session.orderStatus == 2))
                                       ? "Driver is on the way"
-                                      : (latestSocketProvider
-                                                  .currentOrderStatus ==
-                                              3)
-                                          ? "Driver reached your location"
-                                          : (latestSocketProvider
+                                      : ((latestSocketProvider
                                                       .currentOrderStatus ==
-                                                  5)
-                                              ? "Departure to your Destination"
-                                              : (latestSocketProvider
+                                                  3) ||
+                                              (session.orderStatus == 3))
+                                          ? "Driver reached your location"
+                                          : ((latestSocketProvider
                                                           .currentOrderStatus ==
-                                                      7)
+                                                      5) ||
+                                                  (session.orderStatus == 5))
+                                              ? "Departure to your Destination"
+                                              : ((latestSocketProvider
+                                                              .currentOrderStatus ==
+                                                          7) ||
+                                                      (session.orderStatus ==
+                                                          7))
                                                   ? "Ride is Completed"
                                                   : "",
                               // category: provider.carModal,
@@ -720,26 +731,26 @@ class _NewOrderPageState extends State<NewOrderPage>
 
                               category: latestSocketProvider
                                       .acceptResponseModel?.data.vehicleName ??
-                                  '',
-                              driverId: latestSocketProvider
-                                      .acceptResponseModel?.data.driverId ??
-                                  "",
+                                  "12 hg ",
+                              driverId: session.orderId,
+
                               driverImage: latestSocketProvider
                                       .acceptResponseModel?.data.profilePhoto ??
-                                  "",
+                                  latestSocketProvider.driverImg,
                               driverName: latestSocketProvider
                                       .acceptResponseModel?.data.name ??
-                                  '',
+                                  latestSocketProvider.driverName,
                               platerNumber: latestSocketProvider
                                       .acceptResponseModel?.data.plateNumber ??
-                                  '',
+                                  latestSocketProvider.plateNumber,
                               rating: latestSocketProvider
                                       .acceptResponseModel?.data.driverRating
                                       .toString() ??
-                                  '',
+                                  "1.0",
                               isReceiptVisible:
                                   ((latestSocketProvider.currentOrderStatus ==
-                                          7))
+                                              7) ||
+                                          (session.orderStatus == 7))
                                       ? true
                                       : false,
                               // isReceiptVisible: true,

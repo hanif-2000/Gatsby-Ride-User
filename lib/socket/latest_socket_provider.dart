@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'dart:ui' as ui;
 import 'package:GetsbyRideshare/core/presentation/pages/home_page/home_page.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/features/order/data/models/driver_detail_model.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/order_detail.dart';
 import 'package:GetsbyRideshare/socket/modals/accept_response_model.dart';
 import 'package:GetsbyRideshare/socket/modals/driver_updated_position_model.dart';
 import 'package:GetsbyRideshare/socket/modals/order_status_response_model.dart';
@@ -65,6 +67,7 @@ class LatestSocketProvider extends ChangeNotifier {
   BookingDataModel? bookingDataModel;
   AcceptResponseModel? acceptResponseModel;
   DriverUpdatedPositionModel? driverUpdatedPositionModel;
+  DriverDetailModel? driverDetailModel;
 
   List<ChatModel> get chatMessageList => _chatMessagesList;
   OrderStatusResponseModel? orderStatusResponseModel;
@@ -74,6 +77,11 @@ class LatestSocketProvider extends ChangeNotifier {
     notifyListeners();
 
     log("unrad count :-->> $unreadCount");
+  }
+
+  updateAcceptModel({required AcceptResponseModel val}) {
+    acceptResponseModel = val;
+    notifyListeners();
   }
 
   DriverDetail? _driverDetail;
@@ -136,7 +144,7 @@ class LatestSocketProvider extends ChangeNotifier {
         Uri.parse(
           "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}",
         ),
-        backoff: ConstantBackoff(Duration(seconds: 5)));
+        backoff: ConstantBackoff(Duration(seconds: 10)));
     _socket!.connection.listen((event) {
       if (event is Connected) {
         log("************ Connectd ***********");
@@ -151,7 +159,8 @@ class LatestSocketProvider extends ChangeNotifier {
       } else if (event is Reconnecting) {
         log("************ ReConnecting ***********");
       } else if (event is Reconnected) {
-        listenSocketRequests(context);
+        log("************ ReConnecting ***********");
+        //  listenSocketRequests(context);
       } else {
         log("-----******** EVENT IS **** ${event}");
         print("-----******** EVENT IS **** ${event}");
@@ -251,12 +260,32 @@ class LatestSocketProvider extends ChangeNotifier {
 
       if (response['type'] == 'Accept') {
         log("****************************      DRIVER ACCEPTED THE RIDE *************************");
+
         acceptResponseModel = AcceptResponseModel.fromJson(response);
-        session.setOrderId = acceptResponseModel!.data.id;
-        session.setDriverId = acceptResponseModel!.data.driverId;
+        session.setOrderId = acceptResponseModel!.data.id.toString();
+        session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsOrderAccepted(val: true);
         session.setOrderStatus = 1;
         currentOrderStatus = 1;
+        session.setIsRunningOrder = true;
+        session.setOrderDetails = await json.encode(OrderDetail(
+            orderId: int.parse(acceptResponseModel!.data.id),
+            totalPrice: acceptResponseModel!.data.total,
+            userId: int.parse(session.userId),
+            driverId: int.parse(session.driverId),
+            distance: acceptResponseModel!.data.distance.toString(),
+            startCoordinate: bookingDataModel!.data.startCoordinate,
+            endCoordinate: bookingDataModel!.data.endCoordinate,
+            startAddress: acceptResponseModel!.data.startAddress!,
+            endAddress: acceptResponseModel!.data.endAddress!));
+
+        session.setDriverDetails = await json.encode(DriverDetailModel(
+            name: acceptResponseModel!.data.name!,
+            phone: acceptResponseModel!.data.phoneNumber ?? '',
+            model: acceptResponseModel!.data.carModel!,
+            plat: acceptResponseModel!.data.plateNumber!,
+            id: int.parse(session.driverId)));
+
         updateIsWithDriver(val: false);
 
         notifyListeners();
@@ -269,10 +298,23 @@ class LatestSocketProvider extends ChangeNotifier {
         log("****************************      DRIVER DEPARTURE TO CUSTOMER *************************");
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
-        session.setOrderId = acceptResponseModel!.data.id;
+        session.setOrderId = acceptResponseModel!.data.id.toString();
         session.setOrderStatus = 2;
-        session.setDriverId = acceptResponseModel!.data.driverId;
+        currentOrderStatus = 2;
+        session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: false);
+
+        session.setIsRunningOrder = true;
+        // session.setOrderDetails = await json.encode(OrderDetail(
+        //     orderId: int.parse(acceptResponseModel!.data.id),
+        //     totalPrice: acceptResponseModel!.data.total,
+        //     userId: int.parse(session.userId),
+        //     driverId: int.parse(session.driverId),
+        //     distance: acceptResponseModel!.data.distance.toString(),
+        //     startCoordinate: bookingDataModel!.data.startCoordinate,
+        //     endCoordinate: bookingDataModel!.data.endCoordinate,
+        //     startAddress: acceptResponseModel!.data.startAddress!,
+        //     endAddress: acceptResponseModel!.data.endAddress!));
 
         currentOrderStatus = 2;
 
@@ -285,10 +327,21 @@ class LatestSocketProvider extends ChangeNotifier {
         log("****************************      DRIVER REACH YOUR LOCATION *************************");
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
-        session.setOrderId = acceptResponseModel!.data.id;
+        session.setOrderId = acceptResponseModel!.data.id.toString();
         session.setOrderStatus = 3;
-        session.setDriverId = acceptResponseModel!.data.driverId;
+        session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: true);
+        session.setIsRunningOrder = true;
+        // session.setOrderDetails = await json.encode(OrderDetail(
+        //     orderId: int.parse(acceptResponseModel!.data.id),
+        //     totalPrice: acceptResponseModel!.data.total,
+        //     userId: int.parse(session.userId),
+        //     driverId: int.parse(session.driverId),
+        //     distance: acceptResponseModel!.data.distance.toString(),
+        //     startCoordinate: bookingDataModel!.data.startCoordinate,
+        //     endCoordinate: bookingDataModel!.data.endCoordinate,
+        //     startAddress: acceptResponseModel!.data.startAddress!,
+        //     endAddress: acceptResponseModel!.data.endAddress!));
 
         currentOrderStatus = 3;
 
@@ -302,9 +355,9 @@ class LatestSocketProvider extends ChangeNotifier {
         log("****************************      DRIVER START THE RIDE *************************");
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
-        session.setOrderId = acceptResponseModel!.data.id;
+        session.setOrderId = acceptResponseModel!.data.id.toString();
         session.setOrderStatus = 5;
-        session.setDriverId = acceptResponseModel!.data.driverId;
+        session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: true);
 
         currentOrderStatus = 5;
@@ -317,12 +370,12 @@ class LatestSocketProvider extends ChangeNotifier {
 
       if (response['type'] == 'endTrip') {
         log("****************************      DRIVER END THE RIDE *************************");
-
-        acceptResponseModel = AcceptResponseModel.fromJson(response);
-        receiptData = ReceiptData.fromJson(response);
-        session.setOrderId = acceptResponseModel!.data.id;
         session.setOrderStatus = 7;
         currentOrderStatus = 7;
+
+        acceptResponseModel = AcceptResponseModel.fromJson(response);
+        // receiptData = ReceiptData.fromJson(response);
+        session.setOrderId = acceptResponseModel!.data.id.toString();
 
         notifyListeners();
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
@@ -335,7 +388,7 @@ class LatestSocketProvider extends ChangeNotifier {
 
         if (response["data"]["driverID"] != null) {
           acceptResponseModel = AcceptResponseModel.fromJson(response);
-          session.setOrderId = acceptResponseModel!.data.id;
+          session.setOrderId = acceptResponseModel!.data.id.toString();
           session.setOrderStatus = 8;
           currentOrderStatus = 8;
 
@@ -352,6 +405,7 @@ class LatestSocketProvider extends ChangeNotifier {
                   ElevatedButton(
                     child: Text("Find Next Driver"),
                     onPressed: () async {
+                      session.setIsRunningOrder = false;
                       await _homeProvider.clearState();
 
                       Navigator.pop(context);
@@ -784,10 +838,37 @@ class LatestSocketProvider extends ChangeNotifier {
   String phoneNumber = '';
   String driverId = '';
   String driverImg = '';
+  String driverRating = '';
+  String vehicleName = '';
+
   String driverStatus = "Fetching Driver";
 
   double lat = 0.0;
   double long = 0.0;
+
+  updateDriverDetails({
+    required String driverNam,
+    required String rating,
+    required String carModa,
+    required String plateNumbe,
+    required String driverI,
+    required String phoneNumbe,
+    required String driverIm,
+    required String driverRate,
+    required String vehicleNam,
+  }) {
+    driverName = driverNam;
+    ratings = rating;
+    carModal = carModa;
+    plateNumber = plateNumbe;
+    phoneNumber = phoneNumbe;
+    driverId = driverI;
+    driverImg = driverIm;
+    driverRating = driverRate;
+    vehicleName = vehicleNam;
+
+    notifyListeners();
+  }
 
 //Call Driver
   callDriver() async {

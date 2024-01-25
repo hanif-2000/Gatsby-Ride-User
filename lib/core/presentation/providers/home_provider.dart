@@ -194,6 +194,17 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //Clear google maps data when ride create
+
+  clearOldRideData() {
+    log("*********CLEAR PREVIOUS POLYLINE CALLED-------");
+    polylines.clear();
+    destinationIsFilled = false;
+    markers.clear();
+    destinationAddress = appLoc.destination;
+    notifyListeners();
+  }
+
   //Update Selected Vehicle Index
   updateSelectedVehicleIndex({index}) {
     selectedVehicleIndex = index;
@@ -290,6 +301,13 @@ class HomeProvider with ChangeNotifier {
 //Set current location in map intially
   Future<void> setCurrentLocation() async {
     print("Get current location  called");
+    clearState();
+    clearOldRideData();
+    destinationAddress = '';
+    notifyListeners();
+    originAddress = '';
+    destinationIsFilled = false;
+    originIsFilled = false;
 
     SmartDialog.showLoading(
       animationType: SmartAnimationType.fade,
