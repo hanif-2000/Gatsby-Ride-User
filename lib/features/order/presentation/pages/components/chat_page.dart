@@ -112,7 +112,11 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         height: 45,
                         width: 45,
                         image: socketProvider
-                            .acceptResponseModel!.data.profilePhoto,
+                                    .acceptResponseModel?.data.profilePhoto !=
+                                null
+                            ? socketProvider
+                                .acceptResponseModel!.data.profilePhoto
+                            : '',
                       ),
                       SizedBox(
                         width: 11,
@@ -121,7 +125,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CommonText(
-                            text: socketProvider.acceptResponseModel!.data.name,
+                            text: socketProvider.driverName,
                             fontWeight: FontWeight.w500,
                             fontColor: blackColor,
                             fontFamily: "poPPinMedium",

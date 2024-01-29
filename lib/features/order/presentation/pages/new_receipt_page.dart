@@ -362,7 +362,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               firstText: "Total amount to pay ",
                               secondText: r"CA$ " +
                                   provider.acceptResponseModel!.data.total
-                                      .toStringAsFixed(2),
+                                      .toString(),
                             ),
                           ],
                         ),
@@ -406,8 +406,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                   carNo: provider.plateNumber,
                                   totalPrice:
                                       provider.acceptResponseModel!.data.total,
-                                  paymentMode: provider
-                                      .acceptResponseModel!.data.paymentMethod,
+                                  paymentMode: int.parse(provider
+                                      .acceptResponseModel!.data.paymentMethod),
                                   driverId: provider.driverId,
                                   orderId: provider.acceptResponseModel!.data.id
                                       .toString(),

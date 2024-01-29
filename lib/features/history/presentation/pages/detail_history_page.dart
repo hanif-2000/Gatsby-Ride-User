@@ -422,115 +422,122 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                   ),
 
                   //Show Payment Method
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: yellowE4AC3BColor.withOpacity(.12),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0,
-                              vertical: 8.0,
+                  widget.item.paymentStatus != "no"
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: yellowE4AC3BColor.withOpacity(.12),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Flexible(
-                                  flex: 2,
-                                  child: Text(
-                                    "Payment Through",
-                                    style: TextStyle(
-                                      fontFamily: 'poPPinMedium',
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                    ),
-                                  ),
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                  vertical: 8.0,
                                 ),
-                                Flexible(
-                                  flex: 2,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Flexible(
+                                      flex: 2,
+                                      child: Text(
+                                        "Payment Through",
+                                        style: TextStyle(
+                                          fontFamily: 'poPPinMedium',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 2,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
 
-                                    //                   ? SvgPicture.asset('assets/icons/card.svg')
-                                    // : widget.paymentMode == 3
-                                    //     ? SvgPicture.asset('assets/icons/google.svg')
-                                    //     : SvgPicture.asset('assets/icons/apple.svg'),
-                                    children: [
-                                      widget.item.paymentMethod == "1"
-                                          ? SvgPicture.asset(
-                                              'assets/icons/cash.svg',
-                                              height: 40,
-                                              width: 40,
-                                              fit: BoxFit.fill,
-                                            )
-                                          : widget.item.paymentMethod == "2"
+                                        //                   ? SvgPicture.asset('assets/icons/card.svg')
+                                        // : widget.paymentMode == 3
+                                        //     ? SvgPicture.asset('assets/icons/google.svg')
+                                        //     : SvgPicture.asset('assets/icons/apple.svg'),
+                                        children: [
+                                          widget.item.paymentMethod == "1"
                                               ? SvgPicture.asset(
-                                                  'assets/icons/card.svg',
+                                                  'assets/icons/cash.svg',
                                                   height: 40,
                                                   width: 40,
                                                   fit: BoxFit.fill,
                                                 )
-                                              : widget.item.paymentMethod == "3"
-                                                  ? SvgPicture.asset(
-                                                      'assets/icons/google.svg',
-                                                      height: 40,
-                                                      width: 40,
-                                                      fit: BoxFit.fill)
-                                                  : SvgPicture.asset(
-                                                      'assets/icons/apple.svg',
-                                                      height: 40,
-                                                      width: 40,
-                                                      fit: BoxFit.fill),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          left: 10.0,
-                                        ),
-                                        child: Text(
-                                          widget.item.paymentMethod == "1"
-                                              ? "Cash"
                                               : widget.item.paymentMethod == "2"
-                                                  ? "Credit Card"
+                                                  ? SvgPicture.asset(
+                                                      'assets/icons/card.svg',
+                                                      height: 40,
+                                                      width: 40,
+                                                      fit: BoxFit.fill,
+                                                    )
                                                   : widget.item.paymentMethod ==
                                                           "3"
-                                                      ? "Google Pay"
-                                                      : "Apple Pay",
-                                          style: TextStyle(
-                                              fontFamily: 'poPPinMedium',
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                              color: grey7D7979Color),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                                      ? SvgPicture.asset(
+                                                          'assets/icons/google.svg',
+                                                          height: 40,
+                                                          width: 40,
+                                                          fit: BoxFit.fill)
+                                                      : SvgPicture.asset(
+                                                          'assets/icons/apple.svg',
+                                                          height: 40,
+                                                          width: 40,
+                                                          fit: BoxFit.fill),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              left: 10.0,
+                                            ),
+                                            child: Text(
+                                              widget.item.paymentMethod == "1"
+                                                  ? "Cash"
+                                                  : widget.item.paymentMethod ==
+                                                          "2"
+                                                      ? "Credit Card"
+                                                      : widget.item
+                                                                  .paymentMethod ==
+                                                              "3"
+                                                          ? "Google Pay"
+                                                          : "Apple Pay",
+                                              style: TextStyle(
+                                                  fontFamily: 'poPPinMedium',
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 14,
+                                                  color: grey7D7979Color),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
+
+                                // Column(
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: [
+                                //     mediumVerticalSpacing(),
+                                //     Text(
+                                //       appLoc.paymentMethod,
+                                //       style: const TextStyle(
+                                //           fontFamily: 'Yu Ghotic',
+                                //           fontWeight: FontWeight.bold,
+                                //           fontSize: 16),
+                                //     ),
+                                //     smallVerticalSpacing(),
+                                //     Text(
+                                //       getPaymentMethod(widget.item),
+                                //     ),
+                                //     mediumVerticalSpacing(),
+                                //   ],
+                                // ),
+
                                 ),
-                              ],
-                            )
-
-                            // Column(
-                            //   crossAxisAlignment: CrossAxisAlignment.start,
-                            //   children: [
-                            //     mediumVerticalSpacing(),
-                            //     Text(
-                            //       appLoc.paymentMethod,
-                            //       style: const TextStyle(
-                            //           fontFamily: 'Yu Ghotic',
-                            //           fontWeight: FontWeight.bold,
-                            //           fontSize: 16),
-                            //     ),
-                            //     smallVerticalSpacing(),
-                            //     Text(
-                            //       getPaymentMethod(widget.item),
-                            //     ),
-                            //     mediumVerticalSpacing(),
-                            //   ],
-                            // ),
-
-                            ),
-                      )),
+                          ))
+                      : SizedBox(),
 
                   //Show payment status
 

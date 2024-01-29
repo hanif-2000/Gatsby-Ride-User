@@ -176,7 +176,8 @@ class HomeDrawerPage extends StatelessWidget {
                                 Navigator.pop(context);
                                 final _dio = DioClient().dio;
 
-                                String logOutUrl = 'https://php.parastechnologies.in/taxi/public/api/webservice/logout';
+                                String logOutUrl =
+                                    'https://php.parastechnologies.in/taxi/public/api/webservice/logout';
                                 final session = locator<Session>();
                                 _dio.withToken();
                                 // var provider = Provider.of<HomeProvider>(context, listen: false);
@@ -190,7 +191,9 @@ class HomeDrawerPage extends StatelessWidget {
                                 // options: Options(headers: {'Authorization': 'Bearer ${session.sessionToken}'})
                                 log("my response data is:  ${response.data}");
                                 dismissLoading();
-                                if (response.statusCode == 200 && response.data["message"] == "Logout successfully") {
+                                if (response.statusCode == 200 &&
+                                    response.data["message"] ==
+                                        "Logout successfully") {
                                   await sessionLogOut().then(
                                     (_) => Navigator.of(context)
                                         .pushNamedAndRemoveUntil(
@@ -217,6 +220,16 @@ class HomeDrawerPage extends StatelessWidget {
                                 }*/
                                   //   },
                                   // );
+                                } else if (response.statusCode == 404) {
+                                  showToast(
+                                      message:
+                                          "Session Expired\nPlease Login Again");
+                                  await sessionLogOut().then(
+                                    (_) => Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            LoginPage.routeName,
+                                            (route) => false),
+                                  );
                                 }
                                 ;
                               }));

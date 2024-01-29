@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/custom_contact_btn.dart';
@@ -11,11 +13,11 @@ import '../../../history/presentation/widgets/driver_profile.dart';
 
 class DriverInfoBottomSheet extends StatelessWidget {
   final String category;
-  final String driverId;
-  final String driverImage;
-  final String driverName;
-  final String platerNumber;
-  final String rating;
+  // final String driverId;
+  // final String driverImage;
+  // final String driverName;
+  // final String platerNumber;
+  // final String rating;
   final bool isReceiptVisible;
   final String driverStatusText;
   final Function() viewReceiptEvent;
@@ -28,11 +30,11 @@ class DriverInfoBottomSheet extends StatelessWidget {
   DriverInfoBottomSheet(
       {Key? key,
       required this.category,
-      required this.driverId,
-      required this.driverImage,
-      required this.driverName,
-      required this.platerNumber,
-      required this.rating,
+      // required this.driverId,
+      // required this.driverImage,
+      // required this.driverName,
+      // required this.platerNumber,
+      // required this.rating,
       required this.driverStatusText,
       required this.viewReceiptEvent,
       required this.callEvent,
@@ -48,6 +50,10 @@ class DriverInfoBottomSheet extends StatelessWidget {
     final session = locator<Session>();
     return Consumer<LatestSocketProvider>(
       builder: (context, provider, _) {
+        log("driver info model driver name is -->. ${provider.driverName}");
+        log("current order status is : -->. ${provider.currentOrderStatus}");
+        log("session order status is : -->. ${session.orderStatus}");
+
         return Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 10.0,
@@ -56,22 +62,23 @@ class DriverInfoBottomSheet extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                ((provider.currentOrderStatus == 1) ||
-                        (session.orderStatus == 1))
-                    ? "Driver is arriving"
-                    : ((provider.currentOrderStatus == 2) ||
-                            (session.orderStatus == 2))
-                        ? "Driver is on the way"
-                        : ((provider.currentOrderStatus == 3) ||
-                                (session.orderStatus == 3))
-                            ? "Driver reached your location"
-                            : ((provider.currentOrderStatus == 5) ||
-                                    (session.orderStatus == 5))
-                                ? "Departure to your Destination"
-                                : ((provider.currentOrderStatus == 7) ||
-                                        (session.orderStatus == 7))
-                                    ? "Ride is Completed"
-                                    : "",
+                driverStatusText,
+                // ((provider.currentOrderStatus == 1) ||
+                //         (session.orderStatus == 1))
+                //     ? "Driver is arriving"
+                //     : ((provider.currentOrderStatus == 2) ||
+                //             (session.orderStatus == 2))
+                //         ? "Driver is on the way"
+                //         : ((provider.currentOrderStatus == 3) ||
+                //                 (session.orderStatus == 3))
+                //             ? "Driver reached your location"
+                //             : ((provider.currentOrderStatus == 5) ||
+                //                     (session.orderStatus == 5))
+                //                 ? "Departure to your Destination"
+                //                 : ((provider.currentOrderStatus == 7) ||
+                //                         (session.orderStatus == 7))
+                //                     ? "Ride is Completed"
+                //                     : "",
                 style: TextStyle(
                   fontSize: 14.0,
                   fontFamily: "poPPinMedium",
@@ -82,11 +89,11 @@ class DriverInfoBottomSheet extends StatelessWidget {
                 child: DriverProfileWidget(
                   onClickOnReview: reviewEvent,
                   category: category,
-                  driverId: driverId,
-                  driverImage: driverImage,
-                  driverName: driverName,
-                  platerNumber: platerNumber,
-                  rating: rating,
+                  driverId: provider.driverId,
+                  driverImage: provider.driverImg,
+                  driverName: provider.driverName,
+                  platerNumber: provider.plateNumber,
+                  rating: provider.ratings,
                 ),
               ),
               Visibility(
@@ -162,7 +169,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: Text(
-                                  newMessgeCount.toString(),
+                                  provider.unreadCount.toString(),
                                   style: TextStyle(color: whiteColor),
                                 ),
                               ),
@@ -173,7 +180,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: isReceiptVisible,
+                visible: isReceiptVisible || session.orderStatus == 7,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: 8.0,

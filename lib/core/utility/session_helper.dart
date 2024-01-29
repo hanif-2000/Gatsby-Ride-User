@@ -21,6 +21,20 @@ abstract class Session {
   set setDeviceType(String device);
   set setEstimatedDistance(String distance);
   set setEstimatedTime(String time);
+  set setDriverLatLong(String driverLatLng);
+
+  /** DRIVER DETAILS ADD Start */
+
+  set setDriverImg(String img);
+  set setDriverPhn(String phn);
+  set setDriverName(String name);
+  set setDriverRating(String rating);
+  set setVehicleName(String vehicleName);
+  set setVehicleModel(String vehicleModel);
+  set setVehiclePlate(String vehiclePlate);
+  set setRideTotal(String total);
+
+  /** DRIVER DETAILS END */
 
   set setOriginAddress(String originAddress);
   set setDestinationAddress(String destinationAddress);
@@ -51,6 +65,20 @@ abstract class Session {
   String get currentLat;
   String get currentLong;
   String get device;
+  String get driverLatLng;
+
+  /** GET DRIVER DETAILS Start*/
+
+  String get driverImg;
+  String get driverName;
+  String get driverRating;
+  String get driverPhn;
+  String get vehicleName;
+  String get vehicleModel;
+  String get vehiclePlate;
+  String get rideTotal;
+
+  /** GET DRIVER DETAILS  END*/
 
   String get originAddress;
   String get destinationAddress;
@@ -105,6 +133,12 @@ class SessionHelper implements Session {
   set setToken(String token) {
     pref.setString(SESSION_TOKEN, token);
   }
+/** Driver lat liogn */
+
+  @override
+  set setDriverLatLong(String driverLatLng) {
+    pref.setString(DRIVER_LATLONG, driverLatLng);
+  }
 
   @override
   set setUserId(String userId) {
@@ -125,6 +159,58 @@ class SessionHelper implements Session {
   set setDriverId(String driverId) {
     pref.setString(DRIVER_ID, driverId);
   }
+
+/** DRIVER DETAILS START */
+
+//NAME
+  @override
+  set setDriverName(String driverName) {
+    pref.setString(DRIVER_NAME, driverName);
+  }
+
+//IMAGE
+  @override
+  set setDriverImg(String driverImg) {
+    pref.setString(DRIVER_IMG, driverImg);
+  }
+
+//PHONE
+  @override
+  set setDriverPhn(String driverPhn) {
+    pref.setString(DRIVER_PHN, driverPhn);
+  }
+
+//RATING
+  @override
+  set setDriverRating(String driverRating) {
+    pref.setString(DRIVER_RATING, driverRating);
+  }
+
+//VEHCIEL NAME
+  @override
+  set setVehicleName(String vehicleName) {
+    pref.setString(VEHICLE_NAME, vehicleName);
+  }
+
+//vehice; model
+  @override
+  set setVehicleModel(String vehicleModel) {
+    pref.setString(VEHICLE_MODEL, vehicleModel);
+  }
+
+//plate number
+  @override
+  set setVehiclePlate(String vehiclePlate) {
+    pref.setString(VEHICL_PLATE, vehiclePlate);
+  }
+
+//ride total
+  @override
+  set setRideTotal(String rideTotal) {
+    pref.setString(RIDE_TOTAL, rideTotal);
+  }
+
+/** DRIVER DETAILS END */
 
   @override
   set setOrderStatus(int orderStatus) {
@@ -211,6 +297,10 @@ class SessionHelper implements Session {
   @override
   String get sessionToken => pref.getString(SESSION_TOKEN) ?? '';
 
+/** DRIVER LAT LONG */
+  @override
+  String get driverLatLong => pref.getString(DRIVER_LATLONG) ?? '0,0';
+
   /// **** order dewtails
 
   @override
@@ -246,6 +336,27 @@ class SessionHelper implements Session {
   @override
   String get orderId => pref.getString(ORDER_ID) ?? '';
 
+  //**drive details start */
+
+  @override
+  String get driverName => pref.getString(DRIVER_NAME) ?? '';
+  @override
+  String get driverImg => pref.getString(DRIVER_IMG) ?? '';
+  @override
+  String get driverRating => pref.getString(DRIVER_RATING) ?? '';
+  @override
+  String get driverPhn => pref.getString(DRIVER_PHN) ?? '';
+  @override
+  String get vehicleName => pref.getString(VEHICLE_NAME) ?? '';
+  @override
+  String get vehicleModel => pref.getString(VEHICLE_MODEL) ?? '';
+  @override
+  String get vehiclePlate => pref.getString(VEHICL_PLATE) ?? '';
+  @override
+  String get rideTotal => pref.getString(RIDE_TOTAL) ?? '';
+
+  //driver details end
+
   @override
   String get currentLat => pref.getString(CURRENT_LAT) ?? '';
 
@@ -269,6 +380,15 @@ class SessionHelper implements Session {
     await pref.remove(ESTIMATED_TIME);
     await pref.remove(SESSION_Driver_DETAILS);
     await pref.remove(SESSION_ORDER_DETAILS);
+    await pref.remove(DRIVER_LATLONG);
+    await pref.remove(DRIVER_ID);
+    await pref.remove(DRIVER_IMG);
+    await pref.remove(DRIVER_NAME);
+    await pref.remove(DRIVER_ID);
+    await pref.remove(ORIGIN_LAT);
+    await pref.remove(ORIGIN_LONG);
+    await pref.remove(ORIGIN_ADDRESS);
+    await pref.remove(DESTINATION_ADDRESS);
   }
 
   @override
@@ -297,4 +417,7 @@ class SessionHelper implements Session {
 
   @override
   String get estimatedTime => pref.getString(ESTIMATED_TIME) ?? '';
+
+  @override
+  String get driverLatLng => pref.getString(DRIVER_LATLONG) ?? '0,0';
 }

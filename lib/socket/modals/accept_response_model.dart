@@ -41,10 +41,10 @@ class AcceptResponseModel {
 
 class Data {
   dynamic id;
-  String? startCoordinate;
-  String? endCoordinate;
-  String? startAddress;
-  String? endAddress;
+  String startCoordinate;
+  String endCoordinate;
+  String startAddress;
+  String endAddress;
   dynamic distance;
   dynamic paymentMethod;
   dynamic estimatedTime;
@@ -90,6 +90,8 @@ class Data {
     required this.extraDistancePrice,
     required this.extraTime,
     required this.extraTimePrice,
+    required this.startCoordinate,
+    required this.endCoordinate,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -116,6 +118,8 @@ class Data {
         extraDistancePrice: json["extra_distance_price"] ?? '0',
         extraTime: json["extra_time"],
         extraTimePrice: json["extra_time_price"] ?? "0",
+        startCoordinate: json["start_coordinate"] ?? "0,0",
+        endCoordinate: json["end_coordinate"] ?? "0,0",
       );
 
   Map<String, dynamic> toJson() => {
@@ -138,6 +142,9 @@ class Data {
         "car_model": carModel,
         "DriverRating": driverRating.toString(),
         "phoneNumber": phoneNumber,
+        "startCoordinate": startCoordinate,
+        "endCoordinate": endCoordinate,
+
         // "extra_distance": extraDistance,
         // "extra_distance_price": extraDistancePrice,
         // "extra_time": extraTime,
