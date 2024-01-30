@@ -765,7 +765,12 @@ class _NewOrderPageState extends State<NewOrderPage>
                               //     ((session.orderStatus == 7)) ? true : false,
                               // isReceiptVisible: true,
 
-                              category: newSocketProvider.carModal,
+                              category: newSocketProvider
+                                      .driverDetailResponseModel
+                                      ?.message
+                                      .carModel
+                                      .toString() ??
+                                  '',
                               // driverId: session.orderId,
 
                               // driverImage: latestSocketProvider

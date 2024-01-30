@@ -6,9 +6,9 @@ class DriverDetailModel extends DriverDetail {
     required String phone,
     required String model,
     required String plat,
-    required int id,
-    String? image,
-    int? rating,
+    required String id,
+    required String image,
+    required String rating,
   }) : super(
           name: name,
           phone: phone,
@@ -25,8 +25,8 @@ class DriverDetailModel extends DriverDetail {
         phone: json['phone'] ?? '',
         model: json['car_model'] ?? '',
         plat: json['plate_number'] ?? '',
-        rating: json['rating'] ?? 0,
-        id: json["id"],
+        rating: json['rating'] ?? "0",
+        id: json["id"] ?? '0',
         image: json['image'] ?? '',
       );
 

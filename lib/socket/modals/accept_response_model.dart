@@ -65,6 +65,7 @@ class Data {
   dynamic extraDistancePrice;
   dynamic extraTime;
   dynamic extraTimePrice;
+  dynamic newTotal;
 
   Data({
     required this.id,
@@ -92,6 +93,7 @@ class Data {
     required this.extraTimePrice,
     required this.startCoordinate,
     required this.endCoordinate,
+    required this.newTotal,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -120,6 +122,7 @@ class Data {
         extraTimePrice: json["extra_time_price"] ?? "0",
         startCoordinate: json["start_coordinate"] ?? "0,0",
         endCoordinate: json["end_coordinate"] ?? "0,0",
+        newTotal: json["new_total"] ?? "0",
       );
 
   Map<String, dynamic> toJson() => {
@@ -144,6 +147,7 @@ class Data {
         "phoneNumber": phoneNumber,
         "startCoordinate": startCoordinate,
         "endCoordinate": endCoordinate,
+        "newTotal": newTotal,
 
         // "extra_distance": extraDistance,
         // "extra_distance_price": extraDistancePrice,

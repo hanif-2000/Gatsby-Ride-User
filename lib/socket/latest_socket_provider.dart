@@ -4,7 +4,9 @@ import 'dart:developer';
 import 'dart:ui' as ui;
 import 'package:GetsbyRideshare/core/presentation/pages/home_page/home_page.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
-import 'package:GetsbyRideshare/features/order/data/models/driver_detail_model.dart';
+import 'package:GetsbyRideshare/features/order/data/models/detail_driver_response.dart';
+import 'package:GetsbyRideshare/features/order/data/models/get_driver_details_response_model.dart';
+import 'package:GetsbyRideshare/features/order/domain/entities/order_detail.dart';
 import 'package:GetsbyRideshare/socket/modals/accept_response_model.dart';
 import 'package:GetsbyRideshare/socket/modals/driver_updated_position_model.dart';
 import 'package:GetsbyRideshare/socket/modals/new_driver_model.dart';
@@ -24,11 +26,11 @@ import '../core/utility/direction_helper.dart';
 import '../core/utility/helper.dart';
 import '../core/utility/injection.dart';
 import '../features/order/data/models/chat_modal.dart';
-import '../features/order/domain/entities/driver_detail.dart';
-import '../features/order/presentation/pages/components/new_receipt_model.dart';
+import '../features/order/data/models/detail_order_response_model.dart';
 import '../features/order/presentation/providers/get_receipt_state.dart';
 import '../features/order/presentation/providers/submit_ratings_state.dart';
 import 'modals/booking_response_model.dart';
+import 'modals/new_receipt_model.dart';
 
 class LatestSocketProvider extends ChangeNotifier {
   static final LatestSocketProvider _provider = LatestSocketProvider.internal();
@@ -38,6 +40,8 @@ class LatestSocketProvider extends ChangeNotifier {
   }
 
   LatestSocketProvider.internal();
+  // late GetOrderDetail getOrderDetail;
+  // late GetDriverDetail getDriverDetail;
   final session = locator<Session>();
   var _homeProvider = locator<HomeProvider>();
 
@@ -68,8 +72,12 @@ class LatestSocketProvider extends ChangeNotifier {
   bool isLoading = false;
   BookingDataModel? bookingDataModel;
   AcceptResponseModel? acceptResponseModel;
+  ReceiptResponseModel? receiptResponseModel;
+
   DriverUpdatedPositionModel? driverUpdatedPositionModel;
-  DriverDetailModel? driverDetailModel;
+  // DriverDetailModel? driverDetailModel;
+  DriverDetailResponseModel? driverDetailResponseModel;
+  OrderDetailResponseModel? orderDetailResponseModel;
 
   List<ChatModel> get chatMessageList => _chatMessagesList;
   OrderStatusResponseModel? orderStatusResponseModel;
@@ -79,6 +87,23 @@ class LatestSocketProvider extends ChangeNotifier {
   updateDriverLatLng({required LatLng driverLtLng}) {
     driverLatLng = driverLtLng;
 
+    notifyListeners();
+  }
+
+  updateReceiptResponseModel(data) {
+    receiptResponseModel = data;
+    notifyListeners();
+  }
+
+/** update driver details model */
+  updateDriverDetailsModel({required DriverDetailResponseModel data}) {
+    driverDetailResponseModel = data;
+    notifyListeners();
+  }
+/** update order details model */
+
+  updateOrderDetailsModel({required OrderDetailResponseModel data}) {
+    orderDetailResponseModel = data;
     notifyListeners();
   }
 
@@ -288,6 +313,48 @@ class LatestSocketProvider extends ChangeNotifier {
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
 
+        updateOrderDetailsModel(
+          data: OrderDetailResponseModel(
+            success: 1,
+            data: OrderDetail(
+              distance: acceptResponseModel!.data.distance.toString(),
+              driverId: acceptResponseModel!.data.driverId.toString(),
+              endAddress: acceptResponseModel!.data.endAddress.toString(),
+              endCoordinate: acceptResponseModel!.data.endCoordinate.toString(),
+              orderId: acceptResponseModel!.data.id.toString(),
+              startAddress: acceptResponseModel!.data.startAddress.toString(),
+              startCoordinate:
+                  acceptResponseModel!.data.startCoordinate.toString(),
+              totalPrice: acceptResponseModel!.data.total.toString(),
+              userId: session.userId.toString(),
+            ),
+          ),
+        );
+
+        updateDriverDetailsModel(
+          data: DriverDetailResponseModel(
+              success: 1,
+              message: Message(
+                id: acceptResponseModel!.data.driverId!.toString(),
+                name: acceptResponseModel!.data.name!.toString(),
+                image: acceptResponseModel!.data.profilePhoto!.toString(),
+                phone: acceptResponseModel!.data.phoneNumber!.toString(),
+                carModel: acceptResponseModel!.data.carModel!.toString(),
+                plateNumber: acceptResponseModel!.data.plateNumber!.toString(),
+                rating: acceptResponseModel!.data.driverRating!.toString(),
+              )
+              // success: 1,
+              // data: DriverDetailModel(
+              //     name: acceptResponseModel!.data.name!.toString(),
+              //     phone: acceptResponseModel!.data.phoneNumber!.toString(),
+              //     model: acceptResponseModel!.data.carModel!.toString(),
+              //     plat: acceptResponseModel!.data.plateNumber!.toString(),
+              //     id: acceptResponseModel!.data.driverId!.toString(),
+              //     image: acceptResponseModel!.data.profilePhoto!.toString(),
+              //     rating: acceptResponseModel!.data.driverRating!.toString()),
+              ),
+        );
+
         notifyListeners();
 
         log("aceeep sdf name==>>${acceptResponseModel!.data.name}");
@@ -298,47 +365,47 @@ class LatestSocketProvider extends ChangeNotifier {
         currentOrderStatus = 1;
         session.setIsRunningOrder = true;
 
-        updateDriverDetails(
-          driverNam: acceptResponseModel!.data.name!.toString(),
-          rating: acceptResponseModel!.data.driverRating.toString(),
-          carModa: acceptResponseModel!.data.carModel!.toString(),
-          plateNumbe: acceptResponseModel!.data.plateNumber!.toString(),
-          driverI: acceptResponseModel!.data.driverId.toString(),
-          phoneNumbe: acceptResponseModel!.data.phoneNumber.toString(),
-          driverIm: acceptResponseModel!.data.profilePhoto.toString(),
-          driverRate: acceptResponseModel!.data.driverRating.toString(),
-          totalPrice: acceptResponseModel!.data.total.toString(),
-          vehicleNam: acceptResponseModel!.data.vehicleName!.toString(),
-        ).then((value) {
-          updateDriverDetailLoca(
-            driverNam: acceptResponseModel!.data.name!.toString(),
-            rating: acceptResponseModel!.data.driverRating.toString(),
-            carModa: acceptResponseModel!.data.carModel!.toString(),
-            plateNumbe: acceptResponseModel!.data.plateNumber!.toString(),
-            driverI: acceptResponseModel!.data.driverId.toString(),
-            phoneNumbe: acceptResponseModel!.data.phoneNumber.toString(),
-            driverIm: acceptResponseModel!.data.profilePhoto.toString(),
-            rideTotalAmount: acceptResponseModel!.data.total.toString(),
-            vehicleNam: acceptResponseModel!.data.vehicleName!.toString(),
-          );
+        // updateDriverDetails(
+        //   driverNam: acceptResponseModel!.data.name!.toString(),
+        //   rating: acceptResponseModel!.data.driverRating.toString(),
+        //   carModa: acceptResponseModel!.data.carModel!.toString(),
+        //   plateNumbe: acceptResponseModel!.data.plateNumber!.toString(),
+        //   driverI: acceptResponseModel!.data.driverId.toString(),
+        //   phoneNumbe: acceptResponseModel!.data.phoneNumber.toString(),
+        //   driverIm: acceptResponseModel!.data.profilePhoto.toString(),
+        //   driverRate: acceptResponseModel!.data.driverRating.toString(),
+        //   totalPrice: acceptResponseModel!.data.total.toString(),
+        //   vehicleNam: acceptResponseModel!.data.vehicleName!.toString(),
+        // ).then((value) {
+        //   updateDriverDetailLoca(
+        //     driverNam: acceptResponseModel!.data.name!.toString(),
+        //     rating: acceptResponseModel!.data.driverRating.toString(),
+        //     carModa: acceptResponseModel!.data.carModel!.toString(),
+        //     plateNumbe: acceptResponseModel!.data.plateNumber!.toString(),
+        //     driverI: acceptResponseModel!.data.driverId.toString(),
+        //     phoneNumbe: acceptResponseModel!.data.phoneNumber.toString(),
+        //     driverIm: acceptResponseModel!.data.profilePhoto.toString(),
+        //     rideTotalAmount: acceptResponseModel!.data.total.toString(),
+        //     vehicleNam: acceptResponseModel!.data.vehicleName!.toString(),
+        //   );
 
-          log("origin lat -->> ${acceptResponseModel!.data.startCoordinate}");
-          log("origin lat -->> ${acceptResponseModel!.data.endCoordinate}");
+        log("origin lat -->> ${acceptResponseModel!.data.startCoordinate}");
+        log("origin lat -->> ${acceptResponseModel!.data.endCoordinate}");
 
-          session.setOriginAddress = acceptResponseModel!.data.startAddress;
-          session.setDestinationAddress = acceptResponseModel!.data.endAddress;
-          session.setOriginLat = double.parse(
-              acceptResponseModel!.data.startCoordinate.split(',').first);
-          session.setOriginLong = double.parse(
-              acceptResponseModel!.data.startCoordinate.split(',').last);
+        session.setOriginAddress = acceptResponseModel!.data.startAddress;
+        session.setDestinationAddress = acceptResponseModel!.data.endAddress;
+        session.setOriginLat = double.parse(
+            acceptResponseModel!.data.startCoordinate.split(',').first);
+        session.setOriginLong = double.parse(
+            acceptResponseModel!.data.startCoordinate.split(',').last);
 
-          session.setDestinationLat = double.parse(
-              acceptResponseModel!.data.endCoordinate.split(',').first);
-          session.setDestinationLong = double.parse(
-              acceptResponseModel!.data.endCoordinate.split(',').last);
-        }).then((value) {
-          log("data from lcoal storage is :-->>. ${session.driverName}");
-        });
+        session.setDestinationLat = double.parse(
+            acceptResponseModel!.data.endCoordinate.split(',').first);
+        session.setDestinationLong = double.parse(
+            acceptResponseModel!.data.endCoordinate.split(',').last);
+        // }).then((value) {
+        //   log("data from lcoal storage is :-->>. ${session.driverName}");
+        // });
         // session.setOrderDetails = await json.encode(OrderDetail(
         //     orderId: int.parse(acceptResponseModel!.data.id),
         //     totalPrice: acceptResponseModel!.data.total,
@@ -444,6 +511,8 @@ class LatestSocketProvider extends ChangeNotifier {
         log("****************************      DRIVER END THE RIDE *************************");
         session.setOrderStatus = 7;
         currentOrderStatus = 7;
+
+        updateReceiptResponseModel(ReceiptResponseModel.fromJson(response));
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         // receiptData = ReceiptData.fromJson(response);
@@ -903,16 +972,16 @@ class LatestSocketProvider extends ChangeNotifier {
   }
 
   /** Driver Details */
-  String driverName = '';
-  String ratings = '';
-  String carModal = '';
-  String plateNumber = '';
-  String phoneNumber = '';
-  String driverId = '';
-  String driverImg = '';
-  String driverRating = '';
-  String vehicleName = '';
-  String totalRideAmount = '';
+  // String driverName = '';
+  // String ratings = '';
+  // String carModal = '';
+  // String plateNumber = '';
+  // String phoneNumber = '';
+  // String driverId = '';
+  // String driverImg = '';
+  // String driverRating = '';
+  // String vehicleName = '';
+  // String totalRideAmount = '';
 
   String driverStatus = "Fetching Driver";
 
@@ -920,78 +989,78 @@ class LatestSocketProvider extends ChangeNotifier {
   double long = 0.0;
 
 /** screen  */
-  Future<void> updateDriverDetails({
-    required String driverNam,
-    required String rating,
-    required String carModa,
-    required String plateNumbe,
-    required String driverI,
-    required String phoneNumbe,
-    required String driverIm,
-    required String driverRate,
-    required String vehicleNam,
-    required String totalPrice,
-  }) async {
-    log("accept response driverNam     -->> ${driverName}");
-    log("accept response rating     -->> ${rating}");
-    log("accept response car model     -->> ${carModa}");
-    log("accept response plate number     -->> ${plateNumbe}");
-    log("accept response driver id     -->> ${driverI}");
-    log("accept response phone number     -->> ${phoneNumbe}");
-    log("accept response driver image     -->> ${driverIm}");
-    log("accept response driver rating     -->> ${driverRate}");
-    log("accept response vehicel name     -->> ${vehicleNam}");
-    log("accept response total price     -->> ${totalPrice}");
+//   Future<void> updateDriverDetails({
+//     required String driverNam,
+//     required String rating,
+//     required String carModa,
+//     required String plateNumbe,
+//     required String driverI,
+//     required String phoneNumbe,
+//     required String driverIm,
+//     required String driverRate,
+//     required String vehicleNam,
+//     required String totalPrice,
+//   }) async {
+//     log("accept response driverNam     -->> ${driverName}");
+//     log("accept response rating     -->> ${rating}");
+//     log("accept response car model     -->> ${carModa}");
+//     log("accept response plate number     -->> ${plateNumbe}");
+//     log("accept response driver id     -->> ${driverI}");
+//     log("accept response phone number     -->> ${phoneNumbe}");
+//     log("accept response driver image     -->> ${driverIm}");
+//     log("accept response driver rating     -->> ${driverRate}");
+//     log("accept response vehicel name     -->> ${vehicleNam}");
+//     log("accept response total price     -->> ${totalPrice}");
 
-    driverName = driverNam;
-    ratings = rating;
-    carModal = carModa;
-    plateNumber = plateNumbe;
-    phoneNumber = phoneNumbe;
-    driverId = driverI;
-    driverImg = driverIm;
-    driverRating = driverRate;
-    vehicleName = vehicleNam;
-    totalRideAmount = totalPrice;
+//     driverName = driverNam;
+//     ratings = rating;
+//     carModal = carModa;
+//     plateNumber = plateNumbe;
+//     phoneNumber = phoneNumbe;
+//     driverId = driverI;
+//     driverImg = driverIm;
+//     driverRating = driverRate;
+//     vehicleName = vehicleNam;
+//     totalRideAmount = totalPrice;
 
-    notifyListeners();
-  }
+//     notifyListeners();
+//   }
 
-//*** lcoal  */
-  Future<void> updateDriverDetailLoca({
-    required String driverNam,
-    required String rating,
-    required String carModa,
-    required String plateNumbe,
-    required String driverI,
-    required String phoneNumbe,
-    required String driverIm,
-    // required String driverRate,
-    required String rideTotalAmount,
-    required String vehicleNam,
-  }) async {
-    log("accept response driverNam     -->> ${driverName}");
-    log("accept response rating     -->> ${rating}");
-    log("accept response car model     -->> ${carModa}");
-    log("accept response plate number     -->> ${plateNumbe}");
-    log("accept response driver id     -->> ${driverI}");
-    log("accept response phone number     -->> ${phoneNumbe}");
-    log("accept response driver image     -->> ${driverIm}");
-    log("accept response vehicel name     -->> ${vehicleNam}");
-    log("accept response total price     -->> ${rideTotalAmount}");
+// //*** lcoal  */
+//   Future<void> updateDriverDetailLoca({
+//     required String driverNam,
+//     required String rating,
+//     required String carModa,
+//     required String plateNumbe,
+//     required String driverI,
+//     required String phoneNumbe,
+//     required String driverIm,
+//     // required String driverRate,
+//     required String rideTotalAmount,
+//     required String vehicleNam,
+//   }) async {
+//     log("accept response driverNam     -->> ${driverName}");
+//     log("accept response rating     -->> ${rating}");
+//     log("accept response car model     -->> ${carModa}");
+//     log("accept response plate number     -->> ${plateNumbe}");
+//     log("accept response driver id     -->> ${driverI}");
+//     log("accept response phone number     -->> ${phoneNumbe}");
+//     log("accept response driver image     -->> ${driverIm}");
+//     log("accept response vehicel name     -->> ${vehicleNam}");
+//     log("accept response total price     -->> ${rideTotalAmount}");
 
-    session.setDriverImg = driverIm;
-    session.setDriverRating = rating;
-    session.setDriverPhn = phoneNumbe;
-    session.setDriverName = driverNam;
-    session.setVehicleModel = carModa;
-    session.setVehicleName = vehicleNam;
-    session.setVehiclePlate = plateNumbe;
-    session.setRideTotal = rideTotalAmount;
-    session.setDriverId = driverI;
+//     session.setDriverImg = driverIm;
+//     session.setDriverRating = rating;
+//     session.setDriverPhn = phoneNumbe;
+//     session.setDriverName = driverNam;
+//     session.setVehicleModel = carModa;
+//     session.setVehicleName = vehicleNam;
+//     session.setVehiclePlate = plateNumbe;
+//     session.setRideTotal = rideTotalAmount;
+//     session.setDriverId = driverI;
 
-    notifyListeners();
-  }
+//     notifyListeners();
+//   }
 
 //Call DrPlasetVehiclePlate
   callDriver() async {
@@ -1006,8 +1075,8 @@ class LatestSocketProvider extends ChangeNotifier {
 
 // Set polylines Direction
   setPolylinesDirection(LatLng origin, LatLng destination) async {
-    log("polyline :" + origin.latitude.toString());
-    log("polyline :" + destination.latitude.toString());
+    log("polyline  Driver co:" + origin.latitude.toString());
+    log("polyline destination co:" + destination.latitude.toString());
 
     await DirectionHelper()
         .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
@@ -1082,7 +1151,7 @@ class LatestSocketProvider extends ChangeNotifier {
 
     yield SubmitRatingsLoading();
     final formData = FormData.fromMap({
-      "id": driverId,
+      "id": session.driverId,
       "order_id": session.orderId,
       "rating": ratingGiven,
       "review": commentsEditingController.text,
@@ -1183,6 +1252,68 @@ class LatestSocketProvider extends ChangeNotifier {
         setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
       }
       // }
+    }
+  }
+
+  /** Get DRIVER Details */
+  Future<DriverDetailResponseModel> fetchDriverDetails(int id) async {
+    final String apiUrl =
+        'https://php.parastechnologies.in/taxi/public/api/webservice/driver-profile?id=$id';
+    final String authToken = session.sessionToken;
+
+    try {
+      final response = await Dio().get(
+        apiUrl,
+        options: Options(
+          headers: {'Authorization': 'Bearer $authToken'},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        log("driver details are:-->> ${response}");
+        // If the server returns a 200 OK response, parse the JSON
+        DriverDetailResponseModel data =
+            DriverDetailResponseModel.fromJson(response.data);
+        return data;
+      } else {
+        // If the server did not return a 200 OK response, throw an exception.
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      // Handle network or decoding errors
+      print('Error: $e');
+      throw Exception('Failed to load data');
+    }
+  }
+
+  /** Get Order Details */
+  Future<OrderDetailResponseModel> fetchOrderDetails(int id) async {
+    log("fetch order details called");
+    final String apiUrl =
+        'https://php.parastechnologies.in/taxi/public/api/webservice/getOrder?id=$id';
+
+    try {
+      log("try called : ${apiUrl}");
+      final response = await Dio().get(apiUrl);
+      log("--------******* ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        log("--------******* ${response.statusCode}");
+
+        log("response is :${response}");
+        // If the server returns a 200 OK response, parse the JSON
+        OrderDetailResponseModel data =
+            OrderDetailResponseModel.fromJson(response.data);
+
+        return data;
+      } else {
+        // If the server did not return a 200 OK response, throw an exception.
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      // Handle network or decoding errors
+      print('Error: $e');
+      throw Exception('Failed to load data');
     }
   }
 

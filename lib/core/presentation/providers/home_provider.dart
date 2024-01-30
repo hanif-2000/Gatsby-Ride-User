@@ -178,7 +178,7 @@ class HomeProvider with ChangeNotifier {
   //clear state
   clearState() async {
     await sessionClearOrder();
-    session.setOrderStatus = 100;
+    // session.setOrderStatus = 100;
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";

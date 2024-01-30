@@ -53,7 +53,6 @@ import '../../features/order/data/datasources/order_data_source.dart';
 import '../../features/order/data/repositories/order_repository_implementation.dart';
 import '../../features/order/domain/repositories/order_repository.dart';
 import '../../features/order/domain/usecases/create_oder.dart';
-import '../../features/order/domain/usecases/get_driver_detail.dart';
 import '../../features/order/domain/usecases/get_driver_location.dart';
 import '../../features/order/domain/usecases/get_order_detail.dart';
 import '../../features/order/domain/usecases/get_receipt.dart';
@@ -320,8 +319,8 @@ Future<void> init() async {
   locator.registerLazySingleton<SubmitRatings>(
       () => SubmitRatings(repository: locator<OrderRepository>()));
 
-  locator.registerLazySingleton<GetDriverDetail>(
-      () => GetDriverDetail(repository: locator<OrderRepository>()));
+  // locator.registerLazySingleton<GetDriverDetail>(
+  //     () => GetDriverDetail(repository: locator<OrderRepository>()));
   locator.registerLazySingleton<GetDriverLocation>(
       () => GetDriverLocation(repository: locator<OrderRepository>()));
   locator.registerLazySingleton<CreateProfile>(

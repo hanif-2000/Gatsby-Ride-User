@@ -50,7 +50,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
     final session = locator<Session>();
     return Consumer<LatestSocketProvider>(
       builder: (context, provider, _) {
-        log("driver info model driver name is -->. ${provider.driverName}");
+        log("driver info model driver name is -->. ${provider.driverDetailResponseModel!.message.name}");
         log("current order status is : -->. ${provider.currentOrderStatus}");
         log("session order status is : -->. ${session.orderStatus}");
 
@@ -89,11 +89,17 @@ class DriverInfoBottomSheet extends StatelessWidget {
                 child: DriverProfileWidget(
                   onClickOnReview: reviewEvent,
                   category: category,
-                  driverId: provider.driverId,
-                  driverImage: provider.driverImg,
-                  driverName: provider.driverName,
-                  platerNumber: provider.plateNumber,
-                  rating: provider.ratings,
+                  driverId:
+                      provider.driverDetailResponseModel!.message.id.toString(),
+                  driverImage: provider.driverDetailResponseModel!.message.image
+                      .toString(),
+                  driverName: provider.driverDetailResponseModel!.message.name
+                      .toString(),
+                  platerNumber: provider
+                      .driverDetailResponseModel!.message.plateNumber
+                      .toString(),
+                  rating: provider.driverDetailResponseModel!.message.rating
+                      .toString(),
                 ),
               ),
               Visibility(

@@ -22,7 +22,11 @@ logMe(Object? obj) {
     use this for print something, its run only on debug mode.
   */
   if (kDebugMode) {
+    print(
+        "**************************************👇👇👇👇👇👇👇👇   DEBUG START   👇👇👇👇👇👇👇👇👇👇********************************");
     print(obj);
+    print(
+        "**************************************👆👆👆👆👆👆👆👆   DEBUG END      👆👆👆👆👆👆👆👆👆👆********************************");
   }
 }
 

@@ -373,18 +373,18 @@ class SessionHelper implements Session {
 
   @override
   Future<void> clearOrderSession() async {
-    await pref.remove(ORDER_ID);
-    await pref.remove(ORDER_STATUS);
-    await pref.remove(DRIVER_ID);
+    // await pref.remove(ORDER_ID);
+    // await pref.remove(ORDER_STATUS);
+    // await pref.remove(DRIVER_ID);
     await pref.remove(ESTIMATED_DISTANCE);
     await pref.remove(ESTIMATED_TIME);
     await pref.remove(SESSION_Driver_DETAILS);
     await pref.remove(SESSION_ORDER_DETAILS);
     await pref.remove(DRIVER_LATLONG);
-    await pref.remove(DRIVER_ID);
+    // await pref.remove(DRIVER_ID);
     await pref.remove(DRIVER_IMG);
     await pref.remove(DRIVER_NAME);
-    await pref.remove(DRIVER_ID);
+    // await pref.remove(DRIVER_ID);
     await pref.remove(ORIGIN_LAT);
     await pref.remove(ORIGIN_LONG);
     await pref.remove(ORIGIN_ADDRESS);

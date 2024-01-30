@@ -71,16 +71,25 @@ class DriverInfoWidget extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
+                                          /** plate number */
                                           Text(
-                                            provider.driverDetail!.plat,
+                                            provider.driverDetailResponseModel!
+                                                .message.plateNumber
+                                                .toString(),
                                             style: titlePlatStyle,
                                           ),
+                                          /** driver model */
+
                                           Text(
-                                            provider.driverDetail!.model,
+                                            provider.driverDetailResponseModel!
+                                                .message.carModel
+                                                .toString(),
                                             style: titleModelStyle,
                                           ),
                                           Text(
-                                            provider.driverDetail!.name,
+                                            provider.driverDetailResponseModel!
+                                                .message.name
+                                                .toString(),
                                             style: TextStyle(
                                                     fontSize: 13,
                                                     color: greyBlackColor,

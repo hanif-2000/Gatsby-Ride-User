@@ -7,7 +7,6 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 import '../../../../core/error/failure.dart';
-import '../../domain/entities/driver_detail.dart';
 import '../../domain/entities/order_detail.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../datasources/order_data_source.dart';
@@ -65,16 +64,16 @@ class OrderRepositoryImplementation implements OrderRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, DriverDetail>> getDriverDetail() async {
-    try {
-      final data = await dataSource.getDriverDetail();
-      return Right(data);
-    } on DioError catch (e) {
-      logMe("Failure getDriverDetail repository ${e.toString()}");
-      return Left(ServerFailure(message: e.message));
-    }
-  }
+  // @override
+  // Future<Either<Failure, DriverDetail>> getDriverDetail() async {
+  //   try {
+  //     final data = await dataSource.getDriverDetail();
+  //     return Right(data);
+  //   } on DioError catch (e) {
+  //     logMe("Failure getDriverDetail repository ${e.toString()}");
+  //     return Left(ServerFailure(message: e.message));
+  //   }
+  // }
 
   @override
   Future<Either<Failure, DriverLocationResponseModel>>

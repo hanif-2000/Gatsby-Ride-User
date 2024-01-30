@@ -125,7 +125,9 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CommonText(
-                            text: socketProvider.driverName,
+                            text: socketProvider
+                                .driverDetailResponseModel!.message.name
+                                .toString(),
                             fontWeight: FontWeight.w500,
                             fontColor: blackColor,
                             fontFamily: "poPPinMedium",
