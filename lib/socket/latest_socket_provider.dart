@@ -192,6 +192,7 @@ class LatestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+// df
   Future<void> updateBitsImage() async {
     updateOriginAndDestinationLatLong(
         origin: LatLng(
