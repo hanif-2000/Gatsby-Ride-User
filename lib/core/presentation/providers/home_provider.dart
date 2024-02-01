@@ -177,7 +177,7 @@ class HomeProvider with ChangeNotifier {
 
   //clear state
   clearState() async {
-    await sessionClearOrder();
+    // await sessionClearOrder();
     // session.setOrderStatus = 100;
     polylines.clear();
     destinationIsFilled = false;
@@ -314,16 +314,6 @@ class HomeProvider with ChangeNotifier {
       backDismiss: false,
       msg: 'Fetching Current location...',
       alignment: Alignment.center,
-      // builder: (_) {
-      //   return Container(
-      //     height: 100,
-      //     child: Column(children: [
-      //       CircularProgressIndicator(),
-      //       Icon(Icons.location_on),
-      //       Text("Fetching Location...")
-      //     ]),
-      //   );
-      // },
     );
 
     try {

@@ -6,6 +6,7 @@ import 'package:GetsbyRideshare/features/order/presentation/pages/components/cha
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -38,6 +39,15 @@ class _NewOrderPageState extends State<NewOrderPage>
 
   @override
   void initState() {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      log("resulr connecte=====>>>. ${result}");
+      if (result == ConnectivityResult.none) {
+        newSocketProvider.disconnectSocket();
+      } else {
+        newSocketProvider.receonnetSocket(context);
+      }
+      // Got a new connectivity status!
+    });
     super.initState();
     dismissLoading();
     WidgetsBinding.instance.addObserver(this);
@@ -590,7 +600,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                                     // ),
                                     // ),
                                   ],
-                                )
+                                ),
                               ],
                             )),
                           ),
@@ -631,6 +641,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                         //     ]))
 
                         Spacer(),
+                        Center(child: Text(latestSocketProvider.strength)),
                         Visibility(
                           visible:
                               (latestSocketProvider.currentOrderStatus != 0) ||

@@ -11,6 +11,7 @@ import 'package:GetsbyRideshare/socket/modals/accept_response_model.dart';
 import 'package:GetsbyRideshare/socket/modals/driver_updated_position_model.dart';
 import 'package:GetsbyRideshare/socket/modals/new_driver_model.dart';
 import 'package:GetsbyRideshare/socket/modals/order_status_response_model.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,8 +28,8 @@ import '../core/utility/helper.dart';
 import '../core/utility/injection.dart';
 import '../features/order/data/models/chat_modal.dart';
 import '../features/order/data/models/detail_order_response_model.dart';
+import '../features/order/data/models/submit_rating_response_modal.dart';
 import '../features/order/presentation/providers/get_receipt_state.dart';
-import '../features/order/presentation/providers/submit_ratings_state.dart';
 import 'modals/booking_response_model.dart';
 import 'modals/new_receipt_model.dart';
 
@@ -90,13 +91,14 @@ class LatestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateReceiptResponseModel(data) {
+  Future<void> updateReceiptResponseModel(data) async {
     receiptResponseModel = data;
     notifyListeners();
   }
 
 /** update driver details model */
-  updateDriverDetailsModel({required DriverDetailResponseModel data}) {
+  Future<void> updateDriverDetailsModel(
+      {required DriverDetailResponseModel data}) async {
     driverDetailResponseModel = data;
     notifyListeners();
   }
@@ -121,6 +123,26 @@ class LatestSocketProvider extends ChangeNotifier {
 
   updateAcceptModel({required AcceptResponseModel val}) {
     acceptResponseModel = val;
+    notifyListeners();
+  }
+
+  String _strength = 'Unknown';
+
+  String get strength => _strength;
+
+  Future<void> checkInternetStrength() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      // Connected to mobile data
+      _strength = 'Mobile Data';
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      // Connected to WiFi
+      _strength = 'WiFi';
+    } else {
+      // No internet connection
+      _strength = 'No Connection';
+    }
+
     notifyListeners();
   }
 
@@ -183,38 +205,72 @@ class LatestSocketProvider extends ChangeNotifier {
 
   // -----> function to connect the socket <--------- //
   Future<dynamic> connectToSocket(BuildContext context) async {
-    log("-------->CONNECTING TO SOCKET <--------");
-    log('-------> uri === ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
-    _socket = WebSocket(
+    try {
+      checkInternetStrength();
+
+      log("-------->CONNECTING TO SOCKET <--------");
+      log('-------> uri === ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
+      _socket = WebSocket(
         Uri.parse(
           "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}",
         ),
-        backoff: ConstantBackoff(Duration(seconds: 10)));
-    _socket!.connection.listen((event) {
-      if (event is Connected) {
-        log("************ Connectd ***********");
-        print("************ Connectd ***********");
+        timeout: Duration(seconds: 10),
+        pingInterval: Duration(seconds: 2),
+        // backoff: ConstantBackoff(Duration(seconds: 10)
+        // )
+      );
+      _socket!.connection.listen((event) {
+        if (event is Connected) {
+          checkInternetStrength();
+          log("************ Connectd ***********");
+          print("************ Connectd ***********");
 
-        listenSocketRequests(context);
-      } else if (event is Connecting) {
-        log("************ Connecting ***********");
-        print("************ Connecting ***********");
-      } else if (event is Disconnected) {
-        log("************ DisConnectd ***********");
-      } else if (event is Reconnecting) {
-        log("************ ReConnecting ***********");
-      } else if (event is Reconnected) {
-        log("************ ReConnecting ***********");
-        //  listenSocketRequests(context);
-      } else {
-        log("-----******** EVENT IS **** ${event}");
-        print("-----******** EVENT IS **** ${event}");
+          listenSocketRequests(context);
+        } else if (event is Connecting) {
+          checkInternetStrength();
+
+          log("************ Connecting ***********");
+          print("************ Connecting ***********");
+        } else if (event is Disconnected) {
+          checkInternetStrength();
+
+          log("************ DisConnectd ***********");
+        } else if (event is Reconnecting) {
+          checkInternetStrength();
+
+          log("************ ReConnecting ***********");
+        } else if (event is Reconnected) {
+          checkInternetStrength();
+
+          log("************ Reconnected ***********");
+          //  listenSocketRequests(context);
+        } else {
+          checkInternetStrength();
+
+          log("-----******** EVENT IS **** ${event}");
+          print("-----******** EVENT IS **** ${event}");
+        }
+      });
+    } catch (e, s) {
+      print("erorrrrrrrr===>>> $e, $s");
+      if (e is TimeoutException) {
+        receonnetSocket(context);
       }
-    });
+    }
+  }
+
+  receonnetSocket(BuildContext context) {
+    print("Disconnected=============>>${_socket?.connection.state})");
+    if (_socket?.connection.state is Disconnected) {
+      print("Disconnected=============>>");
+      connectToSocket(context);
+    } else {
+      print("Disconnected=============>> else");
+    }
   }
 
   Future<void> disconnectSocket() async {
-    _socket!.close();
+    _socket!.close(1000);
   }
 
   joinExitRoom({int? receiverId, required String type}) {
@@ -517,6 +573,7 @@ class LatestSocketProvider extends ChangeNotifier {
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         // receiptData = ReceiptData.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
+        saveOrderReceipt();
 
         notifyListeners();
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
@@ -628,6 +685,20 @@ class LatestSocketProvider extends ChangeNotifier {
 
     log("un read message count is:-->> $unreadMessageCount");
     notifyListeners();
+  }
+
+  // Save UserData to SharedPreferences
+  void saveOrderReceipt() {
+    session.setIsPaymentDone = false;
+    session.setIsRatingGiven = false;
+    logMe("save order receipt called");
+
+    if (receiptResponseModel != null) {
+      logMe("save order receipt called receiptResponseModel ==== NOT NULL");
+
+      session.setOrderReceipt = json.encode(receiptResponseModel!);
+      // _prefs.setString(_userDataKey, jsonEncode(_userData!.toMap()));
+    }
   }
 
   sendChatMessage({
@@ -1145,29 +1216,53 @@ class LatestSocketProvider extends ChangeNotifier {
   }
 
   //Submit Ratings Review
-  Stream<SubmitRatingsState> submitRatingsReview() async* {
-    log(commentGiven.toString());
-    log(ratingGiven.toString());
+  // submitRatingsReview(BuildContext context) async* {
+  //   showLoading();
+  //   log("submit rating review called");
+  //   log(commentGiven.toString());
+  //   log(ratingGiven.toString());
 
-    yield SubmitRatingsLoading();
-    final formData = FormData.fromMap({
-      "id": session.driverId,
-      "order_id": session.orderId,
-      "rating": ratingGiven,
-      "review": commentsEditingController.text,
-      "type": 1
-    });
+  //   // yield SubmitRatingsLoading();
+  //   final formData = FormData.fromMap({
+  //     "id": session.driverId,
+  //     "order_id": session.orderId,
+  //     "rating": ratingGiven,
+  //     "review": commentsEditingController.text,
+  //     "type": 1
+  //   });
 
-    log("update rating body is: ${formData.fields}");
-    // final result = await submitRatings.execute(formData);
-    // yield* result.fold((failure) async* {
-    //   logMe("failure");
-    //   logMe(failure);
-    //   yield SubmitRatingsFailure(failure: failure);
-    // }, (data) async* {
-    //   yield SubmitRatingsLoaded(data: data);
-    // });
-  }
+  //   log("rating data:-->> ${formData}");
+
+  //   submitRatings(formData).then((value) {
+  //     session.setIsRatingGiven = true;
+  //     log("Order Status LOADED--------");
+
+  //     commentsEditingController.clear();
+
+  //     updateRatingComment(
+  //       rating: 1,
+  //       comment: '',
+  //     );
+  //     dismissLoading();
+
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => RatingSubmittedScreen(),
+  //       ),
+  //     );
+  // });
+
+  // log("update rating body is: ${formData.fields}");
+  // final result = await submitRatings.execute(formData);
+  // yield* result.fold((failure) async* {
+  //   logMe("failure");
+  //   logMe(failure);
+  //   yield SubmitRatingsFailure(failure: failure);
+  // }, (data) async* {
+  //   yield SubmitRatingsLoaded(data: data);
+  // });
+  // }
 
   updateIsWithDriver({required bool val}) {
     log("update is with driver called");
@@ -1255,8 +1350,28 @@ class LatestSocketProvider extends ChangeNotifier {
     }
   }
 
+  @override
+  Future<SubmitRatingsResponseModel> submitRatings(FormData formData) async {
+    String url =
+        'https://php.parastechnologies.in/taxi/public/api/webservice/order/rating';
+    dio.options.headers["Authorization"] = "Bearer ${session.sessionToken}";
+    try {
+      final response = await dio.post(
+        url,
+        data: formData,
+      );
+      final model = SubmitRatingsResponseModel.fromJson(response.data);
+      dismissLoading();
+      return model;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   /** Get DRIVER Details */
   Future<DriverDetailResponseModel> fetchDriverDetails(int id) async {
+    showLoading();
+
     final String apiUrl =
         'https://php.parastechnologies.in/taxi/public/api/webservice/driver-profile?id=$id';
     final String authToken = session.sessionToken;
@@ -1270,6 +1385,7 @@ class LatestSocketProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
+        dismissLoading();
         log("driver details are:-->> ${response}");
         // If the server returns a 200 OK response, parse the JSON
         DriverDetailResponseModel data =
@@ -1298,6 +1414,7 @@ class LatestSocketProvider extends ChangeNotifier {
       log("--------******* ${response.statusCode}");
 
       if (response.statusCode == 200) {
+        dismissLoading();
         log("--------******* ${response.statusCode}");
 
         log("response is :${response}");

@@ -5,6 +5,8 @@ import '../static/strings.dart';
 abstract class Session {
   set setLoggedIn(bool login);
   set setIsRunningOrder(bool login);
+  set setIsPaymentDone(bool paymentDone);
+  set setIsRatingGiven(bool ratingGiven);
 
   set setOrderId(String orderId);
   set setToken(String token);
@@ -33,6 +35,7 @@ abstract class Session {
   set setVehicleModel(String vehicleModel);
   set setVehiclePlate(String vehiclePlate);
   set setRideTotal(String total);
+  set setOrderReceipt(String receipt);
 
   /** DRIVER DETAILS END */
 
@@ -47,6 +50,8 @@ abstract class Session {
 
   bool get isLoggedIn;
   bool get isRunningOrder;
+  bool get isRatingGiven;
+  bool get isPaymentDone;
 
   String get orderId;
   int get chatToken;
@@ -93,6 +98,7 @@ abstract class Session {
 
   /// * GET Driver DETAILS
   String get DriverDetails;
+  String get orderReceipt;
 
   Future<void> clearSession();
   Future<void> clearOrderSession();
@@ -268,6 +274,21 @@ class SessionHelper implements Session {
   }
 
   @override
+  set setOrderReceipt(String receipt) {
+    pref.setString(ORDER_RECEIPT, receipt);
+  }
+
+  @override
+  set setIsPaymentDone(bool paymentDone) {
+    pref.setBool(PAYMENT_DONE, paymentDone);
+  }
+
+  @override
+  set setIsRatingGiven(bool ratingGiven) {
+    pref.setBool(RATING_GIVEN, ratingGiven);
+  }
+
+  @override
   set setOriginLat(double originLat) {
     pref.setDouble(ORIGIN_LAT, originLat);
   }
@@ -290,6 +311,11 @@ class SessionHelper implements Session {
 
   @override
   bool get isRunningOrder => pref.getBool(IS_RUNNING_ORDER) ?? false;
+
+  @override
+  bool get isRatingGiven => pref.getBool(RATING_GIVEN) ?? true;
+  @override
+  bool get isPaymentDone => pref.getBool(PAYMENT_DONE) ?? true;
 
   @override
   int get chatToken => pref.getInt(CHAT_TOKEN) ?? 0;
@@ -389,7 +415,32 @@ class SessionHelper implements Session {
     await pref.remove(ORIGIN_LONG);
     await pref.remove(ORIGIN_ADDRESS);
     await pref.remove(DESTINATION_ADDRESS);
+    await pref.remove(RATING_GIVEN);
+    await pref.remove(PAYMENT_DONE);
   }
+
+  // @override
+  // Future<void> clearOrderSessionNew() async {
+  //   // await pref.remove(ORDER_ID);
+  //   // await pref.remove(ORDER_STATUS);
+  //   // await pref.remove(DRIVER_ID);
+  //   await pref.remove(ESTIMATED_DISTANCE);
+  //   await pref.remove(ESTIMATED_TIME);
+  //   await pref.remove(SESSION_Driver_DETAILS);
+  //   await pref.remove(SESSION_ORDER_DETAILS);
+  //   await pref.remove(DRIVER_LATLONG);
+  //   // await pref.remove(DRIVER_ID);
+  //   await pref.remove(DRIVER_IMG);
+  //   await pref.remove(DRIVER_NAME);
+  //   // await pref.remove(DRIVER_ID);
+  //   await pref.remove(ORIGIN_LAT);
+  //   await pref.remove(ORIGIN_LONG);
+  //   await pref.remove(ORIGIN_ADDRESS);
+  //   await pref.remove(DESTINATION_ADDRESS);
+  //   await pref.remove(RATING_GIVEN);
+  //   await pref.remove(PAYMENT_DONE);
+  //   await pref.remove(DESTINATION_ADDRESS);
+  // }
 
   @override
   String get device => pref.getString(DEVICE) ?? '';
@@ -420,4 +471,8 @@ class SessionHelper implements Session {
 
   @override
   String get driverLatLng => pref.getString(DRIVER_LATLONG) ?? '0,0';
+
+  @override
+  String get orderReceipt =>
+      pref.getString(ORDER_RECEIPT) ?? "No order receipt";
 }

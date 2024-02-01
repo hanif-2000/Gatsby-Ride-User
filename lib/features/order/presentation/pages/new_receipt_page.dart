@@ -16,10 +16,13 @@ import '../../../../../socket/latest_socket_provider.dart';
 
 import 'package:pay/pay.dart';
 
+import '../../../../core/utility/duration_helper.dart';
+import '../../../../core/utility/dynamic_toasstring_helper.dart';
 import '../../../testing/widgets/text_in_row.dart';
 
 class ReceiptScreen extends StatefulWidget {
   const ReceiptScreen({Key? key}) : super(key: key);
+  static const routeName = '/receipt';
 
   @override
   State<ReceiptScreen> createState() => _ReceiptScreenState();
@@ -253,7 +256,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       ),
                       TextInRow(
                         firstText: "Time Taken",
-                        secondText: '${0} min',
+                        secondText: formatDuration(double.parse(
+                                provider.receiptResponseModel!.data.actualTime)
+                            .toInt()),
                       ),
                       CommonText(
                         text: appLoc.paymentInformation,
@@ -358,12 +363,11 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                             //   color: whiteAccentColor,
                             // ),
                             TextInRow(
-                              secondTextweight: FontWeight.w700,
-                              firstText: "Total amount to pay ",
-                              secondText: r"CA$ " +
-                                  provider.receiptResponseModel!.data.newTotal
-                                      .toString(),
-                            ),
+                                secondTextweight: FontWeight.w700,
+                                firstText: "Total amount to pay ",
+                                secondText: r"CA$ " +
+                                    convertToFixed(provider
+                                        .receiptResponseModel!.data.newTotal)),
                           ],
                         ),
                       ),
@@ -390,7 +394,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                   extraTimePrice: provider.receiptResponseModel!
                                       .data.extraTimePrice,
                                   newTotal: provider
-                                      .receiptResponseModel!.data.total
+                                      .receiptResponseModel!.data.newTotal
                                       .toString(),
                                   pendingAmount: provider
                                       .receiptResponseModel!.data.pendingAmount
@@ -413,7 +417,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                       .receiptResponseModel!.data.paymentMethod
                                       .toString()),
                                   driverId: provider
-                                      .driverDetailResponseModel!.message.id,
+                                      .driverDetailResponseModel!.message.id
+                                      .toString(),
                                   orderId: provider
                                       .receiptResponseModel!.data.id
                                       .toString(),
@@ -426,8 +431,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                   // extraMinPrice:
                                   //     provider.receiptResponseModel!.extraKmPrice,
                                   // extraTime: provider.receiptResponseModel!.extraTime,
-                                  grandTotal:
-                                      provider.receiptResponseModel!.data.total,
+                                  // grandTotal:
+                                  //     provider.receiptResponseModel!.data.total,
                                 ),
                               ));
                           // Navigator.push(

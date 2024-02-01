@@ -3,9 +3,12 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/rating_submitted_screen.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/circular_image_container.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart' as rating;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -14,7 +17,6 @@ import 'package:provider/provider.dart';
 import '../../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../../core/presentation/providers/home_provider.dart';
 import '../../../../../socket/latest_socket_provider.dart';
-import '../../providers/submit_ratings_state.dart';
 
 class FeedBackScreen extends StatelessWidget {
   final String name;
@@ -33,21 +35,22 @@ class FeedBackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: whiteColor,
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: whiteColor,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-              ),
-              color: blackColor,
-            ),
+            // leading: IconButton(
+            //   onPressed: () {
+            //     Navigator.pop(context);
+            //   },
+            //   icon: Icon(
+            //     Icons.arrow_back,
+            //   ),
+            //   color: blackColor,
+            // ),
           ),
           body: Consumer<LatestSocketProvider>(
             builder: (context, provider, child) {
@@ -183,48 +186,39 @@ class FeedBackScreen extends StatelessWidget {
                           ),
                         ),
                         event: () {
-                          // if (provider.ratingGiven == 10.0) {
-                          //   // showToast(message: appLoc.pleaseGiveRating);
-                          // } else
-
-                          // {
-                          //  SubmitRatingsResponseModel data=   provider.submitRatingsReview().;
-
-                          provider.submitRatingsReview().listen((event) async {
-                            if (event is SubmitRatingsLoading) {
-                              showLoading();
-                              log("LOADING");
-                            } else if (event is SubmitRatingsLoaded) {
-                              log("Order Status LOADED--------");
-
-                              provider.commentsEditingController.clear();
-
-                              provider.updateRatingComment(
-                                rating: 1,
-                                comment: '',
-                              );
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RatingSubmittedScreen(),
-                                ),
-                              );
-
-                              dismissLoading();
-                            } else if (event is SubmitRatingsFailure) {
-                              showToast(message: "submission falied");
-                              log("Update Order Status Failed.......");
-                              dismissLoading();
-                            }
+                          showLoading();
+                          var session = locator<Session>();
+                          logMe("submit rating called");
+                          // showLoading();
+                          final formData = FormData.fromMap({
+                            "id": session.driverId,
+                            "order_id": session.orderId,
+                            "rating": provider.ratingGiven,
+                            "review": provider.commentsEditingController.text,
+                            "type": 1
                           });
-                          // }
 
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             RatingSubmittedScreen()));
+                          log("rating data:-->> ${formData}");
+
+                          provider.submitRatings(formData).then((value) {
+                            session.setIsRatingGiven = true;
+                            log("Order Status LOADED--------");
+
+                            provider.commentsEditingController.clear();
+
+                            provider.updateRatingComment(
+                              rating: 1,
+                              comment: '',
+                            );
+                            dismissLoading();
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RatingSubmittedScreen(),
+                              ),
+                            );
+                          });
                         },
                         buttonHeight: 50,
                         // buttonHeight: MediaQuery.of(context)._deviceSize.height * 0.080,
@@ -244,6 +238,8 @@ class FeedBackScreen extends StatelessWidget {
                             ),
                           ),
                           event: () async {
+                            var session = locator<Session>();
+
                             var homeProvider = Provider.of<HomeProvider>(
                                 context,
                                 listen: false);
@@ -251,6 +247,7 @@ class FeedBackScreen extends StatelessWidget {
                             var orderProvider =
                                 Provider.of<LatestSocketProvider>(context,
                                     listen: false);
+                            session.setIsRatingGiven = true;
                             await homeProvider.clearState();
                             await orderProvider.clearState();
 

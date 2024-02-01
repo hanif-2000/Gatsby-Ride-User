@@ -2,6 +2,7 @@
 
 const String SESSION_TOKEN = 'session_token';
 const String DRIVER_LATLONG = 'driver_latlong';
+const String ORDER_RECEIPT = 'order_receipt';
 
 const String IS_LOGGED_IN = 'is_logged_in';
 const String IS_RUNNING_ORDER = 'is_running_order';
@@ -35,6 +36,9 @@ const String SESSION_ORDER_DETAILS = 'sessionOrderDetails';
 const String SESSION_Driver_DETAILS = 'sessionCustomerDetails';
 const String ORIGIN_ADDRESS = 'origin_address';
 const String DESTINATION_ADDRESS = 'destination_address';
+const String PAYMENT_DONE = 'payment_don';
+const String RATING_GIVEN = 'rating_given';
+
 const String ORIGIN_LAT = 'origin_lat';
 const String ORIGIN_LONG = 'origin_long';
 const String DESTINATION_LAT = 'destination_lat';

@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final receiptResponseModel = receiptResponseModelFromJson(jsonString);
-
 import 'dart:convert';
 
 ReceiptResponseModel receiptResponseModelFromJson(String str) =>
@@ -11,10 +7,10 @@ String receiptResponseModelToJson(ReceiptResponseModel data) =>
     json.encode(data.toJson());
 
 class ReceiptResponseModel {
-  bool response;
+  dynamic response;
   String message;
   String type;
-  int orderId;
+  dynamic orderId;
   ReceiptData data;
 
   ReceiptResponseModel({
@@ -44,32 +40,32 @@ class ReceiptResponseModel {
 }
 
 class ReceiptData {
-  int id;
+  dynamic id;
   String startAddress;
   String endAddress;
-  double distance;
-  int paymentMethod;
-  int estimatedTime;
+  dynamic distance;
+  dynamic paymentMethod;
+  dynamic estimatedTime;
   dynamic actualTime;
   DateTime createdAt;
-  double total;
-  int pendingAmount;
-  int driverId;
+  dynamic total;
+  dynamic pendingAmount;
+  dynamic driverId;
   String carModel;
-  int insuranceNumber;
+  dynamic insuranceNumber;
   String name;
   String image;
-  double longitude;
-  double latitude;
-  int phone;
+  dynamic longitude;
+  dynamic latitude;
+  dynamic phone;
   String plateNumber;
   String vehicleName;
-  int driverRating;
-  double extraDistance;
-  double extraDistancePrice;
-  int extraTime;
-  int extraTimePrice;
-  double newTotal;
+  dynamic driverRating;
+  dynamic extraDistance;
+  dynamic extraDistancePrice;
+  dynamic extraTime;
+  dynamic extraTimePrice;
+  dynamic newTotal;
 
   ReceiptData({
     required this.id,
@@ -104,29 +100,29 @@ class ReceiptData {
         id: json["id"],
         startAddress: json["start_address"],
         endAddress: json["end_address"],
-        distance: json["distance"]?.toDouble(),
+        distance: json["distance"],
         paymentMethod: json["payment_method"],
         estimatedTime: json["estimated_time"],
         actualTime: json["actual_time"],
         createdAt: DateTime.parse(json["created_at"]),
-        total: json["total"]?.toDouble(),
+        total: json["total"] ?? "0.0",
         pendingAmount: json["pending_amount"],
         driverId: json["driverID"],
         carModel: json["car_model"],
         insuranceNumber: json["insurance_number"],
         name: json["name"],
         image: json["image"],
-        longitude: json["Longitude"]?.toDouble(),
-        latitude: json["Latitude"]?.toDouble(),
+        longitude: json["Longitude"] ?? '0.0',
+        latitude: json["Latitude"] ?? '0.0',
         phone: json["phone"],
         plateNumber: json["plate_number"],
         vehicleName: json["vehicle_name"],
         driverRating: json["DriverRating"],
-        extraDistance: json["extra_distance"]?.toDouble(),
-        extraDistancePrice: json["extra_distance_price"]?.toDouble(),
+        extraDistance: json["extra_distance"] ?? '0',
+        extraDistancePrice: json["extra_distance_price"] ?? '0',
         extraTime: json["extra_time"],
         extraTimePrice: json["extra_time_price"],
-        newTotal: json["new_total"]?.toDouble(),
+        newTotal: json["new_total"] ?? '0',
       );
 
   Map<String, dynamic> toJson() => {

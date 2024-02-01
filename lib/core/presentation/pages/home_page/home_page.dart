@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/destination_widget.dart';
@@ -10,10 +11,14 @@ import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import '../../../../features/order/presentation/pages/components/feedback_screen.dart';
 import '../../../../features/order/presentation/pages/new_order_page.dart';
+import '../../../../features/order/presentation/pages/new_receipt_page.dart';
+import '../../../../socket/modals/new_receipt_model.dart';
 import '../../../domain/entities/order_data_detail.dart';
 import '../../providers/home_provider.dart';
 import '../../widgets/bottom_sheet_book_ride.dart';
@@ -54,17 +59,91 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   // );
   // }
 
-  @override
-  void initState() {
-    log("************ IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
-    // Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
+  Future<void> retrieveOrderReceiptFromLocal() async {
+    // Retrieve the JSON string from local storage
+    String? jsonData = session.orderReceipt;
+    Map<String, dynamic> dataMap = jsonDecode(jsonData);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showLoading();
-      if (session.isRunningOrder) {
+    // Map the data to your ReceiptResponseModel
+    ReceiptResponseModel receipt = ReceiptResponseModel.fromJson(dataMap);
+
+    socketProvider.updateReceiptResponseModel(receipt).then((value) {
+      logMe("RECEIPT DATA UPDATED SUCCESS");
+
+      socketProvider
+          .fetchOrderDetails(int.parse(session.orderId))
+          .then((value) {
+        logMe(" order details are:::::::::::::: ${value}");
+
+        socketProvider.updateOrderDetailsModel(data: value);
+
+        socketProvider
+            .fetchDriverDetails(int.parse(session.driverId))
+            .then((value) {
+          socketProvider.updateDriverDetailsModel(data: value);
+          logMe(" driver details are:::::::::::::: ${value}");
+        });
+      });
+    });
+  }
+
+  checkSessionDataAndNavigate() {
+    if (session.isRunningOrder) {
+      // SmartDialog.showLoading(
+      //   animationType: SmartAnimationType.fade,
+      //   backDismiss: false,
+      //   msg: 'Fetching Order Details...',
+      //   alignment: Alignment.center,
+      // );
+      if (session.orderStatus.toString() == "7") {
+        if (!session.isPaymentDone) {
+          retrieveOrderReceiptFromLocal().then((value) {
+            // if (socketProvider.receiptResponseModel != null) {
+            //   dismissLoading();
+
+            logMe(
+                " receipt data from session is ${socketProvider.receiptResponseModel}:");
+            SmartDialog.dismiss();
+            dismissLoading();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                ReceiptScreen.routeName, (route) => false);
+            // } else {
+            //   showLoading();
+            // }
+          });
+          /** Navigate to receipt screen */
+        } else if (!session.isRatingGiven) {
+          socketProvider
+              .fetchDriverDetails(int.parse(session.driverId))
+              .then((value) {
+            socketProvider.updateDriverDetailsModel(data: value).then((value) {
+              logMe(
+                  " driver details are:::::::::::::: ${socketProvider.driverDetailResponseModel}");
+              SmartDialog.dismiss();
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FeedBackScreen(
+                    name:
+                        socketProvider.driverDetailResponseModel!.message.name,
+                    img:
+                        socketProvider.driverDetailResponseModel!.message.image,
+                    carModal: socketProvider
+                        .driverDetailResponseModel!.message.carModel,
+                    carNo: socketProvider
+                        .driverDetailResponseModel!.message.plateNumber,
+                  ),
+                ),
+              );
+            });
+          });
+        } else {
+          logMe("--------   payment and ratings are done   ---- ");
+        }
+      } else {
+        logMe(
+            "-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
         socketProvider
             .fetchOrderDetails(int.parse(session.orderId))
             .then((value) {
@@ -77,6 +156,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               .then((value) {
             socketProvider.updateDriverDetailsModel(data: value);
             logMe(" driver details are:::::::::::::: ${value}");
+            SmartDialog.dismiss();
 
             Navigator.pushNamedAndRemoveUntil(
                 context, NewOrderPage.routeName, (route) => false,
@@ -99,60 +179,22 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first))));
           });
         });
-        // // log(" session order id :--> ${session.orderId}");
-        // // log(" session driver id :--> ${session.driverId}");
-
-        // // log("driver dsdfbadhsfladsf*----${session.driverName}");
-        // // log("origin lat long *----${session.originLat},${session.originLong}");
-        // // log("origin lat long *----${session.destinationLat},${session.destinationLong}");
-        // // log("driver lat long *----${session.driverLatLng}");
-        // // socketProvider.fetchOrderDetail().listen((event) async {
-        // //   if (event is GetOrderDetailLoading) {
-        // //     log(' Get Order Details Loading');
-        // //     showLoading();
-        // //   } else if (event is GetOrderDetailLoaded) {
-        // //     log(' Get Order Details Loaded');
-
-        // //     logMe("ORDER DETAILS ARE:-->> ${event.data}");
-
-        // //     socketProvider
-        // //         .fetchDriverDetails();
-
-        // //   }
-        // // });
-
-        // socketProvider.updateDriverLatLng(
-        //   driverLtLng: LatLng(
-        //     double.parse(session.driverLatLng.split(',').first),
-        //     double.parse(session.driverLatLng.split(',').last),
-        //   ),
-        // );
-
-        // // socketProvider.updateDriverDetails(
-        // //     driverNam: session.driverName,
-        // //     rating: session.driverRating,
-        // //     carModa: session.vehicleModel,
-        // //     plateNumbe: session.vehiclePlate,
-        // //     driverI: session.driverRating,
-        // //     phoneNumbe: session.driverPhn,
-        // //     driverIm: session.driverImg,
-        // //     driverRate: session.driverRating,
-        // //     vehicleNam: session.vehicleName,
-        // //     totalPrice: session.rideTotal);
-
-        // Navigator.pushNamedAndRemoveUntil(
-        //     context, NewOrderPage.routeName, (route) => false,
-        //     arguments: OrderDataDetail(
-        //         originAddress: session.originAddress,
-        //         destinationAddress: session.destinationAddress,
-        //         originLatLng: LatLng(session.originLat, session.originLong),
-        //         destinationLatLng:
-        //             LatLng(session.destinationLat, session.destinationLong)));
-
-        // // convertOrderAndDriverDetailsIntoObject().then((value) {
-
-        // // });
       }
+    } else {
+      logMe("---NO OLD ORDER RUNNING*-----");
+    }
+  }
+
+  @override
+  void initState() {
+    log("************ IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
+    // Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // showLoading();
     });
   }
 
@@ -190,7 +232,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ),
                     onMapCreated: (GoogleMapController controller) async {
                       map.googleMapController = controller;
-                      await map.setCurrentLocation();
+                      await map.setCurrentLocation().then((value) {
+                        log("google map created successfully");
+                        checkSessionDataAndNavigate();
+                      });
                       // }
                     },
                     polylines: map.polylines,

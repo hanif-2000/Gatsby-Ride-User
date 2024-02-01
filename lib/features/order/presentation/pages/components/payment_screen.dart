@@ -12,6 +12,7 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../../core/utility/dynamic_toasstring_helper.dart';
 import '../../../../../core/utility/injection.dart';
 import '../../../../../core/utility/session_helper.dart';
 import '../../../../testing/widgets/common_text.dart';
@@ -29,7 +30,7 @@ class PaymentScreen extends StatefulWidget {
   final int paymentMode;
   final String orderId;
   final String driverId;
-  final dynamic grandTotal;
+  // final dynamic grandTotal;
   final String vehicleCategory;
   final dynamic pendingAmount;
   final dynamic newTotal;
@@ -54,7 +55,7 @@ class PaymentScreen extends StatefulWidget {
     required this.extraTime,
     required this.extraDistancePrice,
     required this.extraTimePrice,
-    required this.grandTotal,
+    // required this.grandTotal,
     required this.vehicleCategory,
     required this.distance,
     this.pendingAmount,
@@ -71,6 +72,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   var sessionToken = locator<Session>().sessionToken;
 
   bool isPaymentSuccess = false;
+
+  var session = locator<Session>();
 
   var extraTimeTaken = "0 hr 0 min 0 sec";
 
@@ -182,6 +185,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 isRounded: true,
                 text: "Ok",
                 event: () {
+                  session.setIsPaymentDone = true;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -234,6 +238,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     log("total amount to pay:-->> ${widget.totalPrice}");
     log("total amount to pay:-->> ${totalAmountToPay}");
     log("new amount to pay:-->> ${widget.newTotal}");
+    log("vehicle catagory is :-->> ${widget.vehicleCategory}");
 
     var _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -289,17 +294,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       firstText: 'Extra Distance',
                       // secondText: widget.extraDistance + " Km",
-                      secondText: "0" + " Km",
+                      secondText: widget.extraDistance + " Km",
                     ),
                     Divider(
                       color: whiteAccentColor,
                     ),
                     TextInRow(
-                      firstText: widget.vehicleCategory == "1"
+                      firstText: widget.vehicleCategory.toString() == "1"
                           ? r"Extra Distance Price 1.30 /km"
                           : r"Extra Distance Price 1.65 /km",
                       // secondText: r'$' + widget.extraDistancePrice,
-                      secondText: r'CA$ ' + "0",
+                      secondText:
+                          r'CA$ ' + convertToFixed(widget.extraDistancePrice),
                     ),
                     Divider(
                       color: whiteAccentColor,
@@ -317,14 +323,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: whiteAccentColor,
                     ),
                     TextInRow(
-                      firstText: widget.vehicleCategory == "1"
+                      firstText: widget.vehicleCategory.toString() == "1"
                           ? r"Extra Time Price 0.30 /min"
                           : r"Extra Time Price 0.35 /min",
                       // secondText: r'$' + widget.extraDistancePrice,
                       secondText: ((widget.extraTimePrice != null) ||
                               (widget.extraTimePrice != '') ||
                               (widget.extraTimePrice != '0'))
-                          ? r'CA$ ' + (widget.extraTimePrice.toString())
+                          ? r'CA$ ' + convertToFixed(widget.extraTimePrice)
                           : r'CA$ 0',
                     ),
 
@@ -334,7 +340,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                     TextInRow(
                       firstText: 'Actual Amount',
-                      secondText: 'CA\$ ' + widget.totalPrice.toString(),
+                      secondText: 'CA\$ ' + convertToFixed(widget.totalPrice),
                     ),
                     Divider(
                       color: whiteAccentColor,
@@ -342,29 +348,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       firstText: 'Pending Amount',
                       // secondText: widget.extraDistance + " Km",
-                      secondText: "CA\$" + " ${widget.pendingAmount}",
+                      secondText:
+                          "CA\$ " + convertToFixed(widget.pendingAmount),
                     ),
                     Divider(
                       color: whiteAccentColor,
                     ),
-                    TextInRow(
-                      firstText: 'Extra Distance',
-                      // secondText: widget.extraDistance + " Km",
-                      secondText: widget.extraDistance == ''
-                          ? '0 Km'
-                          : "${widget.extraDistance} Km",
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
-                    TextInRow(
-                      firstText: 'Extra Distance Price',
-                      // secondText: widget.extraDistance + " Km",
-                      secondText: "CA\$ " + "${widget.extraDistancePrice} ",
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
+                    // TextInRow(
+                    //   firstText: 'Extra Distance',
+                    //   // secondText: widget.extraDistance + " Km",
+                    //   secondText: widget.extraDistance == ''
+                    //       ? '0 Km'
+                    //       : "${widget.extraDistance} Km",
+                    // ),
+                    // Divider(
+                    //   color: whiteAccentColor,
+                    // ),
+                    // TextInRow(
+                    //   firstText: 'Extra Distance Price',
+                    //   // secondText: widget.extraDistance + " Km",
+                    //   secondText:
+                    //       "CA\$ " + convertToFixed(widget.extraDistancePrice),
+                    // ),
+                    // Divider(
+                    //   color: whiteAccentColor,
+                    // ),
 
                     // Divider(
                     //   color: whiteAccentColor,
@@ -408,13 +416,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       secondTextweight: FontWeight.w700,
                       firstText: 'Grand Total',
-                      secondText: r'CA$ ' + widget.newTotal,
+                      secondText: r'CA$ ' + convertToFixed(widget.newTotal),
                     ),
                   ],
                 ),
               ),
 
-              widget.paymentMode != 1
+              widget.paymentMode.toString() != "1"
                   ? Padding(
                       padding: EdgeInsets.symmetric(
                           vertical: _deviceSize.height * .02),
@@ -708,6 +716,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       isRounded: true,
                                                       text: "Ok",
                                                       event: () {
+                                                        session.setIsPaymentDone =
+                                                            true;
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -813,12 +823,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 height: _deviceSize.height * .05,
               ),
 
-              widget.paymentMode == 1
+              widget.paymentMode.toString() == "1"
                   ? CustomButton(
                       borderRadius: 50.0,
                       text: "Pay With Cash",
                       isRounded: true,
                       event: () async {
+                        session.setIsPaymentDone = true;
                         // var headers = {
                         //   'Content-Type': 'application/x-www-form-urlencoded',
                         //   'Authorization':
@@ -897,6 +908,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ? CustomButton(
                       text: "Give Feedback",
                       event: () {
+                        session.setIsPaymentDone = true;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -973,6 +985,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                   isRounded: true,
                                                   text: "Ok",
                                                   event: () {
+                                                    session.setIsPaymentDone =
+                                                        true;
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -1048,6 +1062,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   isRounded: true,
                   text: "Pay outside the app",
                   event: () {
+                    session.setIsPaymentDone = true;
                     Navigator.push(
                       context,
                       MaterialPageRoute(

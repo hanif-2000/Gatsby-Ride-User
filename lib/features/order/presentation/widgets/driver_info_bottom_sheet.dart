@@ -164,7 +164,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
                         ],
                       ),
                     ),
-                    newMessgeCount != 0
+                    provider.unreadMessageCount != 0
                         ? Positioned(
                             top: 0,
                             right: 0,
@@ -175,7 +175,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: Text(
-                                  provider.unreadCount.toString(),
+                                  provider.unreadMessageCount.toString(),
                                   style: TextStyle(color: whiteColor),
                                 ),
                               ),
