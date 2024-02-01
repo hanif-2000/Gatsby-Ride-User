@@ -117,6 +117,7 @@ class LatestSocketProvider extends ChangeNotifier {
   }
 
   callTrakingDriver(LatLng position) async {
+    log("driver position is :${position}");
     await trackingDriver(
         listenLocation: true, lat: position.latitude, long: position.longitude);
   }
@@ -184,7 +185,29 @@ class LatestSocketProvider extends ChangeNotifier {
 
   TextEditingController commentsEditingController = TextEditingController();
 
+  updateOriginAndDestinationLatLong(
+      {required LatLng origin, required LatLng destination}) {
+    originLatLng = origin;
+    destinationLatLng = destination;
+    notifyListeners();
+  }
+
   Future<void> updateBitsImage() async {
+    updateOriginAndDestinationLatLong(
+        origin: LatLng(
+            (double.tryParse(orderDetailResponseModel!.data.startCoordinate
+                .split(',')
+                .first)!),
+            (double.tryParse(orderDetailResponseModel!.data.startCoordinate
+                .split(',')
+                .last))!),
+        destination: LatLng(
+            (double.tryParse(orderDetailResponseModel!.data.endCoordinate
+                .split(',')
+                .first)!),
+            (double.tryParse(orderDetailResponseModel!.data.endCoordinate
+                .split(',')
+                .last))!));
     await getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
       pickUpMarker = BitmapDescriptor.fromBytes(value);
     });
@@ -198,6 +221,13 @@ class LatestSocketProvider extends ChangeNotifier {
     await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
       initialMarker = BitmapDescriptor.fromBytes(value);
     });
+  }
+
+  updateCurrentOrderStatus({required int val}) {
+    currentOrderStatus = val;
+    session.setOrderStatus = val;
+
+    notifyListeners();
   }
 
   //
@@ -214,8 +244,8 @@ class LatestSocketProvider extends ChangeNotifier {
         Uri.parse(
           "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}",
         ),
-        timeout: Duration(seconds: 10),
-        pingInterval: Duration(seconds: 2),
+        // timeout: Duration(seconds: 10),
+        pingInterval: Duration(seconds: 5),
         // backoff: ConstantBackoff(Duration(seconds: 10)
         // )
       );
@@ -373,17 +403,18 @@ class LatestSocketProvider extends ChangeNotifier {
           data: OrderDetailResponseModel(
             success: 1,
             data: OrderDetail(
-              distance: acceptResponseModel!.data.distance.toString(),
-              driverId: acceptResponseModel!.data.driverId.toString(),
-              endAddress: acceptResponseModel!.data.endAddress.toString(),
-              endCoordinate: acceptResponseModel!.data.endCoordinate.toString(),
-              orderId: acceptResponseModel!.data.id.toString(),
-              startAddress: acceptResponseModel!.data.startAddress.toString(),
-              startCoordinate:
-                  acceptResponseModel!.data.startCoordinate.toString(),
-              totalPrice: acceptResponseModel!.data.total.toString(),
-              userId: session.userId.toString(),
-            ),
+                distance: acceptResponseModel!.data.distance.toString(),
+                driverId: acceptResponseModel!.data.driverId.toString(),
+                endAddress: acceptResponseModel!.data.endAddress.toString(),
+                endCoordinate:
+                    acceptResponseModel!.data.endCoordinate.toString(),
+                orderId: acceptResponseModel!.data.id.toString(),
+                startAddress: acceptResponseModel!.data.startAddress.toString(),
+                startCoordinate:
+                    acceptResponseModel!.data.startCoordinate.toString(),
+                totalPrice: acceptResponseModel!.data.total.toString(),
+                userId: session.userId.toString(),
+                orderStatus: "1"),
           ),
         );
 
@@ -837,7 +868,7 @@ class LatestSocketProvider extends ChangeNotifier {
 
       try {
         _socket!.connection.listen((event) {
-          if ((event is Connected) || (event is Reconnected)) {
+          if (event is Connected) {
             _socket!.send(json.encode(map));
             print(map.toString());
 
@@ -1153,6 +1184,7 @@ class LatestSocketProvider extends ChangeNotifier {
         .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
             destination.latitude, destination.longitude)
         .then((result) {
+      log("Polyline results are ::::::::--------------  ${result} ------------********");
       if (result.isNotEmpty) {
         polylineCoordinates = [];
         polylineCoordinates.clear();
@@ -1172,6 +1204,8 @@ class LatestSocketProvider extends ChangeNotifier {
 
         log("Polylines are:-->> " + polylines.toString());
         notifyListeners();
+      } else {
+        log("direction helper result is empty********** $result");
       }
     });
   }
@@ -1343,6 +1377,7 @@ class LatestSocketProvider extends ChangeNotifier {
         setPolylinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
       } else {
         log("driver:-  is not with driver. $isWithDriver");
+        log("driver:-  is not with driver.origin lat long $originLatLng");
 
         setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
       }

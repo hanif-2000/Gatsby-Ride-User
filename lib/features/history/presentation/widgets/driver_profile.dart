@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:provider/provider.dart';
 
+import '../../../../core/utility/dynamic_toasstring_helper.dart';
+
 class DriverProfileWidget extends StatefulWidget {
   final String category;
   final String driverId;
@@ -107,7 +109,7 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               // double.tryParse(widget.rating).toString(),
-                              widget.rating.toString(),
+                              convertToFixed(widget.rating),
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w600,

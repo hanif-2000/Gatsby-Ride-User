@@ -89,17 +89,26 @@ class DriverInfoBottomSheet extends StatelessWidget {
                 child: DriverProfileWidget(
                   onClickOnReview: reviewEvent,
                   category: category,
-                  driverId:
-                      provider.driverDetailResponseModel!.message.id.toString(),
-                  driverImage: provider.driverDetailResponseModel!.message.image
-                      .toString(),
-                  driverName: provider.driverDetailResponseModel!.message.name
-                      .toString(),
-                  platerNumber: provider
-                      .driverDetailResponseModel!.message.plateNumber
-                      .toString(),
-                  rating: provider.driverDetailResponseModel!.message.rating
-                      .toString(),
+                  driverId: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.id
+                          .toString()
+                      : '',
+                  driverImage: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.image
+                          .toString()
+                      : '',
+                  driverName: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.name
+                          .toString()
+                      : '',
+                  platerNumber: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.plateNumber
+                          .toString()
+                      : '',
+                  rating: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.rating
+                          .toString()
+                      : '',
                 ),
               ),
               Visibility(

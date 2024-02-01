@@ -40,6 +40,8 @@ class PaymentScreen extends StatefulWidget {
   final dynamic extraDistance;
   final dynamic extraTime;
   final String distance;
+  final dynamic pricePerMin;
+  final dynamic pricePerKm;
 
   const PaymentScreen({
     Key? key,
@@ -58,6 +60,8 @@ class PaymentScreen extends StatefulWidget {
     // required this.grandTotal,
     required this.vehicleCategory,
     required this.distance,
+    required this.pricePerKm,
+    required this.pricePerMin,
     this.pendingAmount,
     this.newTotal,
   }) : super(key: key);
@@ -300,9 +304,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: whiteAccentColor,
                     ),
                     TextInRow(
-                      firstText: widget.vehicleCategory.toString() == "1"
-                          ? r"Extra Distance Price 1.30 /km"
-                          : r"Extra Distance Price 1.65 /km",
+                      firstText: "Extra Distance Price ",
+                      // widget.vehicleCategory.toString() == "1"
+                      // ?
+                      //  r"Extra Distance Price 1.30 /km"
+                      // : r"Extra Distance Price 1.65 /km",
                       // secondText: r'$' + widget.extraDistancePrice,
                       secondText:
                           r'CA$ ' + convertToFixed(widget.extraDistancePrice),
@@ -323,9 +329,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: whiteAccentColor,
                     ),
                     TextInRow(
-                      firstText: widget.vehicleCategory.toString() == "1"
-                          ? r"Extra Time Price 0.30 /min"
-                          : r"Extra Time Price 0.35 /min",
+                      firstText: "Extra Time Price",
+                      // firstText: widget.vehicleCategory.toString() == "1"
+                      // ? r"Extra Time Price 0.30 /min"
+                      // :
+                      // r"Extra Time Price ${widget.} /min",
                       // secondText: r'$' + widget.extraDistancePrice,
                       secondText: ((widget.extraTimePrice != null) ||
                               (widget.extraTimePrice != '') ||
@@ -527,7 +535,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
               TextInRow(
                 firstText: 'Total amount to Pay',
-                secondText: "CA\$ ${totalAmountToPay} ",
+                secondText: "CA\$ ${convertToFixed(totalAmountToPay)} ",
               ),
               Padding(
                 padding:

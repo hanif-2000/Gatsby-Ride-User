@@ -74,6 +74,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           .fetchOrderDetails(int.parse(session.orderId))
           .then((value) {
         logMe(" order details are:::::::::::::: ${value}");
+        // socketProvider.updateCurrentOrderStatus(
+        //     val: int.parse(value.data.orderStatus.toString()));
+
+        // if (value.data.orderStatus.toString() == "8") {
+        //   session.setIsPaymentDone = true;
+        //   session.setIsRunningOrder = false;
+        //   session.setIsPaymentDone = true;
+
+        //   showToast(message: "Previous Ride is Canceled");
+        // }
 
         socketProvider.updateOrderDetailsModel(data: value);
 
@@ -147,37 +157,46 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         socketProvider
             .fetchOrderDetails(int.parse(session.orderId))
             .then((value) {
-          logMe(" order details are:::::::::::::: ${value}");
+          socketProvider.updateCurrentOrderStatus(
+              val: int.parse(value.data.orderStatus.toString()));
 
-          socketProvider.updateOrderDetailsModel(data: value);
+          if (value.data.orderStatus.toString() == "8") {
+            session.setIsPaymentDone = true;
+            session.setIsRunningOrder = false;
+            session.setIsPaymentDone = true;
 
-          socketProvider
-              .fetchDriverDetails(int.parse(session.driverId))
-              .then((value) {
-            socketProvider.updateDriverDetailsModel(data: value);
-            logMe(" driver details are:::::::::::::: ${value}");
-            SmartDialog.dismiss();
+            showToast(message: "Previous Ride is Canceled");
+          } else {
+            logMe(" order details are:::::::::::::: ${value}");
 
-            Navigator.pushNamedAndRemoveUntil(
-                context, NewOrderPage.routeName, (route) => false,
-                arguments: OrderDataDetail(
-                    originAddress: socketProvider
-                        .orderDetailResponseModel!.data.startAddress,
-                    destinationAddress: socketProvider
-                        .orderDetailResponseModel!.data.endAddress,
-                    originLatLng: LatLng(
-                        double.parse(socketProvider
-                            .orderDetailResponseModel!.data.startCoordinate
-                            .split(',')
-                            .first),
-                        double.parse(socketProvider
-                            .orderDetailResponseModel!.data.startCoordinate
-                            .split(',')
-                            .last)),
-                    destinationLatLng: LatLng(
-                        double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
-                        double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first))));
-          });
+            socketProvider.updateOrderDetailsModel(data: value);
+
+            socketProvider
+                .fetchDriverDetails(int.parse(session.driverId))
+                .then((value) {
+              socketProvider.updateDriverDetailsModel(data: value);
+              logMe(" driver details are:::::::::::::: ${value}");
+              SmartDialog.dismiss();
+
+              Navigator.pushNamedAndRemoveUntil(context, NewOrderPage.routeName, (route) => false,
+                  arguments: OrderDataDetail(
+                      originAddress: socketProvider
+                          .orderDetailResponseModel!.data.startAddress,
+                      destinationAddress: socketProvider
+                          .orderDetailResponseModel!.data.endAddress,
+                      originLatLng: LatLng(
+                          double.parse(socketProvider.orderDetailResponseModel!.data.startCoordinate
+                              .split(',')
+                              .first),
+                          double.parse(socketProvider
+                              .orderDetailResponseModel!.data.startCoordinate
+                              .split(',')
+                              .last)),
+                      destinationLatLng: LatLng(
+                          double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
+                          double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first))));
+            });
+          }
         });
       }
     } else {

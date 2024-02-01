@@ -30,8 +30,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
 
   convertSecondsToMinutes() {
     if (widget.item.extraTime != '') {
-      int seconds = int.parse(widget
-          .item.extraTime!); // Replace this with your desired number of seconds
+      int seconds = int.parse(widget.item.extraTime
+          .toString()); // Replace this with your desired number of seconds
 
       int minutes = seconds ~/ 60;
       int remainingSeconds = seconds % 60;
@@ -676,7 +676,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                         fontSize: 16)),
                                                 Text(
                                                   mergePriceTxt(double.parse(
-                                                          widget.item.grandTotal
+                                                          widget.item.total
                                                               .toString())
                                                       .toStringAsFixed(2)),
                                                   // mergePriceTxt(widget.item.tip ==

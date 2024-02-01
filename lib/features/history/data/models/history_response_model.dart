@@ -37,22 +37,22 @@ class HistoryResponseModel {
 }
 
 class HistoryOrder {
-  String? id;
-  String? driverId;
-  String? driverName;
-  String? image;
-  String? plateNumber;
-  int? rating;
-  String? startCoordinate;
-  String? endCoordinate;
-  String? startAddress;
-  String? endAddress;
-  String? distance;
-  String? extraDistance;
-  String? extraDistancePrice;
-  String? extraTime;
-  String? extraTimePrice;
-  String? total;
+  dynamic id;
+  dynamic driverId;
+  dynamic driverName;
+  dynamic image;
+  dynamic plateNumber;
+  dynamic rating;
+  dynamic startCoordinate;
+  dynamic endCoordinate;
+  dynamic startAddress;
+  dynamic endAddress;
+  dynamic distance;
+  dynamic extraDistance;
+  dynamic extraDistancePrice;
+  dynamic extraTime;
+  dynamic extraTimePrice;
+  dynamic total;
   dynamic grandTotal;
   dynamic pendingAmount;
   dynamic newTotal;

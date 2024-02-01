@@ -387,6 +387,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PaymentScreen(
+                                  pricePerKm: "",
+                                  pricePerMin: "",
                                   extraTime: provider.receiptResponseModel!.data
                                           .extraTime ??
                                       "",

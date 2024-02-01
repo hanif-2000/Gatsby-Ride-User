@@ -11,6 +11,7 @@ class DetailOrderModel extends OrderDetail {
     required String startAddress,
     required String endAddress,
     required String distance,
+    dynamic orderStatus,
   }) : super(
           orderId: orderId,
           driverId: driverId,
@@ -21,6 +22,7 @@ class DetailOrderModel extends OrderDetail {
           startAddress: startAddress,
           endAddress: endAddress,
           endCoordinate: endCoordinate,
+          orderStatus: orderStatus,
         );
 
   factory DetailOrderModel.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +36,7 @@ class DetailOrderModel extends OrderDetail {
         endAddress: json['end_address'],
         startAddress: json['start_address'],
         endCoordinate: json['end_coordinate'],
+        orderStatus: json['order_status'],
       );
 
   @override
@@ -47,5 +50,6 @@ class DetailOrderModel extends OrderDetail {
         "end_coordinate": endCoordinate,
         "start_address": startAddress,
         "end_address": endAddress,
+        "orderStatus": orderStatus,
       };
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +32,8 @@ class DirectionHelper {
         polylinePoints = decodeEncodedPolyline(json
             .decode(response.body)["routes"][0]["overview_polyline"]["points"]);
       }
-    } catch (error) {
+    } catch (error, s) {
+      log("ssssss $s");
       throw Exception(error.toString());
     }
     // print(polylinePoints);
