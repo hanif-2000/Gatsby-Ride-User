@@ -167,7 +167,7 @@ class LatestSocketProvider extends ChangeNotifier {
       initialMarker,
       driverMarker;
   String originAddress = '';
-  bool isFirstTracking = true;
+  // bool isFirstTracking = true;
   bool isWithDriver = false;
   String destinationAddress = "Destination";
   late Text originText;
@@ -194,21 +194,42 @@ class LatestSocketProvider extends ChangeNotifier {
 
 // df
   Future<void> updateBitsImage() async {
-    updateOriginAndDestinationLatLong(
-        origin: LatLng(
-            (double.tryParse(orderDetailResponseModel!.data.startCoordinate
-                .split(',')
-                .first)!),
-            (double.tryParse(orderDetailResponseModel!.data.startCoordinate
-                .split(',')
-                .last))!),
-        destination: LatLng(
-            (double.tryParse(orderDetailResponseModel!.data.endCoordinate
-                .split(',')
-                .first)!),
-            (double.tryParse(orderDetailResponseModel!.data.endCoordinate
-                .split(',')
-                .last))!));
+    await getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
+      pickUpMarker = BitmapDescriptor.fromBytes(value);
+    });
+    await getBytesFromAsset(destinationIcon, 100).then((value) async {
+      destinationMarker = BitmapDescriptor.fromBytes(value);
+    });
+    await getBytesFromAsset(carIconAsset, 90).then((value) {
+      driverMarker = BitmapDescriptor.fromBytes(value);
+    });
+
+    await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
+      initialMarker = BitmapDescriptor.fromBytes(value);
+    });
+
+    if (orderDetailResponseModel != null) {
+      updateOriginAndDestinationLatLong(
+          origin: LatLng(
+              (double.tryParse(orderDetailResponseModel!.data.startCoordinate
+                  .split(',')
+                  .first)!),
+              (double.tryParse(orderDetailResponseModel!.data.startCoordinate
+                  .split(',')
+                  .last))!),
+          destination: LatLng(
+              (double.tryParse(orderDetailResponseModel!.data.endCoordinate
+                  .split(',')
+                  .first)!),
+              (double.tryParse(orderDetailResponseModel!.data.endCoordinate
+                  .split(',')
+                  .last))!));
+    } else {
+      log("order details response model is empty");
+    }
+  }
+
+  updateOnlyBitmap() async {
     await getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
       pickUpMarker = BitmapDescriptor.fromBytes(value);
     });
@@ -264,7 +285,7 @@ class LatestSocketProvider extends ChangeNotifier {
           print("************ Connecting ***********");
         } else if (event is Disconnected) {
           checkInternetStrength();
-
+          receonnetSocket(context);
           log("************ DisConnectd ***********");
         } else if (event is Reconnecting) {
           checkInternetStrength();
@@ -284,19 +305,19 @@ class LatestSocketProvider extends ChangeNotifier {
       });
     } catch (e, s) {
       print("erorrrrrrrr===>>> $e, $s");
-      if (e is TimeoutException) {
-        receonnetSocket(context);
-      }
+
+      receonnetSocket(context);
     }
   }
 
   receonnetSocket(BuildContext context) {
-    print("Disconnected=============>>${_socket?.connection.state})");
+    print("receonnetSocket=============>>${_socket?.connection.state})");
+    disconnectSocket();
     if (_socket?.connection.state is Disconnected) {
-      print("Disconnected=============>>");
-      connectToSocket(context);
-    } else {
-      print("Disconnected=============>> else");
+      print("receonnetSocket=============>>");
+      Future.delayed(Duration(seconds: 2), () {
+        connectToSocket(context);
+      });
     }
   }
 
@@ -1068,7 +1089,7 @@ class LatestSocketProvider extends ChangeNotifier {
     polylines.clear();
     markers.clear();
     isWithDriver = false;
-    isFirstTracking = true;
+    // isFirstTracking = true;
     // _orderStatus = OrderStatus.lookingDriver;
 
     notifyListeners();
@@ -1171,15 +1192,21 @@ class LatestSocketProvider extends ChangeNotifier {
     launchUrl(call);
   }
 
-  set changeFirstTracking(val) {
-    isFirstTracking = val;
-    notifyListeners();
-  }
+  // set changeFirstTracking(val) {
+  //   isFirstTracking = val;
+  //   notifyListeners();
+  // }
 
 // Set polylines Direction
   setPolylinesDirection(LatLng origin, LatLng destination) async {
-    log("polyline  Driver co:" + origin.latitude.toString());
-    log("polyline destination co:" + destination.latitude.toString());
+    log("polyline///  --Driver co:" +
+        origin.latitude.toString() +
+        "," +
+        origin.longitude.toString());
+    log("polyline/// destination co:" +
+        destination.latitude.toString() +
+        "," +
+        destination.longitude.toString());
 
     await DirectionHelper()
         .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
@@ -1322,7 +1349,7 @@ class LatestSocketProvider extends ChangeNotifier {
     log("driver:- tracking driver called-->>>>>. ${lat} ${long}");
     log("driver:- is listenLocation :$listenLocation");
 
-    log("is first tracking :--------************------>>>.. $isFirstTracking");
+    // log("is first tracking :--------************------>>>.. $isFirstTracking");
 
     // driverLatLng = LatLng(lat, long);
 
@@ -1373,7 +1400,10 @@ class LatestSocketProvider extends ChangeNotifier {
       //   zoom: zoom,
       // )));
 
-      if (isWithDriver) {
+      if ((isWithDriver) ||
+          (currentOrderStatus == 5) ||
+          (currentOrderStatus == 7) ||
+          (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         setPolylinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
       } else {

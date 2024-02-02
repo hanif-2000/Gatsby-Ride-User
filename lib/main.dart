@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
+import 'package:GetsbyRideshare/core/static/strings.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
@@ -14,6 +17,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/presentation/pages/splash_page.dart';
 import 'core/presentation/providers/home_provider.dart';
 import 'core/presentation/providers/place_picker_provider.dart';
@@ -37,6 +41,12 @@ import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  var sp = await SharedPreferences.getInstance();
+  var login = sp.getBool(IS_LOGGED_IN);
+
+  log("login is main ********** $login");
+
   await Firebase.initializeApp(
       name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
   // Stripe.publishableKey =
@@ -49,6 +59,9 @@ Future<void> main() async {
     await FirebaseHelper.init();
     await FirebaseMessaging.instance.requestPermission();
     await locator.isReady<Session>().then((_) async {
+      var session = locator<Session>();
+      log("is logged in------------->>>>>  " + session.isLoggedIn.toString());
+
       await NotificationHelper().init();
       runApp(
         MultiProvider(

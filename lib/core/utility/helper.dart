@@ -142,6 +142,36 @@ void showToast({required String message, Color? color}) {
       timeInSecForIosWeb: 1);
 }
 
+void showNoInternetDialog() {
+  showDialog(
+    context: locator<GlobalKey<NavigatorState>>().currentContext!,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('No Internet Connection'),
+        content: Column(
+          children: [
+            Icon(
+              Icons.signal_wifi_off,
+              size: 48,
+              color: Colors.red,
+            ),
+            SizedBox(height: 10),
+            Text('Please connect to the internet and try again.'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 Future<void> sessionLogOut() async {
   final session = locator<Session>();
   await session.clearSession();

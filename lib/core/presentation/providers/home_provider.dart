@@ -309,13 +309,6 @@ class HomeProvider with ChangeNotifier {
     destinationIsFilled = false;
     originIsFilled = false;
 
-    SmartDialog.showLoading(
-      animationType: SmartAnimationType.fade,
-      backDismiss: false,
-      msg: 'Fetching Current location...',
-      alignment: Alignment.center,
-    );
-
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
@@ -339,7 +332,6 @@ class HomeProvider with ChangeNotifier {
           logMe(e.toString());
         }
       }
-      SmartDialog.dismiss();
     } on PlatformException catch (e) {
       SmartDialog.dismiss();
       if (e.toString() == 'PERMISSION_DENIED') {

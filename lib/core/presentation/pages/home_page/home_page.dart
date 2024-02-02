@@ -99,6 +99,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   checkSessionDataAndNavigate() {
     if (session.isRunningOrder) {
+      socketProvider.updateOnlyBitmap();
       // SmartDialog.showLoading(
       //   animationType: SmartAnimationType.fade,
       //   backDismiss: false,
@@ -251,8 +252,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ),
                     onMapCreated: (GoogleMapController controller) async {
                       map.googleMapController = controller;
+                      SmartDialog.showLoading(
+                        animationType: SmartAnimationType.fade,
+                        backDismiss: false,
+                        msg: 'Fetching Current location...',
+                        alignment: Alignment.center,
+                      );
                       await map.setCurrentLocation().then((value) {
                         log("google map created successfully");
+                        SmartDialog.dismiss();
+
                         checkSessionDataAndNavigate();
                       });
                       // }

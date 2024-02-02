@@ -17,7 +17,7 @@ class NotificationHelper {
       FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
-    const String iconNotification = '@mipmap/launcher_icon';
+    const String iconNotification = '@mipmap/notification_icon';
     const initializationSettingsAndroid =
         AndroidInitializationSettings(iconNotification);
     const initializationSettingsIos = DarwinInitializationSettings(
@@ -67,7 +67,7 @@ class NotificationHelper {
           channel.id,
           channel.name,
           channelDescription: channel.description,
-          icon: "@mipmap/launcher_icon",
+          icon: "@mipmap/notification_icon",
           channelShowBadge: true,
           playSound: true,
           priority: Priority.max,

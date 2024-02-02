@@ -7,6 +7,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../../core/static/assets.dart';
@@ -164,6 +165,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  /**name */
                                   CommonText(
                                     text: provider
                                             .receiptResponseModel!.data.name ??
@@ -199,14 +201,17 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               CommonText(
-                                text: provider.receiptResponseModel!.data.name,
+                                text: provider
+                                    .receiptResponseModel!.data.carModel,
                                 fontWeight: FontWeight.w400,
                                 fontColor: grey585858Color,
                                 fontFamily: "poPPinMedium",
                                 fontSize: 12,
                               ),
+                              //plate number
                               CommonText(
-                                text: provider.receiptResponseModel!.data.name,
+                                text: provider
+                                    .receiptResponseModel!.data.plateNumber,
                                 fontWeight: FontWeight.w500,
                                 fontColor: blackColor,
                                 fontFamily: "poPPinMedium",
@@ -223,31 +228,35 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                         fontFamily: "poPPinMedium",
                         fontSize: 16,
                       ),
-                      // TextInRow(
-                      //   firstText: appLoc.date,
-                      //   secondText: DateFormat.yMMMd().format(
-                      //       (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
-                      //               provider.receiptResponseModel!.data.t,
-                      //               true))
-                      //           .toLocal()),
+                      TextInRow(
+                        firstText: appLoc.date,
+                        secondText: DateFormat.yMMMd().format(
+                            (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                                    provider
+                                        .receiptResponseModel!.data.createdAt
+                                        .toString(),
+                                    true))
+                                .toLocal()),
 
-                      //   // DateFormat('dd MMM yyyy')
-                      //   //     .format(provider.receiptResponseModel!.orderTime)
-                      //   //     .toString(),
-                      // ),
-                      // TextInRow(
-                      //   firstText: appLoc.time,
-                      //   secondText: DateFormat.jm().format(
-                      //       (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
-                      //               provider.receiptResponseModel!.data
-                      //                   .toString()?? DateTime.now().toString(),
-                      //               true))
-                      //           .toLocal()),
+                        // DateFormat('dd MMM yyyy')
+                        //     .format(provider.receiptResponseModel!.orderTime)
+                        //     .toString(),
+                      ),
+                      TextInRow(
+                        firstText: appLoc.time,
+                        secondText: DateFormat.jm().format(
+                            (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                                    provider.receiptResponseModel!.data
+                                            .createdAt
+                                            .toString() ??
+                                        DateTime.now().toString(),
+                                    true))
+                                .toLocal()),
 
-                      //   //  DateFormat('h:mma')
-                      //   //     .format(provider.receiptResponseModel!.orderTime)
-                      //   //     .toString(),
-                      // ),
+                        //  DateFormat('h:mma')
+                        //     .format(provider.receiptResponseModel!.orderTime)
+                        //     .toString(),
+                      ),
                       TextInRow(
                         firstText: appLoc.totalDistance,
                         secondText: provider.receiptResponseModel!.data.distance

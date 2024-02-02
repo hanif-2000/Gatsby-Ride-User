@@ -4,7 +4,7 @@ import '../static/strings.dart';
 
 abstract class Session {
   set setLoggedIn(bool login);
-  set setIsRunningOrder(bool login);
+  set setIsRunningOrder(bool isRunningOrder);
   set setIsPaymentDone(bool paymentDone);
   set setIsRatingGiven(bool ratingGiven);
 

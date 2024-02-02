@@ -47,6 +47,12 @@ class AppInterceptor extends Interceptor {
     print("${err.response != null ? err.response!.data : 'Unknown Error'}"
         'DioException');
 
+    if (err.type == DioErrorType.connectTimeout) {
+      showToast(
+          message:
+              'Connection timeout. Please check your internet connection.');
+    }
+
     // if (statusCode == HttpStatus.unauthorized) {
     //   final session = locator<Session>();
     //   session.setLoggedIn = false;

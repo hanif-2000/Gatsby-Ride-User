@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 abstract class NetworkInfo {
@@ -12,6 +15,8 @@ class NetworkInfoImplementation implements NetworkInfo {
   @override
   Future<bool> get isConnected async {
     final result = await connectivity.checkConnectivity();
+
+    log("inernet connection result is::-->. ${result.name}");
     switch (result) {
       case ConnectivityResult.bluetooth:
       case ConnectivityResult.wifi:
@@ -19,6 +24,9 @@ class NetworkInfoImplementation implements NetworkInfo {
       case ConnectivityResult.mobile:
         return true;
       case ConnectivityResult.none:
+        // showNoInternetDialog();
+
+        showToast(message: "No internet available");
         return false;
       case ConnectivityResult.vpn:
         return true;
