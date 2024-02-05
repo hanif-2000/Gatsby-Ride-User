@@ -75,7 +75,6 @@ import '../../features/register/data/repositories/register_repository_implementa
 import '../../features/register/domain/repositories/register_repository.dart';
 import '../../features/register/domain/usecases/do_register.dart';
 import '../../features/register/presentation/providers/register_provider.dart';
-import '../../socket/latest_socket_provider.dart';
 import '../data/datasources/currency_datasource.dart';
 import '../data/datasources/place_text_search_datasource.dart';
 import '../data/datasources/price_category_datasource.dart';
@@ -401,7 +400,7 @@ Future<void> init() async {
       () => PaymentProvider(paymentCard: locator()));
 
   // locator.registerFactory<SocketProvider>(() => SocketProvider());
-  locator.registerFactory<LatestSocketProvider>(() => LatestSocketProvider());
+  // locator.registerFactory<LatestSocketProvider>(() => LatestSocketProvider());
   locator.registerFactory<LogOutProvider>(() => LogOutProvider());
   // locator.registerFactory<ChatProvider>(() => ChatProvider());
 }

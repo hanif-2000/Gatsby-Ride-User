@@ -124,7 +124,7 @@ Future<void> main() async {
             //   create: (context) => locator<ChatProvider>(),
             // ),
             ChangeNotifierProvider<LatestSocketProvider>(
-              create: (context) => locator<LatestSocketProvider>(),
+              create: (context) => LatestSocketProvider(),
             ),
             ChangeNotifierProvider<LogOutProvider>(
               create: (context) => locator<LogOutProvider>(),

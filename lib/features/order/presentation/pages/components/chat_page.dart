@@ -30,7 +30,8 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
-  var socketProvider = locator<LatestSocketProvider>();
+  var socketProvider = Provider.of<LatestSocketProvider>(
+      locator<GlobalKey<NavigatorState>>().currentContext!);
 
   // var orderProvider = locator<OrderProvider>();
   // var chatProvider = locator<ChatProvider>();
@@ -38,8 +39,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    // socketProvider.disconnectSocket();
-    // socketProvider.connectToSocket();
+    // socketProvider.receonnetSocket(context);
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
@@ -48,7 +48,9 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       socketProvider.joinExitRoom(
-          receiverId: int.parse(session.driverId), type: "Join");
+          context: context,
+          receiverId: int.parse(session.driverId),
+          type: "Join");
     });
     // socketProvider.listenRequests();
 
@@ -60,12 +62,15 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     log(" app lifecycle state is ------>>>>>>>   $state");
     if (state == AppLifecycleState.paused) {
       socketProvider.joinExitRoom(
+        context: context,
         type: 'unJoin',
         receiverId: int.parse(session.driverId),
       );
     } else if (state == AppLifecycleState.resumed) {
       socketProvider.joinExitRoom(
-          receiverId: int.parse(session.driverId), type: 'Join');
+          context: context,
+          receiverId: int.parse(session.driverId),
+          type: 'Join');
     }
   }
 
@@ -79,6 +84,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     //     receiverId: int.parse(session.userId), type: 'unJoin');
 
     socketProvider.joinExitRoom(
+      context: context,
       type: 'unJoin',
       receiverId: int.parse(session.driverId),
     );

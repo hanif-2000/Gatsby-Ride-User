@@ -1,6 +1,5 @@
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/button_request_taxi_widget.dart';
-import 'package:GetsbyRideshare/core/presentation/widgets/category_car_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/distance_price_widget.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/payment_widget.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,7 @@ class BottomContainerHome extends StatelessWidget {
             child: ListView(
               children: const [
                 //Show Different vehicles options
-                CategoryCarWidget(),
+                // CategoryCarWidget(),
 
                 //Show distance and price of ride
                 DistancePriceWidget(),

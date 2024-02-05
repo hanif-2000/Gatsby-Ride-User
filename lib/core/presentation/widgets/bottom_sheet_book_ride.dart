@@ -260,8 +260,11 @@ class BottomSheetBookRide extends StatelessWidget {
                                         ),
                                       ),
                                       event: () {
-                                        var socketProvider =
-                                            locator<LatestSocketProvider>();
+                                        var socketProvider = Provider.of<
+                                                LatestSocketProvider>(
+                                            locator<GlobalKey<NavigatorState>>()
+                                                .currentContext!,
+                                            listen: false);
                                         if (provider.paymentMethod != null) {
                                           if (provider.price.isEmpty ||
                                               provider

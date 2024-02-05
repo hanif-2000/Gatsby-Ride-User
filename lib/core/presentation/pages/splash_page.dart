@@ -62,7 +62,9 @@ class _SplashPageState extends State<SplashPage> {
           // }
 
           final session = locator<Session>();
-          final socketProvider = locator<LatestSocketProvider>();
+          final socketProvider = Provider.of<LatestSocketProvider>(
+              locator<GlobalKey<NavigatorState>>().currentContext!,
+              listen: false);
 
           // log("session token" + session.sessionToken.toString());
           // log("order id" + session.orderId.toString());
@@ -75,13 +77,13 @@ class _SplashPageState extends State<SplashPage> {
             case CurrencyLoaded:
               if (session.isLoggedIn) {
                 if (session.orderStatus == 100 || session.orderStatus == 8) {
-                  socketProvider.connectToSocket(context);
+                  //  socketProvider.connectToSocket(context);
                   Navigator.pushNamedAndRemoveUntil(
                       context, HomePage.routeName, (route) => false);
                 } else {
                   log("orogin lat lat :->> ${session.originLat}");
                   log("orogin lat long :->> ${session.originLong}");
-                  socketProvider.connectToSocket(context);
+                  //  socketProvider.connectToSocket(context);
                   Navigator.pushNamedAndRemoveUntil(
                       context, HomePage.routeName, (route) => false);
 

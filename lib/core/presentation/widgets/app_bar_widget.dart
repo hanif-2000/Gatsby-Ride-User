@@ -3,6 +3,7 @@ import 'package:GetsbyRideshare/features/about_us/presentation/pages/aboutus_pag
 import 'package:GetsbyRideshare/features/history/presentation/pages/history_page.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../features/login/presentation/pages/login_page.dart';
 import '../../../socket/latest_socket_provider.dart';
@@ -20,7 +21,9 @@ class AppBarLoggedIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var socketProvider = locator<LatestSocketProvider>();
+    var socketProvider = Provider.of<LatestSocketProvider>(
+        locator<GlobalKey<NavigatorState>>().currentContext!,
+        listen: false);
     return SizedBox(
         width: boxConstraints.maxWidth * 0.6,
         height: appbarHeight,

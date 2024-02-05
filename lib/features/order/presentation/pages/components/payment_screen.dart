@@ -310,8 +310,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       //  r"Extra Distance Price 1.30 /km"
                       // : r"Extra Distance Price 1.65 /km",
                       // secondText: r'$' + widget.extraDistancePrice,
-                      secondText:
-                          r'CA$ ' + convertToFixed(widget.extraDistancePrice),
+                      secondText: r'CA$ ' +
+                          convertToFixedTwoDecimal(widget.extraDistancePrice),
                     ),
                     Divider(
                       color: whiteAccentColor,
@@ -338,7 +338,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       secondText: ((widget.extraTimePrice != null) ||
                               (widget.extraTimePrice != '') ||
                               (widget.extraTimePrice != '0'))
-                          ? r'CA$ ' + convertToFixed(widget.extraTimePrice)
+                          ? r'CA$ ' +
+                              convertToFixedTwoDecimal(widget.extraTimePrice)
                           : r'CA$ 0',
                     ),
 
@@ -348,7 +349,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                     TextInRow(
                       firstText: 'Actual Amount',
-                      secondText: 'CA\$ ' + convertToFixed(widget.totalPrice),
+                      secondText:
+                          'CA\$ ' + convertToFixedTwoDecimal(widget.totalPrice),
                     ),
                     Divider(
                       color: whiteAccentColor,
@@ -356,8 +358,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       firstText: 'Pending Amount',
                       // secondText: widget.extraDistance + " Km",
-                      secondText:
-                          "CA\$ " + convertToFixed(widget.pendingAmount),
+                      secondText: "CA\$ " +
+                          convertToFixedTwoDecimal(widget.pendingAmount),
                     ),
                     Divider(
                       color: whiteAccentColor,
@@ -424,7 +426,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       secondTextweight: FontWeight.w700,
                       firstText: 'Grand Total',
-                      secondText: r'CA$ ' + convertToFixed(widget.newTotal),
+                      secondText:
+                          r'CA$ ' + convertToFixedTwoDecimal(widget.newTotal),
                     ),
                   ],
                 ),
@@ -535,7 +538,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
               TextInRow(
                 firstText: 'Total amount to Pay',
-                secondText: "CA\$ ${convertToFixed(totalAmountToPay)} ",
+                secondText:
+                    "CA\$ ${convertToFixedTwoDecimal(totalAmountToPay)} ",
               ),
               Padding(
                 padding:

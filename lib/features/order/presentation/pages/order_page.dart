@@ -40,7 +40,7 @@
 //   Timer? checkOrderStatusTimer, trackingDriverTimer;
 
 //   final session = locator<Session>();
-//   final newSocketProvider = locator<LatestSocketProvider>();
+//   final newSocketProvider = Provider.of<LatestSocketProvider>(locator<GlobalKey<NavigatorState>>().currentContext!);
 
 //   @override
 //   void initState() {

@@ -25,7 +25,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  var socketProvider = locator<LatestSocketProvider>();
+  var socketProvider = Provider.of<LatestSocketProvider>(
+      locator<GlobalKey<NavigatorState>>().currentContext!);
   void submit() {
     FocusManager.instance.primaryFocus?.unfocus();
     final provider = context.read<LoginProvider>();
@@ -51,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
           session.setLoggedIn = true;
           showToast(message: "Login Success");
 
-          socketProvider.connectToSocket(context);
+          //   socketProvider.connectToSocket(context);
           Navigator.pushNamedAndRemoveUntil(
               context, HomePage.routeName, (route) => false);
           logMe("Authorization Token: ${session.sessionToken}");

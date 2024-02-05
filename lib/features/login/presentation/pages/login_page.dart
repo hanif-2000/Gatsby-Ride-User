@@ -27,7 +27,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var socketProvider = locator<LatestSocketProvider>();
+    var socketProvider = Provider.of<LatestSocketProvider>(
+        locator<GlobalKey<NavigatorState>>().currentContext!,
+        listen: false);
     return ChangeNotifierProvider<LoginProvider>(
       create: (ctx) => locator<LoginProvider>(),
       child: Scaffold(
@@ -288,7 +290,7 @@ class LoginPage extends StatelessWidget {
                               final session = locator<Session>();
                               session.setLoggedIn = true;
                               showToast(message: "Login Success");
-                              socketProvider.connectToSocket(context);
+                              // socketProvider.connectToSocket(context);
                               Navigator.pushNamedAndRemoveUntil(context,
                                   HomePage.routeName, (route) => false);
                               logMe(

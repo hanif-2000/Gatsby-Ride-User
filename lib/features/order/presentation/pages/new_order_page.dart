@@ -36,19 +36,22 @@ class _NewOrderPageState extends State<NewOrderPage>
 
   final session = locator<Session>();
 
-  final newSocketProvider = locator<LatestSocketProvider>();
+  final newSocketProvider = Provider.of<LatestSocketProvider>(
+      locator<GlobalKey<NavigatorState>>().currentContext!);
   final homeProvider = locator<HomeProvider>();
 
   Timer? _timer;
 
   @override
   void initState() {
+    // newSocketProvider.receonnetSocket( context);
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       log("resulr connecte=====>>>. ${result}");
       if (result == ConnectivityResult.none) {
         newSocketProvider.disconnectSocket();
       } else {
         newSocketProvider.receonnetSocket(context);
+        // newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
       }
       // Got a new connectivity status!
     });
@@ -102,10 +105,10 @@ class _NewOrderPageState extends State<NewOrderPage>
         startTimerAndNavigate();
         showSearchingVehiclesBottomSheet(context, newSocketProvider);
       } else {
+        newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
+
         _timer?.cancel();
         log("else called ");
-
-        newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
 
         // newSocketProvider.getDriverDetailsById();
       }

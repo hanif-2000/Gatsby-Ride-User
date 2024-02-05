@@ -109,7 +109,7 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               // double.tryParse(widget.rating).toString(),
-                              convertToFixed(widget.rating),
+                              convertToFixedOneDecimal(widget.rating),
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w600,

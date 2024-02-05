@@ -35,7 +35,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   //  OrderDetail previousOrderDetails = OrderDetail();
   // late OrderDataDetail _orderDataDetail;
 
-  var socketProvider = locator<LatestSocketProvider>();
+  var socketProvider = Provider.of<LatestSocketProvider>(
+      locator<GlobalKey<NavigatorState>>().currentContext!);
 
   // late DriverDetailModel previousDriverDetails;
 
@@ -195,7 +196,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               .last)),
                       destinationLatLng: LatLng(
                           double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
-                          double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first))));
+                          double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
             });
           }
         });
@@ -207,6 +208,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    socketProvider.connectToSocket(context);
     log("************ IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
     super.initState();
     WidgetsBinding.instance.addObserver(this);

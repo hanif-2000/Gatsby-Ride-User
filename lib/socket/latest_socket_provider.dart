@@ -34,13 +34,13 @@ import 'modals/booking_response_model.dart';
 import 'modals/new_receipt_model.dart';
 
 class LatestSocketProvider extends ChangeNotifier {
-  static final LatestSocketProvider _provider = LatestSocketProvider.internal();
+  // static final LatestSocketProvider _provider = LatestSocketProvider.internal();
 
-  factory LatestSocketProvider() {
-    return _provider;
-  }
+  // factory LatestSocketProvider() {
+  //   return _provider;
+  // }
 
-  LatestSocketProvider.internal();
+  // LatestSocketProvider.internal();
   // late GetOrderDetail getOrderDetail;
   // late GetDriverDetail getDriverDetail;
   final session = locator<Session>();
@@ -229,7 +229,7 @@ class LatestSocketProvider extends ChangeNotifier {
     }
   }
 
-  updateOnlyBitmap() async {
+  Future<void> updateOnlyBitmap() async {
     await getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
       pickUpMarker = BitmapDescriptor.fromBytes(value);
     });
@@ -285,7 +285,7 @@ class LatestSocketProvider extends ChangeNotifier {
           print("************ Connecting ***********");
         } else if (event is Disconnected) {
           checkInternetStrength();
-          receonnetSocket(context);
+
           log("************ DisConnectd ***********");
         } else if (event is Reconnecting) {
           checkInternetStrength();
@@ -310,27 +310,30 @@ class LatestSocketProvider extends ChangeNotifier {
     }
   }
 
-  receonnetSocket(BuildContext context) {
+  Future<void> receonnetSocket(BuildContext context) async {
     print("receonnetSocket=============>>${_socket?.connection.state})");
     disconnectSocket();
-    if (_socket?.connection.state is Disconnected) {
-      print("receonnetSocket=============>>");
-      Future.delayed(Duration(seconds: 2), () {
-        connectToSocket(context);
-      });
-    }
+    print("receonnetSocket=============>>");
+    await Future.delayed(Duration(seconds: 2), () {
+      connectToSocket(context);
+    });
   }
 
   Future<void> disconnectSocket() async {
     _socket!.close(1000);
   }
 
-  joinExitRoom({int? receiverId, required String type}) {
-    markMessageAsRead(receiverId: receiverId);
+  joinExitRoom(
+      {int? receiverId, required String type, required BuildContext context}) {
+    print("connection state ${_socket!.connection.state}");
+    log('-----Event  ${_socket!.connection.state}');
+    log('connection state  ${_socket!.connection.state}');
+
     log("join socket called $type");
     if (type == 'Join') {
       isLoading = true;
       notifyListeners();
+      markMessageAsRead(receiverId: receiverId);
     } else if (type == 'unJoin') {
       getTotalUnreadCount(receiverId);
       // clearChatList();
@@ -805,8 +808,14 @@ class LatestSocketProvider extends ChangeNotifier {
           : '${session.userId}-$receiverId',
       "UserType": 'Customer'
     };
-    log("get total count:" + map.toString());
-    _socket!.send(jsonEncode(map));
+
+    if (_socket!.connection.state is Connected) {
+      log("socket is connected ==>>unread count ");
+      log("get total count:" + map.toString());
+      _socket!.send(jsonEncode(map));
+    } else {
+      log("socket is connected ${_socket!.connection.state}");
+    }
 
     // listenRequests();
     // disconnectSocket();
@@ -996,7 +1005,7 @@ class LatestSocketProvider extends ChangeNotifier {
   }
 
   setCurrentLocation(OrderDataDetail orderDataDetail) async {
-    log("set current location called");
+    log("set current location called :$orderDataDetail");
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
@@ -1042,8 +1051,9 @@ class LatestSocketProvider extends ChangeNotifier {
         markerId: markerIdDestination,
         position: LatLng(orderDataDetail.destinationLatLng.latitude,
             orderDataDetail.destinationLatLng.longitude),
-        infoWindow: const InfoWindow(title: "Destination"),
+        infoWindow: const InfoWindow(title: "destination"),
         icon: await getBytesFromAsset(destinationIcon, 100).then((value) {
+          log("destination marker--->> ${value}");
           return destinationMarker = BitmapDescriptor.fromBytes(value);
         }),
         onTap: () {},
@@ -1076,8 +1086,11 @@ class LatestSocketProvider extends ChangeNotifier {
   removeMarker() async {
     MarkerId markerDriver = const MarkerId("driver");
     MarkerId markerOrigin = const MarkerId("origin");
+    MarkerId markerDestination = const MarkerId("destination");
+
     markers.remove(markerOrigin);
     markers.remove(markerDriver);
+    markers.remove(markerDestination);
     isWithDriver = true;
     polylines.clear();
     notifyListeners();
@@ -1199,6 +1212,7 @@ class LatestSocketProvider extends ChangeNotifier {
 
 // Set polylines Direction
   setPolylinesDirection(LatLng origin, LatLng destination) async {
+    polylines.clear();
     log("polyline///  --Driver co:" +
         origin.latitude.toString() +
         "," +

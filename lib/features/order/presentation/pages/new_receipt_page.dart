@@ -375,7 +375,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                 secondTextweight: FontWeight.w700,
                                 firstText: "Total amount to pay ",
                                 secondText: r"CA$ " +
-                                    convertToFixed(provider
+                                    convertToFixedTwoDecimal(provider
                                         .receiptResponseModel!.data.newTotal)),
                           ],
                         ),

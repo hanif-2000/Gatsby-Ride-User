@@ -141,8 +141,9 @@ class RatingsScreen extends StatelessWidget {
                                             child: Row(
                                               children: [
                                                 CommonText(
-                                                  text: convertToFixed(
-                                                      data.rating),
+                                                  text:
+                                                      convertToFixedOneDecimal(
+                                                          data.rating),
                                                   // double.tryParse(data
                                                   //         .rating
                                                   //         .toString())

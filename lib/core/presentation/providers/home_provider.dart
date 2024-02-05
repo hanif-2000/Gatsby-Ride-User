@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:ui' as ui;
 import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
 import 'package:GetsbyRideshare/core/domain/usecases/get_total_price.dart';
-import 'package:GetsbyRideshare/core/presentation/providers/price_category_state.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/total_price_state.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/vehicle_category_state.dart';
 import 'package:GetsbyRideshare/core/static/assets.dart';
@@ -126,8 +125,8 @@ class HomeProvider with ChangeNotifier {
   bool destinationIsFilled = false;
   bool originIsFilled = false;
   String destinationAddress = appLoc.destination;
-  String distance = "0", price = "";
-  int estimatedTime = 0;
+  String distance = "1", price = "";
+  int estimatedTime = 1;
   String time = '';
   late Text originText;
   late Text destinationText;
@@ -514,12 +513,12 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
-  setPolylinesDirection(LatLng origin, LatLng destination) async {
+  Future<void> setPolylinesDirection(LatLng origin, LatLng destination) async {
     polylines.clear();
     await DirectionHelper()
         .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
             destination.latitude, destination.longitude)
-        .then((result) {
+        .then((result) async {
       if (result.isNotEmpty) {
         polylineCoordinates = [];
         for (var point in result) {
@@ -535,13 +534,13 @@ class HomeProvider with ChangeNotifier {
             endCap: Cap.roundCap);
         polylines.add(polyline);
         // setPriceAndDistance();
-        setActualDistance();
+        await setActualDistance();
         notifyListeners();
       }
     });
   }
 
-  setActualDistance() async {
+  Future<void> setActualDistance() async {
     try {
       // Get real distance
       var response = await Dio().get(
@@ -661,22 +660,22 @@ class HomeProvider with ChangeNotifier {
   }
 
 //Old Method to get vehicles Catagories
-  Stream<PriceCategoryState> fetchPriceCategory() async* {
-    yield PriceCategoryLoading();
+  // Stream<PriceCategoryState> fetchPriceCategory() async* {
+  //   yield PriceCategoryLoading();
 
-    final result = await getPriceCategory("10", "0", "30.7046083,76.6843826");
-    yield* result.fold(
-      (failure) async* {
-        yield PriceCategoryFailure(failure: failure);
-      },
-      (data) async* {
-        _priceCategory = data.data;
-        logMe("_priceCategory");
-        logMe(_priceCategory);
-        yield PriceCategoryLoaded(data: _priceCategory);
-      },
-    );
-  }
+  //   final result = await getPriceCategory("10", "0", "30.7046083,76.6843826");
+  //   yield* result.fold(
+  //     (failure) async* {
+  //       yield PriceCategoryFailure(failure: failure);
+  //     },
+  //     (data) async* {
+  //       _priceCategory = data.data;
+  //       logMe("_priceCategory");
+  //       logMe(_priceCategory);
+  //       yield PriceCategoryLoaded(data: _priceCategory);
+  //     },
+  //   );
+  // }
 
 //update selected car category
 

@@ -24,7 +24,8 @@ class CreateProfileForm extends StatefulWidget {
 }
 
 class _CreateProfileFormState extends State<CreateProfileForm> {
-  var socketProvider = locator<LatestSocketProvider>();
+  var socketProvider = Provider.of<LatestSocketProvider>(
+      locator<GlobalKey<NavigatorState>>().currentContext!);
   //Upload profile Image
   uploadProfileImage() {
     final provider = context.read<UploadProfileImageProvider>();
@@ -82,7 +83,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
             final session = locator<Session>();
             session.setLoggedIn = true;
             showToast(message: appLoc.createProfileSuccessfully);
-            socketProvider.connectToSocket(context);
+            // socketProvider.connectToSocket(context);
             Navigator.pushNamedAndRemoveUntil(
                 context, HomePage.routeName, (route) => false);
           } else {
