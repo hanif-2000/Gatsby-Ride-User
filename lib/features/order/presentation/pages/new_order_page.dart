@@ -726,8 +726,10 @@ class _NewOrderPageState extends State<NewOrderPage>
                                                           ? "Ride is Completed"
                                                           : "",
 
-                                      newMessgeCount: latestSocketProvider
-                                          .unreadMessageCount,
+                                      newMessgeCount:
+                                          Provider.of<LatestSocketProvider>(
+                                                  context)
+                                              .unreadMessageCount,
                                       reviewEvent: () {
                                         Navigator.push(
                                             context,

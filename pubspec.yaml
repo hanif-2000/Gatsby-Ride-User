@@ -55,7 +55,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   flutter_launcher_icons: ^0.11.0
   google_sign_in: ^6.1.4
-  web_socket_client: ^0.1.0-dev.3
+  web_socket_client: 0.1.0
  
   # upi_india: ^3.0.1
   # easy_upi_payment: ^0.1.4

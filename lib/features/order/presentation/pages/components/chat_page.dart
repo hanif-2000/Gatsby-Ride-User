@@ -31,7 +31,8 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   var socketProvider = Provider.of<LatestSocketProvider>(
-      locator<GlobalKey<NavigatorState>>().currentContext!);
+      locator<GlobalKey<NavigatorState>>().currentContext!,
+      listen: false);
 
   // var orderProvider = locator<OrderProvider>();
   // var chatProvider = locator<ChatProvider>();
@@ -39,22 +40,16 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    // socketProvider.receonnetSocket(context);
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
 
-    // showLoading();
-    // socketProvider.joinExitRoom(receiverId: int.parse(session.userId));
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      socketProvider.joinExitRoom(
-          context: context,
-          receiverId: int.parse(session.driverId),
-          type: "Join");
-    });
-    // socketProvider.listenRequests();
+    print("init in chat page called");
 
-    // socketProvider.markMessageAsRead(receiverId: int.parse(session.driverId));
+    socketProvider.joinExitRoom(
+        context: context,
+        receiverId: int.parse(session.driverId),
+        type: "Join");
   }
 
   @override
@@ -79,9 +74,6 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     log("dispoase called");
 
     super.dispose();
-    // socketProvider.clearChatList();
-    // socketProvider.joinExitRoom(
-    //     receiverId: int.parse(session.userId), type: 'unJoin');
 
     socketProvider.joinExitRoom(
       context: context,
@@ -89,8 +81,6 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       receiverId: int.parse(session.driverId),
     );
     WidgetsBinding.instance.removeObserver(this);
-    // socketProvider.disconnectSocket();
-    // socketProvider.connectToSocket();
   }
 
   @override
@@ -117,11 +107,17 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       CommonCircularImageContainer(
                         height: 45,
                         width: 45,
-                        image: socketProvider
-                                    .acceptResponseModel?.data.profilePhoto !=
+                        image: Provider.of<LatestSocketProvider>(context,
+                                        listen: true)
+                                    .acceptResponseModel
+                                    ?.data
+                                    .profilePhoto !=
                                 null
-                            ? socketProvider
-                                .acceptResponseModel!.data.profilePhoto
+                            ? Provider.of<LatestSocketProvider>(context,
+                                    listen: true)
+                                .acceptResponseModel!
+                                .data
+                                .profilePhoto
                             : '',
                       ),
                       SizedBox(
@@ -131,8 +127,11 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CommonText(
-                            text: socketProvider
-                                .driverDetailResponseModel!.message.name
+                            text: Provider.of<LatestSocketProvider>(context,
+                                    listen: true)
+                                .driverDetailResponseModel!
+                                .message
+                                .name
                                 .toString(),
                             fontWeight: FontWeight.w500,
                             fontColor: blackColor,
@@ -169,7 +168,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         // backgroundColor: Colors.grey,
         body: Consumer<LatestSocketProvider>(builder: (context, provider, _) {
           return Visibility(
-            visible: provider.isLoading,
+            visible: Provider.of<LatestSocketProvider>(context, listen: true)
+                .isLoading,
             child: Center(
               child: SizedBox(
                 height: 50,
@@ -302,9 +302,12 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                             showToast(message: "Please enter your message");
                           } else {
                             ///TODO: send the message
-                            socketProvider.sendChatMessage(
-                                message: provider.chatController.text.trim(),
-                                receiverId: int.parse(session.driverId));
+                            Provider.of<LatestSocketProvider>(context,
+                                    listen: true)
+                                .sendChatMessage(
+                                    message:
+                                        provider.chatController.text.trim(),
+                                    receiverId: int.parse(session.driverId));
                             provider.chatController.text = '';
                           }
                         },

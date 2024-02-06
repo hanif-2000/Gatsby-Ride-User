@@ -173,7 +173,9 @@ class DriverInfoBottomSheet extends StatelessWidget {
                         ],
                       ),
                     ),
-                    provider.unreadMessageCount != 0
+                    Provider.of<LatestSocketProvider>(context)
+                                .unreadMessageCount !=
+                            0
                         ? Positioned(
                             top: 0,
                             right: 0,

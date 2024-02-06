@@ -52,7 +52,7 @@ class LatestSocketProvider extends ChangeNotifier {
   //   target: JAPAN_LATLNG,
   //   zoom: 14.4746,
   // );
-  var unreadCount = '0';
+  // var unreadCount = '0';
   final chatController = TextEditingController();
   BuildContext currentCxt =
       locator<GlobalKey<NavigatorState>>().currentContext!;
@@ -109,12 +109,12 @@ class LatestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateUnreadCount(val) {
-    unreadCount = val;
-    notifyListeners();
+  // updateUnreadCount(val) {
+  //   unreadCount = val;
+  //   notifyListeners();
 
-    log("unrad count :-->> $unreadCount");
-  }
+  //   log("unrad count :-->> $unreadCount");
+  // }
 
   callTrakingDriver(LatLng position) async {
     log("driver position is :${position}");
@@ -260,46 +260,57 @@ class LatestSocketProvider extends ChangeNotifier {
     try {
       checkInternetStrength();
 
-      log("-------->CONNECTING TO SOCKET <--------");
-      log('-------> uri === ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
+      // log("-------->CONNECTING TO SOCKET <--------");
+      // log('-------> uri === ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}');
+
       _socket = WebSocket(
         Uri.parse(
           "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}",
         ),
-        // timeout: Duration(seconds: 10),
-        pingInterval: Duration(seconds: 5),
-        // backoff: ConstantBackoff(Duration(seconds: 10)
-        // )
+        pingInterval: Duration(seconds: 2),
       );
       _socket!.connection.listen((event) {
         if (event is Connected) {
           checkInternetStrength();
-          log("************ Connectd ***********");
+          showToast(message: "Socket Connected ");
+
           print("************ Connectd ***********");
 
           listenSocketRequests(context);
         } else if (event is Connecting) {
           checkInternetStrength();
 
-          log("************ Connecting ***********");
           print("************ Connecting ***********");
         } else if (event is Disconnected) {
+          print("disconnect reason:-- ${event.reason}");
+          print("disconnect code:-- ${event.code}");
+          print("disconnect error:-- ${event.error}");
+          showToast(message: "Socket Disconnected code: ${event.code} ");
+
+          // Check if disconnection is due to protocol error 1002
+          if (event.code == 1002) {
+            // Handle protocol error 1002 (e.g., initiate reconnection)
+            showToast(message: "Protocol Error 1002: Reconnecting...");
+            receonnetSocket(context);
+          }
+
           checkInternetStrength();
 
           log("************ DisConnectd ***********");
         } else if (event is Reconnecting) {
           checkInternetStrength();
+          showToast(message: "Socket Reconnecting ");
 
           log("************ ReConnecting ***********");
         } else if (event is Reconnected) {
           checkInternetStrength();
+          listenSocketRequests(context);
+          showToast(message: "Socket Reconnected ");
 
           log("************ Reconnected ***********");
-          //  listenSocketRequests(context);
         } else {
           checkInternetStrength();
 
-          log("-----******** EVENT IS **** ${event}");
           print("-----******** EVENT IS **** ${event}");
         }
       });
@@ -314,10 +325,35 @@ class LatestSocketProvider extends ChangeNotifier {
     print("receonnetSocket=============>>${_socket?.connection.state})");
     disconnectSocket();
     print("receonnetSocket=============>>");
-    await Future.delayed(Duration(seconds: 2), () {
-      connectToSocket(context);
-    });
+
+    int retryAttempts = 0;
+    const maxRetryAttempts = 5;
+    const initialDelay = Duration(seconds: 2);
+
+    while (retryAttempts < maxRetryAttempts) {
+      await Future.delayed(initialDelay * (2 << retryAttempts));
+
+      try {
+        await connectToSocket(context);
+        return; // Successful reconnection, exit the function
+      } catch (e) {
+        print("Error during reconnection attempt: $e");
+        retryAttempts++;
+      }
+    }
+
+    // Failed to reconnect after maximum retry attempts
+    print("Failed to reconnect after $maxRetryAttempts attempts");
   }
+
+  // Future<void> receonnetSocket(BuildContext context) async {
+  //   print("receonnetSocket=============>>${_socket?.connection.state})");
+  //   disconnectSocket();
+  //   print("receonnetSocket=============>>");
+  //   await Future.delayed(Duration(seconds: 2), () {
+  //     connectToSocket(context);
+  //   });
+  // }
 
   Future<void> disconnectSocket() async {
     _socket!.close(1000);
@@ -325,6 +361,7 @@ class LatestSocketProvider extends ChangeNotifier {
 
   joinExitRoom(
       {int? receiverId, required String type, required BuildContext context}) {
+    print("chat page join exit room called");
     print("connection state ${_socket!.connection.state}");
     log('-----Event  ${_socket!.connection.state}');
     log('connection state  ${_socket!.connection.state}');
@@ -336,7 +373,8 @@ class LatestSocketProvider extends ChangeNotifier {
       markMessageAsRead(receiverId: receiverId);
     } else if (type == 'unJoin') {
       getTotalUnreadCount(receiverId);
-      // clearChatList();
+      updateUnReadMessages(count: 0);
+      clearChatList();
     }
     // if (type == 'join') {
     //   markMessageAsRead(receiverId: receiverId);
@@ -356,6 +394,7 @@ class LatestSocketProvider extends ChangeNotifier {
         if (event is Connected) {
           _socket!.send(json.encode(map));
           print(map.toString());
+          listenSocketRequests(context);
 
           notifyListeners();
         }
@@ -371,6 +410,7 @@ class LatestSocketProvider extends ChangeNotifier {
   }
 
   void listenSocketRequests(BuildContext context) {
+    log("************ listen to socket called");
     _socket!.messages.listen((event) async {
       //  Decoding data
       final response = jsonDecode(event);
@@ -841,6 +881,7 @@ class LatestSocketProvider extends ChangeNotifier {
 
     log("mark as read $map");
     _socket!.send(jsonEncode(map));
+    // updateUnreadCount("0");
   }
 
   clearChatList() {
@@ -1455,6 +1496,8 @@ class LatestSocketProvider extends ChangeNotifier {
     final String apiUrl =
         'https://php.parastechnologies.in/taxi/public/api/webservice/driver-profile?id=$id';
     final String authToken = session.sessionToken;
+
+    print("get driver details $apiUrl");
 
     try {
       final response = await Dio().get(
