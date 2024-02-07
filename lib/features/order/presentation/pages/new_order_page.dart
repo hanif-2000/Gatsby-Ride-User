@@ -7,7 +7,6 @@ import 'package:GetsbyRideshare/features/order/presentation/pages/components/cha
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,6 +17,7 @@ import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
+import '../../../../socket/deryde_folder/chat/view/chat_view.dart';
 import 'new_receipt_page.dart';
 
 class NewOrderPage extends StatefulWidget {
@@ -44,17 +44,17 @@ class _NewOrderPageState extends State<NewOrderPage>
 
   @override
   void initState() {
-    // newSocketProvider.receonnetSocket( context);
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      log("resulr connecte=====>>>. ${result}");
-      if (result == ConnectivityResult.none) {
-        newSocketProvider.disconnectSocket();
-      } else {
-        newSocketProvider.receonnetSocket(context);
-        // newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
-      }
-      // Got a new connectivity status!
-    });
+    // // newSocketProvider.receonnetSocket( context);
+    // Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    //   log("resulr connecte=====>>>. ${result}");
+    //   if (result == ConnectivityResult.none) {
+    //     newSocketProvider.disconnectSocket();
+    //   } else {
+    //     newSocketProvider.receonnetSocket(context);
+    //     // newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
+    //   }
+    //   // Got a new connectivity status!
+    // });
     super.initState();
     dismissLoading();
     WidgetsBinding.instance.addObserver(this);
@@ -677,6 +677,15 @@ class _NewOrderPageState extends State<NewOrderPage>
                         //       const BottomContaineOrder()
                         //     ]))
 
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatView()));
+                            },
+                            child: Text("New Chat Screen")),
+
                         Spacer(),
                         Center(child: Text(latestSocketProvider.strength)),
                         Visibility(
@@ -728,7 +737,8 @@ class _NewOrderPageState extends State<NewOrderPage>
 
                                       newMessgeCount:
                                           Provider.of<LatestSocketProvider>(
-                                                  context)
+                                                  context,
+                                                  listen: true)
                                               .unreadMessageCount,
                                       reviewEvent: () {
                                         Navigator.push(

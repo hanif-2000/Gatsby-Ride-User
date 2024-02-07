@@ -9,6 +9,7 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/booking_socket_provider.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -194,7 +195,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             Provider.of<LatestSocketProvider>(context, listen: false)
                 .updateOrderDetailsModel(data: value);
 
-            Provider.of<LatestSocketProvider>(context, listen: true)
+            Provider.of<LatestSocketProvider>(context, listen: false)
                 .fetchDriverDetails(int.parse(session.driverId))
                 .then((value) {
               Provider.of<LatestSocketProvider>(context, listen: false)
@@ -241,6 +242,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     Provider.of<LatestSocketProvider>(context, listen: false)
         .connectToSocket(context);
+
+    Provider.of<SocketProvider>(context, listen: false).connectToSocketInBooking(context);
     log("************ IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
     super.initState();
     WidgetsBinding.instance.addObserver(this);

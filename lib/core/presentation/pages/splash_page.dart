@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -62,9 +61,9 @@ class _SplashPageState extends State<SplashPage> {
           // }
 
           final session = locator<Session>();
-          final socketProvider = Provider.of<LatestSocketProvider>(
-              locator<GlobalKey<NavigatorState>>().currentContext!,
-              listen: false);
+          // final socketProvider = Provider.of<LatestSocketProvider>(
+          //     locator<GlobalKey<NavigatorState>>().currentContext!,
+          //     listen: false);
 
           // log("session token" + session.sessionToken.toString());
           // log("order id" + session.orderId.toString());

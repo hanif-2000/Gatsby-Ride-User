@@ -10,6 +10,7 @@ import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:GetsbyRideshare/firebase_options.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/booking_socket_provider.dart';
 import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +129,10 @@ Future<void> main() async {
             ),
             ChangeNotifierProvider<LogOutProvider>(
               create: (context) => locator<LogOutProvider>(),
+            ),
+
+            ChangeNotifierProvider<SocketProvider>(
+              create: (context) => SocketProvider(),
             ),
           ],
           builder: (context, _) => const MyApp(),

@@ -15,7 +15,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -47,7 +46,7 @@ class LatestSocketProvider extends ChangeNotifier {
   var _homeProvider = locator<HomeProvider>();
 
   final lctn.Location locationService = lctn.Location();
-  late StreamSubscription<Position>? locationbackSubscription;
+  // late StreamSubscription<Position>? locationbackSubscription;
   // CameraPosition kJapanCoordinate = const CameraPosition(
   //   target: JAPAN_LATLNG,
   //   zoom: 14.4746,
@@ -120,6 +119,13 @@ class LatestSocketProvider extends ChangeNotifier {
     log("driver position is :${position}");
     await trackingDriver(
         listenLocation: true, lat: position.latitude, long: position.longitude);
+  }
+
+  var connectionStatus = '';
+
+  updateConnectionStatus({val}) {
+    connectionStatus = val;
+    notifyListeners();
   }
 
   updateAcceptModel({required AcceptResponseModel val}) {
@@ -269,40 +275,62 @@ class LatestSocketProvider extends ChangeNotifier {
         ),
         pingInterval: Duration(seconds: 2),
       );
+
+      print(
+          "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}");
       _socket!.connection.listen((event) {
         if (event is Connected) {
+          updateConnectionStatus(val: "connected");
+
           checkInternetStrength();
           showToast(message: "Socket Connected ");
-
-          print("************ Connectd ***********");
 
           listenSocketRequests(context);
         } else if (event is Connecting) {
           checkInternetStrength();
+          updateConnectionStatus(val: "connecting");
 
           print("************ Connecting ***********");
         } else if (event is Disconnected) {
+          updateConnectionStatus(val: "disconnect");
+
           print("disconnect reason:-- ${event.reason}");
           print("disconnect code:-- ${event.code}");
           print("disconnect error:-- ${event.error}");
           showToast(message: "Socket Disconnected code: ${event.code} ");
 
+          receonnetSocket(context);
+
           // Check if disconnection is due to protocol error 1002
-          if (event.code == 1002) {
-            // Handle protocol error 1002 (e.g., initiate reconnection)
-            showToast(message: "Protocol Error 1002: Reconnecting...");
-            receonnetSocket(context);
-          }
+          // if (event.code == 1002) {
+          //   // Handle protocol error 1002 (e.g., initiate reconnection)
+          //   showToast(message: "Protocol Error 1002: Reconnecting...");
+          //   receonnetSocket(context);
+          // }
+          // // Check if disconnection is due to protocol error 1002
+          // if (event.code == 1001) {
+          //   // Handle protocol error 1002 (e.g., initiate reconnection)
+          //   showToast(message: "Protocol Error 1001: Reconnecting...");
+          //   receonnetSocket(context);
+          // }
 
           checkInternetStrength();
 
           log("************ DisConnectd ***********");
         } else if (event is Reconnecting) {
+          updateConnectionStatus(val: "Reconnecting");
+
           checkInternetStrength();
           showToast(message: "Socket Reconnecting ");
 
           log("************ ReConnecting ***********");
         } else if (event is Reconnected) {
+          updateConnectionStatus(val: "Reconnected");
+
+          joinExitRoom(
+              type: "Join",
+              context: context,
+              receiverId: int.parse(session.driverId));
           checkInternetStrength();
           listenSocketRequests(context);
           showToast(message: "Socket Reconnected ");
@@ -323,27 +351,47 @@ class LatestSocketProvider extends ChangeNotifier {
 
   Future<void> receonnetSocket(BuildContext context) async {
     print("receonnetSocket=============>>${_socket?.connection.state})");
-    disconnectSocket();
-    print("receonnetSocket=============>>");
+    await disconnectSocket().then((value) async {
+      updateConnectionStatus(val: "disconnected");
 
-    int retryAttempts = 0;
-    const maxRetryAttempts = 5;
-    const initialDelay = Duration(seconds: 2);
-
-    while (retryAttempts < maxRetryAttempts) {
-      await Future.delayed(initialDelay * (2 << retryAttempts));
-
+      print("disconnected successfully");
       try {
-        await connectToSocket(context);
+        await connectToSocket(context).then((value) {
+          if (_socket!.connection.state is Connected) {
+            updateConnectionStatus(val: "connected");
+            print("connected successfully after disconnect and reconnect");
+            joinExitRoom(
+                type: "Join",
+                context: context,
+                receiverId: int.parse(session.driverId));
+
+            print("************ Connectd *********** join after reconnect");
+          } else {
+            updateConnectionStatus(val: "${_socket?.connection.state}");
+
+            print(
+                "cheking status  after disconnect and reconnect: ${_socket!.connection.state}");
+          }
+        });
         return; // Successful reconnection, exit the function
       } catch (e) {
         print("Error during reconnection attempt: $e");
-        retryAttempts++;
+        // retryAttempts++;
       }
-    }
+    });
+    print("receonnetSocket=============>>");
+
+    // int retryAttempts = 0;
+    // const maxRetryAttempts = 5;
+    // const initialDelay = Duration(seconds: 2);
+
+    // while (retryAttempts < maxRetryAttempts) {
+    // await Future.delayed(initialDelay * (2 << retryAttempts));
+
+    // }
 
     // Failed to reconnect after maximum retry attempts
-    print("Failed to reconnect after $maxRetryAttempts attempts");
+    // print("Failed to reconnect after $maxRetryAttempts attempts");
   }
 
   // Future<void> receonnetSocket(BuildContext context) async {
@@ -359,6 +407,30 @@ class LatestSocketProvider extends ChangeNotifier {
     _socket!.close(1000);
   }
 
+  JoinExitRoomListen({context}) {
+    if (_socket!.connection.state is Connected) {
+      print("socket is connected in join exit room ");
+      joinExitRoom(
+          type: "Join",
+          context: context,
+          receiverId: int.parse(session.driverId));
+    } else {
+      print("checking socket before connection ------");
+      _socket!.connection.listen((event) {
+        if (event is Connected) {
+          print("socket is connected in join exit room listen in");
+          joinExitRoom(
+              type: "Join",
+              context: context,
+              receiverId: int.parse(session.driverId));
+        }
+      });
+
+      print("listen connection =====>>>>>. ${_socket!.connection.state}");
+      // listenSocketRequests(context);
+    }
+  }
+
   joinExitRoom(
       {int? receiverId, required String type, required BuildContext context}) {
     print("chat page join exit room called");
@@ -372,7 +444,7 @@ class LatestSocketProvider extends ChangeNotifier {
       notifyListeners();
       markMessageAsRead(receiverId: receiverId);
     } else if (type == 'unJoin') {
-      getTotalUnreadCount(receiverId);
+      // getTotalUnreadCount(receiverId);
       updateUnReadMessages(count: 0);
       clearChatList();
     }
@@ -403,18 +475,21 @@ class LatestSocketProvider extends ChangeNotifier {
       print(e.toString());
     }
 
-    _socket!.send(
-      jsonEncode(map),
-    );
+    // _socket!.send(
+    //   jsonEncode(map),
+    // );
     // listenRequests();
   }
 
   void listenSocketRequests(BuildContext context) {
     log("************ listen to socket called");
+    print("************ listen to socket called");
+
     _socket!.messages.listen((event) async {
       //  Decoding data
       final response = jsonDecode(event);
       log('-----Event  ${response.toString()}');
+      print('-----Event  ${response.toString()}');
 
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'CustomerBookRequest') {
@@ -729,6 +804,8 @@ class LatestSocketProvider extends ChangeNotifier {
         isLoading = false;
         notifyListeners();
         log("messgae type is MESSAGE LIST");
+        print("messgae type is MESSAGE LIST");
+
         log('Message list data-----> ${response['data']}');
 
         if (response['data'] != null) {
@@ -741,6 +818,8 @@ class LatestSocketProvider extends ChangeNotifier {
           );
           // dismissLoading();
           log("chat data is :-->>${chatMessageList.length}");
+          print("chat data is :-->>${chatMessageList.length}");
+
         } else {
           addChatAll([]);
           // dismissLoading();
@@ -772,6 +851,8 @@ class LatestSocketProvider extends ChangeNotifier {
 
   addSingleChat(ChatModel chat) {
     log("my single chat data is:-->> $chat");
+    print("my single chat data is:-->> $chat");
+
     _chatMessagesList.insert(0, chat);
     notifyListeners();
   }
@@ -780,6 +861,8 @@ class LatestSocketProvider extends ChangeNotifier {
     unreadMessageCount = count;
 
     log("un read message count is:-->> $unreadMessageCount");
+    print("un read message count is:-->> $unreadMessageCount");
+
     notifyListeners();
   }
 
