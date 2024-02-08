@@ -6,7 +6,6 @@ import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,7 +16,7 @@ import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
-import '../../../../socket/deryde_folder/chat/view/chat_view.dart';
+import '../../../../socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'new_receipt_page.dart';
 
 class NewOrderPage extends StatefulWidget {
@@ -36,25 +35,13 @@ class _NewOrderPageState extends State<NewOrderPage>
 
   final session = locator<Session>();
 
-  final newSocketProvider = Provider.of<LatestSocketProvider>(
-      locator<GlobalKey<NavigatorState>>().currentContext!);
+  final newSocketProvider = locator<TestSocketProvider>();
   final homeProvider = locator<HomeProvider>();
 
   Timer? _timer;
 
   @override
   void initState() {
-    // // newSocketProvider.receonnetSocket( context);
-    // Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-    //   log("resulr connecte=====>>>. ${result}");
-    //   if (result == ConnectivityResult.none) {
-    //     newSocketProvider.disconnectSocket();
-    //   } else {
-    //     newSocketProvider.receonnetSocket(context);
-    //     // newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
-    //   }
-    //   // Got a new connectivity status!
-    // });
     super.initState();
     dismissLoading();
     WidgetsBinding.instance.addObserver(this);
@@ -139,8 +126,8 @@ class _NewOrderPageState extends State<NewOrderPage>
         child: SafeArea(
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            body: Consumer<LatestSocketProvider>(builder:
-                (context, LatestSocketProvider latestSocketProvider, _) {
+            body: Consumer<TestSocketProvider>(
+                builder: (context, TestSocketProvider latestSocketProvider, _) {
               if (latestSocketProvider.isOrderAccepted) {
                 _timer?.cancel();
 
@@ -149,340 +136,6 @@ class _NewOrderPageState extends State<NewOrderPage>
 
                 log("order status is: ${latestSocketProvider.currentOrderStatus}");
               } else {}
-
-              // newSocketProvider
-              //     .getTotalUnreadCount(int.parse(session.driverId));
-              // if (checkOrderStatusTimer != null) {
-              //   checkOrderStatusTimer!.cancel();
-              // }
-
-//               checkOrderStatusTimer = Timer.periodic(const Duration(seconds: 4),
-//                   (Timer timer) async {
-//                 provider.fetchOrderStatus().listen((state) async {
-//                   log("called every 3 seconds");
-
-//                   if (state is GetStatusOrderLoaded) {
-//                     int sessionStatusOrder = session.orderStatus;
-//                     int statusOrder = state.data.status;
-
-//                     log("state data status is: ${state.data.status}");
-
-//                     if (statusOrder != sessionStatusOrder) {
-//                       log("sesstion or real order different ");
-//                       session.setOrderStatus = state.data.status;
-//                       switch (statusOrder) {
-//                         /** Driver Accepted the Order (Status 1) */
-//                         case Order.driverAccept:
-//                           provider.fetchOrderDetail().listen((event) async {
-//                             if (event is GetOrderDetailLoading) {
-//                               log(' Get Order Details Loading');
-//                               showLoading();
-//                             } else if (event is GetOrderDetailLoaded) {
-//                               log(' Get Order Details Loaded');
-
-//                               provider
-//                                   .fetchDriverDetail()
-//                                   .listen((eventDriverDetail) async {
-//                                 if (eventDriverDetail
-//                                     is GetDriverDetailLoaded) {
-//                                   log(' Get Driver Details Loaded');
-
-//                                   provider.changeOrderStatus =
-//                                       OrderStatus.driverAccept;
-//                                   dismissLoading();
-
-//                                   Navigator.pop(context);
-//                                   provider.updateOrderAccepted();
-
-//                                   // Timer timerDialogFoundDriver = Timer(
-//                                   //     const Duration(milliseconds: 3000), () {
-//                                   //   Navigator.pop(context);
-//                                   // });
-
-//                                   //Show dialog when Driver Found
-
-//                                   //New Code to show bottom sheet when Driver Found
-
-//                                   // showDriverFoundBottomSheet(
-//                                   //     context, eventDriverDetail.data);
-
-//                                   provider
-//                                       .updateOrderId(eventDriverDetail.data);
-
-//                                   provider.updateDriverDetails(
-//                                       data: eventDriverDetail.data);
-
-//                                   // showDriverFoundBottomSheet(
-//                                   //     context: context,
-//                                   //     driverDetails: eventDriverDetail.data,
-//                                   //     driverStatusText: statusOrder == 1
-//                                   //         ? "Your Driver is arriving in 5 minutes"
-//                                   //         : statusOrder == 2
-//                                   //             ? "Your Driver is on the way"
-//                                   //             : statusOrder == 3
-//                                   //                 ? "Driver has reached your location"
-//                                   //                 : statusOrder == 4
-//                                   //                     ? ""
-//                                   //                     : statusOrder == 5
-//                                   //                         ? ""
-//                                   //                         : statusOrder == 6
-//                                   //                             ? "You have reached your destination"
-//                                   //                             : statusOrder == 7
-//                                   //                                 ? ""
-//                                   //                                 : "",
-//                                   //     provider: provider);
-
-//                                   /** Old Code Showing pop when Driver found */
-//                                   // showDialog(
-//                                   //   barrierDismissible: false,
-//                                   //   context: context,
-//                                   //   builder: (context) {
-//                                   //     return DriverFoundDialog(
-//                                   //       driverDetail: eventDriverDetail.data,
-//                                   //       onTap: () {
-//                                   //         timerDialogFoundDriver.cancel();
-//                                   //         Navigator.pop(context);
-//                                   //       },
-//                                   //     );
-//                                   //   },
-//                                   // );
-//                                   trackingDriverTimer = Timer.periodic(
-//                                       const Duration(seconds: 5), (timer) {
-//                                     logMe("Tracking Driver");
-//                                     provider
-//                                         .fetchDriverLocation()
-//                                         .listen((eventDriverLocation) async {});
-//                                   });
-//                                 }
-//                               });
-//                             }
-//                           });
-//                           break;
-
-//                         /** Departure to Customer Place (Status 2) */
-//                         case Order.departureToCustomerplace:
-//                           provider.changeFirstTracking = false;
-
-//                           provider
-//                               .updateDriverStatus(appLoc.yourDriverIsOnTheWay);
-//                           log("status is --2");
-
-//                           break;
-
-//                         /** Arrived at Customer Place (Status 3) */
-//                         case Order.arriveAtCustomerPlace:
-//                           provider.updateDriverStatus(
-//                               appLoc.driverReachYourLocation);
-//                           await provider.removeMarker();
-//                           log("status is --3");
-
-//                           // showDialog(
-//                           //     barrierDismissible: false,
-//                           //     context: context,
-//                           //     builder: (context) {
-//                           //       return DepartDialog(
-//                           //         callback: (b, call) {
-//                           //           if (b) {
-//                           //             provider
-//                           //                 .submitStatusOrder(
-//                           //                     Order.customerConfirmation)
-//                           //                 .listen((event) async {
-//                           //               if (event is UpdateStatusOrderLoading) {
-//                           //                 showLoading();
-//                           //               } else if (event
-//                           //                   is UpdateStatusOrderLoaded) {
-//                           //                 await provider.removeMarker();
-//                           //                 dismissLoading();
-//                           //               } else if (event
-//                           //                   is UpdateStatusOrderFailure) {
-//                           //                 dismissLoading();
-//                           //               }
-//                           //             });
-//                           //           } else {
-//                           //             if (call) {
-//                           //               provider.callDriver();
-//                           //             }
-//                           //           }
-//                           //         },
-//                           //       );
-//                           //     });
-
-//                           break;
-
-// /** Ride canceled by DRIVER (Status 8)*/
-
-//                         case Order.cancel:
-//                           provider.isCanceledByDriver
-//                               ? showDialog(
-//                                   barrierDismissible: false,
-//                                   context: context,
-//                                   builder: (context) {
-//                                     return AlertDialog(
-//                                       title:
-//                                           Text("Ride cancelled by the Driver"),
-//                                       actions: [
-//                                         ElevatedButton(
-//                                             style: ElevatedButton.styleFrom(
-//                                               backgroundColor: black15141FColor,
-//                                             ),
-//                                             onPressed: () async {
-//                                               var homeProvider =
-//                                                   Provider.of<HomeProvider>(
-//                                                       context,
-//                                                       listen: false);
-//                                               await homeProvider.clearState();
-//                                               await provider.clearState();
-//                                               Navigator.pop(context);
-
-//                                               Navigator.pushNamedAndRemoveUntil(
-//                                                   context,
-//                                                   HomePage.routeName,
-//                                                   (route) => false);
-//                                             },
-//                                             child: Text("Find new Driver"))
-//                                       ],
-//                                     );
-//                                   },
-//                                 )
-//                               : SizedBox();
-//                           log("status is --8");
-
-//                           break;
-
-//                         /** Departure to Destination  (Status 5)*/
-
-//                         case Order.departureToDestination:
-//                           provider.updateDriverStatus(
-//                               appLoc.departureToYourDestination);
-//                           log("status is --5");
-
-//                           break;
-
-//                         /** Arrived at Destination (Status 6) */
-//                         case Order.arriveAtDestination:
-//                           provider.updateDriverStatus(
-//                               appLoc.youHaveReachedYourDestination);
-//                           await provider.removeMarker();
-//                           log("status is --6");
-
-//                           timer.cancel();
-
-//                           if (trackingDriverTimer != null) {
-//                             trackingDriverTimer!.cancel();
-//                           }
-//                           provider.updateReachedDestination();
-
-// //                           provider
-// //                               .submitStatusOrder(Order.complete)
-// //                               .listen((event) async {
-// //                             if (event is UpdateStatusOrderLoading) {
-// //                               showLoading();
-// //                             } else if (event is UpdateStatusOrderLoaded) {
-// //                               var homeProvider = Provider.of<HomeProvider>(
-// //                                   context,
-// //                                   listen: false);
-// //                               await homeProvider.clearState();
-
-// //                               dismissLoading();
-// //                               Future.delayed(const Duration(milliseconds: 3000),
-// //                                   () async {
-// //                                 // await provider.clearState();
-
-// //                                 await provider.orderReceiptApi();
-
-// // //Redirect to Receipt Screen when Ride completed
-// //                                 // Navigator.push(
-// //                                 //   context,
-// //                                 //   MaterialPageRoute(
-// //                                 //     builder: (context) => ReceiptScreen(),
-// //                                 //   ),
-// //                                 // );
-// //                                 // Navigator.pushNamedAndRemoveUntil(
-// //                                 //   context,
-// //                                 //   HomePage.routeName,
-// //                                 //   (route) => false,
-// //                                 // );
-// //                               });
-// //                               // showDialog(
-// //                               //   barrierDismissible: false,
-// //                               //   context: context,
-// //                               //   builder: (context) {
-// //                               //     return ThankYouDialog();
-// //                               //   },
-// //                               // );
-// //                             } else if (event is UpdateStatusOrderFailure) {
-// //                               dismissLoading();
-// //                             }
-// //                           });
-//                           break;
-
-//                         case Order.complete:
-//                           provider.updateDriverStatus(appLoc.complete);
-//                           provider.orderReceiptApi();
-//                           log("status is --7");
-//                           timer.cancel();
-
-//                           if (trackingDriverTimer != null) {
-//                             trackingDriverTimer!.cancel();
-//                           }
-
-//                           provider.updateReachedDestination();
-//                           break;
-//                       }
-//                     } else {
-//                       log("sesstion or real order are same ");
-
-//                       // log("else called==========>>>>>>>>>>>>>>>>>>>>>>>>>> when restart app");
-//                       if ((session.orderStatus == 1) ||
-//                           (session.orderStatus == 2) ||
-//                           (session.orderStatus == 3) ||
-//                           (session.orderStatus == 5) ||
-//                           (session.orderStatus == 6)) {
-//                         log("current order session is:----${session.orderStatus}");
-//                         // trackingDriverTimer =
-//                         //     Timer.periodic(const Duration(seconds: 5), (timer) {
-//                         //   logMe("Tracking Driver");
-//                         provider
-//                             .fetchDriverLocation()
-//                             .listen((eventDriverLocation) async {});
-//                         // });
-//                         ;
-//                       } else if (session.orderStatus == 7) {
-//                         checkOrderStatusTimer?.cancel();
-//                         trackingDriverTimer?.cancel();
-//                       }
-
-//                       if ((session.orderStatus == 2) ||
-//                           (session.orderStatus == 3) ||
-//                           (session.orderStatus == 5) ||
-//                           (session.orderStatus == 6)) {
-//                         provider.changeFirstTracking = false;
-//                       }
-
-//                       // if (session.orderStatus == 2) {
-//                       //   provider
-//                       //       .updateDriverStatus(appLoc.yourDriverIsOnTheWay);
-//                       // } else if (session.orderStatus == 3) {
-//                       //   provider
-//                       //       .updateDriverStatus(appLoc.driverReachYourLocation);
-//                       //   await provider.removeMarker();
-//                       // } else if (session.orderStatus == 5) {
-//                       //   provider.updateDriverStatus(appLoc.departToDestination);
-//                       // } else if (session.orderStatus == 6) {
-//                       //   provider.updateDriverStatus(appLoc.arriveAtDestination);
-//                       // } else if (session.orderStatus == 7) {
-//                       //   checkOrderStatusTimer?.cancel();
-//                       //   trackingDriverTimer?.cancel();
-//                       //   provider.updateDriverStatus(appLoc.complete);
-//                       // }
-
-//                       // session.setOrderStatus = state.data.status;
-
-//                       log("session and real order status same");
-//                     }
-//                   }
-//                 });
-//               });
 
               return Stack(
                 children: <Widget>[
@@ -512,16 +165,6 @@ class _NewOrderPageState extends State<NewOrderPage>
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                        /** New code  */
-
-                        // latestSocketProvider.orderStatus != OrderStatus.lookingDriver
-                        //     ? SizedBox(
-                        //         height: 10,
-                        //       )
-                        //     : SizedBox(
-                        //         height: 10,
-                        //       ),
-
                         Container(
                           color: whiteColor,
                           child: Padding(
@@ -532,7 +175,6 @@ class _NewOrderPageState extends State<NewOrderPage>
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Column(
-                                  // mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Image.asset(
                                       locationPngIcon,
@@ -568,35 +210,12 @@ class _NewOrderPageState extends State<NewOrderPage>
                                         ),
                                       ),
                                     ),
-                                    // OriginWidget(
-                                    //   deviceWidth: _deviceSize.width,
-                                    //   isFromOrder: false,
-                                    // ),
-
-                                    // Flexible(
-                                    //   child: Container(
-                                    //     width: _deviceSize.width,
-                                    //     child: Text(
-                                    //       widget.location.originAddress,
-                                    //       softWrap: false,
-                                    //       overflow: TextOverflow.ellipsis,
-                                    //       style: const TextStyle(
-                                    //           fontFamily: 'poPPinRegular',
-                                    //           fontSize: 17.0,
-                                    //           color: Colors.black),
-                                    //     ),
-                                    //   ),
-                                    // ),
-
-                                    // Text(widget.location.originAddress),
-
                                     Container(
                                       margin: EdgeInsets.zero,
                                       width: _deviceSize.width * .8,
                                       height: 1.0,
                                       color: whiteEFEFEFColor,
                                     ),
-
                                     SizedBox(
                                       width: _deviceSize.width * .8,
                                       child: Padding(
@@ -612,82 +231,15 @@ class _NewOrderPageState extends State<NewOrderPage>
                                         ),
                                       ),
                                     ),
-
-                                    // Flexible(
-                                    //   child: Container(
-                                    //     width: _deviceSize.width,
-                                    //     child: Text(
-                                    //       widget.location.destinationAddress,
-                                    //       softWrap: false,
-                                    //       overflow: TextOverflow.fade,
-                                    //       style: const TextStyle(
-                                    //           fontFamily: 'poPPinRegular',
-                                    //           fontSize: 17.0,
-                                    //           color: Colors.black),
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    // Container(
-                                    //   child: Text(
-                                    //       widget.location.destinationAddress),
-
-                                    //  DestinationWidget(
-                                    //   deviceWidth: _deviceSize.width,
-                                    //   isFromOrder: false,
-                                    // ),
-                                    // ),
                                   ],
                                 ),
                               ],
                             )),
                           ),
                         ),
-
-                        // Column(
-                        //   children: [
-                        //     Text(
-                        //         "Driver latlong realtime: ${provider.driverLat}" +
-                        //             " , " +
-                        //             "${provider.driverLng}"),
-                        //     Text(
-                        //         "Polyline is: ${provider.polylineCoordinates}"),
-                        //   ],
-                        // ),
-
-                        /**Old Code  */
-
-                        // OriginWidget(
-                        //   deviceWidth: _deviceSize.width,
-                        //   isFromOrder: true,
-                        // ),
-                        // DestinationWidget(
-                        //   deviceWidth: _deviceSize.width,
-                        //   isFromOrder: true,
-                        // ),
-
-                        // // Top Section Drop And Pick up
-                        // Expanded(
-                        //     child: Column(
-                        //         crossAxisAlignment: CrossAxisAlignment.end,
-                        //         mainAxisAlignment: MainAxisAlignment.end,
-                        //         children: [
-                        //       provider.orderStatus == OrderStatus.lookingDriver
-                        //           ? const SizedBox()
-                        //           : const CurrentLocationOrderWidget(),
-                        //       const BottomContaineOrder()
-                        //     ]))
-
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ChatView()));
-                            },
-                            child: Text("New Chat Screen")),
-
+                        // ElevatedButton(
+                        //     onPressed: () {}, child: Text("New Chat Screen")),
                         Spacer(),
-                        Center(child: Text(latestSocketProvider.strength)),
                         Visibility(
                           visible:
                               (latestSocketProvider.currentOrderStatus != 0) ||
@@ -735,11 +287,8 @@ class _NewOrderPageState extends State<NewOrderPage>
                                                           ? "Ride is Completed"
                                                           : "",
 
-                                      newMessgeCount:
-                                          Provider.of<LatestSocketProvider>(
-                                                  context,
-                                                  listen: true)
-                                              .unreadMessageCount,
+                                      newMessgeCount: latestSocketProvider
+                                          .unreadMessageCount,
                                       reviewEvent: () {
                                         Navigator.push(
                                             context,
@@ -756,12 +305,6 @@ class _NewOrderPageState extends State<NewOrderPage>
                                       messageEvent: () {
                                         log("OnClick on MESSAGE event");
 
-                                        // showBottomSheet(
-                                        //   context: context,
-                                        //   builder: (context) {
-                                        //     return Text("asdfs");
-                                        //   },
-                                        // );
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -769,28 +312,8 @@ class _NewOrderPageState extends State<NewOrderPage>
                                                     ChatPage()));
                                       },
                                       viewReceiptEvent: () async {
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) => RatingsScreen(
-                                        //       driverId: session.driverId,
-                                        //     ),
-                                        //   ),
-                                        // );
                                         log("On Click on view receipt");
-                                        // provider.orderReceiptApi().listen((event) {
-                                        //   // log("Event :----------s  " +
-                                        //   //     event.);
-                                        // });
 
-                                        // Navigator.pushAndRemoveUntil(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (BuildContext context) =>
-                                        //         ReceiptScreen(),
-                                        //   ),
-                                        //   (route) => false,
-                                        // );
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -799,41 +322,6 @@ class _NewOrderPageState extends State<NewOrderPage>
                                           ),
                                         );
                                       },
-                                      // driverStatusText: ((latestSocketProvider
-                                      //                 .currentOrderStatus ==
-                                      //             1) ||
-                                      //         (session.orderStatus == 1))
-                                      //     ? "Driver is arriving"
-                                      //     : ((latestSocketProvider.currentOrderStatus ==
-                                      //                 2) ||
-                                      //             (session.orderStatus == 2))
-                                      //         ? "Driver is on the way"
-                                      //         : ((latestSocketProvider
-                                      //                         .currentOrderStatus ==
-                                      //                     3) ||
-                                      //                 (session.orderStatus == 3))
-                                      //             ? "Driver reached your location"
-                                      //             : ((latestSocketProvider
-                                      //                             .currentOrderStatus ==
-                                      //                         5) ||
-                                      //                     (session.orderStatus == 5))
-                                      //                 ? "Departure to your Destination"
-                                      //                 : ((latestSocketProvider
-                                      //                                 .currentOrderStatus ==
-                                      //                             7) ||
-                                      //                         (session.orderStatus ==
-                                      //                             7))
-                                      //                     ? "Ride is Completed"
-                                      //                     : "",
-                                      // category: provider.carModal,
-                                      // driverId: provider.driverId,
-                                      // driverImage: provider.driverImg,
-                                      // driverName: provider.driverName,
-                                      // platerNumber: provider.plateNumber,
-                                      // rating: provider.ratings,
-                                      // isReceiptVisible:
-                                      //     ((session.orderStatus == 7)) ? true : false,
-                                      // isReceiptVisible: true,
 
                                       category: newSocketProvider
                                               .driverDetailResponseModel
@@ -841,21 +329,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                                               .carModel
                                               .toString() ??
                                           '',
-                                      // driverId: session.orderId,
 
-                                      // driverImage: latestSocketProvider
-                                      //         .acceptResponseModel?.data.profilePhoto ??
-                                      //     latestSocketProvider.driverImg,
-                                      // driverName: latestSocketProvider
-                                      //         .acceptResponseModel?.data.name ??
-                                      //     latestSocketProvider.driverName,
-                                      // platerNumber: latestSocketProvider
-                                      //         .acceptResponseModel?.data.plateNumber ??
-                                      //     latestSocketProvider.plateNumber,
-                                      // rating: latestSocketProvider
-                                      //         .acceptResponseModel?.data.driverRating
-                                      //         .toString() ??
-                                      //     "1.0",
                                       isReceiptVisible: ((latestSocketProvider
                                                       .currentOrderStatus ==
                                                   7) ||
@@ -875,7 +349,7 @@ class _NewOrderPageState extends State<NewOrderPage>
   }
 
   showSearchingVehiclesBottomSheet(
-      BuildContext context, LatestSocketProvider latestSocketProvider) {
+      BuildContext context, TestSocketProvider latestSocketProvider) {
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -901,63 +375,4 @@ class _NewOrderPageState extends State<NewOrderPage>
       }
     });
   }
-
-  // showDriverFoundBottomSheet(
-  //     {required BuildContext context,
-  //     required  driverDetails,
-  //     required String driverStatusText,
-  //     required OrderProvider provider}) {
-  //   showModalBottomSheet(
-  //       isDismissible: false,
-  //       isScrollControlled: false,
-  //       backgroundColor: whiteColor,
-  //       context: context,
-  //       shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.only(
-  //         topRight: Radius.circular(20.0),
-  //         topLeft: Radius.circular(20.0),
-  //       )),
-  //       clipBehavior: Clip.antiAliasWithSaveLayer,
-  //       builder: (context) {
-  //         return Wrap(children: [
-  //           DriverInfoBottomSheet(
-  //             reviewEvent: () {
-  //               Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                       builder: (context) =>
-  //                           RatingsScreen(driverId: session.driverId)));
-  //             },
-  //             callEvent: () {
-  //               provider.callDriver();
-  //             },
-  //             messageEvent: () {
-  //               Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                   builder: (context) => ChatScreen(),
-  //                 ),
-  //               );
-  //             },
-  //             viewReceiptEvent: () {
-  //               Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                   builder: (context) => ReceiptScreen(),
-  //                 ),
-  //               );
-  //             },
-  //             driverStatusText: driverStatusText,
-  //             category: driverDetails.model,
-  //             driverId: '4',
-  //             driverImage: '',
-  //             driverName: driverDetails.name,
-  //             platerNumber: driverDetails.plat,
-  //             rating: "4.5",
-  //             isReceiptVisible:
-  //                 (provider.session.orderStatus == (6)) ? true : false,
-  //           ),
-  //         ]);
-  //       });
-  // }
 }

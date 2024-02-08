@@ -116,6 +116,7 @@ flutter:
     - assets/icons/
     - assets/default_google_pay_config.json
     - assets/default_apple_pay_config.json
+    - assets/lottie_animation/
 
 
 

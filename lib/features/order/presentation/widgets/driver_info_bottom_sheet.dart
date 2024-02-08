@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/custom_contact_btn.dart';
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +48,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
     final session = locator<Session>();
-    return Consumer<LatestSocketProvider>(
+    return Consumer<TestSocketProvider>(
       builder: (context, provider, _) {
         log("driver info model driver name is -->. ${provider.driverDetailResponseModel!.message.name}");
         log("current order status is : -->. ${provider.currentOrderStatus}");
@@ -173,9 +173,7 @@ class DriverInfoBottomSheet extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Provider.of<LatestSocketProvider>(context, listen: true)
-                                .unreadMessageCount !=
-                            0
+                    provider.unreadMessageCount != 0
                         ? Positioned(
                             top: 0,
                             right: 0,

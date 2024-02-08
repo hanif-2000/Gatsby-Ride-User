@@ -1,5 +1,5 @@
 import 'package:GetsbyRideshare/core/types/fonts.dart';
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +15,7 @@ class DriverInfoWidget extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Consumer<LatestSocketProvider>(builder: (context, provider, _) {
+    return Consumer<TestSocketProvider>(builder: (context, provider, _) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -51,6 +51,7 @@ class DriverInfoWidget extends StatelessWidget {
                                     MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
+                                  //***iamge and data */
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [

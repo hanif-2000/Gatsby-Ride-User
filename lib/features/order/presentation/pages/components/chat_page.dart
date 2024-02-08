@@ -1,9 +1,10 @@
 import 'dart:developer';
 
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../core/static/assets.dart';
@@ -30,9 +31,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
-  var socketProvider = Provider.of<LatestSocketProvider>(
-      locator<GlobalKey<NavigatorState>>().currentContext!,
-      listen: false);
+  var socketProvider = locator<TestSocketProvider>();
 
   // var orderProvider = locator<OrderProvider>();
   // var chatProvider = locator<ChatProvider>();
@@ -41,18 +40,22 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    socketProvider.connectToSocket(context);
+
+    // socketProvider.connectToSocket(context);
 
     WidgetsBinding.instance.addObserver(this);
 
     print("init in chat page called");
 
-    socketProvider..JoinExitRoomListen(context: context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      print("WidgetsBinding");
+      socketProvider.joinExitRoom(
+          context: context,
+          receiverId: int.parse(session.driverId),
+          type: "Join");
+    });
 
-    // socketProvider.joinExitRoom(
-    //     context: context,
-    //     receiverId: int.parse(session.driverId),
-    //     type: "Join");
+    // socketProvider.JoinExitRoomListen(context: context);
   }
 
   @override
@@ -88,100 +91,94 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Consumer<LatestSocketProvider>(
-      builder: (context, latestSocketProvider, _) {
+    return SafeArea(
+      child: Consumer<TestSocketProvider>(
+          builder: (context, latestSocketProvider, _) {
         return Scaffold(
-          extendBody: false,
-          resizeToAvoidBottomInset: true,
-          backgroundColor: greyF9F9F9Color,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(80.0),
-            child: Card(
-              elevation: 0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AppBar(
-                    elevation: 0,
-                    automaticallyImplyLeading: false,
-                    centerTitle: true,
-                    backgroundColor: transparentColor,
-                    title: Row(
-                      children: [
-                        Text(
-                          "fasd",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        CommonCircularImageContainer(
-                          height: 45,
-                          width: 45,
-                          image: Provider.of<LatestSocketProvider>(context,
-                                          listen: true)
-                                      .acceptResponseModel
-                                      ?.data
-                                      .profilePhoto !=
-                                  null
-                              ? Provider.of<LatestSocketProvider>(context,
-                                      listen: true)
-                                  .acceptResponseModel!
-                                  .data
-                                  .profilePhoto
-                              : '',
-                        ),
-                        SizedBox(
-                          width: 11,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CommonText(
-                              text: Provider.of<LatestSocketProvider>(context,
-                                      listen: true)
-                                  .driverDetailResponseModel!
-                                  .message
-                                  .name
-                                  .toString(),
-                              fontWeight: FontWeight.w500,
-                              fontColor: blackColor,
-                              fontFamily: "poPPinMedium",
-                              fontSize: 16,
-                            ),
-                            CommonText(
-                              text: appLoc.activeNow,
-                              fontWeight: FontWeight.w400,
-                              fontColor: blackColor,
-                              fontFamily: "poPPinMedium",
-                              fontSize: 10,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          socketProvider.connectionStatus.toString(),
-                          style: TextStyle(color: Colors.black),
-                        )
-                      ],
-                    ),
-                    leading: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: blackColor,
+            extendBody: false,
+            resizeToAvoidBottomInset: true,
+            backgroundColor: greyF9F9F9Color,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(80.0),
+              child: Card(
+                elevation: 0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AppBar(
+                      elevation: 0,
+                      automaticallyImplyLeading: false,
+                      centerTitle: true,
+                      backgroundColor: transparentColor,
+                      title: Row(
+                        children: [
+                          // Text(
+                          //   "fasd",
+                          //   style: TextStyle(color: Colors.black),
+                          // ),
+                          CommonCircularImageContainer(
+                            height: 45,
+                            width: 45,
+                            image: socketProvider.acceptResponseModel?.data
+                                        .profilePhoto !=
+                                    null
+                                ? latestSocketProvider
+                                    .acceptResponseModel!.data.profilePhoto
+                                : '',
+                          ),
+                          SizedBox(
+                            width: 11,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CommonText(
+                                text: latestSocketProvider
+                                    .driverDetailResponseModel!.message.name
+                                    .toString(),
+                                fontWeight: FontWeight.w500,
+                                fontColor: blackColor,
+                                fontFamily: "poPPinMedium",
+                                fontSize: 16,
+                              ),
+                              CommonText(
+                                text: appLoc.activeNow,
+                                fontWeight: FontWeight.w400,
+                                fontColor: blackColor,
+                                fontFamily: "poPPinMedium",
+                                fontSize: 10,
+                              ),
+                            ],
+                          ),
+                          // Text(
+                          //   socketProvider.connectionStatus.toString(),
+                          //   style: TextStyle(color: Colors.black),
+                          // )
+                        ],
                       ),
-                      onPressed: () {
-                        log("on click on go back");
+                      leading: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: blackColor,
+                        ),
+                        onPressed: () {
+                          log("on click on go back");
 
-                        Navigator.pop(context);
-                      },
+                          Navigator.pop(context);
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          // backgroundColor: Colors.grey,
-          body: Consumer<LatestSocketProvider>(builder: (context, provider, _) {
-            return Visibility(
-              visible: Provider.of<LatestSocketProvider>(context, listen: true)
-                  .isLoading,
+            // backgroundColor: Colors.grey,
+            body:
+                // Consumer<LatestSocketProvider>(builder: (context, provider, _) {
+
+                //   return
+                Visibility(
+              visible: latestSocketProvider.isLoading,
               child: Center(
                 child: SizedBox(
                   height: 50,
@@ -193,89 +190,29 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               ),
               replacement: Column(
                 children: [
-                  // Container(
-                  //   padding: const EdgeInsets.only(top: 40),
-                  //   decoration: const BoxDecoration(
-                  //     color: Colors.white,
-                  //   ),
-                  //   child: Row(
-                  //     children: [
-                  //       Padding(
-                  //         padding: const EdgeInsets.only(top: 20, bottom: 16),
-                  //         child: Row(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //           children: [
-                  //             IconButton(
-                  //               onPressed: () {
-                  //                 Navigator.pop(context);
-                  //               },
-                  //               icon: SvgPicture.asset(
-                  //                 'assets/icons/auth/ic_back.svg',
-                  //               ),
-                  //             ),
-                  //             smallHorizontalSpacing(),
-                  //             Container(
-                  //               height: 50,
-                  //               width: 50,
-                  //               decoration: BoxDecoration(
-                  //                 shape: BoxShape.circle,
-                  //                 color: Colors.red,
-                  //                 //   image: DecorationImage(
-                  //                 //       image: NetworkImage(
-                  //                 //         '$BASE_URL${widget.chatDetail!.userPhoto}',
-                  //                 //       ),
-                  //                 //       fit: BoxFit.cover
-                  //                 // ),
-                  //               ),
-                  //             ),
-                  //             mediumHorizontalSpacing(),
-                  //             Column(
-                  //               crossAxisAlignment: CrossAxisAlignment.start,
-                  //               children: [
-                  //                 Text('${orderProvider.driverName}',
-                  //                     textAlign: TextAlign.center,
-                  //                     style: titleStyle.copyWith(
-                  //                       fontSize: 16,
-                  //                     )
-                  //                     // .usePoppinsW5Font(),
-                  //                     ),
-                  //                 // Text(
-                  //                 //   'Active now',
-                  //                 //   textAlign: TextAlign.center,
-                  //                 //   style: titleStyle
-                  //                 //       .copyWith(fontSize: 12, color: greyB6B6B6)
-                  //                 //       .usePoppinsW4Font(),
-                  //                 // ),
-                  //               ],
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
                   Expanded(
                     child: SizedBox(
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
-                        child: provider.chatMessageList.isEmpty
-                            ? const Center(
-                                child: Text('No messages'),
-                              )
+                        child: latestSocketProvider.chatMessageList.isEmpty
+                            ? Center(
+                                child: Lottie.asset(
+                                    'assets/lottie_animation/chat_empty_animation.json'))
                             : ListView.builder(
                                 reverse: true,
-                                itemCount: provider.chatMessageList.length,
+                                itemCount:
+                                    latestSocketProvider.chatMessageList.length,
                                 itemBuilder: (context, index) {
-                                  return provider.chatMessageList[index]
+                                  return latestSocketProvider
+                                              .chatMessageList[index]
                                               .senderType ==
                                           'Driver'
                                       ? ReceiverTile(
-                                          title: provider
+                                          title: latestSocketProvider
                                               .chatMessageList[index].message,
                                         )
                                       : SenderTile(
-                                          title: provider
+                                          title: latestSocketProvider
                                               .chatMessageList[index].message,
                                         );
                                 },
@@ -296,7 +233,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       children: [
                         Expanded(
                           child: TextFormField(
-                            controller: provider.chatController,
+                            controller: latestSocketProvider.chatController,
                             decoration: InputDecoration(
                                 hintText: 'Enter message...',
                                 hintStyle: titleStyle.copyWith(
@@ -310,17 +247,18 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         ),
                         InkWell(
                           onTap: () {
-                            if (provider.chatController.text.trim().isEmpty) {
+                            if (latestSocketProvider.chatController.text
+                                .trim()
+                                .isEmpty) {
                               showToast(message: "Please enter your message");
                             } else {
                               ///TODO: send the message
-                              Provider.of<LatestSocketProvider>(context,
-                                      listen: true)
-                                  .sendChatMessage(
-                                      message:
-                                          provider.chatController.text.trim(),
-                                      receiverId: int.parse(session.driverId));
-                              provider.chatController.text = '';
+                              latestSocketProvider.sendChatMessage(
+                                  message: latestSocketProvider
+                                      .chatController.text
+                                      .trim(),
+                                  receiverId: int.parse(session.driverId));
+                              latestSocketProvider.chatController.text = '';
                             }
                           },
                           child: Padding(
@@ -335,10 +273,10 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                   ),
                 ],
               ),
-            );
-          }),
-        );
-      },
-    ));
+            ));
+      }),
+    );
+    // },
+    // ));
   }
 }

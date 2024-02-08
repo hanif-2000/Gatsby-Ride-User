@@ -15,7 +15,6 @@ import '../../../../core/static/dimens.dart';
 import '../../../../core/utility/helper.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
-import '../../../../socket/latest_socket_provider.dart';
 import '../../../register/presentation/pages/register_page.dart';
 import '../providers/login_provider.dart';
 import '../providers/login_state.dart';
@@ -27,9 +26,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var socketProvider = Provider.of<LatestSocketProvider>(
-        locator<GlobalKey<NavigatorState>>().currentContext!,
-        listen: false);
+    // var socketProvider = locator<TestSocketProvider>();
     return ChangeNotifierProvider<LoginProvider>(
       create: (ctx) => locator<LoginProvider>(),
       child: Scaffold(

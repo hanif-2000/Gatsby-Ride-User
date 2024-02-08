@@ -9,8 +9,7 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
-import 'package:GetsbyRideshare/socket/deryde_folder/booking_socket_provider.dart';
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -33,6 +32,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  TestSocketProvider socketProvider = locator<TestSocketProvider>();
   //  OrderDetail previousOrderDetails = OrderDetail();
   // late OrderDataDetail _orderDataDetail;
 
@@ -69,12 +69,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // Map the data to your ReceiptResponseModel
     ReceiptResponseModel receipt = ReceiptResponseModel.fromJson(dataMap);
 
-    Provider.of<LatestSocketProvider>(context, listen: false)
-        .updateReceiptResponseModel(receipt)
-        .then((value) {
+    socketProvider.updateReceiptResponseModel(receipt).then((value) {
       logMe("RECEIPT DATA UPDATED SUCCESS");
 
-      Provider.of<LatestSocketProvider>(context, listen: false)
+      socketProvider
           .fetchOrderDetails(int.parse(session.orderId))
           .then((value) {
         logMe(" order details are:::::::::::::: ${value}");
@@ -89,14 +87,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         //   showToast(message: "Previous Ride is Canceled");
         // }
 
-        Provider.of<LatestSocketProvider>(context, listen: false)
-            .updateOrderDetailsModel(data: value);
+        socketProvider.updateOrderDetailsModel(data: value);
 
-        Provider.of<LatestSocketProvider>(context, listen: false)
+        socketProvider
             .fetchDriverDetails(int.parse(session.driverId))
             .then((value) {
-          Provider.of<LatestSocketProvider>(context, listen: false)
-              .updateDriverDetailsModel(data: value);
+          socketProvider.updateDriverDetailsModel(data: value);
           logMe(" driver details are:::::::::::::: ${value}");
         });
       });
@@ -105,8 +101,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   checkSessionDataAndNavigate() {
     if (session.isRunningOrder) {
-      Provider.of<LatestSocketProvider>(context, listen: false)
-          .updateOnlyBitmap();
+      socketProvider.updateOnlyBitmap();
       // SmartDialog.showLoading(
       //   animationType: SmartAnimationType.fade,
       //   backDismiss: false,
@@ -120,7 +115,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             //   dismissLoading();
 
             logMe(
-                " receipt data from session is ${Provider.of<LatestSocketProvider>(context, listen: false).receiptResponseModel}:");
+                " receipt data from session is ${socketProvider.receiptResponseModel}:");
             SmartDialog.dismiss();
             dismissLoading();
             Navigator.of(context).pushNamedAndRemoveUntil(
@@ -131,40 +126,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           });
           /** Navigate to receipt screen */
         } else if (!session.isRatingGiven) {
-          Provider.of<LatestSocketProvider>(context, listen: false)
+          socketProvider
               .fetchDriverDetails(int.parse(session.driverId))
               .then((value) {
-            Provider.of<LatestSocketProvider>(context, listen: false)
-                .updateDriverDetailsModel(data: value)
-                .then((value) {
+            socketProvider.updateDriverDetailsModel(data: value).then((value) {
               logMe(
-                  " driver details are:::::::::::::: ${Provider.of<LatestSocketProvider>(context, listen: false).driverDetailResponseModel}");
+                  " driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
               SmartDialog.dismiss();
 
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => FeedBackScreen(
-                    name: Provider.of<LatestSocketProvider>(context,
-                            listen: false)
-                        .driverDetailResponseModel!
-                        .message
-                        .name,
-                    img: Provider.of<LatestSocketProvider>(context,
-                            listen: false)
-                        .driverDetailResponseModel!
-                        .message
-                        .image,
-                    carModal: Provider.of<LatestSocketProvider>(context,
-                            listen: false)
-                        .driverDetailResponseModel!
-                        .message
-                        .carModel,
-                    carNo: Provider.of<LatestSocketProvider>(context,
-                            listen: false)
-                        .driverDetailResponseModel!
-                        .message
-                        .plateNumber,
+                    name:
+                        socketProvider.driverDetailResponseModel!.message.name,
+                    img:
+                        socketProvider.driverDetailResponseModel!.message.image,
+                    carModal: socketProvider
+                        .driverDetailResponseModel!.message.carModel,
+                    carNo: socketProvider
+                        .driverDetailResponseModel!.message.plateNumber,
                   ),
                 ),
               );
@@ -176,12 +157,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       } else {
         logMe(
             "-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
-        Provider.of<LatestSocketProvider>(context, listen: false)
+        socketProvider
             .fetchOrderDetails(int.parse(session.orderId))
             .then((value) {
-          Provider.of<LatestSocketProvider>(context, listen: false)
-              .updateCurrentOrderStatus(
-                  val: int.parse(value.data.orderStatus.toString()));
+          socketProvider.updateCurrentOrderStatus(
+              val: int.parse(value.data.orderStatus.toString()));
 
           if (value.data.orderStatus.toString() == "8") {
             session.setIsPaymentDone = true;
@@ -192,43 +172,32 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           } else {
             logMe(" order details are:::::::::::::: ${value}");
 
-            Provider.of<LatestSocketProvider>(context, listen: false)
-                .updateOrderDetailsModel(data: value);
+            socketProvider.updateOrderDetailsModel(data: value);
 
-            Provider.of<LatestSocketProvider>(context, listen: false)
+            socketProvider
                 .fetchDriverDetails(int.parse(session.driverId))
                 .then((value) {
-              Provider.of<LatestSocketProvider>(context, listen: false)
-                  .updateDriverDetailsModel(data: value);
+              socketProvider.updateDriverDetailsModel(data: value);
               logMe(" driver details are:::::::::::::: ${value}");
               SmartDialog.dismiss();
 
-              Navigator.pushNamedAndRemoveUntil(
-                  context, NewOrderPage.routeName, (route) => false,
+              Navigator.pushNamedAndRemoveUntil(context, NewOrderPage.routeName, (route) => false,
                   arguments: OrderDataDetail(
-                      originAddress: Provider.of<LatestSocketProvider>(context, listen: false)
-                          .orderDetailResponseModel!
-                          .data
-                          .startAddress,
-                      destinationAddress:
-                          Provider.of<LatestSocketProvider>(context, listen: false)
-                              .orderDetailResponseModel!
-                              .data
-                              .endAddress,
+                      originAddress: socketProvider
+                          .orderDetailResponseModel!.data.startAddress,
+                      destinationAddress: socketProvider
+                          .orderDetailResponseModel!.data.endAddress,
                       originLatLng: LatLng(
-                          double.parse(Provider.of<LatestSocketProvider>(context, listen: false)
-                              .orderDetailResponseModel!
-                              .data
-                              .startCoordinate
+                          double.parse(socketProvider.orderDetailResponseModel!.data.startCoordinate
                               .split(',')
                               .first),
-                          double.parse(Provider.of<LatestSocketProvider>(context, listen: false)
-                              .orderDetailResponseModel!
-                              .data
-                              .startCoordinate
+                          double.parse(socketProvider
+                              .orderDetailResponseModel!.data.startCoordinate
                               .split(',')
                               .last)),
-                      destinationLatLng: LatLng(double.parse(Provider.of<LatestSocketProvider>(context, listen: false).orderDetailResponseModel!.data.endCoordinate.split(',').first), double.parse(Provider.of<LatestSocketProvider>(context, listen: false).orderDetailResponseModel!.data.endCoordinate.split(',').last))));
+                      destinationLatLng: LatLng(
+                          double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
+                          double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
             });
           }
         });
@@ -240,10 +209,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    Provider.of<LatestSocketProvider>(context, listen: false)
-        .connectToSocket(context);
+    socketProvider.connectToSocket(context);
 
-    Provider.of<SocketProvider>(context, listen: false).connectToSocketInBooking(context);
+    // Provider.of<SocketProvider>(context, listen: false)
+    //     .connectToSocketInBooking(context);
     log("************ IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
     super.initState();
     WidgetsBinding.instance.addObserver(this);

@@ -3,6 +3,7 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/payment_screen.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ import '../../../../../core/presentation/widgets/custom_button/custom_button_wid
 import '../../../../../core/static/assets.dart';
 import '../../../../../core/utility/injection.dart';
 import '../../../../../core/utility/session_helper.dart';
-import '../../../../../socket/latest_socket_provider.dart';
 
 import 'package:pay/pay.dart';
 
@@ -133,7 +133,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
               fontSize: 18,
             ),
           ),
-          body: Consumer<LatestSocketProvider>(
+          body: Consumer<TestSocketProvider>(
             builder: (context, provider, child) {
               return Container(
                 height: height,

@@ -120,10 +120,10 @@ class ReceiptData {
         plateNumber: json["plate_number"] ?? "",
         vehicleName: json["vehicle_name"] ?? "",
         driverRating: json["DriverRating"] ?? "",
-        extraDistance: json["extra_distance"] ?? "",
-        extraDistancePrice: json["extra_distance_price"] ?? "",
-        extraTime: json["extra_time"] ?? "",
-        extraTimePrice: json["extra_time_price"] ?? '',
+        extraDistance: json["extra_distance"] ?? "0",
+        extraDistancePrice: json["extra_distance_price"] ?? "0",
+        extraTime: json["extra_time"] ?? "0",
+        extraTimePrice: json["extra_time_price"] ?? '0.0',
       );
 
   Map<String, dynamic> toJson() => {

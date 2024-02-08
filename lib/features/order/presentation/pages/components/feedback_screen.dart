@@ -8,6 +8,7 @@ import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/rating_submitted_screen.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/circular_image_container.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart' as rating;
@@ -16,7 +17,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../../core/presentation/providers/home_provider.dart';
-import '../../../../../socket/latest_socket_provider.dart';
 
 class FeedBackScreen extends StatelessWidget {
   final String name;
@@ -52,7 +52,7 @@ class FeedBackScreen extends StatelessWidget {
             //   color: blackColor,
             // ),
           ),
-          body: Consumer<LatestSocketProvider>(
+          body: Consumer<TestSocketProvider>(
             builder: (context, provider, child) {
               return Padding(
                 padding:
@@ -244,12 +244,12 @@ class FeedBackScreen extends StatelessWidget {
                                 context,
                                 listen: false);
 
-                            var orderProvider =
-                                Provider.of<LatestSocketProvider>(context,
-                                    listen: false);
+                            // var orderProvider =
+                            //     Provider.of<LatestSocketProvider>(context,
+                            //         listen: false);
                             session.setIsRatingGiven = true;
                             await homeProvider.clearState();
-                            await orderProvider.clearState();
+                            await provider.clearState();
 
                             Navigator.pushNamedAndRemoveUntil(
                                 context, HomePage.routeName, (route) => false);

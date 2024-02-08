@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/presentation/pages/menu_page.dart';
 import 'package:GetsbyRideshare/core/presentation/pages/place_picker_page/place_picker_page.dart';
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,7 @@ class OriginWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isFromOrder) {
-      return Consumer<LatestSocketProvider>(builder: (context, map, _) {
+      return Consumer<TestSocketProvider>(builder: (context, map, _) {
         if (map.originAddress == '') {
           return Padding(
               padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),

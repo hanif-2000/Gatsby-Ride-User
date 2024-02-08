@@ -22,6 +22,7 @@ import 'package:GetsbyRideshare/features/profile/domain/usecases/create_profile.
 import 'package:GetsbyRideshare/features/profile/domain/usecases/upload_profile_image.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -123,6 +124,8 @@ Future<void> init() async {
   locator.registerLazySingleton<GlobalKey<NavigatorState>>(
       () => GlobalKey<NavigatorState>());
   locator.registerLazySingleton<Connectivity>(() => Connectivity());
+  locator.registerLazySingleton<TestSocketProvider>(() => TestSocketProvider());
+
   locator.registerLazySingleton<GlobalKey<ScaffoldState>>(
       () => GlobalKey<ScaffoldState>());
 
@@ -332,6 +335,7 @@ Future<void> init() async {
 
   locator.registerLazySingleton<PaymentCard>(
       () => PaymentCard(repository: locator<PaymentRepository>()));
+  // locator.registerLazySingleton<TestSocketProvider>(() => TestSocketProvider());
 
   //   locator.registerLazySingleton<DoCardList>(
   // () => DoCardList(repository: locator<CardListRepository>()));
@@ -399,7 +403,7 @@ Future<void> init() async {
   locator.registerFactory<PaymentProvider>(
       () => PaymentProvider(paymentCard: locator()));
 
-  // locator.registerFactory<SocketProvider>(() => SocketProvider());
+  // locator.registerFactory<TestSocketProvider>(() => TestSocketProvider());
   // locator.registerFactory<LatestSocketProvider>(() => LatestSocketProvider());
   locator.registerFactory<LogOutProvider>(() => LogOutProvider());
   // locator.registerFactory<ChatProvider>(() => ChatProvider());

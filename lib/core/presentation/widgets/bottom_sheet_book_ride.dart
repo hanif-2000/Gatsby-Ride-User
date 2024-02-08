@@ -5,7 +5,7 @@ import 'package:GetsbyRideshare/core/presentation/widgets/payment_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/new_order_page.dart';
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -260,11 +260,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                         ),
                                       ),
                                       event: () {
-                                        var socketProvider = Provider.of<
-                                                LatestSocketProvider>(
-                                            locator<GlobalKey<NavigatorState>>()
-                                                .currentContext!,
-                                            listen: false);
+                                        var socketProvider =
+                                            locator<TestSocketProvider>();
                                         if (provider.paymentMethod != null) {
                                           if (provider.price.isEmpty ||
                                               provider

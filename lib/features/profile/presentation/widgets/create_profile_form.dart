@@ -8,7 +8,6 @@ import 'package:GetsbyRideshare/features/profile/presentation/providers/create_p
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_state.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_state.dart';
-import 'package:GetsbyRideshare/socket/latest_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +23,8 @@ class CreateProfileForm extends StatefulWidget {
 }
 
 class _CreateProfileFormState extends State<CreateProfileForm> {
-  var socketProvider = Provider.of<LatestSocketProvider>(
-      locator<GlobalKey<NavigatorState>>().currentContext!);
+  // var socketProvider = Provider.of<LatestSocketProvider>(
+  //     locator<GlobalKey<NavigatorState>>().currentContext!);
   //Upload profile Image
   uploadProfileImage() {
     final provider = context.read<UploadProfileImageProvider>();

@@ -13,7 +13,6 @@ import '../../../../core/static/enums.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
 import '../../../../core/utility/validation_helper.dart';
-import '../../../../socket/latest_socket_provider.dart';
 import '../providers/login_provider.dart';
 import '../providers/login_state.dart';
 
@@ -25,8 +24,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  var socketProvider = Provider.of<LatestSocketProvider>(
-      locator<GlobalKey<NavigatorState>>().currentContext!);
+  // var socketProvider = Provider.of<LatestSocketProvider>(
+  //     locator<GlobalKey<NavigatorState>>().currentContext!);
   void submit() {
     FocusManager.instance.primaryFocus?.unfocus();
     final provider = context.read<LoginProvider>();
