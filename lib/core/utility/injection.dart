@@ -125,6 +125,7 @@ Future<void> init() async {
       () => GlobalKey<NavigatorState>());
   locator.registerLazySingleton<Connectivity>(() => Connectivity());
   locator.registerLazySingleton<TestSocketProvider>(() => TestSocketProvider());
+  // locator.registerSingleton<TestSocketProvider>(TestSocketProvider());
 
   locator.registerLazySingleton<GlobalKey<ScaffoldState>>(
       () => GlobalKey<ScaffoldState>());

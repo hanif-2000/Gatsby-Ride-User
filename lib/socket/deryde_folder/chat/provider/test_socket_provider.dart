@@ -179,6 +179,7 @@ class TestSocketProvider extends ChangeNotifier {
         "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
 
     _socket!.connection.listen((event) {
+      print("event is :-->. ${_socket!.connection.state}");
       if (event is Connected) {
         log("************ Connectd ***********");
         print("************ Connectd ***********");
@@ -197,6 +198,8 @@ class TestSocketProvider extends ChangeNotifier {
         log("************ Reconnecting ***********");
         showToast(message: "Reconnecting");
       } else if (event is Reconnected) {
+        listenSocketRequests(context);
+
         log("************ Reconnected ***********");
         showToast(message: "Reconnected");
       } else {
@@ -824,13 +827,10 @@ class TestSocketProvider extends ChangeNotifier {
 
       markMessageAsRead(receiverId: receiverId);
     } else if (type == 'unJoin') {
-      // getTotalUnreadCount(receiverId);
       updateUnReadMessages(count: 0);
       clearChatList();
     }
-    // if (type == 'join') {
-    //   markMessageAsRead(receiverId: receiverId);
-    // }
+
     final map = {
       'type': 'Customer',
       'serviceType': type,
@@ -840,21 +840,10 @@ class TestSocketProvider extends ChangeNotifier {
           : '${session.userId}-$receiverId',
     };
     logMe('Join Exit room socket -- > ${map.toString()}');
+    print('Join Exit room socket -- > ${map.toString()}');
 
-    // try {
-    //   _socket!.connection.listen((event) {
-    //     if (event is Connected) {
     _socket!.send(json.encode(map));
     notifyListeners();
-    //       print(map.toString());
-    //       listenSocketRequests(context);
-
-    //       notifyListeners();
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e.toString());
-    // }
   }
 
   markMessageAsRead({

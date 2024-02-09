@@ -75,206 +75,218 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     }
   }
 
-  @override
-  void dispose() {
-    log("dispoase called");
+  // @override
+  // void dispose() {
+  //   log("dispoase called");
 
-    super.dispose();
+  //   super.dispose();
 
-    socketProvider.joinExitRoom(
-      context: context,
-      type: 'unJoin',
-      receiverId: int.parse(session.driverId),
-    );
-    WidgetsBinding.instance.removeObserver(this);
-  }
+  //   // socketProvider.joinExitRoom(
+  //   //   context: context,
+  //   //   type: 'unJoin',
+  //   //   receiverId: int.parse(session.driverId),
+  //   // );
+  //   // socketProvider.updateUnReadMessages(count: 0);
+
+  //   WidgetsBinding.instance.removeObserver(this);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Consumer<TestSocketProvider>(
-          builder: (context, latestSocketProvider, _) {
-        return Scaffold(
-            extendBody: false,
-            resizeToAvoidBottomInset: true,
-            backgroundColor: greyF9F9F9Color,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(80.0),
-              child: Card(
-                elevation: 0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AppBar(
-                      elevation: 0,
-                      automaticallyImplyLeading: false,
-                      centerTitle: true,
-                      backgroundColor: transparentColor,
-                      title: Row(
-                        children: [
-                          // Text(
-                          //   "fasd",
-                          //   style: TextStyle(color: Colors.black),
-                          // ),
-                          CommonCircularImageContainer(
-                            height: 45,
-                            width: 45,
-                            image: socketProvider.acceptResponseModel?.data
-                                        .profilePhoto !=
-                                    null
-                                ? latestSocketProvider
-                                    .acceptResponseModel!.data.profilePhoto
-                                : '',
-                          ),
-                          SizedBox(
-                            width: 11,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CommonText(
-                                text: latestSocketProvider
-                                    .driverDetailResponseModel!.message.name
-                                    .toString(),
-                                fontWeight: FontWeight.w500,
-                                fontColor: blackColor,
-                                fontFamily: "poPPinMedium",
-                                fontSize: 16,
-                              ),
-                              CommonText(
-                                text: appLoc.activeNow,
-                                fontWeight: FontWeight.w400,
-                                fontColor: blackColor,
-                                fontFamily: "poPPinMedium",
-                                fontSize: 10,
-                              ),
-                            ],
-                          ),
-                          // Text(
-                          //   socketProvider.connectionStatus.toString(),
-                          //   style: TextStyle(color: Colors.black),
-                          // )
-                        ],
-                      ),
-                      leading: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: blackColor,
+    return ChangeNotifierProvider(
+      create: (context) => TestSocketProvider(),
+      child: SafeArea(
+        child: Consumer<TestSocketProvider>(
+            builder: (context, latestSocketProvider, _) {
+          return Scaffold(
+              extendBody: false,
+              resizeToAvoidBottomInset: true,
+              backgroundColor: greyF9F9F9Color,
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(80.0),
+                child: Card(
+                  elevation: 0,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppBar(
+                        elevation: 0,
+                        automaticallyImplyLeading: true,
+                        centerTitle: false,
+                        backgroundColor: transparentColor,
+                        title: Row(
+                          children: [
+                            // Text(
+                            //   "fasd",
+                            //   style: TextStyle(color: Colors.black),
+                            // ),
+                            CommonCircularImageContainer(
+                              height: 45,
+                              width: 45,
+                              image: socketProvider.acceptResponseModel?.data
+                                          .profilePhoto !=
+                                      null
+                                  ? latestSocketProvider
+                                      .acceptResponseModel!.data.profilePhoto
+                                  : '',
+                            ),
+                            SizedBox(
+                              width: 11,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CommonText(
+                                  text: latestSocketProvider
+                                      .driverDetailResponseModel!.message.name
+                                      .toString(),
+                                  fontWeight: FontWeight.w500,
+                                  fontColor: blackColor,
+                                  fontFamily: "poPPinMedium",
+                                  fontSize: 16,
+                                ),
+                                CommonText(
+                                  text: appLoc.activeNow,
+                                  fontWeight: FontWeight.w400,
+                                  fontColor: blackColor,
+                                  fontFamily: "poPPinMedium",
+                                  fontSize: 10,
+                                ),
+                              ],
+                            ),
+                            // Text(
+                            //   socketProvider.connectionStatus.toString(),
+                            //   style: TextStyle(color: Colors.black),
+                            // )
+                          ],
                         ),
-                        onPressed: () {
-                          log("on click on go back");
+                        leading: IconButton(
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: blackColor,
+                          ),
+                          onPressed: () {
+                            socketProvider.joinExitRoom(
+                                type: 'unJoin',
+                                context: context,
+                                receiverId: int.parse(session.driverId));
+                            socketProvider.updateUnReadMessages(count: 0);
 
-                          Navigator.pop(context);
-                        },
+                            log("on click on go back");
+
+                            Navigator.pop(context, true);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // backgroundColor: Colors.grey,
+              body:
+                  // Consumer<LatestSocketProvider>(builder: (context, provider, _) {
+
+                  //   return
+                  Visibility(
+                visible: latestSocketProvider.isLoading,
+                child: Center(
+                  child: SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: CupertinoActivityIndicator(
+                      color: black15141FColor,
+                    ),
+                  ),
+                ),
+                replacement: Column(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: latestSocketProvider.chatMessageList.isEmpty
+                              ? Center(
+                                  child: Lottie.asset(
+                                      'assets/lottie_animation/chat_empty_animation.json'))
+                              : ListView.builder(
+                                  reverse: true,
+                                  itemCount: latestSocketProvider
+                                      .chatMessageList.length,
+                                  itemBuilder: (context, index) {
+                                    return latestSocketProvider
+                                                .chatMessageList[index]
+                                                .senderType ==
+                                            'Driver'
+                                        ? ReceiverTile(
+                                            title: latestSocketProvider
+                                                .chatMessageList[index].message,
+                                          )
+                                        : SenderTile(
+                                            title: latestSocketProvider
+                                                .chatMessageList[index].message,
+                                          );
+                                  },
+                                ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 26),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 13, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: latestSocketProvider.chatController,
+                              decoration: InputDecoration(
+                                  hintText: 'Enter message...',
+                                  hintStyle: titleStyle.copyWith(
+                                    fontSize: 14,
+                                    color: blackColor,
+                                  )
+                                  // .usePoppinsW4Font(),
+                                  // border: InputBorder.none,
+                                  ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              if (latestSocketProvider.chatController.text
+                                  .trim()
+                                  .isEmpty) {
+                                showToast(message: "Please enter your message");
+                              } else {
+                                ///TODO: send the message
+                                latestSocketProvider.sendChatMessage(
+                                    message: latestSocketProvider
+                                        .chatController.text
+                                        .trim(),
+                                    receiverId: int.parse(session.driverId));
+                                latestSocketProvider.chatController.text = '';
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: SvgPicture.asset(
+                                sendIcon,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ),
-            // backgroundColor: Colors.grey,
-            body:
-                // Consumer<LatestSocketProvider>(builder: (context, provider, _) {
-
-                //   return
-                Visibility(
-              visible: latestSocketProvider.isLoading,
-              child: Center(
-                child: SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: CupertinoActivityIndicator(
-                    color: black15141FColor,
-                  ),
-                ),
-              ),
-              replacement: Column(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: latestSocketProvider.chatMessageList.isEmpty
-                            ? Center(
-                                child: Lottie.asset(
-                                    'assets/lottie_animation/chat_empty_animation.json'))
-                            : ListView.builder(
-                                reverse: true,
-                                itemCount:
-                                    latestSocketProvider.chatMessageList.length,
-                                itemBuilder: (context, index) {
-                                  return latestSocketProvider
-                                              .chatMessageList[index]
-                                              .senderType ==
-                                          'Driver'
-                                      ? ReceiverTile(
-                                          title: latestSocketProvider
-                                              .chatMessageList[index].message,
-                                        )
-                                      : SenderTile(
-                                          title: latestSocketProvider
-                                              .chatMessageList[index].message,
-                                        );
-                                },
-                              ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 26),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 13, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: whiteColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: latestSocketProvider.chatController,
-                            decoration: InputDecoration(
-                                hintText: 'Enter message...',
-                                hintStyle: titleStyle.copyWith(
-                                  fontSize: 14,
-                                  color: blackColor,
-                                )
-                                // .usePoppinsW4Font(),
-                                // border: InputBorder.none,
-                                ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            if (latestSocketProvider.chatController.text
-                                .trim()
-                                .isEmpty) {
-                              showToast(message: "Please enter your message");
-                            } else {
-                              ///TODO: send the message
-                              latestSocketProvider.sendChatMessage(
-                                  message: latestSocketProvider
-                                      .chatController.text
-                                      .trim(),
-                                  receiverId: int.parse(session.driverId));
-                              latestSocketProvider.chatController.text = '';
-                            }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: SvgPicture.asset(
-                              sendIcon,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ));
-      }),
+              ));
+        }),
+      ),
     );
     // },
     // ));

@@ -90,7 +90,9 @@ class _NewOrderPageState extends State<NewOrderPage>
       // homeProvider.clearOldRideData();
       if (session.orderStatus == 0) {
         startTimerAndNavigate();
-        showSearchingVehiclesBottomSheet(context, newSocketProvider);
+        showSearchingVehiclesBottomSheet(
+          context,
+        );
       } else {
         newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
 
@@ -123,233 +125,246 @@ class _NewOrderPageState extends State<NewOrderPage>
 
     return WillPopScope(
         onWillPop: () async => false,
-        child: SafeArea(
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: Consumer<TestSocketProvider>(
-                builder: (context, TestSocketProvider latestSocketProvider, _) {
-              if (latestSocketProvider.isOrderAccepted) {
-                _timer?.cancel();
+        child: ChangeNotifierProvider(
+          create: (context) => TestSocketProvider(),
+          child: SafeArea(
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              body:
+                  Consumer<TestSocketProvider>(builder: (context, provider, _) {
+                if (newSocketProvider.isOrderAccepted) {
+                  _timer?.cancel();
 
-                Navigator.pop(context, true);
-                // latestSocketProvider.updateIsOrderAccepted(val: false);
+                  Navigator.pop(context, true);
+                  // newSocketProvider.updateIsOrderAccepted(val: false);
 
-                log("order status is: ${latestSocketProvider.currentOrderStatus}");
-              } else {}
+                  log("order status is: ${newSocketProvider.currentOrderStatus}");
+                } else {}
 
-              return Stack(
-                children: <Widget>[
-                  //Google Maps
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    myLocationButtonEnabled: true,
-                    zoomControlsEnabled: true,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                          latestSocketProvider.lat, latestSocketProvider.long),
-                      zoom: 19,
+                return Stack(
+                  children: <Widget>[
+                    //Google Maps
+                    GoogleMap(
+                      mapType: MapType.normal,
+                      myLocationButtonEnabled: true,
+                      zoomControlsEnabled: true,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(
+                            newSocketProvider.lat, newSocketProvider.long),
+                        zoom: 19,
+                      ),
+                      onMapCreated: (GoogleMapController controller) async {
+                        newSocketProvider.googleMapController = controller;
+                        await newSocketProvider
+                            .setCurrentLocation(widget.location);
+                      },
+                      polylines: newSocketProvider.polylines,
+                      markers: Set<Marker>.of(newSocketProvider.markers.values),
                     ),
-                    onMapCreated: (GoogleMapController controller) async {
-                      latestSocketProvider.googleMapController = controller;
-                      await latestSocketProvider
-                          .setCurrentLocation(widget.location);
-                    },
-                    polylines: latestSocketProvider.polylines,
-                    markers:
-                        Set<Marker>.of(latestSocketProvider.markers.values),
-                  ),
 
-                  // Address Text Fields
-                  SafeArea(
-                      child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                        Container(
-                          color: whiteColor,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 6.0),
-                            child: Container(
-                                child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Column(
-                                  children: [
-                                    Image.asset(
-                                      locationPngIcon,
-                                      height: 24.0,
-                                      width: 24.0,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    SvgPicture.asset(dottedLine),
-                                    SvgPicture.asset(
-                                      destinationSvgIcon,
-                                      height: 30.0,
-                                      width: 30.0,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    SizedBox(
-                                      width: _deviceSize.width * .8,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10.0),
-                                        child: Text(
-                                          widget.location.originAddress,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontFamily: 'poPPinRegular',
-                                              fontSize: 17.0,
-                                              color: Colors.black),
-                                        ),
+                    // Address Text Fields
+                    SafeArea(
+                        child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                          Container(
+                            color: whiteColor,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 6.0),
+                              child: Container(
+                                  child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Image.asset(
+                                        locationPngIcon,
+                                        height: 24.0,
+                                        width: 24.0,
+                                        fit: BoxFit.cover,
                                       ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.zero,
-                                      width: _deviceSize.width * .8,
-                                      height: 1.0,
-                                      color: whiteEFEFEFColor,
-                                    ),
-                                    SizedBox(
-                                      width: _deviceSize.width * .8,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10.0),
-                                        child: Text(
-                                          widget.location.destinationAddress,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontFamily: 'poPPinRegular',
-                                              fontSize: 17.0,
-                                              color: Colors.black),
-                                        ),
+                                      SvgPicture.asset(dottedLine),
+                                      SvgPicture.asset(
+                                        destinationSvgIcon,
+                                        height: 30.0,
+                                        width: 30.0,
+                                        fit: BoxFit.cover,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                          ),
-                        ),
-                        // ElevatedButton(
-                        //     onPressed: () {}, child: Text("New Chat Screen")),
-                        Spacer(),
-                        Visibility(
-                          visible:
-                              (latestSocketProvider.currentOrderStatus != 0) ||
-                                  (session.orderStatus != 0),
-                          // visible: true,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                color: whiteColor,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20.0),
-                                  topRight: Radius.circular(20.0),
-                                ),
-                              ),
-                              child: latestSocketProvider
-                                          .driverDetailResponseModel !=
-                                      null
-                                  ? DriverInfoBottomSheet(
-                                      driverStatusText: ((latestSocketProvider
-                                                      .currentOrderStatus ==
-                                                  1) ||
-                                              (session.orderStatus == 1))
-                                          ? "Driver is arriving"
-                                          : ((latestSocketProvider
-                                                          .currentOrderStatus ==
-                                                      2) ||
-                                                  (session.orderStatus == 2))
-                                              ? "Driver is on the way"
-                                              : ((latestSocketProvider
-                                                              .currentOrderStatus ==
-                                                          3) ||
-                                                      (session.orderStatus ==
-                                                          3))
-                                                  ? "Driver reached your location"
-                                                  : ((latestSocketProvider
-                                                                  .currentOrderStatus ==
-                                                              5) ||
-                                                          (session.orderStatus ==
-                                                              5))
-                                                      ? "Departure to your Destination"
-                                                      : ((latestSocketProvider
-                                                                      .currentOrderStatus ==
-                                                                  7) ||
-                                                              (session.orderStatus ==
-                                                                  7))
-                                                          ? "Ride is Completed"
-                                                          : "",
-
-                                      newMessgeCount: latestSocketProvider
-                                          .unreadMessageCount,
-                                      reviewEvent: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    RatingsScreen(
-                                                        driverId:
-                                                            session.driverId)));
-                                      },
-
-                                      callEvent: () {
-                                        latestSocketProvider.callDriver();
-                                      },
-                                      messageEvent: () {
-                                        log("OnClick on MESSAGE event");
-
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ChatPage()));
-                                      },
-                                      viewReceiptEvent: () async {
-                                        log("On Click on view receipt");
-
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ReceiptScreen(),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      SizedBox(
+                                        width: _deviceSize.width * .8,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10.0),
+                                          child: Text(
+                                            widget.location.originAddress,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontFamily: 'poPPinRegular',
+                                                fontSize: 17.0,
+                                                color: Colors.black),
                                           ),
-                                        );
-                                      },
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.zero,
+                                        width: _deviceSize.width * .8,
+                                        height: 1.0,
+                                        color: whiteEFEFEFColor,
+                                      ),
+                                      SizedBox(
+                                        width: _deviceSize.width * .8,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10.0),
+                                          child: Text(
+                                            widget.location.destinationAddress,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontFamily: 'poPPinRegular',
+                                                fontSize: 17.0,
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ),
+                          // ElevatedButton(
+                          //     onPressed: () {}, child: Text("New Chat Screen")),
+                          Spacer(),
+                          Visibility(
+                            visible:
+                                (newSocketProvider.currentOrderStatus != 0) ||
+                                    (session.orderStatus != 0),
+                            // visible: true,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  color: whiteColor,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20.0),
+                                    topRight: Radius.circular(20.0),
+                                  ),
+                                ),
+                                child: newSocketProvider
+                                            .driverDetailResponseModel !=
+                                        null
+                                    ? DriverInfoBottomSheet(
+                                        driverStatusText: ((newSocketProvider
+                                                        .currentOrderStatus ==
+                                                    1) ||
+                                                (session.orderStatus == 1))
+                                            ? "Driver is arriving"
+                                            : ((newSocketProvider
+                                                            .currentOrderStatus ==
+                                                        2) ||
+                                                    (session.orderStatus == 2))
+                                                ? "Driver is on the way"
+                                                : ((newSocketProvider
+                                                                .currentOrderStatus ==
+                                                            3) ||
+                                                        (session.orderStatus ==
+                                                            3))
+                                                    ? "Driver reached your location"
+                                                    : ((newSocketProvider
+                                                                    .currentOrderStatus ==
+                                                                5) ||
+                                                            (session.orderStatus ==
+                                                                5))
+                                                        ? "Departure to your Destination"
+                                                        : ((newSocketProvider
+                                                                        .currentOrderStatus ==
+                                                                    7) ||
+                                                                (session.orderStatus ==
+                                                                    7))
+                                                            ? "Ride is Completed"
+                                                            : "",
 
-                                      category: newSocketProvider
-                                              .driverDetailResponseModel
-                                              ?.message
-                                              .carModel
-                                              .toString() ??
-                                          '',
+                                        newMessgeCount: newSocketProvider
+                                            .unreadMessageCount,
+                                        reviewEvent: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      RatingsScreen(
+                                                          driverId: session
+                                                              .driverId)));
+                                        },
 
-                                      isReceiptVisible: ((latestSocketProvider
-                                                      .currentOrderStatus ==
-                                                  7) ||
-                                              (session.orderStatus == 7))
-                                          ? true
-                                          : false,
-                                      // isReceiptVisible: true,
-                                    )
-                                  : Text("Fetching Driver Data...")),
-                        ),
-                      ])),
-                ],
-              );
-            }),
+                                        callEvent: () {
+                                          newSocketProvider.callDriver();
+                                        },
+                                        messageEvent: () async {
+                                          log("OnClick on MESSAGE event");
+
+                                          bool unread = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ChatPage()));
+
+                                          if (unread) {
+                                            provider.joinExitRoom(
+                                              type: "unJoin",
+                                              context: context,
+                                              receiverId:
+                                                  int.parse(session.driverId),
+                                            );
+                                          }
+                                        },
+                                        viewReceiptEvent: () async {
+                                          log("On Click on view receipt");
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ReceiptScreen(),
+                                            ),
+                                          );
+                                        },
+
+                                        category: newSocketProvider
+                                                .driverDetailResponseModel
+                                                ?.message
+                                                .carModel
+                                                .toString() ??
+                                            '',
+
+                                        isReceiptVisible: ((newSocketProvider
+                                                        .currentOrderStatus ==
+                                                    7) ||
+                                                (session.orderStatus == 7))
+                                            ? true
+                                            : false,
+                                        // isReceiptVisible: true,
+                                      )
+                                    : Text("Fetching Driver Data...")),
+                          ),
+                        ])),
+                  ],
+                );
+              }),
+            ),
           ),
         ));
   }
 
   showSearchingVehiclesBottomSheet(
-      BuildContext context, TestSocketProvider latestSocketProvider) {
+    BuildContext context,
+  ) {
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
@@ -371,7 +386,7 @@ class _NewOrderPageState extends State<NewOrderPage>
       log("THis is called after open Bottom sheet");
     }).then((value) {
       if (value) {
-        latestSocketProvider.updateIsOrderAccepted(val: false);
+        newSocketProvider.updateIsOrderAccepted(val: false);
       }
     });
   }
