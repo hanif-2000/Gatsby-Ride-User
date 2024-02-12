@@ -7,13 +7,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/presentation/widgets/cache_network_widget.dart';
 import '../../../../../core/static/assets.dart';
 import '../../../../../core/static/colors.dart';
 import '../../../../../core/static/styles.dart';
 import '../../../../../core/utility/helper.dart';
 import '../../../../../core/utility/injection.dart';
 import '../../../../../core/utility/session_helper.dart';
-import '../../../../testing/widgets/circular_image_container.dart';
 import '../../../../testing/widgets/common_text.dart';
 import '../../widgets/receiver_tile.dart';
 import '../../widgets/sender_tile.dart';
@@ -53,6 +53,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           context: context,
           receiverId: int.parse(session.driverId),
           type: "Join");
+      socketProvider.markMessageAsRead(receiverId: int.parse(session.driverId));
     });
 
     // socketProvider.JoinExitRoomListen(context: context);
@@ -93,8 +94,10 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => TestSocketProvider(),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
       child: SafeArea(
         child: Consumer<TestSocketProvider>(
             builder: (context, latestSocketProvider, _) {
@@ -120,16 +123,35 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                             //   "fasd",
                             //   style: TextStyle(color: Colors.black),
                             // ),
-                            CommonCircularImageContainer(
-                              height: 45,
-                              width: 45,
-                              image: socketProvider.acceptResponseModel?.data
-                                          .profilePhoto !=
+
+                            CustomCacheNetworkImage(
+                              img: socketProvider.driverDetailResponseModel !=
                                       null
-                                  ? latestSocketProvider
-                                      .acceptResponseModel!.data.profilePhoto
+                                  ? socketProvider
+                                      .driverDetailResponseModel!.message.image
+                                      .toString()
                                   : '',
+                              size: 45,
                             ),
+                            // CommonCircularImageContainer(
+                            //     height: 45,
+                            //     width: 45,
+                            //     image:
+                            //         socketProvider.driverDetailResponseModel !=
+                            //                 null
+                            //             ? socketProvider
+                            //                 .driverDetailResponseModel!
+                            //                 .message
+                            //                 .image
+                            //                 .toString()
+                            //             : ''
+                            //     //  socketProvider.acceptResponseModel?.data
+                            //     //             .profilePhoto !=
+                            //     //         null
+                            //     //     ? latestSocketProvider
+                            //     //         .acceptResponseModel!.data.profilePhoto
+                            //     //     : '',
+                            //     ),
                             SizedBox(
                               width: 11,
                             ),
@@ -288,6 +310,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         }),
       ),
     );
+
     // },
     // ));
   }

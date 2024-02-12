@@ -23,6 +23,8 @@ class CurrencyRepositoryImplementation implements CurrencyRepository {
     if (!await networkInfo.isConnected) {
       showToast(message: "Please Check your connection");
       return const Left(ConnectionFailure());
+    } else if (await networkInfo.isSlow) {
+      showToast(message: "Network is Slow");
     }
 
     try {

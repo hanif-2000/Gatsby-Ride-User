@@ -185,26 +185,26 @@ class TestSocketProvider extends ChangeNotifier {
         print("************ Connectd ***********");
 
         listenSocketRequests(context);
-        showToast(message: "connected");
+        // showToast(message: "connected");
         //      listenGetChat();
         // postCurrentPosition(context);
       } else if (event is Disconnected) {
         log("************ DisConnectd ***********");
-        showToast(message: "disconnected");
+        // showToast(message: "disconnected");
       } else if (event is Connecting) {
         log("************ CONNECTING ***********");
-        showToast(message: "CONNECTING");
+        // showToast(message: "CONNECTING");
       } else if (event is Reconnecting) {
         log("************ Reconnecting ***********");
-        showToast(message: "Reconnecting");
+        // showToast(message: "Reconnecting");
       } else if (event is Reconnected) {
         listenSocketRequests(context);
 
         log("************ Reconnected ***********");
-        showToast(message: "Reconnected");
+        // showToast(message: "Reconnected");
       } else {
         log("************ DisConnectd ***********");
-        showToast(message: "${_socket!.connection.state}");
+        // showToast(message: "${_socket!.connection.state}");
       }
     });
   }
@@ -418,31 +418,41 @@ class TestSocketProvider extends ChangeNotifier {
           updateCurrentOrderStatus(val: 8);
 
           notifyListeners();
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              // return object of type Dialog
-              return AlertDialog(
-                title: Text("Ride is Cancelled by the Driver"),
-                // content: new Text("sdf"),
-                actions: [
-                  // usually buttons at the bottom of the dialog
-                  ElevatedButton(
-                    child: Text("Find Next Driver"),
-                    onPressed: () async {
-                      session.setIsRunningOrder = false;
-                      await _homeProvider.clearState();
 
-                      Navigator.pop(context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showDialog(
+              barrierDismissible: false,
+              context: locator<GlobalKey<NavigatorState>>().currentContext!,
+              builder: (BuildContext context) {
+                // return object of type Dialog
+                return WillPopScope(
+                  onWillPop: () async {
+                    return false;
+                  },
+                  child: AlertDialog(
+                    title: Text("Ride is Cancelled by the Driver"),
+                    // content: new Text("sdf"),
+                    actions: [
+                      // usually buttons at the bottom of the dialog
+                      ElevatedButton(
+                        child: Text("Find Next Driver"),
+                        onPressed: () async {
+                          session.setIsRunningOrder = false;
+                          await _homeProvider.clearState();
 
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, HomePage.routeName, (route) => false);
-                    },
+                          Navigator.pop(context);
+
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, HomePage.routeName, (route) => false);
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              );
-            },
-          );
+                );
+              },
+            );
+          });
+
           log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
         }
       }
@@ -972,7 +982,7 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   callDriver() async {
-    final call = Uri.parse('tel:${_driverDetail!.phone}');
+    final call = Uri.parse('tel:${_driverDetail?.phone ?? '9876543210'}');
     launchUrl(call);
   }
 
@@ -1071,6 +1081,10 @@ class TestSocketProvider extends ChangeNotifier {
     destinationLatLng = destination;
     notifyListeners();
   }
+
+  @override
+  // ignore: must_call_super
+  void dispose() {}
 
   callTrakingDriver(LatLng position) async {
     log("driver position is :${position}");

@@ -31,6 +31,11 @@ class DirectionHelper {
       if (response.statusCode == 200) {
         polylinePoints = decodeEncodedPolyline(json
             .decode(response.body)["routes"][0]["overview_polyline"]["points"]);
+      } else {
+        log("Error fetching directions: ${response.statusCode}");
+        print("Error fetching directions: ${response.statusCode}");
+
+        throw Exception("Failed to fetch directions");
       }
     } catch (error, s) {
       log("ssssss $s");

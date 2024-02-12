@@ -48,174 +48,170 @@ class DriverInfoBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
     final session = locator<Session>();
-    return ChangeNotifierProvider(
-      create: (context) => TestSocketProvider(),
-      child: Consumer<TestSocketProvider>(
-        builder: (context, provider, _) {
-          log("driver info model driver name is -->. ${provider.driverDetailResponseModel!.message.name}");
-          log("current order status is : -->. ${provider.currentOrderStatus}");
-          log("session order status is : -->. ${session.orderStatus}");
+    return Consumer<TestSocketProvider>(
+      builder: (context, provider, _) {
+        log("driver info model driver name is -->. ${provider.driverDetailResponseModel!.message.name}");
+        log("current order status is : -->. ${provider.currentOrderStatus}");
+        log("session order status is : -->. ${session.orderStatus}");
 
-          return Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 20.0,
-            ),
-            child: Column(
-              children: [
-                Text(
-                  driverStatusText,
-                  // ((provider.currentOrderStatus == 1) ||
-                  //         (session.orderStatus == 1))
-                  //     ? "Driver is arriving"
-                  //     : ((provider.currentOrderStatus == 2) ||
-                  //             (session.orderStatus == 2))
-                  //         ? "Driver is on the way"
-                  //         : ((provider.currentOrderStatus == 3) ||
-                  //                 (session.orderStatus == 3))
-                  //             ? "Driver reached your location"
-                  //             : ((provider.currentOrderStatus == 5) ||
-                  //                     (session.orderStatus == 5))
-                  //                 ? "Departure to your Destination"
-                  //                 : ((provider.currentOrderStatus == 7) ||
-                  //                         (session.orderStatus == 7))
-                  //                     ? "Ride is Completed"
-                  //                     : "",
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    fontFamily: "poPPinMedium",
-                  ),
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 20.0,
+          ),
+          child: Column(
+            children: [
+              Text(
+                driverStatusText,
+                // ((provider.currentOrderStatus == 1) ||
+                //         (session.orderStatus == 1))
+                //     ? "Driver is arriving"
+                //     : ((provider.currentOrderStatus == 2) ||
+                //             (session.orderStatus == 2))
+                //         ? "Driver is on the way"
+                //         : ((provider.currentOrderStatus == 3) ||
+                //                 (session.orderStatus == 3))
+                //             ? "Driver reached your location"
+                //             : ((provider.currentOrderStatus == 5) ||
+                //                     (session.orderStatus == 5))
+                //                 ? "Departure to your Destination"
+                //                 : ((provider.currentOrderStatus == 7) ||
+                //                         (session.orderStatus == 7))
+                //                     ? "Ride is Completed"
+                //                     : "",
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontFamily: "poPPinMedium",
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: DriverProfileWidget(
-                    onClickOnReview: reviewEvent,
-                    category: category,
-                    driverId: provider.driverDetailResponseModel != null
-                        ? provider.driverDetailResponseModel!.message.id
-                            .toString()
-                        : '',
-                    driverImage: provider.driverDetailResponseModel != null
-                        ? provider.driverDetailResponseModel!.message.image
-                            .toString()
-                        : '',
-                    driverName: provider.driverDetailResponseModel != null
-                        ? provider.driverDetailResponseModel!.message.name
-                            .toString()
-                        : '',
-                    platerNumber: provider.driverDetailResponseModel != null
-                        ? provider
-                            .driverDetailResponseModel!.message.plateNumber
-                            .toString()
-                        : '',
-                    rating: provider.driverDetailResponseModel != null
-                        ? provider.driverDetailResponseModel!.message.rating
-                            .toString()
-                        : '',
-                  ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: DriverProfileWidget(
+                  onClickOnReview: reviewEvent,
+                  category: category,
+                  driverId: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.id
+                          .toString()
+                      : '',
+                  driverImage: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.image
+                          .toString()
+                      : '',
+                  driverName: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.name
+                          .toString()
+                      : '',
+                  platerNumber: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.plateNumber
+                          .toString()
+                      : '',
+                  rating: provider.driverDetailResponseModel != null
+                      ? provider.driverDetailResponseModel!.message.rating
+                          .toString()
+                      : '',
                 ),
-                Visibility(
-                  visible: !isReceiptVisible,
-                  child: Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomContactBtn(
-                              btnText: "Call now",
-                              image: 'assets/icons/call_icon.svg',
+              ),
+              Visibility(
+                visible: !isReceiptVisible,
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomContactBtn(
+                            btnText: "Call now",
+                            image: 'assets/icons/call_icon.svg',
+                            btnWidth: _deviceSize.width * .44,
+                            btnColor:
+                                //  session.orderStatus == 1
+
+                                // ? green2DAA5FColor
+                                // : session.orderStatus == 2
+                                //     ? green2DAA5FColor
+                                //     : session.orderStatus == 3
+                                //         ?
+
+                                green2DAA5FColor,
+                            // : grey606060Color,
+                            event:
+                                // session.orderStatus == 1
+                                //     ? callEvent
+                                //     : session.orderStatus == 2
+                                //         ? callEvent
+                                //         : session.orderStatus == 3
+                                //             ?
+                                callEvent,
+                            // : () {},
+                          ),
+                          CustomContactBtn(
+                              btnText: "Message",
+                              image: 'assets/icons/message_icon.svg',
                               btnWidth: _deviceSize.width * .44,
                               btnColor:
-                                  //  session.orderStatus == 1
-
-                                  // ? green2DAA5FColor
-                                  // : session.orderStatus == 2
-                                  //     ? green2DAA5FColor
-                                  //     : session.orderStatus == 3
-                                  //         ?
-
-                                  green2DAA5FColor,
-                              // : grey606060Color,
-                              event:
                                   // session.orderStatus == 1
-                                  //     ? callEvent
+                                  //     ? blue249DE0Color
                                   //     : session.orderStatus == 2
-                                  //         ? callEvent
+                                  //         ? blue249DE0Color
                                   //         : session.orderStatus == 3
                                   //             ?
-                                  callEvent,
-                              // : () {},
-                            ),
-                            CustomContactBtn(
-                                btnText: "Message",
-                                image: 'assets/icons/message_icon.svg',
-                                btnWidth: _deviceSize.width * .44,
-                                btnColor:
-                                    // session.orderStatus == 1
-                                    //     ? blue249DE0Color
-                                    //     : session.orderStatus == 2
-                                    //         ? blue249DE0Color
-                                    //         : session.orderStatus == 3
-                                    //             ?
-                                    blue249DE0Color,
-                                // : grey606060Color,
-                                // btnColor: blue249DE0Color,
-                                event:
-                                    //  session.orderStatus == 1
-                                    //     ? messageEvent
-                                    //     : session.orderStatus == 2
-                                    //         ? messageEvent
-                                    //         : session.orderStatus == 3
-                                    //             ?
-                                    messageEvent
+                                  blue249DE0Color,
+                              // : grey606060Color,
+                              // btnColor: blue249DE0Color,
+                              event:
+                                  //  session.orderStatus == 1
+                                  //     ? messageEvent
+                                  //     : session.orderStatus == 2
+                                  //         ? messageEvent
+                                  //         : session.orderStatus == 3
+                                  //             ?
+                                  messageEvent
 
-                                // : () {},
-                                ),
-                          ],
-                        ),
+                              // : () {},
+                              ),
+                        ],
                       ),
-                      provider.unreadMessageCount != 0
-                          ? Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: redf52d56Color,
-                                    shape: BoxShape.circle),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Text(
-                                    newMessgeCount.toString(),
-                                    style: TextStyle(color: whiteColor),
-                                  ),
+                    ),
+                    provider.unreadMessageCount != 0
+                        ? Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: redf52d56Color,
+                                  shape: BoxShape.circle),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Text(
+                                  newMessgeCount.toString(),
+                                  style: TextStyle(color: whiteColor),
                                 ),
                               ),
-                            )
-                          : SizedBox()
-                    ],
+                            ),
+                          )
+                        : SizedBox()
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: isReceiptVisible || session.orderStatus == 7,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.0,
+                  ),
+                  child: CustomButton(
+                    isRounded: true,
+                    text: "View Receipt",
+                    event: viewReceiptEvent,
+                    bgColor: blackColor,
                   ),
                 ),
-                Visibility(
-                  visible: isReceiptVisible || session.orderStatus == 7,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 8.0,
-                    ),
-                    child: CustomButton(
-                      isRounded: true,
-                      text: "View Receipt",
-                      event: viewReceiptEvent,
-                      bgColor: blackColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

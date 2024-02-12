@@ -52,11 +52,6 @@ class FirebaseHelper {
 
       NotificationHelper notificationService = NotificationHelper();
       notificationService.showNotifications(message);
-      /*  if(notificationEntity.message == SharedPreferenceHelper().getActiveChatId().toString()){
-        Utils.printLog("active chat id => ${SharedPreferenceHelper().getActiveChatId()} is same");
-        return;
-      }*/
-      //pushNextScreenFromForeground(notificationEntity);
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -71,42 +66,6 @@ class FirebaseHelper {
       NotificationHelper notificationService = NotificationHelper();
       notificationService.showNotifications(message);
     });
-
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   log("on message listen:-->> ${message.data}");
-    //   print("on message listen:-->> ${message.data}");
-
-    //   // log("on message listen title:-->> ${message.notification!.title}");
-    //   // log("on message listen:-->> ${message.notification!.bodyLocArgs}");
-    //   // if (message.notification!.title != 'New Order' ||
-    //   //     message.notification!.title != 'Booking Cancelled') {
-    //   //   var orderProvider = Provider.of<OrderProvider>(
-    //   //       locator<GlobalKey<NavigatorState>>().currentContext!,
-    //   //       listen: false);
-
-    //   //   orderProvider.updateUnReadMessages(isNewMessage: true);
-    //   // final GlobalKey<ScaffoldState> key = GlobalKey();
-
-    //   // Session session = locator<Session>();
-    //   // if (!session.isOrderRunning) {
-    //   //   homeProvider.getRequestListData().listen((event) {
-    //   //     log("event is -->> $event");
-    //   //     if (event is RequestListLoaded) {
-    //   //       logMe(
-    //   //           'Request list data loaded success----------> ${event.data.length}');
-    //   //       Navigator.pushNamedAndRemoveUntil(
-    //   //           locator<GlobalKey<NavigatorState>>().currentContext!,
-    //   //           HomePage.routeName,
-    //   //           (route) => false);
-    //   // }
-    //   //     });
-    //   //   }
-    //   // }
-
-    //   // fetchRemoteMessage(message);
-    //   NotificationHelper _notificationService = NotificationHelper();
-    //   _notificationService.showNotifications(message);
-    // });
   }
 
   static fetchRemoteMessage(RemoteMessage message) {
@@ -131,29 +90,6 @@ class FirebaseHelper {
     log("notification ttl :${message.ttl}");
 
     log("remote message called");
-
-    // if (message.notification!.title == 'New Booking' ||
-    //     message.notification!.title == 'Booking Cancelled') {
-    // var homeProvider = Provider.of<HomeProvider>(
-    //     locator<GlobalKey<NavigatorState>>().currentContext!,
-    //     listen: false);
-    // final GlobalKey<ScaffoldState> key = GlobalKey();
-
-    // Session session = locator<Session>();
-    // if (!session.isOrderRunning) {
-    // homeProvider.getRequestListData().listen((event) {
-    //   log("event is -->> $event");
-    // if (event is RequestListLoaded) {
-    //   logMe(
-    //       'Request list data loaded success----------> ${event.data.length}');
-    // Navigator.pushNamedAndRemoveUntil(
-    //     locator<GlobalKey<NavigatorState>>().currentContext!,
-    //     HomePage.routeName,
-    //     (route) => false);
-    // }
-    // });
-    // }
-    // }
 
     logMe('data: ${message.data}');
     late String? title;
