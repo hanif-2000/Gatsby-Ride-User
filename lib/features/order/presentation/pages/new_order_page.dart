@@ -51,10 +51,13 @@ class _NewOrderPageState extends State<NewOrderPage>
             double.parse(session.driverLatLng.split(',').first),
             double.parse(session.driverLatLng.split(',').last)));
       }
-      newSocketProvider.joinExitRoom(
-          type: "unJoin",
-          context: context,
-          receiverId: int.parse(session.driverId.toString()));
+
+      if (session.driverId != '') {
+        newSocketProvider.joinExitRoom(
+            type: "unJoin",
+            context: context,
+            receiverId: int.parse(session.driverId.toString()));
+      }
     });
 
     void startTimerAndNavigate() {

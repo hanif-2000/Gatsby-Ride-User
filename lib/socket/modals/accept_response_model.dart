@@ -108,7 +108,7 @@ class Data {
         pendingAmount: json["pending_amount"] ?? "",
         driverId: json["driverID"] ?? "",
         name: json["name"] ?? "",
-        profilePhoto: json["profile_photo"] ?? "",
+        profilePhoto: json["image"] ?? "",
         latitude: json["Latitude"] ?? "",
         longitude: json["Longitude"] ?? "",
         plateNumber: json["plate_number"] ?? "",
