@@ -37,9 +37,9 @@ class LoginRepositoryImplementation implements LoginRepository {
   Future<Either<Failure, LoginResponseModel?>> doLoginSocial(
     String email,
     String firstName,
+    String lastName,
     String loginType,
     String deviceType,
-    String lastName,
   ) async {
     try {
       final data = await dataSource.doLoginSocial(

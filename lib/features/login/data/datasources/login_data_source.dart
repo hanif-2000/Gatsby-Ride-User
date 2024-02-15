@@ -37,8 +37,8 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String deviceType,
   ) async {
     String url = 'api/webservice/login';
-   final deviceToken = await FirebaseMessaging.instance.getToken()??"";
-   log("fcm token : " + deviceToken.toString());
+    final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    log("fcm token : " + deviceToken.toString());
     FormData data = FormData.fromMap({
       'email': email,
       'password': password,
@@ -81,15 +81,12 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String deviceType,
   ) async {
     String url = 'api/webservice/login';
-    final session = locator<Session>();
-    String fcmToken = session.sessionFcmToken;
-
-    log(fcmToken.toString());
+    final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
     FormData data = FormData.fromMap({
       'email': email,
       'first_name': firstName,
       'last_name': lastName,
-      'fcm_token': fcmToken,
+      'fcm_token': deviceToken,
       'login_type': loginType,
       'device_type': deviceType,
       'country': 'Canada'

@@ -463,8 +463,9 @@ class LoginPage extends StatelessWidget {
                                   .updateSocialLoginData(
                                 userEmail:
                                     value.user!.email ?? credential.email!,
-                                name: value.user!.displayName ??
-                                    credential.familyName!,
+                                name: value.user?.displayName == null
+                                    ? credential.familyName!
+                                    : value.user!.displayName!,
                                 id: value.user!.uid,
                               )
                                   .then((value) {
@@ -503,12 +504,6 @@ class LoginPage extends StatelessWidget {
                               log("value" + value.toString());
                             });
 
-                            // userModel = SocialUserModel(
-                            //   credential.givenName,
-                            //   credential.userIdentifier,
-                            //   credential.email,
-                            //   '',
-                            // );
                             return true;
                           }
                         },
