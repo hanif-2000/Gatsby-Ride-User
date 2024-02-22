@@ -153,6 +153,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: locator<GlobalKey<NavigatorState>>(),
       title: 'GatsbyRideShare',
       theme: ThemeData(
+        useMaterial3: false,
         colorScheme:
             ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color
                 // primary: primaryColor,

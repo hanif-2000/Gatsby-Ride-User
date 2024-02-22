@@ -174,11 +174,9 @@ class _NewOrderPageState extends State<NewOrderPage>
 
     log("location in order page:--->>${widget.location}");
 
-    return WillPopScope(
-      onWillPop: () async {
-        showToast(message: "click on back button system");
-        return false;
-      },
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) => {},
       child: SafeArea(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -427,7 +425,10 @@ class _NewOrderPageState extends State<NewOrderPage>
         )),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         builder: (context) {
-          return SearchingRideBottomSheet();
+          return PopScope(
+              canPop: false,
+              onPopInvoked: (bool didPop) => {},
+              child: SearchingRideBottomSheet());
         }).whenComplete(() {
       log("THis is called after open Bottom sheet");
     }).then((value) {

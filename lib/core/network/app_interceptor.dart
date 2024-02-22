@@ -47,7 +47,7 @@ class AppInterceptor extends Interceptor {
     print("${err.response != null ? err.response!.data : 'Unknown Error'}"
         'DioException');
 
-    if (err.type == DioErrorType.connectTimeout) {
+    if (err.type == DioExceptionType.connectionTimeout) {
       showToast(
           message:
               'Connection timeout. Please check your internet connection.');

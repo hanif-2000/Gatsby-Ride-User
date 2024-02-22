@@ -14,6 +14,7 @@ class SearchingRideBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: whiteColor,
       body: Consumer<HomeProvider>(builder: (context, provider, _) {
         return Padding(
           padding: const EdgeInsets.all(5.0),

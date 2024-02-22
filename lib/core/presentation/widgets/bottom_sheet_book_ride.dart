@@ -9,6 +9,7 @@ import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_p
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/entities/order_data_detail.dart';
@@ -31,15 +32,22 @@ class BottomSheetBookRide extends StatelessWidget {
         builder: (context, state) {
           switch (state.data.runtimeType) {
             case VehiclesCategoryLoading:
-              return const Padding(
+              return  Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Center(child: CircularProgressIndicator()),
+                child:
+                Center(
+                  child: LottieBuilder.asset(
+                      'assets/icons/lottie_animation.json'),
+                ),
+
+                // Center(child: CircularProgressIndicator()),
               );
             case VehiclesCategoryLoaded:
               final data = (state.data as VehiclesCategoryLoaded).data;
               return Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 0.0),
+                padding: const EdgeInsets.only(top: 0.0, bottom: 0.0),
                 child: Scaffold(
+                  backgroundColor: whiteColor,
                   body: Consumer<HomeProvider>(builder: (context, provider, _) {
                     return Container(
                       decoration: const BoxDecoration(

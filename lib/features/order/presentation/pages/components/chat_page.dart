@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../../core/presentation/widgets/cache_network_widget.dart';
 import '../../../../../core/static/assets.dart';
 import '../../../../../core/static/colors.dart';
@@ -94,10 +93,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+    return PopScope(
+      canPop: false,
       child: SafeArea(
         child: Consumer<TestSocketProvider>(
             builder: (context, latestSocketProvider, _) {
@@ -113,10 +110,11 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AppBar(
+
                         elevation: 0,
                         automaticallyImplyLeading: true,
                         centerTitle: false,
-                        backgroundColor: transparentColor,
+                        backgroundColor: whiteColor,
                         title: Row(
                           children: [
                             // Text(

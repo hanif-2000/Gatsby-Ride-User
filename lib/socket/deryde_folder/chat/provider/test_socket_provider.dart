@@ -425,10 +425,8 @@ class TestSocketProvider extends ChangeNotifier {
               context: locator<GlobalKey<NavigatorState>>().currentContext!,
               builder: (BuildContext context) {
                 // return object of type Dialog
-                return WillPopScope(
-                  onWillPop: () async {
-                    return false;
-                  },
+                return PopScope(
+                  canPop: false,
                   child: AlertDialog(
                     title: Text("Ride is Cancelled by the Driver"),
                     // content: new Text("sdf"),
@@ -748,6 +746,8 @@ class TestSocketProvider extends ChangeNotifier {
         // If the server returns a 200 OK response, parse the JSON
         OrderDetailResponseModel data =
             OrderDetailResponseModel.fromJson(response.data);
+
+        session.setOrderStatus=int.parse(data.data.orderStatus.toString());
 
         return data;
       } else {
