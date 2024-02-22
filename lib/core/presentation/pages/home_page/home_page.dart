@@ -33,33 +33,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   TestSocketProvider socketProvider = locator<TestSocketProvider>();
-  //  OrderDetail previousOrderDetails = OrderDetail();
-  // late OrderDataDetail _orderDataDetail;
-
-  // var socketProvider = Provider.of<LatestSocketProvider>(
-  //     locator<GlobalKey<NavigatorState>>().currentContext!);
-
-  // late DriverDetailModel previousDriverDetails;
-
-  // Future<void> convertOrderAndDriverDetailsIntoObject() async {
-  // log("session order details are:-->. ${session.orderDetails}");
-  // // Decode JSON into a Map
-  // Map<String, dynamic> jsonOrderMap = json.decode(session.orderDetails);
-  // Map<String, dynamic> jsonDriverMap = json.decode(session.DriverDetails);
-
-  // log("session order details are jsonOrderMap:-->. ${jsonOrderMap}");
-  // log("session driver details are jsonOrderMap:-->. ${jsonDriverMap}");
-
-  // setState(() {
-  //   // _orderDataDetail = OrderDataDetail.fromJson(jsonOrderMap);
-  //   previousOrderDetails = OrderDetail.fromJson(jsonOrderMap);
-
-  //   previousDriverDetails = DriverDetailModel.fromJson(jsonDriverMap);
-  // });
-  // socketProvider.updateDriverDetails(
-  //   rating = previousDriverDetails.rating.toString(),
-  // );
-  // }
 
   Future<void> retrieveOrderReceiptFromLocal() async {
     // Retrieve the JSON string from local storage
@@ -76,16 +49,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           .fetchOrderDetails(int.parse(session.orderId))
           .then((value) {
         logMe(" order details are:::::::::::::: ${value}");
-        // socketProvider.updateCurrentOrderStatus(
-        //     val: int.parse(value.data.orderStatus.toString()));
-
-        // if (value.data.orderStatus.toString() == "8") {
-        //   session.setIsPaymentDone = true;
-        //   session.setIsRunningOrder = false;
-        //   session.setIsPaymentDone = true;
-
-        //   showToast(message: "Previous Ride is Canceled");
-        // }
 
         socketProvider.updateOrderDetailsModel(data: value);
 
@@ -99,15 +62,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     });
   }
 
+  Future<int> getDifferenceInSeconds(
+      {required String startTimeStr, required String endTimeStr}) async {
+    DateTime startTime = DateTime.parse(startTimeStr);
+    DateTime endTime = DateTime.parse(endTimeStr);
+    Duration difference = endTime.difference(startTime);
+    return difference.inSeconds;
+  }
+
   checkSessionDataAndNavigate() {
     if (session.isRunningOrder) {
       socketProvider.updateOnlyBitmap();
-      // SmartDialog.showLoading(
-      //   animationType: SmartAnimationType.fade,
-      //   backDismiss: false,
-      //   msg: 'Fetching Order Details...',
-      //   alignment: Alignment.center,
-      // );
+
       if (session.orderStatus.toString() == "7") {
         if (!session.isPaymentDone) {
           retrieveOrderReceiptFromLocal().then((value) {
@@ -154,6 +120,47 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else {
           logMe("--------   payment and ratings are done   ---- ");
         }
+      } else if (session.orderStatus.toString() == "0") {
+        showLoading();
+
+        getDifferenceInSeconds(
+                startTimeStr: session.bookingTime,
+                endTimeStr: DateTime.now().toString())
+            .then((value) =>
+                {log("searching time differnece is : -->> $value  seconds")});
+
+        log("Customer searching for driver");
+
+        log("order id is : " + session.orderId);
+
+        socketProvider
+            .fetchOrderDetails(int.parse(session.orderId))
+            .then((value) {
+          log("order details are:  ${value.data}");
+
+          socketProvider.updateOrderDetailsModel(data: value);
+          dismissLoading();
+
+          Navigator.pushNamedAndRemoveUntil(
+              context, NewOrderPage.routeName, (route) => false,
+              arguments: OrderDataDetail(
+                  originAddress: socketProvider
+                      .orderDetailResponseModel!.data.startAddress,
+                  destinationAddress:
+                      socketProvider.orderDetailResponseModel!.data.endAddress,
+                  originLatLng: LatLng(
+                      double.parse(socketProvider
+                          .orderDetailResponseModel!.data.startCoordinate
+                          .split(',')
+                          .first),
+                      double.parse(socketProvider
+                          .orderDetailResponseModel!.data.startCoordinate
+                          .split(',')
+                          .last)),
+                  destinationLatLng: LatLng(
+                      double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
+                      double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
+        });
       } else {
         logMe(
             "-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
@@ -240,6 +247,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           return Future.value(false); // if true allow back else block it
         },
         child: SafeArea(
+        
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             // appBar: const CustomAppBar(

@@ -3,6 +3,7 @@
 const String SESSION_TOKEN = 'session_token';
 const String DRIVER_LATLONG = 'driver_latlong';
 const String ORDER_RECEIPT = 'order_receipt';
+const String SEARCHING_TIME = 'searching_time';
 
 const String IS_LOGGED_IN = 'is_logged_in';
 const String IS_RUNNING_ORDER = 'is_running_order';
@@ -33,6 +34,8 @@ const String CURRENT_LAT = 'current_lat';
 const String CURRENT_LONG = 'current_long';
 const String DEVICE = 'device';
 const String SESSION_ORDER_DETAILS = 'sessionOrderDetails';
+const String BOOKING_TIME = 'booking_time';
+
 const String SESSION_Driver_DETAILS = 'sessionCustomerDetails';
 const String ORIGIN_ADDRESS = 'origin_address';
 const String DESTINATION_ADDRESS = 'destination_address';

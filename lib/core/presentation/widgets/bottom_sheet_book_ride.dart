@@ -260,6 +260,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                         ),
                                       ),
                                       event: () {
+                                        var session = locator<Session>();
+                                        session.setSearchingTime = 300;
                                         var socketProvider =
                                             locator<TestSocketProvider>();
                                         if (provider.paymentMethod != null) {
@@ -329,6 +331,10 @@ class BottomSheetBookRide extends StatelessWidget {
                                                 var session =
                                                     locator<Session>();
                                                 session.setOrderStatus = 0;
+                                                session.setIsRunningOrder =
+                                                    true;
+                                                session.setBookingTime =
+                                                    DateTime.now().toString();
 
                                                 Navigator
                                                     .pushNamedAndRemoveUntil(

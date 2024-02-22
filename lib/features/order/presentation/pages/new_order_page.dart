@@ -59,31 +59,73 @@ class _NewOrderPageState extends State<NewOrderPage>
             receiverId: int.parse(session.driverId.toString()));
       }
     });
+    String formatDuration(int seconds) {
+      final minutes = (seconds / 60).floor();
+      final remainingSeconds = seconds % 60;
+      return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
+    }
 
-    void startTimerAndNavigate() {
-      const Duration duration = const Duration(minutes: 5);
+    void startTimerAndNavigate({required int time}) {
+      Duration duration = Duration(seconds: time);
+      int remainingSeconds = duration.inSeconds;
 
-      _timer = Timer(duration, () {
-        newSocketProvider.cancelRideByCustomer().then((value) async {
-          if (value) {
-            var homeProvider =
-                Provider.of<HomeProvider>(context, listen: false);
-            await homeProvider.clearState();
-            dismissLoading();
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        print('Remaining time: ${remainingSeconds}');
 
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              HomePage.routeName,
-              (route) => false,
-            );
-          } else {
-            dismissLoading();
-            showToast(message: "Something went wrong");
-          }
-        });
-        // );
+        if (remainingSeconds <= 0) {
+          timer.cancel();
+          newSocketProvider.cancelRideByCustomer().then((value) async {
+            session.setSearchingTime = 300;
+            if (value) {
+              var homeProvider =
+                  Provider.of<HomeProvider>(context, listen: false);
+              await homeProvider.clearState();
+              session.setIsRunningOrder = false;
+
+              dismissLoading();
+
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                HomePage.routeName,
+                (route) => false,
+              );
+            } else {
+              dismissLoading();
+              showToast(message: "Something went wrong");
+            }
+          });
+        } else {
+          session.setSearchingTime = remainingSeconds;
+          remainingSeconds--;
+        }
       });
     }
+
+    // void startTimerAndNavigate({time}) {
+
+    //   Duration duration = Duration(minutes: time);
+
+    //   _timer = Timer(duration, () {
+    //     newSocketProvider.cancelRideByCustomer().then((value) async {
+    //       if (value) {
+    //         var homeProvider =
+    //             Provider.of<HomeProvider>(context, listen: false);
+    //         await homeProvider.clearState();
+    //         dismissLoading();
+
+    //         Navigator.pushNamedAndRemoveUntil(
+    //           context,
+    //           HomePage.routeName,
+    //           (route) => false,
+    //         );
+    //       } else {
+    //         dismissLoading();
+    //         showToast(message: "Something went wrong");
+    //       }
+    //     });
+    //     // );
+    //   });
+    // }
 
     // var orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
@@ -95,13 +137,14 @@ class _NewOrderPageState extends State<NewOrderPage>
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // homeProvider.clearOldRideData();
-      if (session.orderStatus == 0) {
-        startTimerAndNavigate();
+      if (session.orderStatus.toString() == "0") {
+        startTimerAndNavigate(time: session.searchingTime);
         showSearchingVehiclesBottomSheet(
           context,
         );
       } else {
         newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
+        session.setSearchingTime = 300;
 
         _timer?.cancel();
         log("else called ");
@@ -115,8 +158,9 @@ class _NewOrderPageState extends State<NewOrderPage>
 
   @override
   void dispose() {
-    super.dispose();
     _timer?.cancel();
+    super.dispose();
+
     // checkOrderStatusTimer?.cancel();%
     // trackingDriverTimer?.cancel();
     // newSocketProvider.disconnectSocket();
@@ -132,6 +176,7 @@ class _NewOrderPageState extends State<NewOrderPage>
 
     return WillPopScope(
       onWillPop: () async {
+        showToast(message: "click on back button system");
         return false;
       },
       child: SafeArea(
@@ -140,6 +185,7 @@ class _NewOrderPageState extends State<NewOrderPage>
           body: Consumer<TestSocketProvider>(builder: (context, provider, _) {
             if (newSocketProvider.isOrderAccepted) {
               _timer?.cancel();
+              session.setSearchingTime = 300;
 
               Navigator.pop(context, true);
               // newSocketProvider.updateIsOrderAccepted(val: false);

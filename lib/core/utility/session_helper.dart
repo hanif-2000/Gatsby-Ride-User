@@ -3,10 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../static/strings.dart';
 
 abstract class Session {
+/** SETTER---------------------------------------------------------------------- */
   set setLoggedIn(bool login);
   set setIsRunningOrder(bool isRunningOrder);
   set setIsPaymentDone(bool paymentDone);
   set setIsRatingGiven(bool ratingGiven);
+  set setSearchingTime(int searchingTime);
+  set setBookingTime(String bookingTime);
 
   set setOrderId(String orderId);
   set setToken(String token);
@@ -48,6 +51,8 @@ abstract class Session {
   set setOrderDetails(orderDetails);
   set setDriverDetails(DriverDetails);
 
+/** GETTER---------------------------------------------------------------------- GETTER */
+
   bool get isLoggedIn;
   bool get isRunningOrder;
   bool get isRatingGiven;
@@ -58,6 +63,8 @@ abstract class Session {
 
   String get estimatedDistance;
   String get estimatedTime;
+  int get searchingTime;
+  String get bookingTime;
 
   String get sessionToken;
   String get sessionFcmToken;
@@ -104,16 +111,24 @@ abstract class Session {
   Future<void> clearOrderSession();
 }
 
+/** SESSION HELPER---------------------------------------------------------------------- SESSION HELPER */
+
 class SessionHelper implements Session {
   final SharedPreferences pref;
 
   SessionHelper({required this.pref});
+/** SESSION SETTER----------------------------------------------------------------------SESSION SETTER */
 
   /// * save order details--------*/
 
   @override
   set setOrderDetails(sessionOrder) {
     pref.setString(SESSION_ORDER_DETAILS, sessionOrder);
+  }
+
+  @override
+  set setBookingTime(bookingTime) {
+    pref.setString(BOOKING_TIME, bookingTime);
   }
 
   ///******** Save Driver DETAILS-------  */
@@ -306,6 +321,12 @@ class SessionHelper implements Session {
     pref.setDouble(DESTINATION_LONG, destinationLong);
   }
 
+  set setSearchingTime(int searchingTime) {
+    pref.setInt(SEARCHING_TIME, searchingTime);
+  }
+
+/** SESSION GETTER----------------------------------------------------------------------SESSION GETTER */
+
   @override
   bool get isLoggedIn => pref.getBool(IS_LOGGED_IN) ?? false;
 
@@ -321,7 +342,13 @@ class SessionHelper implements Session {
   int get chatToken => pref.getInt(CHAT_TOKEN) ?? 0;
 
   @override
+  int get searchingTime => pref.getInt(SEARCHING_TIME) ?? 300;
+
+  @override
   String get sessionToken => pref.getString(SESSION_TOKEN) ?? '';
+
+  @override
+  String get bookingTime => pref.getString(BOOKING_TIME) ?? '';
 
 /** DRIVER LAT LONG */
   @override

@@ -700,6 +700,7 @@ class TestSocketProvider extends ChangeNotifier {
       print('cancelRideByCustomer -- > ${map.toString()}');
 
       _socket!.send(jsonEncode(map));
+      session.setSearchingTime = 300;
 
       return true;
     } catch (e) {
