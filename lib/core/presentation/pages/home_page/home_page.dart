@@ -77,7 +77,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       socketProvider
           .fetchOrderDetails(int.parse(session.orderId))
           .then((value) {
-
         log("order details are:  ${value.data}");
 
         print("order details are:  ${session.orderStatus}");
@@ -106,7 +105,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             socketProvider
                 .fetchDriverDetails(int.parse(session.driverId))
                 .then((value) {
-              socketProvider.updateDriverDetailsModel(data: value).then((value) {
+              socketProvider
+                  .updateDriverDetailsModel(data: value)
+                  .then((value) {
                 logMe(
                     " driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
                 SmartDialog.dismiss();
@@ -115,10 +116,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   context,
                   MaterialPageRoute(
                     builder: (context) => FeedBackScreen(
-                      name:
-                      socketProvider.driverDetailResponseModel!.message.name,
-                      img:
-                      socketProvider.driverDetailResponseModel!.message.image,
+                      name: socketProvider
+                          .driverDetailResponseModel!.message.name,
+                      img: socketProvider
+                          .driverDetailResponseModel!.message.image,
                       carModal: socketProvider
                           .driverDetailResponseModel!.message.carModel,
                       carNo: socketProvider
@@ -135,10 +136,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           showLoading();
 
           getDifferenceInSeconds(
-              startTimeStr: session.bookingTime,
-              endTimeStr: DateTime.now().toString())
+                  startTimeStr: session.bookingTime,
+                  endTimeStr: DateTime.now().toString())
               .then((value) =>
-          {log("searching time differnece is : -->> $value  seconds")});
+                  {log("searching time differnece is : -->> $value  seconds")});
 
           log("Customer searching for driver");
 
@@ -157,8 +158,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 arguments: OrderDataDetail(
                     originAddress: socketProvider
                         .orderDetailResponseModel!.data.startAddress,
-                    destinationAddress:
-                    socketProvider.orderDetailResponseModel!.data.endAddress,
+                    destinationAddress: socketProvider
+                        .orderDetailResponseModel!.data.endAddress,
                     originLatLng: LatLng(
                         double.parse(socketProvider
                             .orderDetailResponseModel!.data.startCoordinate
@@ -172,17 +173,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
                         double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
           });
-
-
         } else {
           logMe(
-              "-------- SESSION ORDER STATUS IS${session.orderStatus
-                  .toString()} ");
+              "-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
           socketProvider
               .fetchOrderDetails(int.parse(session.orderId))
               .then((value) {
             socketProvider.updateCurrentOrderStatus(
                 val: int.parse(value.data.orderStatus.toString()));
+
+            session.setDriverId = value.data.driverId.toString();
 
             if (value.data.orderStatus.toString() == "8") {
               session.setIsPaymentDone = true;
@@ -199,7 +199,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   .fetchDriverDetails(int.parse(session.driverId))
                   .then((value) {
                 socketProvider.updateDriverDetailsModel(data: value);
-                logMe(" driver details are:::::::::::::: ${value}");
+                logMe(" driver details are::::::::::::::---- ${value}");
                 SmartDialog.dismiss();
 
                 Navigator.pushNamedAndRemoveUntil(
@@ -210,34 +210,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         destinationAddress: socketProvider
                             .orderDetailResponseModel!.data.endAddress,
                         originLatLng: LatLng(
-                            double.parse(
-                                socketProvider.orderDetailResponseModel!
-                                    .data.startCoordinate
-                                    .split(',')
-                                    .first),
                             double.parse(socketProvider
-                                .orderDetailResponseModel!
-                                .data.startCoordinate
+                                .orderDetailResponseModel!.data.startCoordinate
+                                .split(',')
+                                .first),
+                            double.parse(socketProvider
+                                .orderDetailResponseModel!.data.startCoordinate
                                 .split(',')
                                 .last)),
-                        destinationLatLng: LatLng(
-                            double.parse(
-                                socketProvider.orderDetailResponseModel!
-                                    .data.endCoordinate
-                                    .split(',')
-                                    .first),
-                            double.parse(
-                                socketProvider.orderDetailResponseModel!
-                                    .data.endCoordinate
-                                    .split(',')
-                                    .last))));
+                        destinationLatLng:
+                            LatLng(double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first), double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
               });
             }
           });
-        }});
-
-
-
+        }
+      });
 
       // }
     } else {
@@ -274,9 +261,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
     return PopScope(
-  canPop: false,
+        canPop: false,
         child: SafeArea(
-        
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             backgroundColor: whiteColor,

@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
 import 'package:GetsbyRideshare/core/static/strings.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
