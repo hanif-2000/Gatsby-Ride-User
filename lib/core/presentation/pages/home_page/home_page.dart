@@ -263,6 +263,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return PopScope(
         canPop: false,
         child: SafeArea(
+          bottom: true,
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             backgroundColor: whiteColor,

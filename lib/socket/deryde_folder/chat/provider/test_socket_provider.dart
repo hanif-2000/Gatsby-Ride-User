@@ -590,8 +590,48 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
 // Set polylines Direction
+  // setPolylinesDirection(LatLng origin, LatLng destination) async {
+  //   polylines.clear();
+  //   log("polyline///  --Driver co:" +
+  //       origin.latitude.toString() +
+  //       "," +
+  //       origin.longitude.toString());
+  //   log("polyline/// destination co:" +
+  //       destination.latitude.toString() +
+  //       "," +
+  //       destination.longitude.toString());
+
+  //   await DirectionHelper()
+  //       .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
+  //           destination.latitude, destination.longitude)
+  //       .then((result) {
+  //     log("Polyline results are ::::::::--------------  ${result} ------------********");
+  //     if (result.isNotEmpty) {
+  //       polylineCoordinates = [];
+  //       // polylineCoordinates.clear();
+  //       for (var point in result) {
+  //         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+  //       }
+
+  //       Polyline polyline = Polyline(
+  //           polylineId: const PolylineId("jalur"),
+  //           color: Colors.black,
+  //           points: polylineCoordinates,
+  //           width: 6,
+  //           startCap: Cap.roundCap,
+  //           endCap: Cap.roundCap);
+
+  //       polylines.add(polyline);
+
+  //       log("Polylines are:-->> " + polylines.toString());
+  //       notifyListeners();
+  //     } else {
+  //       log("direction helper result is empty********** $result");
+  //     }
+  //   });
+  // }
+
   setPolylinesDirection(LatLng origin, LatLng destination) async {
-    polylines.clear();
     log("polyline///  --Driver co:" +
         origin.latitude.toString() +
         "," +
@@ -608,7 +648,6 @@ class TestSocketProvider extends ChangeNotifier {
       log("Polyline results are ::::::::--------------  ${result} ------------********");
       if (result.isNotEmpty) {
         polylineCoordinates = [];
-        polylineCoordinates.clear();
         for (var point in result) {
           polylineCoordinates.add(LatLng(point.latitude, point.longitude));
         }
@@ -621,6 +660,7 @@ class TestSocketProvider extends ChangeNotifier {
             startCap: Cap.roundCap,
             endCap: Cap.roundCap);
 
+        polylines.clear(); // Clearing polylines is not necessary here
         polylines.add(polyline);
 
         log("Polylines are:-->> " + polylines.toString());
@@ -747,7 +787,7 @@ class TestSocketProvider extends ChangeNotifier {
         OrderDetailResponseModel data =
             OrderDetailResponseModel.fromJson(response.data);
 
-        session.setOrderStatus=int.parse(data.data.orderStatus.toString());
+        session.setOrderStatus = int.parse(data.data.orderStatus.toString());
 
         return data;
       } else {

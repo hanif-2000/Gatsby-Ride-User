@@ -1,6 +1,8 @@
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/register/presentation/providers/register_provider.dart';
+import 'package:GetsbyRideshare/features/terms_and_conditions/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 
@@ -207,14 +209,25 @@ class _FormRegisterState extends State<FormRegister> {
                           fontSize: 12,
                         ),
                       ),
-                      const Text(
-                        "Terms and Conditions ",
-                        // appLoc.welcome.toUpperCase(),
-                        style: TextStyle(
-                          fontFamily: "poPPinMedium",
-                          fontWeight: FontWeight.w500,
-                          color: blackColor,
-                          fontSize: 12,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const TermsAndConditionsPage(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Terms and Conditions ",
+                          // appLoc.welcome.toUpperCase(),
+                          style: TextStyle(
+                            fontFamily: "poPPinMedium",
+                            fontWeight: FontWeight.w500,
+                            color: blackColor,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],

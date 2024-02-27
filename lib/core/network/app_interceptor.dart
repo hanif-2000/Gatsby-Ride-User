@@ -37,7 +37,18 @@ class AppInterceptor extends Interceptor {
   }
 
   @override
-  Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+      DioException err, ErrorInterceptorHandler handler) async {
+    log("dio exception error message:  ${err.message}");
+    log("dio exception error err:  ${err}");
+    log("dio exception error error:  ${err.error}");
+    log("dio exception error response:  ${err.response}");
+    log("dio exception error type:  ${err.type}");
+
+    if (err.type == DioExceptionType.connectionError) {
+      showNoInternetDialog();
+    }
+
     logMe("DION ERROR CALLED");
     final statusCode = err.response?.statusCode;
 
