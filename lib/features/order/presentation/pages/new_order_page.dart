@@ -201,11 +201,11 @@ class _NewOrderPageState extends State<NewOrderPage>
                   myLocationButtonEnabled: true,
                   zoomControlsEnabled: true,
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(newSocketProvider.lat, newSocketProvider.long),
-                    zoom: 19,
-                    tilt: 10,
-                    bearing: newSocketProvider.bearing
-                  ),
+                      target:
+                          LatLng(newSocketProvider.lat, newSocketProvider.long),
+                      zoom: 14,
+                      tilt: 10,
+                      bearing: newSocketProvider.bearing),
                   onMapCreated: (GoogleMapController controller) async {
                     newSocketProvider.googleMapController = controller;
                     await newSocketProvider.setCurrentLocation(widget.location);

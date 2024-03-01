@@ -21,7 +21,7 @@ class MapSampleState extends State<MapSample> {
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+      zoom: 14);
 
   @override
   Widget build(BuildContext context) {
