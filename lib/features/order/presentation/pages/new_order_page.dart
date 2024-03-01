@@ -6,6 +6,8 @@ import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -199,14 +201,18 @@ class _NewOrderPageState extends State<NewOrderPage>
                   myLocationButtonEnabled: true,
                   zoomControlsEnabled: true,
                   initialCameraPosition: CameraPosition(
-                    target:
-                        LatLng(newSocketProvider.lat, newSocketProvider.long),
+                    target: LatLng(newSocketProvider.lat, newSocketProvider.long),
                     zoom: 19,
+                    tilt: 10,
+                    bearing: newSocketProvider.bearing
                   ),
                   onMapCreated: (GoogleMapController controller) async {
                     newSocketProvider.googleMapController = controller;
                     await newSocketProvider.setCurrentLocation(widget.location);
                   },
+                  tiltGesturesEnabled: false,
+                  rotateGesturesEnabled: false,
+                  scrollGesturesEnabled: true,
                   polylines: newSocketProvider.polylines,
                   markers: Set<Marker>.of(newSocketProvider.markers.values),
                 ),

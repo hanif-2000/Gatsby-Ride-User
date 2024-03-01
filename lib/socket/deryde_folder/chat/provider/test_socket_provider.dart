@@ -270,8 +270,7 @@ class TestSocketProvider extends ChangeNotifier {
                 driverUpdatedPositionModel!.bearing.toString())!,
             long: driverUpdatedPositionModel!.longitude);
 
-        updateBearing(
-          val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,
+        updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,
         );
 
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
@@ -552,9 +551,12 @@ class TestSocketProvider extends ChangeNotifier {
       markerId: markerId,
       position: LatLng(latDriver, lngDriver),
       icon: driverMarker,
-      rotation: bearing,
+      rotation: bearing-180,
       infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
       onTap: () {},
+    );
+
+    googleMapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(latDriver, lngDriver), 19,),
     );
     //add to marker list
     markers[markerId] = marker;
@@ -1082,6 +1084,7 @@ class TestSocketProvider extends ChangeNotifier {
         target: LatLng(orderDataDetail.originLatLng.latitude,
             orderDataDetail.originLatLng.longitude),
         zoom: zoom,
+        tilt: 10,
       )));
 
       originAddress = orderDataDetail.originAddress;
@@ -1162,6 +1165,9 @@ class TestSocketProvider extends ChangeNotifier {
         .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
       target: LatLng(_driverLat, _driverLng),
       zoom: zoom,
+      tilt: 10,
+      bearing: bearing
+
     )));
   }
 }
