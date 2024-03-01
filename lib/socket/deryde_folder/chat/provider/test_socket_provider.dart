@@ -63,6 +63,7 @@ class TestSocketProvider extends ChangeNotifier {
   late LatLng originLatLng, destinationLatLng;
   final chatController = TextEditingController();
   String orderId = '';
+  double bearing = 0.0;
 
   double ratingGiven = 1;
   late Text originText;
@@ -91,6 +92,19 @@ class TestSocketProvider extends ChangeNotifier {
   updateRatingComment({double? rating, String? comment}) {
     ratingGiven = rating!;
     commentGiven = comment!;
+    notifyListeners();
+  }
+
+  updateBearing({
+    val,
+  }) {
+    bearing = val;
+
+    // googleMapController
+    //     .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    //   target: LatLng(driverLatLng.latitude, driverLatLng.longitude),
+    //   bearing: val,
+    // )));
     notifyListeners();
   }
 
@@ -252,7 +266,13 @@ class TestSocketProvider extends ChangeNotifier {
         await trackingDriver(
             listenLocation: true,
             lat: driverUpdatedPositionModel!.latitude,
+            bearing: double.tryParse(
+                driverUpdatedPositionModel!.bearing.toString())!,
             long: driverUpdatedPositionModel!.longitude);
+
+        updateBearing(
+          val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,
+        );
 
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
@@ -503,7 +523,8 @@ class TestSocketProvider extends ChangeNotifier {
   Future<void> trackingDriver(
       {required bool listenLocation,
       required double lat,
-      required double long}) async {
+      required double long,
+      required double bearing}) async {
     // updateIsWithDriver();
     log("driver:- tracking driver called-->>>>>. ${lat} ${long}");
     log("driver:- is listenLocation :$listenLocation");
@@ -531,7 +552,7 @@ class TestSocketProvider extends ChangeNotifier {
       markerId: markerId,
       position: LatLng(latDriver, lngDriver),
       icon: driverMarker,
-      rotation: 0.0,
+      rotation: bearing,
       infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
       onTap: () {},
     );
@@ -1130,7 +1151,10 @@ class TestSocketProvider extends ChangeNotifier {
   callTrakingDriver(LatLng position) async {
     log("driver position is :${position}");
     await trackingDriver(
-        listenLocation: true, lat: position.latitude, long: position.longitude);
+        bearing: bearing,
+        listenLocation: true,
+        lat: position.latitude,
+        long: position.longitude);
   }
 
   moveCameraToDriver() {
