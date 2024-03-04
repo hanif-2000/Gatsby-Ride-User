@@ -40,7 +40,7 @@ dependencies:
   package_info_plus: ^5.0.1
   pinput: ^4.0.0
   flutter_facebook_auth: ^6.1.1
-  country_picker: ^2.0.24
+  country_picker: ^2.0.25
   dropdown_button2: ^2.3.9
   http: ^1.2.0
   flutter_svg: ^2.0.10+1
@@ -48,41 +48,30 @@ dependencies:
   flutter_facebook_keyhash: ^0.0.4
   flutter_rating_bar: ^4.0.1
   chat_bubbles: any
-
   percent_indicator: ^4.2.3
   sliding_up_panel: ^2.0.0+1
   flutter_launcher_icons: ^0.13.1
   google_sign_in: ^6.2.1
-  web_socket_client: ^0.1.0
- 
-  # upi_india: ^3.0.1
-  # easy_upi_payment: ^0.1.4
-
+  web_socket_client: ^0.1.1
   google_directions_api: ^0.10.0
   permission_handler: ^11.3.0
-  firebase_auth: ^4.17.4
+  firebase_auth: ^4.17.6
   flutter_keychain: ^2.4.0
-  sign_in_with_apple: ^5.0.0
+  sign_in_with_apple: ^6.0.0
   app_settings: ^5.1.1
   credit_card_type_detector: ^3.0.0
   month_year_picker: ^0.3.0+1
   lottie: ^3.1.0
   flutter_app_badger: ^1.5.0
   webview_flutter: ^4.7.0
-  firebase_core: ^2.25.4
-  pay: ^1.1.2
+  firebase_core: ^2.25.5
+  pay: ^2.0.0
   provider: ^6.1.1
   flutter_widget_from_html: ^0.14.11
+  flutter_stripe: ^10.1.0
 
 
 
-dependency_overrides:
-  flutter_stripe: ^10.0.0
-  stripe_android: "9.5.0+1"
-
-  # credit_card: ^0.1.8
-  # upi_pay: ^1.0.1
-  # flutter_pay: ^1.0.2
 
 
 

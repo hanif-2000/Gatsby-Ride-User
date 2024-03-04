@@ -13,24 +13,32 @@ class NotificationHelper {
 
   factory NotificationHelper() => _instance ?? NotificationHelper._internal();
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
     const String iconNotification = '@mipmap/notification_icon';
-    const initializationSettingsAndroid =
-        AndroidInitializationSettings(iconNotification);
+    const initializationSettingsAndroid = AndroidInitializationSettings(iconNotification);
     const initializationSettingsIos = DarwinInitializationSettings(
-        requestSoundPermission: false,
-        requestAlertPermission: false,
-        requestBadgePermission: false);
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsIos);
+        requestSoundPermission: true,
+        requestAlertPermission: true,
+        requestBadgePermission: true);
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsIos);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse: selectNotification);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: selectNotification);
+
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    /// Update the iOS foreground notification presentation options to allow
+    /// heads up notifications.
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -38,6 +46,7 @@ class NotificationHelper {
     'high_importance_channel', // id
     'High Importance Notifications',
     description: 'This channel is used for important notifications.',
+
     // description
     importance: Importance.max,
   );

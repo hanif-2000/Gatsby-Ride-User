@@ -556,7 +556,7 @@ class TestSocketProvider extends ChangeNotifier {
       onTap: () {},
     );
 
-    googleMapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(latDriver, lngDriver), 19,),
+    googleMapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(latDriver, lngDriver), 16,),
     );
     //add to marker list
     markers[markerId] = marker;

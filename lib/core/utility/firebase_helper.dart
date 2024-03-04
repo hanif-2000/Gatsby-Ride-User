@@ -15,29 +15,8 @@ class FirebaseHelper {
     messaging = FirebaseMessaging.instance;
     await incomingNotificationHandling();
 
-    /*   await permissionHandler().then((authorized) async {
-      log("IS AUTHORIZED:  $authorized");
-      if (authorized) {
-        await setupMessaging();
-      } else {
-        await setupMessaging();
-        // await permissionHandler().then((value) async => {
-        //       if (authorized) {await setupMessaging()}
-        //     });
-      }
-    });*/
   }
-/*
-  static Future<void> setupMessaging() async {
-    log("Firebasee helperrrr init setupMessaging");
 
-    await messaging.getToken().then((token) async {
-      final session = locator<Session>();
-      logMe("firebase-token: $token");
-      session.setFcmToken = token!;
-    });
-    await incomingNotificationHandling();
-  }*/
 
   static Future<void> incomingNotificationHandling() async {
     log("Firebasee helperrrr init incomingNotificationHandling");
