@@ -11,6 +11,7 @@ class CustomVehicleInfo extends StatelessWidget {
   final String? price;
   final String? newTotal;
   final String? pendingAmount;
+  final String? estimatedDistance;
 
   final String? capacity;
   final VoidCallback? onTap;
@@ -29,6 +30,7 @@ class CustomVehicleInfo extends StatelessWidget {
     this.onTap,
     this.index,
     this.newTotal,
+    this.estimatedDistance,
     this.pendingAmount,
     required this.vehicleDetail,
     required this.provider,
@@ -154,6 +156,8 @@ class CustomVehicleInfo extends StatelessWidget {
                             ["techFee"],
                         newTotal: double.parse(newTotal!).toStringAsFixed(2),
                         pendingAmount: pendingAmount,
+                        estimatedTime: time.toString(),
+                        estimatedDistance: estimatedDistance.toString(),
                         isAvailable: isAvailable);
                   },
                   child: Icon(Icons.info_outline)),
@@ -195,6 +199,8 @@ class CustomVehicleInfo extends StatelessWidget {
       pendingAmount,
       newTotal,
       isAvailable,
+      estimatedDistance,
+      estimatedTime,
       minimumFare}) {
     showModalBottomSheet(
       barrierColor: Colors.transparent,
@@ -225,6 +231,8 @@ class CustomVehicleInfo extends StatelessWidget {
             newTotal: newTotal,
             pendingAmount: pendingAmount,
             isAvailable: isAvailable,
+            estimatedDistance: estimatedDistance,
+            estimatedTime: estimatedTime,
           )
         ]);
       },

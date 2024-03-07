@@ -1,4 +1,5 @@
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/duration_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -14,6 +15,8 @@ class CarDetailWidget extends StatelessWidget {
   final String pendingAmount;
   final String newTotal;
   final String isAvailable;
+  final String estimatedDistance;
+  final String estimatedTime;
 
   const CarDetailWidget(
       {Key? key,
@@ -27,6 +30,8 @@ class CarDetailWidget extends StatelessWidget {
       required this.pendingAmount,
       required this.newTotal,
       required this.isAvailable,
+      required this.estimatedDistance,
+      required this.estimatedTime,
       required this.techFee})
       : super(key: key);
 
@@ -116,6 +121,20 @@ class CarDetailWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
+                      "Estimated Distance",
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Estimated Time",
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
                       "Minimum Fare",
                       style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
@@ -173,6 +192,23 @@ class CarDetailWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "CA \$ ${estimatedDistance}",
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      estimatedTime,
+                      // formatDuration(double.parse(
+                      //         ((int.parse(estimatedTime)) * 60).toString())
+                      //     .toInt()),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(

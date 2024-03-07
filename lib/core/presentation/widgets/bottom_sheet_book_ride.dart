@@ -32,12 +32,11 @@ class BottomSheetBookRide extends StatelessWidget {
         builder: (context, state) {
           switch (state.data.runtimeType) {
             case VehiclesCategoryLoading:
-              return  Padding(
+              return Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child:
-                Center(
-                  child: LottieBuilder.asset(
-                      'assets/icons/lottie_animation.json'),
+                child: Center(
+                  child:
+                      LottieBuilder.asset('assets/icons/lottie_animation.json'),
                 ),
 
                 // Center(child: CircularProgressIndicator()),
@@ -106,7 +105,9 @@ class BottomSheetBookRide extends StatelessWidget {
                                         vehicleImage:
                                             "${provider.carsImageList[index]}",
                                         // time: "${provider.estimatedTimeToShow}",
-                                        time: data[index].time.toString() +
+                                        time: data[index]
+                                                .estimatedTime
+                                                .toString() +
                                             " min",
                                         // price: data[index].totalFare.toString(),
                                         price: data[index].totalFare.toString(),
@@ -122,6 +123,9 @@ class BottomSheetBookRide extends StatelessWidget {
                                             .pendingAmount
                                             .toString(),
                                         isAvailable: data[index].isAvailable,
+                                        estimatedDistance: data[index]
+                                            .estimatedDistance
+                                            .toString(),
                                       ),
                                     ),
                                   );

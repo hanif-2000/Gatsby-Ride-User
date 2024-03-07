@@ -8,6 +8,8 @@ class PriceCategoryModel extends PriceCategory {
     required num seat,
     required num priceKm,
     required dynamic pendingAmount,
+    required dynamic estimatedDistance,
+    required dynamic estimatedTime,
     required dynamic newTotal,
   }) : super(
             categoryId: categoryId,
@@ -16,6 +18,8 @@ class PriceCategoryModel extends PriceCategory {
             seat: seat,
             priceKm: priceKm,
             pendingAmount: pendingAmount,
+            estimatedDistance: estimatedDistance,
+            estimatedTime: estimatedTime,
             newTotal: newTotal);
 
   factory PriceCategoryModel.fromJson(Map<String, dynamic> json) =>
@@ -26,6 +30,8 @@ class PriceCategoryModel extends PriceCategory {
           seat: json['seat'],
           priceKm: json['price_km'],
           pendingAmount: json['pending_amount'],
+          estimatedDistance: json['estimated_distance'],
+          estimatedTime: json['estimated_time'],
           newTotal: json['new_total']);
 
   @override
@@ -37,5 +43,7 @@ class PriceCategoryModel extends PriceCategory {
         "price_km": priceKm,
         "pendingAmount": pendingAmount,
         "newTotal": newTotal,
+        "estimatedTime": estimatedTime,
+        "estimatedDistance": estimatedDistance,
       };
 }

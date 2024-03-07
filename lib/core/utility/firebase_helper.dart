@@ -32,7 +32,7 @@ class FirebaseHelper {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final session = locator<Session>();
-      if (session.sessionToken.isEmpty) {
+      if (Platform.isIOS || session.sessionToken.isEmpty) {
         return;
       }
       log("onMessage listen called");
