@@ -13,13 +13,10 @@ class FirebaseHelper {
     log("Firebasee helperrrr init");
     messaging = FirebaseMessaging.instance;
     await incomingNotificationHandling();
-
   }
-
 
   static Future<void> incomingNotificationHandling() async {
     log("Firebasee helperrrr init incomingNotificationHandling");
-
 
 /*
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -30,6 +27,7 @@ class FirebaseHelper {
       NotificationHelper notificationService = NotificationHelper();
       notificationService.showNotifications(message);
     });
+    //========//
 */
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -40,12 +38,10 @@ class FirebaseHelper {
       log("onMessage listen called");
       print("on message listen called");
       log("remote message is------->>>>>. ${message.toMap().toString()}");
-    //  _fetchRemoteMessage(message);
+      //  _fetchRemoteMessage(message);
       NotificationHelper notificationService = NotificationHelper();
       notificationService.showNotifications(message);
     });
-
-
   }
 
   static _fetchRemoteMessage(RemoteMessage message) {
@@ -90,6 +86,4 @@ class FirebaseHelper {
       clickAction = data["click_action"];
     }
   }
-
 }
-
