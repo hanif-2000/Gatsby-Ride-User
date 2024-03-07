@@ -13,5 +13,6 @@ abstract class LoginRepository {
     String lastName,
     String loginType,
     String deviceType,
+    String socialId,
   );
 }

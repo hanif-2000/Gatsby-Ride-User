@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -21,6 +22,7 @@ abstract class LoginDataSource {
     String lastName,
     String loginType,
     String deviceType,
+    String socialId,
   );
 }
 
@@ -79,17 +81,21 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String lastName,
     String loginType,
     String deviceType,
+    String socialId,
   ) async {
     String url = 'api/webservice/login';
     final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+
+    log("device token:  $deviceToken");
     FormData data = FormData.fromMap({
       'email': email,
       'first_name': firstName,
       'last_name': lastName,
       'fcm_token': deviceToken,
-      'login_type': loginType,
-      'device_type': deviceType,
-      'country': 'Canada'
+      'login_type': 'social',
+      'device_type': Platform.isAndroid ? "android" : "ios",
+      'country': 'Canada',
+      "social_id": socialId,
     });
 
     log("----Social login ----> ${data.fields}");

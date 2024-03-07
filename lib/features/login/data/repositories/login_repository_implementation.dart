@@ -40,6 +40,7 @@ class LoginRepositoryImplementation implements LoginRepository {
     String lastName,
     String loginType,
     String deviceType,
+    String socialId,
   ) async {
     try {
       final data = await dataSource.doLoginSocial(
@@ -48,6 +49,7 @@ class LoginRepositoryImplementation implements LoginRepository {
         lastName,
         loginType,
         deviceType,
+        socialId,
       );
       return Right(data);
     } on DioError catch (e) {

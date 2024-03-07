@@ -20,10 +20,15 @@ import '../providers/login_provider.dart';
 import '../providers/login_state.dart';
 import '../widgets/login_form.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
   static const routeName = '/login';
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     // var socketProvider = locator<TestSocketProvider>();
@@ -347,7 +352,6 @@ class LoginPage extends StatelessWidget {
                           log('Code - ${credential.authorizationCode}');
                           log('userIdentifier - ${credential.userIdentifier}');
                           log('Token - ${credential.identityToken}');
-
                           log("apple credentials: $credential");
 
                           if (credential.email == null ||
@@ -361,11 +365,14 @@ class LoginPage extends StatelessWidget {
                               String lastName =
                                   value.split(':').first.split('/').last;
                               String email = value.split(':').last;
+                              log("${name}====>${lastName}=========>");
+                              log("${email.toString()}");
 
                               final oauthCredential =
                                   OAuthProvider("apple.com").credential(
                                 idToken: credential.identityToken,
                               );
+                              log("${oauthCredential.toString()}");
 
                               //  AuthCredential savedCredential= AuthorizationAppleID(000364.a2aa5cb11a3a4f288b26927d0f28fb1e.0445, apps, Davaloper, appsdeveloper22@gmail.com, null)
 
@@ -417,6 +424,7 @@ class LoginPage extends StatelessWidget {
                                         showToast(message: msg);
                                         break;
                                       case LoginSuccess:
+                                        log("+++++++++++++>>>>>>>APPLE LOGIN SUCCESS==============");
                                         dismissLoading();
 
                                         final session = locator<Session>();
@@ -424,10 +432,12 @@ class LoginPage extends StatelessWidget {
                                         showToast(message: appLoc.success);
 
                                         //   socketProvider.connectToSocket(context);
+
                                         Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             HomePage.routeName,
-                                            (route) => false);
+                                            (route) => true);
+
                                         logMe(
                                             "Authorization Token: ${session.sessionToken}");
                                         break;

@@ -56,12 +56,7 @@ class LoginProvider extends FormProvider {
     yield LoginLoading();
 
     final loginResultSocial = await doLoginSocial.callSocial(
-      email,
-      firstName,
-      lastName,
-      session.device,
-      sessionHelper.device,
-    );
+        email, firstName, lastName, "social", sessionHelper.device, socialId);
 
     yield* loginResultSocial.fold((statusCode) async* {
       log(statusCode.toString());
