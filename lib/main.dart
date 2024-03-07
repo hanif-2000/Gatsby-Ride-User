@@ -48,20 +48,14 @@ Future<void> main() async {
 
   await Firebase.initializeApp(
       name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
-  // Stripe.publishableKey =
-  //     'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
-
-  // getKeyHash();
-
   try {
     await init();
-    await FirebaseHelper.init();
     await FirebaseMessaging.instance.requestPermission();
     await locator.isReady<Session>().then((_) async {
       var session = locator<Session>();
       log("is logged in------------->>>>>  " + session.isLoggedIn.toString());
-
       await NotificationHelper().init();
+      await FirebaseHelper.init();
       runApp(
         MultiProvider(
           providers: [

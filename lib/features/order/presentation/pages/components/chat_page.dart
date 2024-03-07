@@ -60,19 +60,22 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    log(" app lifecycle state is ------>>>>>>>   $state");
-    if (state == AppLifecycleState.paused) {
-      socketProvider.joinExitRoom(
-        context: context,
-        type: 'unJoin',
-        receiverId: int.parse(session.driverId),
-      );
-    } else if (state == AppLifecycleState.resumed) {
-      socketProvider.joinExitRoom(
+    if(context.mounted){
+      log(" app lifecycle state is ------>>>>>>>   $state");
+      if (state == AppLifecycleState.paused) {
+        socketProvider.joinExitRoom(
           context: context,
+          type: 'unJoin',
           receiverId: int.parse(session.driverId),
-          type: 'Join');
+        );
+      } else if (state == AppLifecycleState.resumed) {
+        socketProvider.joinExitRoom(
+            context: context,
+            receiverId: int.parse(session.driverId),
+            type: 'Join');
+      }
     }
+
   }
 
   // @override

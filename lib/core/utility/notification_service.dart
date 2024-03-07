@@ -51,15 +51,6 @@ class NotificationHelper {
     importance: Importance.max,
   );
 
-  // final AndroidNotificationDetails _androidNotificationDetails =
-  //     const AndroidNotificationDetails('channel ID', 'channel name',
-  //         playSound: true,
-  //         channelShowBadge: false,
-  //         priority: Priority.max,
-  //         importance: Importance.max,
-  //         enableVibration: true
-  //         // color: Color(0xff000000),
-  //         );
 
   Future<void> showNotifications(RemoteMessage message) async {
     print("show notification called :-->> ${message.data}");
@@ -81,8 +72,7 @@ class NotificationHelper {
           playSound: true,
           priority: Priority.max,
           importance: Importance.max,
-          styleInformation:
-              BigTextStyleInformation(message.data["message"] ?? ""),
+          styleInformation: BigTextStyleInformation(message.data["message"] ?? ""),
         ),
       ),
       //  NotificationDetails(android: _androidNotificationDetails),
