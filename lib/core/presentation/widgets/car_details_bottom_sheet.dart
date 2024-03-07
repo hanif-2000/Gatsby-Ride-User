@@ -195,7 +195,7 @@ class CarDetailWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "CA \$ ${estimatedDistance}",
+                      "${estimatedDistance} km",
                       style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
