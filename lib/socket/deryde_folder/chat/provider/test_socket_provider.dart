@@ -270,7 +270,8 @@ class TestSocketProvider extends ChangeNotifier {
                 driverUpdatedPositionModel!.bearing.toString())!,
             long: driverUpdatedPositionModel!.longitude);
 
-        updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,
+        updateBearing(
+          val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,
         );
 
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
@@ -551,12 +552,16 @@ class TestSocketProvider extends ChangeNotifier {
       markerId: markerId,
       position: LatLng(latDriver, lngDriver),
       icon: driverMarker,
-      rotation: bearing-180,
+      rotation: bearing - 180,
       infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
       onTap: () {},
     );
 
-    googleMapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(latDriver, lngDriver), 16,),
+    googleMapController.animateCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(latDriver, lngDriver),
+        16,
+      ),
     );
     //add to marker list
     markers[markerId] = marker;
@@ -1161,13 +1166,11 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   moveCameraToDriver() {
-    googleMapController
-        .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(_driverLat, _driverLng),
-      zoom: zoom,
-      tilt: 10,
-      bearing: bearing
-
-    )));
+    googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+            target: LatLng(_driverLat, _driverLng),
+            zoom: zoom,
+            tilt: 10,
+            bearing: bearing)));
   }
-}
+}           

@@ -117,35 +117,35 @@ class CarDetailWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "Minimum Fare",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "Base Fare",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "Tech Fee",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "Extra Per Km Fee ",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "Extra Per min Fee",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
@@ -177,35 +177,35 @@ class CarDetailWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "CA \$ ${minimumFare}",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "CA \$ ${baseFare}",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "CA \$ ${techFee}",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "CA \$ ${perkM}",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "CA \$ ${perMin}",
-                      style: TextStyle(color: greyC8C7CCColor, fontSize: 16.0),
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
                   Padding(
