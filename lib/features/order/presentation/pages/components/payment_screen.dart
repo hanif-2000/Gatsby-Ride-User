@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:flutter/services.dart';
@@ -172,7 +173,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     log("apple card body is-->>  " + body.toString());
 
     var response = await dio.post(
-      'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+      '${BASE_URL}api/webservice/driver/payment',
       data: body,
       options: Options(headers: {"Authorization": "Bearer $sessionToken"}),
     );
@@ -706,7 +707,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           log("session token is:-->> ${sessionToken}");
 
                                           var response = await dio.post(
-                                            'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                                            '${BASE_URL}api/webservice/driver/payment',
                                             data: body,
                                             options: Options(headers: {
                                               "Authorization":
@@ -973,7 +974,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     log(body.toString());
                                     try {
                                       var response = await dio.post(
-                                        'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                                        '${BASE_URL}api/webservice/driver/payment',
                                         data: body,
                                         options: Options(headers: {
                                           "Authorization":

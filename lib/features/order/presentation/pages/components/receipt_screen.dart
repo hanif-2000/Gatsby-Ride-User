@@ -509,7 +509,7 @@
 //                         //                       log(body.toString());
 
 //                         //                       var response = await dio.post(
-//                         //                         'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+//                         //                         'https://api.gatsbyrideshare.com/api/webservice/driver/payment',
 //                         //                         data: body,
 //                         //                         options: Options(headers: {
 //                         //                           "Authorization":

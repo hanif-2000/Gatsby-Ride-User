@@ -36,6 +36,8 @@ class ProfileInformationDrawer extends StatelessWidget {
               logMe("loaded");
               final data = (state.data as ProfileLoaded).data;
               log("photo data----->>>>>" + data.photo.toString());
+
+              log("profile data is:-->>${data}");
               return Column(
                 children: [
                   Container(

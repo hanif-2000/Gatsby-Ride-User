@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
 import 'package:GetsbyRideshare/core/static/strings.dart';
+import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
@@ -9,7 +10,6 @@ import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:GetsbyRideshare/firebase_options.dart';
-import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

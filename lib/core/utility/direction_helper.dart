@@ -38,7 +38,7 @@ class DirectionHelper {
         throw Exception("Failed to fetch directions");
       }
     } catch (error, s) {
-      log("ssssss $s");
+      // log("ssssss $s");
       throw Exception(error.toString());
     }
     // print(polylinePoints);

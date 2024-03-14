@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -19,7 +20,7 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
 
   var loadingPercentage = 0;
   var error = false;
-  String url = "https://php.parastechnologies.in/taxi/public/privacy";
+  String url = "${BASE_URL}privacy";
 
   @override
   void initState() {

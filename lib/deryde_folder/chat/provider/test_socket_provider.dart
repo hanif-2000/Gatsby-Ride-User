@@ -3,6 +3,10 @@ import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/socket/modals/accept_response_model.dart';
+import 'package:GetsbyRideshare/socket/modals/booking_response_model.dart';
+import 'package:GetsbyRideshare/socket/modals/driver_updated_position_model.dart';
+import 'package:GetsbyRideshare/socket/modals/new_receipt_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,10 +26,7 @@ import '../../../../features/order/data/models/detail_order_response_model.dart'
 import '../../../../features/order/data/models/get_driver_details_response_model.dart';
 import '../../../../features/order/data/models/submit_rating_response_modal.dart';
 import '../../../../features/order/domain/entities/order_detail.dart';
-import '../../../modals/accept_response_model.dart';
-import '../../../modals/booking_response_model.dart';
-import '../../../modals/driver_updated_position_model.dart';
-import '../../../modals/new_receipt_model.dart';
+
 import 'package:location/location.dart' as lctn;
 
 class TestSocketProvider extends ChangeNotifier {
@@ -187,10 +188,15 @@ class TestSocketProvider extends ChangeNotifier {
   // -----> function to connect the socket <--------- //
   Future<dynamic> connectToSocket(BuildContext context) async {
     log("-------->CONNECTING TO SOCKET <--------");
+
+    // ws://3.97.35.163:8051
     print(
-        '-------> uri === "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}""');
+        '-------> uri === "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}""');
+    // _socket = WebSocket(Uri.parse(
+    //     "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
+
     _socket = WebSocket(Uri.parse(
-        "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
+        "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
 
     _socket!.connection.listen((event) {
       print("event is :-->. ${_socket!.connection.state}");
@@ -728,25 +734,24 @@ class TestSocketProvider extends ChangeNotifier {
       };
 
       try {
-        _socket!.connection.listen((event) {
-          if (event is Connected) {
-            _socket!.send(json.encode(map));
-            print(map.toString());
+        log("connection status :-->>${_socket!.connection.state}");
+        // _socket!.connection.listen((event) {
+        // if (event is Connected) {
+        _socket!.send(json.encode(map));
+        print(map.toString());
 
-            logMe(
-                ' CONNECTED:-->> Send New ride request -- > ${map.toString()}');
+        logMe(' CONNECTED:-->> Send New ride request -- > ${map.toString()}');
+        notifyListeners();
+        return true;
 
-            notifyListeners();
-          }
-        });
+        // }
+        // });
       } catch (e) {
         print(e.toString());
+        return false;
       }
 
-      logMe('Send New ride request -- > ${map.toString()}');
       // _socket!.send(jsonEncode(map));
-
-      return true;
     } catch (e) {
       print('Error creating ride request: $e');
       return false;
@@ -799,7 +804,7 @@ class TestSocketProvider extends ChangeNotifier {
   Future<OrderDetailResponseModel> fetchOrderDetails(int id) async {
     log("fetch order details called");
     final String apiUrl =
-        'https://php.parastechnologies.in/taxi/public/api/webservice/getOrder?id=$id';
+        'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
 
     try {
       log("try called : ${apiUrl}");
@@ -834,7 +839,7 @@ class TestSocketProvider extends ChangeNotifier {
     showLoading();
 
     final String apiUrl =
-        'https://php.parastechnologies.in/taxi/public/api/webservice/driver-profile?id=$id';
+        'https://api.gatsbyrideshare.com/api/webservice/driver-profile?id=$id';
     final String authToken = session.sessionToken;
 
     print("get driver details $apiUrl");
@@ -996,8 +1001,7 @@ class TestSocketProvider extends ChangeNotifier {
 
   @override
   Future<SubmitRatingsResponseModel> submitRatings(FormData formData) async {
-    String url =
-        'https://php.parastechnologies.in/taxi/public/api/webservice/order/rating';
+    String url = 'https://api.gatsbyrideshare.com/api/webservice/order/rating';
     dio.options.headers["Authorization"] = "Bearer ${session.sessionToken}";
     try {
       final response = await dio.post(
@@ -1152,10 +1156,6 @@ class TestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  @override
-  // ignore: must_call_super
-  void dispose() {}
-
   callTrakingDriver(LatLng position) async {
     log("driver position is :${position}");
     await trackingDriver(
@@ -1173,4 +1173,4 @@ class TestSocketProvider extends ChangeNotifier {
             tilt: 10,
             bearing: bearing)));
   }
-}           
+}

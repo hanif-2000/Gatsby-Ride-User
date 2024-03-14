@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -60,7 +60,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if(context.mounted){
+    if (context.mounted) {
       log(" app lifecycle state is ------>>>>>>>   $state");
       if (state == AppLifecycleState.paused) {
         socketProvider.joinExitRoom(
@@ -75,7 +75,6 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
             type: 'Join');
       }
     }
-
   }
 
   // @override
@@ -113,7 +112,6 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AppBar(
-
                         elevation: 0,
                         automaticallyImplyLeading: true,
                         centerTitle: false,

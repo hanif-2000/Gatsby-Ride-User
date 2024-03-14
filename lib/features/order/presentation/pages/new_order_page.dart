@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
@@ -18,7 +19,6 @@ import '../../../../core/static/assets.dart';
 import '../../../../core/static/colors.dart';
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
-import '../../../../socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'new_receipt_page.dart';
 
 class NewOrderPage extends StatefulWidget {

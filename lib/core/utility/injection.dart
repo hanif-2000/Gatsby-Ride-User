@@ -1,4 +1,5 @@
 import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
+import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/data/datasources/contactus_data_source.dart';
 import 'package:GetsbyRideshare/features/contact_us/data/repositories/contactus_repository_implementation.dart';
 import 'package:GetsbyRideshare/features/contact_us/domain/repositories/contactus_repository.dart';
@@ -22,7 +23,6 @@ import 'package:GetsbyRideshare/features/profile/domain/usecases/create_profile.
 import 'package:GetsbyRideshare/features/profile/domain/usecases/upload_profile_image.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
-import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

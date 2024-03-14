@@ -4,6 +4,7 @@ import 'package:GetsbyRideshare/core/network/dio_client.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/profile_drawer.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/pages/contact_us_page.dart';
 import 'package:GetsbyRideshare/features/history/presentation/pages/history_page.dart';
 import 'package:GetsbyRideshare/features/login/presentation/pages/login_page.dart';
@@ -177,7 +178,7 @@ class HomeDrawerPage extends StatelessWidget {
                                 final _dio = DioClient().dio;
 
                                 String logOutUrl =
-                                    'https://php.parastechnologies.in/taxi/public/api/webservice/logout';
+                                    '${BASE_URL}api/webservice/logout';
                                 final session = locator<Session>();
                                 _dio.withToken();
                                 // var provider = Provider.of<HomeProvider>(context, listen: false);

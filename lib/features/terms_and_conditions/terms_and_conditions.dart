@@ -17,7 +17,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
 
   var loadingPercentage = 0;
   var error = false;
-  String url = "https://php.parastechnologies.in/taxi/public/terms";
+  String url = "https://api.gatsbyrideshare.com/terms";
 
   @override
   void initState() {

@@ -1,9 +1,9 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/cache_network_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/payment_screen.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
-import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -507,7 +507,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       //                       log(body.toString());
 
                       //                       var response = await dio.post(
-                      //                         'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                      //                         'https://api.gatsbyrideshare.com/api/webservice/driver/payment',
                       //                         data: body,
                       //                         options: Options(headers: {
                       //                           "Authorization":
@@ -957,7 +957,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
           //                 //                       log(body.toString());
 
           //                 //                       var response = await dio.post(
-          //                 //                         'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+          //                 //                         'https://api.gatsbyrideshare.com/api/webservice/driver/payment',
           //                 //                         data: body,
           //                 //                         options: Options(headers: {
           //                 //                           "Authorization":

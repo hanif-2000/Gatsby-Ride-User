@@ -8,6 +8,7 @@ import 'package:GetsbyRideshare/core/presentation/providers/vehicle_category_sta
 import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/domain/usecases/create_oder.dart';
 import 'package:dio/dio.dart';
@@ -737,8 +738,7 @@ class HomeProvider with ChangeNotifier {
 
 // Get List of credit cards
   getListOfCard() async {
-    var url =
-        'https://php.parastechnologies.in/taxi/public/api/webservice/card/list';
+    var url = '${BASE_URL}api/webservice/card/list';
 
     var res = await dio.get(
       url,

@@ -1557,7 +1557,7 @@
 //   @override
 //   Future<SubmitRatingsResponseModel> submitRatings(FormData formData) async {
 //     String url =
-//         'https://php.parastechnologies.in/taxi/public/api/webservice/order/rating';
+//         'https://api.gatsbyrideshare.com/api/webservice/order/rating';
 //     dio.options.headers["Authorization"] = "Bearer ${session.sessionToken}";
 //     try {
 //       final response = await dio.post(
@@ -1577,7 +1577,7 @@
 //     showLoading();
 
 //     final String apiUrl =
-//         'https://php.parastechnologies.in/taxi/public/api/webservice/driver-profile?id=$id';
+//         'https://api.gatsbyrideshare.com/api/webservice/driver-profile?id=$id';
 //     final String authToken = session.sessionToken;
 
 //     print("get driver details $apiUrl");
@@ -1612,7 +1612,7 @@
 //   Future<OrderDetailResponseModel> fetchOrderDetails(int id) async {
 //     log("fetch order details called");
 //     final String apiUrl =
-//         'https://php.parastechnologies.in/taxi/public/api/webservice/getOrder?id=$id';
+//         'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
 
 //     try {
 //       log("try called : ${apiUrl}");

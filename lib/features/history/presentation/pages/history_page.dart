@@ -78,9 +78,17 @@ class _HistoryPageState extends State<HistoryPage> {
 
                       log("history data is====>>>${_data}");
                       if (_data.isEmpty) {
-                        return Center(
-                          child: LottieBuilder.asset(
-                              'assets/lottie_animation/no_data_found.json'),
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: LottieBuilder.asset(
+                                  'assets/lottie_animation/no_data_found.json'),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .3,
+                            )
+                          ],
                         );
                         // return Center(
                         //   child: Text(

@@ -1,8 +1,8 @@
 import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/about_us/presentation/pages/aboutus_page.dart';
 import 'package:GetsbyRideshare/features/history/presentation/pages/history_page.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/pages/profile_page.dart';
-import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 
 import '../../../features/login/presentation/pages/login_page.dart';

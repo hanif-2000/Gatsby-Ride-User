@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:dio/dio.dart';
 
 import '../utility/app_settings.dart';
@@ -40,6 +42,7 @@ class LoggingInterceptors extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    log("on reguest called ------------");
     hitUrl = options.path;
     // "${options.method.toUpperCase()} ${"" + (options.baseUrl) + (options.path)}";
     print(" API URL ✈️✈️✈️✈ ️--> $hitUrl");
@@ -64,10 +67,10 @@ class LoggingInterceptors extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     print(
-        "<-- ${err.message} ${(err.response?.requestOptions != null ? (err.response!.requestOptions.baseUrl + err.response!.requestOptions.path) : 'URL')}"
-        'DioException');
+        "<------------ ${err.message} ${(err.response?.requestOptions != null ? (err.response!.requestOptions.baseUrl + err.response!.requestOptions.path) : 'URL')} ---"
+        '\nDioException');
     print("${err.response != null ? err.response!.data : 'Unknown Error'}"
         'DioException');
 
