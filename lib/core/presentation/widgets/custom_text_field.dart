@@ -29,6 +29,7 @@ class CustomTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final TextStyle? hintStyle;
   final Color? fillColor;
+  final int? maxLength;
 
   const CustomTextField({
     Key? key,
@@ -57,6 +58,7 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.hintStyle,
     this.fillColor,
+    this.maxLength,
   }) : super(key: key);
 
   @override
@@ -130,6 +132,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               primaryColor: yellowE5A829Color,
             ),
             child: TextFormField(
+              maxLength: widget.maxLength ?? null,
               focusNode: widget.focusNode,
               maxLines: widget.maxLine,
               inputFormatters: widget.inputFormatters,

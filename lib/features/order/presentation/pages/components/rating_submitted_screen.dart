@@ -22,19 +22,19 @@ class RatingSubmittedScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
           backgroundColor: whiteColor,
-          appBar: AppBar(
-            backgroundColor: whiteColor,
-            elevation: 0.0,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: blackColor,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
+          // appBar: AppBar(
+          //   backgroundColor: whiteColor,
+          //   elevation: 0.0,
+          //   leading: IconButton(
+          //     icon: Icon(
+          //       Icons.arrow_back,
+          //       color: blackColor,
+          //     ),
+          //     onPressed: () {
+          //       Navigator.pop(context);
+          //     },
+          //   ),
+          // ),
           body: Consumer<TestSocketProvider>(
               builder: (BuildContext context, orderProvider, Widget? child) {
             return Container(

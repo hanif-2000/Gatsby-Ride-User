@@ -45,6 +45,8 @@ class AddNewCardPopUp extends StatelessWidget {
 
                 //Enter card number
                 CustomTextField(
+                  maxLength: 19,
+
                   // onChanged: (val) {
                   //   log("val: $val");
                   // },

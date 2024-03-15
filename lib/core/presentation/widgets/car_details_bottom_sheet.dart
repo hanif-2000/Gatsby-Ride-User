@@ -288,7 +288,10 @@ class CarDetailWidget extends StatelessWidget {
                     "Some of the fares are estimated and may vary based on ride and other conditions"),
               ),
             ),
-          )
+          ),
+          // SizedBox(
+          //   height: _deviceSize.height * .2,
+          // )
         ]),
       ),
     );

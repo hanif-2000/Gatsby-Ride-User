@@ -675,7 +675,7 @@ class TestSocketProvider extends ChangeNotifier {
         "," +
         destination.longitude.toString());
 
-    await DirectionHelper()
+    DirectionHelper()
         .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
             destination.latitude, destination.longitude)
         .then((result) {
@@ -702,6 +702,7 @@ class TestSocketProvider extends ChangeNotifier {
       } else {
         log("direction helper result is empty********** $result");
       }
+      notifyListeners();
     });
   }
 

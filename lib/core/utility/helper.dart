@@ -88,7 +88,7 @@ String mergePhotoUrl(String photoUrl) {
   if (photoUrl == '') {
     result = '';
   } else {
-    result = '$BASE_URL_PHOTO/$photoUrl';
+    result = '$BASE_URL/$photoUrl';
   }
 
   return result;
