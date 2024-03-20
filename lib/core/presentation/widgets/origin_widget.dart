@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/pages/menu_page.dart';
 import 'package:GetsbyRideshare/core/presentation/pages/place_picker_page/place_picker_page.dart';
 import 'package:GetsbyRideshare/socket/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -60,15 +61,6 @@ class OriginWidget extends StatelessWidget {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    // Image.asset(
-                                    //   'assets/icons/location.png',
-                                    //   height: 24.0,
-                                    //   width: 24.0,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-                                    // const SizedBox(
-                                    //   width: 10,
-                                    // ),
                                     Flexible(
                                       child: Text(
                                         map.originAddress,
@@ -132,12 +124,11 @@ class OriginWidget extends StatelessWidget {
                         margin: EdgeInsets.zero,
                         elevation: 0.0,
                         child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
                                   appLoc.pickUp,
@@ -147,21 +138,9 @@ class OriginWidget extends StatelessWidget {
                                       color: greyC8C7CCColor),
                                 ),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    // Image.asset(
-                                    //   'assets/icons/location.png',
-                                    //   height: 24.0,
-                                    //   width: 24.0,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-                                    // // const Icon(Icons.my_location,
-                                    // //     color: primaryColor, size: 30),
-                                    // const SizedBox(
-                                    //   width: 10,
-                                    // ),
                                     Flexible(
                                       child: Text(
                                         map.originAddress,
@@ -175,22 +154,25 @@ class OriginWidget extends StatelessWidget {
                                       ),
                                     ),
 
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.menu,
-                                        size: 30.0,
-                                      ),
-                                      onPressed: () {
+                                    GestureDetector(
+                                      onTap: (){
                                         Navigator.push(
                                           context,
                                           PageTransition(
                                             type:
-                                                PageTransitionType.leftToRight,
+                                            PageTransitionType.leftToRight,
                                             child: const HomeDrawerPage(),
                                           ),
                                         );
                                       },
-                                    ),
+                                      child: SizedBox(
+                                        height: 30,
+                                        child: const Icon(
+                                          Icons.menu,
+                                          size: 30.0,
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 ),
                               ],
