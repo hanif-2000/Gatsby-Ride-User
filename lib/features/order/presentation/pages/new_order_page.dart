@@ -225,7 +225,11 @@ class _NewOrderPageState extends State<NewOrderPage>
                         children: <Widget>[
                       Container(
                         padding: EdgeInsets.symmetric(vertical: 10.0),
-                        color: whiteColor,
+                        margin: EdgeInsets.symmetric(vertical: 20.0,horizontal: 20,),
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 6.0),
                           child: Container(
