@@ -308,6 +308,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
+                              padding: EdgeInsets.only(top: 15,bottom: 15),
                               color: whiteColor,
                               child: map.originAddress == ''
                                   ? Center(
@@ -344,8 +345,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                             ],
                                           ),
                                           Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                                             children: [
                                               OriginWidget(
                                                 deviceWidth: _deviceSize.width,
