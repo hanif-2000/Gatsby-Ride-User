@@ -224,6 +224,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                       Container(
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
                         color: whiteColor,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 6.0),
