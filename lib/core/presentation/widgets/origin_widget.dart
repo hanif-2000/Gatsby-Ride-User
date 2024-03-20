@@ -59,6 +59,8 @@ class OriginWidget extends StatelessWidget {
                                       fontSize: 13.0,
                                       color: greyC8C7CCColor),
                                 ),
+
+                                ///
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
