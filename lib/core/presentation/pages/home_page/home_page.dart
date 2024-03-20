@@ -309,6 +309,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
+                              padding: EdgeInsets.symmetric(vertical: 10.0),
                               color: whiteColor,
                               child: map.originAddress == ''
                                   ? Center(
