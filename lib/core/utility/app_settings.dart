@@ -16,4 +16,4 @@ const String GOOGLEMAPKEY = "AIzaSyAh44zG-nwjUK3-C0IR8lLpw2uBZfVukVY";
 const LatLng JAPAN_LATLNG = LatLng(35.6811737027413, 139.76710546403825);
 const LatLng DEFAULT_LATLNG = LatLng(30.7046, 76.7179);
 
-///
+//////
