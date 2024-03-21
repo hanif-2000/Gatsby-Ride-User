@@ -118,8 +118,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                           _displayOverlay(buildSearchingOverlay());
                           await provider.fetchGooglePlaces();
                           if (provider.state.runtimeType == PlaceAutoLoaded) {
-                            final data =
-                                (provider.state as PlaceAutoLoaded).data;
+                            final data = (provider.state as PlaceAutoLoaded).data;
                             _displayOverlay(
                                 buildPredictionOverlay(data, context));
                           }
@@ -175,24 +174,18 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         if (provider.cameraPosition != null) {
                           provider.setAddressLoad(true);
 
-                          List<Placemark> placemarks =
-                              await placemarkFromCoordinates(
-                                  provider.cameraPosition!.target.latitude,
-                                  provider.cameraPosition!.target.longitude);
+                          List<Placemark> placemarks = await placemarkFromCoordinates(provider.cameraPosition!.target.latitude, provider.cameraPosition!.target.longitude);
 
                           log("placemark from coordinates:-->> $placemarks");
                           if (widget.addressType == AddressType.origin) {
                             FocusScope.of(context).unfocus();
 
-                            provider.setOriginAddress =
-                                "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
+                            provider.setOriginAddress = "${placemarks.first.name}, ${placemarks.first.locality}";
 
                             provider.setAddressLoad(false);
                           } else {
                             FocusScope.of(context).unfocus();
-
-                            provider.setDestinationAddress =
-                                "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}";
+                            provider.setDestinationAddress = "${placemarks.first.name}, ${placemarks.first.locality}";
                             provider.setAddressLoad(false);
                           }
                         }
@@ -304,8 +297,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                                       BorderRadius.circular(0),
                                                 ),
                                               ),
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
+                                              backgroundColor: MaterialStateProperty.all(
                                                 provider.isAddressLoading
                                                     ? Colors.grey
                                                     : blackColor,
@@ -315,30 +307,20 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                               dev.log(
                                                   "on pressed called -------->>>..");
                                               if (!provider.isAddressLoading) {
-                                                if (widget.addressType ==
-                                                    AddressType.origin) {
+                                                if (widget.addressType == AddressType.origin) {
                                                   clearOverlay();
-                                                  Navigator.pop(context,
-                                                      provider.placeDataOrigin);
+                                                  Navigator.pop(context, provider.placeDataOrigin);
                                                 } else {
                                                   clearOverlay();
-                                                  Navigator.pop(
-                                                      context,
-                                                      provider
-                                                          .placeDataDestination);
+                                                  Navigator.pop(context, provider.placeDataDestination);
                                                 }
                                               }
                                             },
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.stretch,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.stretch,
                                               children: [
-                                                Expanded(
-                                                    child: Center(
-                                                        child: AutoSizeText(
-                                                  "Select this place",
+                                                Expanded(child: Center(child: AutoSizeText("Select this place",
                                                   style: const TextStyle(
                                                       fontSize: 20,
                                                       color: Colors.white),
@@ -407,9 +389,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                   onTap: () async {
                     provider.updateIsSearch(val: true);
 
-                    provider.updateOriginTextShow(mergeAddress(
-                        predictions[index].name,
-                        predictions[index].formattedAddress));
+                    provider.updateOriginTextShow(mergeAddress(predictions[index].name, predictions[index].formattedAddress));
                     dev.log("On Tap on predict location called");
                     FocusScope.of(context).unfocus();
                     provider.clearController();
@@ -420,12 +400,8 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                     //     predictions[index].name,
                     //     predictions[index].formattedAddress));
 
-                    dev.log(mergeAddress(predictions[index].name,
-                            predictions[index].formattedAddress)
-                        .toString());
-                    provider.addressSelected = mergeAddress(
-                            predictions[index].name,
-                            predictions[index].formattedAddress)
+                    dev.log(mergeAddress(predictions[index].name, predictions[index].formattedAddress).toString(),name: "Ankit");
+                    provider.addressSelected = mergeAddress(predictions[index].name, predictions[index].formattedAddress)
                         .toString();
                     clearOverlay();
                     provider.googleMapController.moveCamera(
@@ -456,9 +432,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
             onTap: () async {
               provider.updateIsSearch(val: true);
 
-              provider.updateOriginTextShow(mergeAddress(
-                  predictions[index].name,
-                  predictions[index].formattedAddress));
+              provider.updateOriginTextShow(mergeAddress(predictions[index].name, predictions[index].formattedAddress));
               dev.log("On Tap on when item < 4predict location called");
               FocusScope.of(context).unfocus();
               provider.clearController();

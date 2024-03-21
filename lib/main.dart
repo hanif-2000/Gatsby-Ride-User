@@ -43,11 +43,8 @@ Future<void> main() async {
 
   var sp = await SharedPreferences.getInstance();
   var login = sp.getBool(IS_LOGGED_IN);
-
   log("login is main ********** $login");
-
-  await Firebase.initializeApp(
-      name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
   try {
     await init();
     await FirebaseMessaging.instance.requestPermission();
