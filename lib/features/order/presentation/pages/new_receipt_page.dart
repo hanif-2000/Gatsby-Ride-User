@@ -1,7 +1,7 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/cache_network_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/payment_screen.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
 import 'package:auto_size_text/auto_size_text.dart';

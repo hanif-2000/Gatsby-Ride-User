@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
-import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/custom_contact_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

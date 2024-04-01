@@ -1,5 +1,5 @@
 import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
-import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/data/datasources/contactus_data_source.dart';
 import 'package:GetsbyRideshare/features/contact_us/data/repositories/contactus_repository_implementation.dart';
 import 'package:GetsbyRideshare/features/contact_us/domain/repositories/contactus_repository.dart';

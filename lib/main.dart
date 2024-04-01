@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
 import 'package:GetsbyRideshare/core/static/strings.dart';
-import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
@@ -40,10 +40,8 @@ import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   var sp = await SharedPreferences.getInstance();
   var login = sp.getBool(IS_LOGGED_IN);
-  log("login is main ********** $login");
   await Firebase.initializeApp(name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
   try {
     await init();

@@ -1,4 +1,4 @@
-import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

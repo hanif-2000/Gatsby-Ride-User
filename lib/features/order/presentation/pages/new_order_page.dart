@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
@@ -201,14 +201,16 @@ class _NewOrderPageState extends State<NewOrderPage>
                   myLocationButtonEnabled: true,
                   zoomControlsEnabled: true,
                   initialCameraPosition: CameraPosition(
-                      target:
-                          LatLng(newSocketProvider.lat, newSocketProvider.long),
+                      target: LatLng(newSocketProvider.lat, newSocketProvider.long),
                       zoom: 14,
-                      tilt: 10,
                       bearing: newSocketProvider.bearing),
                   onMapCreated: (GoogleMapController controller) async {
                     newSocketProvider.googleMapController = controller;
                     await newSocketProvider.setCurrentLocation(widget.location);
+                  },
+                  onCameraMove: (val)async{
+                    newSocketProvider.updateZoom(val);
+                    await newSocketProvider.googleMapController.getVisibleRegion();
                   },
                   tiltGesturesEnabled: false,
                   rotateGesturesEnabled: false,

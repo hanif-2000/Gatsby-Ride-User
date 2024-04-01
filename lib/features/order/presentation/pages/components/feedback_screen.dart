@@ -5,7 +5,7 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
-import 'package:GetsbyRideshare/deryde_folder/chat/provider/test_socket_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/rating_submitted_screen.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/circular_image_container.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
