@@ -529,7 +529,7 @@ class TestSocketProvider extends ChangeNotifier {
     //googleMapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(latDriver, lngDriver), zoom,),
     //add to marker list
     markers[markerId] = marker;
-    if (listenLocation) {
+    if (listenLocation && session.isRunningOrder) {
       if ((isWithDriver) || (currentOrderStatus == 5) || (currentOrderStatus == 7) || (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         setPolylinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
@@ -539,8 +539,6 @@ class TestSocketProvider extends ChangeNotifier {
 
         setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
       }
-
-      // }
     }
      animateToLocation(LatLng(latDriver, lngDriver));
 
@@ -621,10 +619,7 @@ class TestSocketProvider extends ChangeNotifier {
         "," +
         destination.longitude.toString());
 
-    DirectionHelper()
-        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
-            destination.latitude, destination.longitude)
-        .then((result) {
+    DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then((result) {
       log("Polyline results are ::::::::--------------  ${result} ------------********");
       if (result.isNotEmpty) {
         polylineCoordinates = [];

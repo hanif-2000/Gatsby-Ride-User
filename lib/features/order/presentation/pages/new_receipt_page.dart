@@ -182,10 +182,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                     children: [
                                       Image.asset(starImage),
                                       CommonText(
-                                        text: " " +
-                                            provider.receiptResponseModel!.data
-                                                .driverRating
-                                                .toString(),
+                                        text: " " + "${double.parse(provider.receiptResponseModel!.data.driverRating.toString()).toStringAsFixed(1)}",
                                         fontWeight: FontWeight.w600,
                                         fontColor: blackColor,
                                         fontFamily: "poPPinMedium",

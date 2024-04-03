@@ -74,11 +74,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (session.isRunningOrder) {
       socketProvider.updateOnlyBitmap();
 
-      socketProvider
-          .fetchOrderDetails(int.parse(session.orderId))
-          .then((value) {
+      socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
         log("order details are:  ${value.data}");
-
         print("order details are:  ${session.orderStatus}");
 
         socketProvider.updateOrderDetailsModel(data: value);
@@ -89,29 +86,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             retrieveOrderReceiptFromLocal().then((value) {
               // if (socketProvider.receiptResponseModel != null) {
               //   dismissLoading();
-
-              logMe(
-                  " receipt data from session is ${socketProvider.receiptResponseModel}:");
+              logMe("receipt data from session is ${socketProvider.receiptResponseModel}:");
               SmartDialog.dismiss();
               dismissLoading();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  ReceiptScreen.routeName, (route) => false);
-              // } else {
-              //   showLoading();
-              // }
+              Navigator.of(context).pushNamedAndRemoveUntil(ReceiptScreen.routeName, (route) => false);
+
             });
             /** Navigate to receipt screen */
           } else if (!session.isRatingGiven) {
-            socketProvider
-                .fetchDriverDetails(int.parse(session.driverId))
-                .then((value) {
-              socketProvider
-                  .updateDriverDetailsModel(data: value)
-                  .then((value) {
-                logMe(
-                    " driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
+            socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
+              socketProvider.updateDriverDetailsModel(data: value).then((value) {
+                logMe(" driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
                 SmartDialog.dismiss();
-
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -134,11 +120,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           }
         } else if (session.orderStatus.toString() == "0") {
           showLoading();
-
-          getDifferenceInSeconds(
-                  startTimeStr: session.bookingTime,
-                  endTimeStr: DateTime.now().toString())
-              .then((value) =>
+          getDifferenceInSeconds(startTimeStr: session.bookingTime, endTimeStr: DateTime.now().toString()).then((value) =>
                   {log("searching time differnece is : -->> $value  seconds")});
 
           log("Customer searching for driver");
