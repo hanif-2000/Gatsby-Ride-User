@@ -230,6 +230,7 @@ class TestSocketProvider extends ChangeNotifier {
       log('-----Event  ${response.toString()}');
       print('-----Event  ${response.toString()}');
 
+
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'CustomerBookRequest') {
         bookingDataModel = BookingDataModel.fromJson(response);
