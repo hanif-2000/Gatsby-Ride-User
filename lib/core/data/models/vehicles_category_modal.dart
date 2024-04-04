@@ -17,6 +17,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
     required dynamic isAvailable,
     required dynamic estimatedTime,
     required dynamic estimatedDistance,
+    required dynamic base_fare,
+    required dynamic tech_fee,
   }) : super(
           categoryId: id,
           categoryCar: category,
@@ -33,6 +35,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
           isAvailable: isAvailable,
           estimatedTime: estimatedTime,
           estimatedDistance: estimatedDistance,
+          tech_fee: tech_fee,
+          base_fare: base_fare,
         );
 
   factory VehiclesCategoryModel.fromJson(Map<String, dynamic> json) =>
@@ -52,6 +56,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
         isAvailable: json['is_available'],
         estimatedDistance: json['estimated_distance'],
         estimatedTime: json['estimated_time'],
+        base_fare: json['base_fare'],
+        tech_fee: json['tech_fee'],
       );
 
   @override
@@ -59,6 +65,8 @@ class VehiclesCategoryModel extends VehiclesCategory {
         "id": categoryId,
         "category": categoryCar,
         "min_price": priceMin,
+        "tech_fee": tech_fee,
+        "base_fare": base_fare,
         "seat": seat,
         "extra_km": extraKm,
         "drivers": drivers,

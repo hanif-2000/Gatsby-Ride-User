@@ -12,8 +12,10 @@ class CustomVehicleInfo extends StatelessWidget {
   final String? newTotal;
   final String? pendingAmount;
   final String? estimatedDistance;
-
   final String? capacity;
+  final String? priceMin;
+  final String? techFee;
+  final String? baseFare;
   final VoidCallback? onTap;
   final int? index;
   final HomeProvider provider;
@@ -35,6 +37,7 @@ class CustomVehicleInfo extends StatelessWidget {
     required this.vehicleDetail,
     required this.provider,
     required this.isAvailable,
+    this.priceMin,this.baseFare,this.techFee
   }) : super(key: key);
 
   @override
@@ -132,28 +135,16 @@ class CustomVehicleInfo extends StatelessWidget {
 
               GestureDetector(
                   onTap: () {
-                    // log("on tap info called");
-
-                    // if (isAvailable == 'yes') {
-                    //   showToast(message: "DRIVER AVAILABLE");
-                    // }
-                    // {
-                    //   showToast(message: "DRIVER UnAVAILABLE");
-                    // }
-
                     showBottomSheet(
                         estimatedPrice: price,
-                        minimumFare: provider.vehiclesDetailsList[index!]
-                            ["minimunFare"],
+                        minimumFare: priceMin,
                         context: context,
-                        baseFare: provider.vehiclesDetailsList[index!]
-                            ["baseFare"],
+                        baseFare: baseFare,
                         carImg: provider.vehiclesDetailsList[index!]["carImg"],
                         carSeat: provider.vehiclesDetailsList[index!]["seat"],
                         perkm: provider.vehiclesDetailsList[index!]["perKm"],
                         permin: provider.vehiclesDetailsList[index!]["perMin"],
-                        techFee: provider.vehiclesDetailsList[index!]
-                            ["techFee"],
+                        techFee: techFee,
                         newTotal: double.parse(newTotal!).toStringAsFixed(2),
                         pendingAmount: pendingAmount,
                         estimatedTime: time.toString(),
