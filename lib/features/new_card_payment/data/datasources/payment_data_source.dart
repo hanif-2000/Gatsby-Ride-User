@@ -7,6 +7,7 @@ import '../models/card_list_response_modal.dart';
 abstract class PaymentDataSource {
   Future<CardListResponseModal> getCardDetails();
   Future<AddCardResponseModal> addCardDetails(FormData formData);
+  Future<AddCardResponseModal> deleteCard(FormData formData);
 }
 
 class PaymentDataSourceImplementation implements PaymentDataSource {
@@ -33,6 +34,20 @@ class PaymentDataSourceImplementation implements PaymentDataSource {
   @override
   Future<AddCardResponseModal> addCardDetails(FormData formData) async {
     String url = "api/webservice/card/detail/add";
+    dio.withToken();
+    try {
+      final response = await dio.post(url, data: formData);
+      final model = AddCardResponseModal.fromJson(response.data);
+      return model;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<AddCardResponseModal> deleteCard(FormData formData) async {
+    // String url = "api/webservice/card/detail/add";
+    String url = "api/webservice/card/delete";
     dio.withToken();
     try {
       final response = await dio.post(url, data: formData);

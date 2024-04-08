@@ -1,5 +1,6 @@
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -7,6 +8,7 @@ class CreditCardTile extends StatelessWidget {
   final String assets;
   final String title;
   final Function onTap;
+  final VoidCallback onDeleteTap;
   bool selected;
 
   CreditCardTile(
@@ -14,7 +16,9 @@ class CreditCardTile extends StatelessWidget {
       required this.assets,
       required this.title,
       required this.selected,
-      required this.onTap})
+      required this.onTap,
+      required this.onDeleteTap,
+      })
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -80,7 +84,12 @@ class CreditCardTile extends StatelessWidget {
                         )
                       : const Text(''),
                 ],
-              ))
+              )),
+              SizedBox(height: 10,width: 10,),
+              InkWell(
+                onTap: onDeleteTap,
+                  child: Icon(Icons.delete_forever_outlined,color: Colors.redAccent,)) ,
+
             ],
           ),
           onTap: () => onTap(),

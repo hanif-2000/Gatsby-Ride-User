@@ -21,7 +21,6 @@ class GetVehiclesCategory implements GetVehicleCategoryUseCase {
   @override
   Future<Either<Failure, VehiclesCategoryList>> call(String distance,
       String nightService, String coordinates, String time) async {
-    return await repository.getVehiclesCategoryList(
-        distance, nightService, coordinates, time);
+    return await repository.getVehiclesCategoryList(distance, nightService, coordinates, time);
   }
 }

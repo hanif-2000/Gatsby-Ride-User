@@ -402,9 +402,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       // } catch (e) {
                                       //   print(e);
                                       // }
-                                      map
-                                          .fetchVehicleCategory()
-                                          .listen((event) {
+                                      map.fetchVehicleCategory().listen((event) {
                                         log("========>>>>>>" +
                                             event.toString());
                                       });

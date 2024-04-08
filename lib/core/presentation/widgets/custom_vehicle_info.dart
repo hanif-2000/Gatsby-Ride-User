@@ -14,6 +14,8 @@ class CustomVehicleInfo extends StatelessWidget {
   final String? estimatedDistance;
   final String? capacity;
   final String? priceMin;
+  final String? pricePerMin;
+  final String? pricePerKM;
   final String? techFee;
   final String? baseFare;
   final VoidCallback? onTap;
@@ -37,7 +39,7 @@ class CustomVehicleInfo extends StatelessWidget {
     required this.vehicleDetail,
     required this.provider,
     required this.isAvailable,
-    this.priceMin,this.baseFare,this.techFee
+    this.priceMin,this.baseFare,this.techFee,this.pricePerKM,this.pricePerMin
   }) : super(key: key);
 
   @override
@@ -142,8 +144,8 @@ class CustomVehicleInfo extends StatelessWidget {
                         baseFare: baseFare,
                         carImg: provider.vehiclesDetailsList[index!]["carImg"],
                         carSeat: provider.vehiclesDetailsList[index!]["seat"],
-                        perkm: provider.vehiclesDetailsList[index!]["perKm"],
-                        permin: provider.vehiclesDetailsList[index!]["perMin"],
+                        perkm: pricePerKM,
+                        permin:pricePerMin,
                         techFee: techFee,
                         newTotal: double.parse(newTotal!).toStringAsFixed(2),
                         pendingAmount: pendingAmount,

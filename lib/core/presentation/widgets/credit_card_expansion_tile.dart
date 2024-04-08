@@ -7,7 +7,9 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
+import '../../../features/new_card_payment/presentation/providers/payment_provider.dart';
 import '../../utility/dummy_data.dart';
 
 class CreditCardExpansionTile extends StatelessWidget {
@@ -102,8 +104,7 @@ class CreditCardExpansionTile extends StatelessWidget {
                               "*** *** *** ${DummyData.dummyCardList[index]["cardNumber"]}",
                           assets: 'assets/icons/logos_mastercard.svg',
                           onTap: () {
-                            provider.setPaymentMethod =
-                                PaymentMethod.creditCard;
+                            provider.setPaymentMethod = PaymentMethod.creditCard;
                             // Navigator.pop(context);
                           },
                           selected: provider.paymentMethod == null
@@ -112,6 +113,11 @@ class CreditCardExpansionTile extends StatelessWidget {
                                       PaymentMethod.creditCard
                                   ? true
                                   : false,
+                          onDeleteTap: (){
+                            print("objectFromasdfsdfads");
+                           // context.read<PaymentProvider>().deleteCard();
+
+                          },
                         );
                       },
                     ),

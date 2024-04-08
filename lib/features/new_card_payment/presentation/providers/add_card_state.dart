@@ -9,10 +9,18 @@ abstract class AddCardState extends Equatable {
 class AddCardInitial extends AddCardState {}
 
 class AddCardLoading extends AddCardState {}
+class DeleteCardLoading extends AddCardState {}
 
 class AddCardSuccess extends AddCardState {
   final AddCardResponseModal data;
   AddCardSuccess({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
+class DeleteCardSuccess extends AddCardState {
+  final AddCardResponseModal data;
+  DeleteCardSuccess({required this.data});
 
   @override
   List<Object?> get props => [data];
@@ -22,6 +30,14 @@ class AddCardFailure extends AddCardState {
   final String failure;
 
   AddCardFailure({required this.failure});
+
+  @override
+  List<Object?> get props => [failure];
+}
+class DeleteCardFailure extends AddCardState {
+  final String failure;
+
+  DeleteCardFailure({required this.failure});
 
   @override
   List<Object?> get props => [failure];

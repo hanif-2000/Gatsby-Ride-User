@@ -37,6 +37,17 @@ class PaymentRepositoryImplementation implements PaymentRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, AddCardResponseModal>> deleteCardD(FormData formData) async{
+    try {
+      final data = await dataSource.addCardDetails(formData);
+      return Right(data);
+    } on DioException catch (e) {
+      logMe("Failure profile repository ${e.toString()}");
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
   // @override
   // Future<Either<Failure, int>> updateProfile(FormData formData) async {
   //   try {

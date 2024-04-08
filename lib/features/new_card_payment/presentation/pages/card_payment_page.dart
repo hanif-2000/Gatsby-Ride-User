@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
+import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/add_card_state.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -105,29 +107,17 @@ class CardPaymentExpansionTile extends StatelessWidget {
                                   return CreditCardTile(
                                       title:
                                           "*** *** *** ${_data.data[index].cardNumber.substring(_data.data[index].cardNumber.length - 4)}",
-                                      assets:
-                                          'assets/icons/logos_mastercard.svg',
+                                      assets: 'assets/icons/logos_mastercard.svg',
                                       onTap: () {
-                                        var selectedCardId =
-                                            _data.data[index].id;
+                                        var selectedCardId = _data.data[index].id;
 
                                         log("selected card id is--->>>$selectedCardId");
 
-                                        context
-                                            .read<PaymentProvider>()
-                                            .updateSelectedCardId(
-                                                selectedCardId);
+                                        context.read<PaymentProvider>().updateSelectedCardId(selectedCardId);
 
-                                        context
-                                            .read<PaymentProvider>()
-                                            .updateSelectedCard(
-                                                cardNo: _data
-                                                    .data[index].cardNumber,
-                                                expiry: _data
-                                                    .data[index].expiryDate);
+                                        context.read<PaymentProvider>().updateSelectedCard(cardNo: _data.data[index].cardNumber, expiry: _data.data[index].expiryDate);
 
-                                        provider.setPaymentMethod =
-                                            PaymentMethod.creditCard;
+                                        provider.setPaymentMethod = PaymentMethod.creditCard;
 
                                         log("new card id is====>>${context.read<PaymentProvider>().selectedCardId}");
 
@@ -135,22 +125,46 @@ class CardPaymentExpansionTile extends StatelessWidget {
                                         //     PaymentMethod.creditCard;
                                         // Navigator.pop(context);
                                       },
-                                      selected: provider.paymentMethod !=
-                                              PaymentMethod.creditCard
+                                      selected: provider.paymentMethod != PaymentMethod.creditCard
                                           ? false
-                                          : (context
-                                                      .read<PaymentProvider>()
-                                                      .selectedCardId ==
-                                                  _data.data[index].id)
+                                          : (context.read<PaymentProvider>().selectedCardId == _data.data[index].id)
                                               ? true
-                                              : false
+                                              : false,
+                                    onDeleteTap: (){
+                                        print("object");
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) => DeleteConfirmationDialog(),
+                                      ).then((confirmed) {
+                                        if (confirmed == true) {
+                                          context.read<PaymentProvider>().deleteCard(_data.data[index].cardNumber).listen((event) {
+                                            switch (state.runtimeType) {
+                                              case DeleteCardLoading:
+                                                showLoading();
+                                                break;
+                                              case DeleteCardFailure:
+                                                final msg = (state as DeleteCardFailure).failure;
+                                                dismissLoading();
+                                                showToast(message: msg);
+                                                break;
+                                              case DeleteCardSuccess:
+                                                final data = (state as DeleteCardSuccess).data;
+                                                dismissLoading();
+                                                if (data.success == 1) {
+                                                  context.read<PaymentProvider>().fetchCardListData();
+                                                }
 
-                                      //  provider.paymentMethod == null
-                                      //     ? false
-                                      //     : provider.paymentMethod ==
-                                      //             PaymentMethod.creditCard
-                                      //         ? true
-                                      //         : false,
+                                                break;
+                                            }
+
+
+                                          });
+                                        }
+                                      });
+
+
+                                    },
+
                                       );
                                 },
                               );
@@ -203,415 +217,40 @@ class CardPaymentExpansionTile extends StatelessWidget {
                   ],
                 )
 
-                // Column(
-                //   children: [
-                //     ListView.builder(
-                //       physics: const NeverScrollableScrollPhysics(),
-                //       shrinkWrap: true,
-                //       itemCount: _data.data.length,
-                //       itemBuilder: (context, index) {
-                //         return CreditCardTile(
-                //           title:
-                //               "*** *** *** ${_data.data[index].cardNumber.substring(_data.data[index].cardNumber.length - 4)}",
-                //           assets: 'assets/icons/logos_mastercard.svg',
-                //           onTap: () {
-                //             provider.setPaymentMethod = PaymentMethod.creditCard;
-                //             // Navigator.pop(context);
-                //           },
-                //           selected: provider.paymentMethod == null
-                //               ? false
-                //               : provider.paymentMethod == PaymentMethod.creditCard
-                //                   ? true
-                //                   : false,
-                //         );
-                //       },
-                //     ),
-
-                //     InkWell(
-                //       onTap: () {
-                //         showDialog(
-                //           context: context,
-                //           builder: (context) {
-                //             return AlertDialog(
-                //                 shape: RoundedRectangleBorder(
-                //                     borderRadius:
-                //                         BorderRadius.all(Radius.circular(32.0))),
-                //                 content: AddNewCardPopUp());
-                //           },
-                //         );
-                //       },
-                //       child: Container(
-                //         decoration: BoxDecoration(
-                //             color: whiteF2F2F2Color,
-                //             borderRadius: BorderRadius.circular(11.0),
-                //             // Your desired background color
-
-                //             boxShadow: const [
-                //               BoxShadow(
-                //                 color: whiteF2F2F2Color,
-                //                 blurRadius: 20,
-                //                 spreadRadius: 20.0,
-                //                 offset: Offset(0, 15),
-                //               ),
-                //             ]),
-                //         alignment: Alignment.center,
-                //         height: _deviceSize.height * .1,
-                //         child: const Text(
-                //           "+ Add New Card",
-                //           style: TextStyle(
-                //             fontSize: 14.0,
-                //             fontWeight: FontWeight.w600,
-                //             color: blackColor,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
 
                 ),
           )
-          // ListTile(
-          //   title: Text(
-          //     "items.description",
-          //     style: TextStyle(fontWeight: FontWeight.w700),
-          //   ),
-          // )
+
         ],
       );
 
-      // StreamBuilder<CardListState>(
-      //     stream: context.read<PaymentProvider>().fetchCardListData(),
-      //     builder: (context, state) {
-      //       switch (state.data.runtimeType) {
-      //         case CardListLoading:
-      //           return const Center(child: CircularProgressIndicator());
-      //         case CardListFailure:
-      //           final failure = (state.data as CardListFailure).failure;
-      //           showToast(message: failure);
-      //           return const SizedBox.shrink();
-      //         case CardListSuccess:
-      //           final _data = (state.data as CardListSuccess).data;
 
-      //           log("my card list data is" + _data.data.toString());
-
-      //           return Padding(
-      //             padding: const EdgeInsets.symmetric(vertical: 8.0),
-      //             child: Container(
-      //               decoration: BoxDecoration(
-      //                   color: whiteColor,
-      //                   borderRadius: BorderRadius.circular(11),
-      //                   boxShadow: [
-      //                     BoxShadow(
-      //                       color: greyB6B6B6Color.withOpacity(.1),
-      //                       blurRadius: 16,
-      //                       spreadRadius: 0.0,
-      //                       offset: const Offset(0, 20),
-      //                     ),
-      //                   ]),
-      //               child: GestureDetector(
-      //                 onTap: () {},
-      //                 child:
-
-      //                 ExpansionTile(
-      //                   onExpansionChanged: (value) {},
-      //                   maintainState: true,
-      //                   // onExpansionChanged: (value) async {
-      //                   //   log("on expansion chaenged===>>>  $value");
-
-      //                   //   if (value) {
-      //                   //     await Provider.of<PaymentProvider>(context,
-      //                   //             listen: false)
-      //                   //         .fetchCardListData();
-
-      //                   //     // provider.fetchCardListData();
-      //                   //     // provider.getListOfCard();
-      //                   //   }
-      //                   // },
-      //                   childrenPadding: EdgeInsets.zero,
-      //                   shape: const Border(),
-      //                   collapsedShape: RoundedRectangleBorder(
-      //                       borderRadius: BorderRadius.circular(11.0)),
-      //                   leading: Padding(
-      //                     padding: const EdgeInsets.only(left: 10.0),
-      //                     child: SvgPicture.asset(
-      //                       assets,
-      //                       width: 48,
-      //                       height: 48,
-      //                       fit: BoxFit.cover,
-      //                     ),
-      //                   ),
-      //                   trailing: selected
-      //                       ? const Icon(
-      //                           Icons.radio_button_on_outlined,
-      //                           color: yellowE5A829Color,
-      //                           size: 35,
-      //                         )
-      //                       : const Icon(
-      //                           Icons.radio_button_off_outlined,
-      //                           color: greyB6B6B6Color,
-      //                           size: 35,
-      //                         ),
-      //                   title: const Text(
-      //                     "Debit/Credit Card",
-      //                     style: TextStyle(
-      //                       fontWeight: FontWeight.w500,
-      //                       fontSize: 16.0,
-      //                       color: blackColor,
-      //                     ),
-      //                   ),
-      //                   children: <Widget>[
-      //                     Container(
-      //                       decoration: BoxDecoration(
-      //                         borderRadius: BorderRadius.circular(11.0),
-      //                       ),
-      //                       child: Padding(
-      //                         padding: const EdgeInsets.all(8.0),
-      //                         child: Column(
-      //                           children: [
-      //                             ListView.builder(
-      //                               physics:
-      //                                   const NeverScrollableScrollPhysics(),
-      //                               shrinkWrap: true,
-      //                               itemCount: _data.data.length,
-      //                               itemBuilder: (context, index) {
-      //                                 return CreditCardTile(
-      //                                   title:
-      //                                       "*** *** *** ${_data.data[index].cardNumber.substring(_data.data[index].cardNumber.length - 4)}",
-      //                                   assets:
-      //                                       'assets/icons/logos_mastercard.svg',
-      //                                   onTap: () {
-      //                                     provider.setPaymentMethod =
-      //                                         PaymentMethod.creditCard;
-      //                                     // Navigator.pop(context);
-      //                                   },
-      //                                   selected: provider.paymentMethod == null
-      //                                       ? false
-      //                                       : provider.paymentMethod ==
-      //                                               PaymentMethod.creditCard
-      //                                           ? true
-      //                                           : false,
-      //                                 );
-      //                               },
-      //                             ),
-      //                             InkWell(
-      //                               onTap: () {
-      //                                 showDialog(
-      //                                   context: context,
-      //                                   builder: (context) {
-      //                                     return AlertDialog(
-      //                                         shape: RoundedRectangleBorder(
-      //                                             borderRadius:
-      //                                                 BorderRadius.all(
-      //                                                     Radius.circular(
-      //                                                         32.0))),
-      //                                         content: AddNewCardPopUp());
-      //                                   },
-      //                                 );
-      //                               },
-      //                               child: Container(
-      //                                 decoration: BoxDecoration(
-      //                                     color: whiteF2F2F2Color,
-      //                                     borderRadius:
-      //                                         BorderRadius.circular(11.0),
-      //                                     // Your desired background color
-
-      //                                     boxShadow: const [
-      //                                       BoxShadow(
-      //                                         color: whiteF2F2F2Color,
-      //                                         blurRadius: 20,
-      //                                         spreadRadius: 20.0,
-      //                                         offset: Offset(0, 15),
-      //                                       ),
-      //                                     ]),
-      //                                 alignment: Alignment.center,
-      //                                 height: _deviceSize.height * .1,
-      //                                 child: const Text(
-      //                                   "+ Add New Card",
-      //                                   style: TextStyle(
-      //                                     fontSize: 14.0,
-      //                                     fontWeight: FontWeight.w600,
-      //                                     color: blackColor,
-      //                                   ),
-      //                                 ),
-      //                               ),
-      //                             ),
-      //                           ],
-      //                         ),
-      //                       ),
-      //                     )
-      //                     // ListTile(
-      //                     //   title: Text(
-      //                     //     "items.description",
-      //                     //     style: TextStyle(fontWeight: FontWeight.w700),
-      //                     //   ),
-      //                     // )
-      //                   ],
-      //                 ),
-
-      //               ),
-      //             ),
-
-      //           );
-      //       }
-      //       return const SizedBox.shrink();
-      //       ;
-      //     });
     });
   }
 }
 
-// import 'package:GetsbyRideshare/core/static/colors.dart';
-// import 'package:GetsbyRideshare/core/utility/injection.dart';
-// import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
-// import 'package:GetsbyRideshare/features/contact_us/presentation/widgets/contact_us_form.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:provider/provider.dart';
+class DeleteConfirmationDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      title: Text('Delete Card'),
+      content: Text('Are you sure you want to delete this card?',),
+      actions: <Widget>[
+        CupertinoDialogAction(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop(false); // Return false indicating cancel
+          },
+        ),
+        CupertinoDialogAction(
+          child: Text('Delete'),
+          onPressed: () {
+            Navigator.of(context).pop(true); // Return true indicating delete
+          },
+          isDestructiveAction: true,
+        ),
+      ],
+    );
+  }
+}
 
-// class AContactUsPage extends StatelessWidget {
-//   const AContactUsPage({Key? key}) : super(key: key);
-//   static const routeName = '/contactus';
-
-//   @override
-//   Widget build(BuildContext context) {
-//     var _deviceSize = MediaQuery.of(context).size;
-
-//     return ChangeNotifierProvider(
-//         create: (context) => locator<ContactusProvider>(),
-//         child: Scaffold(
-//             appBar: AppBar(
-//               elevation: 0.0,
-//               backgroundColor: whiteColor,
-//               leading: IconButton(
-//                 icon: const Icon(
-//                   Icons.arrow_back,
-//                   color: blackColor,
-//                 ),
-//                 onPressed: () {
-//                   Navigator.pop(context);
-//                 },
-//               ),
-//             ),
-//             backgroundColor: whiteColor,
-//             body: SingleChildScrollView(
-//               child: Column(
-//                 children: [
-//                   SvgPicture.asset('assets/icons/contact_us.svg'),
-//                   SizedBox(
-//                     height: _deviceSize.height * .02,
-//                   ),
-//                   Padding(
-//                     padding: EdgeInsets.only(
-//                       top: _deviceSize.height * .02,
-//                       bottom: _deviceSize.height * .01,
-//                     ),
-//                     child: const Text(
-//                       "Contact us",
-//                       style: TextStyle(
-//                         fontSize: 21.0,
-//                         fontWeight: FontWeight.w700,
-//                       ),
-//                     ),
-//                   ),
-//                   const Text(
-//                     "Please enter your detail",
-//                     style: TextStyle(
-//                       fontSize: 12.0,
-//                       fontWeight: FontWeight.w400,
-//                       color: grey767676Color,
-//                     ),
-//                   ),
-//                   const ContactUsForm()
-//                 ],
-//               ),
-//             )
-
-//             // SafeArea(
-//             //   child: ListView(
-//             //     children: [
-//             //       AspectRatio(
-//             //         // aspectRatio: 3 / 0.8,
-//             //         aspectRatio: 5 / 2,
-//             //         child: Padding(
-//             //           padding: const EdgeInsets.all(12.0),
-//             //           child: Column(
-//             //             crossAxisAlignment: CrossAxisAlignment.start,
-//             //             mainAxisAlignment: MainAxisAlignment.center,
-//             //             children: [
-//             //               Align(
-//             //                 alignment: Alignment.topLeft,
-//             //                 child: InkWell(
-//             //                   onTap: () {
-//             //                     Navigator.pop(context);
-//             //                   },
-//             //                   child: const Padding(
-//             //                     padding: EdgeInsets.all(0.0),
-//             //                     child: Icon(Icons.arrow_back,
-//             //                         color: black15141FColor),
-//             //                   ),
-//             //                 ),
-//             //               ),
-//             //               const Flexible(
-//             //                 fit: FlexFit.loose,
-//             //                 flex: 1,
-//             //                 child: Center(
-//             //                   child: Text(
-//             //                     "Reset your password",
-//             //                     textAlign: TextAlign.center,
-//             //                     style: TextStyle(
-//             //                       fontFamily: "poPPinSemiBold",
-//             //                       fontWeight: FontWeight.w600,
-//             //                       color: black15141FColor,
-//             //                       fontSize: 24,
-//             //                     ),
-//             //                   ),
-//             //                 ),
-//             //               ),
-//             //               const Flexible(
-//             //                 // fit: FlexFit.loose,
-//             //                 flex: 1,
-//             //                 child: Center(
-//             //                   child: Text(
-//             //                     "Enter your official email to get a verification code.",
-//             //                     // appLoc.welcome.toUpperCase(),
-//             //                     textAlign: TextAlign.center,
-//             //                     softWrap: true,
-//             //                     style: TextStyle(
-//             //                       fontFamily: "poPPinMedium",
-//             //                       fontWeight: FontWeight.w500,
-//             //                       color: grey7C7C7CColor,
-//             //                       fontSize: 15,
-//             //                     ),
-//             //                   ),
-//             //                 ),
-//             //               ),
-//             //               // Flexible(
-//             //               //   fit: FlexFit.loose,
-//             //               //   flex: 1,
-//             //               //   child: Text(
-//             //               //     appLoc.pleaseEnterYourEmailAddress,
-//             //               //     textAlign: TextAlign.center,
-//             //               //     style: const TextStyle(
-//             //               //             fontSize: 15,
-//             //               //             color: Colors.black,
-//             //               //             fontWeight: FontWeight.bold)
-//             //               //         .useHiraginoKakuW6Font(),
-//             //               //   ),
-//             //               // ),
-//             //             ],
-//             //           ),
-//             //         ),
-//             //       ),
-//             //       const SizedBox(
-//             //         height: 30,
-//             //       ),
-//             //       // const FormForgotPassword(),
-//             //       // mediumVerticalSpacing(),
-//             //     ],
-//             //   ),
-//             // ),
-
-//             ));
-//   }
-// }

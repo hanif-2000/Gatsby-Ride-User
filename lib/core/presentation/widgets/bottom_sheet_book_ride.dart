@@ -104,6 +104,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                         priceMin: data[index].priceMin.toString(),
                                         baseFare: data[index].base_fare.toString(),
                                         techFee: data[index].tech_fee.toString(),
+                                        pricePerMin: data[index].price_min.toString(),
+                                        pricePerKM: data[index].price_km.toString(),
                                         // price: data[index].totalFare.toString(),
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,

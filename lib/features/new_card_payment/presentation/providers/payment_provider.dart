@@ -35,7 +35,6 @@ class PaymentProvider extends FormProvider {
 
   Stream<CardListState> fetchCardListData() async* {
     logMe("loading");
-
     yield CardListLoading();
     final result = await paymentCard.call();
     yield* result.fold((failure) async* {
@@ -50,16 +49,9 @@ class PaymentProvider extends FormProvider {
     });
   }
 
-  Stream<AddCardState> addCardDetails(
-      // {cardNumber, name, type, expiryDate, token}
+  Stream<AddCardState> addCardDetails() async* {
 
-      ) async* {
-    //show loader
     yield AddCardLoading();
-
-    //If Profile Images uploaded
-
-    //formdata
     final formData = FormData.fromMap({
       'card_number': cardNumberController.text,
       'card_holder_name': accountHolderController.text,
@@ -67,13 +59,27 @@ class PaymentProvider extends FormProvider {
       'expiry_date': expiryController.text,
       // 'token': "111000"
     });
-
     log(formData.fields.toString());
     final result = await paymentCard.execute(formData);
     yield* result.fold((statusCode) async* {
       yield AddCardFailure(failure: statusCode.message);
     }, (result) async* {
       yield AddCardSuccess(data: result);
+    });
+  }
+
+  Stream<AddCardState> deleteCard(String cardId) async* {
+
+    yield DeleteCardLoading();
+    final formData = FormData.fromMap({
+      'id': cardId,
+    });
+    log(formData.fields.toString());
+    final result = await paymentCard.delete(formData);
+    yield* result.fold((statusCode) async* {
+      yield DeleteCardFailure(failure: statusCode.message);
+    }, (result) async* {
+      yield DeleteCardSuccess(data: result);
     });
   }
 
