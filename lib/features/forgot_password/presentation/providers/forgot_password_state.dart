@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/error/failure.dart';
 import '../../data/models/forgot_password_response_model.dart';
 
 abstract class ForgotPasswordState extends Equatable {

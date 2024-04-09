@@ -102,8 +102,7 @@ class CreditCardExpansionTile extends StatelessWidget {
                               "*** *** *** ${DummyData.dummyCardList[index]["cardNumber"]}",
                           assets: 'assets/icons/logos_mastercard.svg',
                           onTap: () {
-                            provider.setPaymentMethod =
-                                PaymentMethod.creditCard;
+                            provider.setPaymentMethod = PaymentMethod.creditCard;
                             // Navigator.pop(context);
                           },
                           selected: provider.paymentMethod == null
@@ -112,6 +111,11 @@ class CreditCardExpansionTile extends StatelessWidget {
                                       PaymentMethod.creditCard
                                   ? true
                                   : false,
+                          onDeleteTap: (){
+                            print("objectFromasdfsdfads");
+                           // context.read<PaymentProvider>().deleteCard();
+
+                          },
                         );
                       },
                     ),

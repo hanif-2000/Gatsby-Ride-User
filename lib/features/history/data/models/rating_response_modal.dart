@@ -9,9 +9,9 @@ String getRatingResponseModalToJson(GetRatingResponseModal data) =>
 class GetRatingResponseModal {
   dynamic success;
   String message;
-  dynamic? rating;
+  dynamic rating;
   List<ListElement>? list;
-  dynamic? ratingCount;
+  dynamic ratingCount;
 
   GetRatingResponseModal({
     required this.success,

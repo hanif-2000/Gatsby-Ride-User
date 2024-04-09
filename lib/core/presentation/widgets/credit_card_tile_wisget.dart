@@ -7,6 +7,7 @@ class CreditCardTile extends StatelessWidget {
   final String assets;
   final String title;
   final Function onTap;
+  final VoidCallback onDeleteTap;
   bool selected;
 
   CreditCardTile(
@@ -14,7 +15,9 @@ class CreditCardTile extends StatelessWidget {
       required this.assets,
       required this.title,
       required this.selected,
-      required this.onTap})
+      required this.onTap,
+      required this.onDeleteTap,
+      })
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -80,7 +83,12 @@ class CreditCardTile extends StatelessWidget {
                         )
                       : const Text(''),
                 ],
-              ))
+              )),
+              SizedBox(height: 10,width: 10,),
+              InkWell(
+                onTap: onDeleteTap,
+                  child: Icon(Icons.delete_forever_outlined,color: Colors.redAccent,)) ,
+
             ],
           ),
           onTap: () => onTap(),

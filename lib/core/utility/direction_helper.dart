@@ -13,18 +13,7 @@ class DirectionHelper {
   Future<List<PointLatLng>> getRouteBetweenCoordinates(double originLat,
       double originLong, double destLat, double destLong) async {
     List<PointLatLng> polylinePoints = [];
-    String url =
-        "https://maps.googleapis.com/maps/api/directions/json?origin=" +
-            originLat.toString() +
-            "," +
-            originLong.toString() +
-            "&destination=" +
-            destLat.toString() +
-            "," +
-            destLong.toString() +
-            "&mode=driving" +
-            "&avoid=tolls" +
-            "&key=$googleApiKey";
+    String url = "https://maps.googleapis.com/maps/api/directions/json?origin=$originLat,$originLong&destination=$destLat,$destLong&mode=driving&avoid=tolls&key=$googleApiKey";
 
     var response = await http.get(Uri.parse(url));
     try {
@@ -37,7 +26,7 @@ class DirectionHelper {
 
         throw Exception("Failed to fetch directions");
       }
-    } catch (error, s) {
+    } catch (error) {
       // log("ssssss $s");
       throw Exception(error.toString());
     }

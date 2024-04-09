@@ -257,12 +257,13 @@ class TestSocketProvider extends ChangeNotifier {
         session.setDriverLatLong = "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
         notifyListeners();
         updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,);
-        await trackingDriver(
-            listenLocation: true,
-            lat: driverUpdatedPositionModel!.latitude,
-            bearing: bearing,
-            long: driverUpdatedPositionModel!.longitude);
-
+        if(session.isRunningOrder){
+          await trackingDriver(
+              listenLocation: true,
+              lat: driverUpdatedPositionModel!.latitude,
+              bearing: bearing,
+              long: driverUpdatedPositionModel!.longitude);
+        }
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 

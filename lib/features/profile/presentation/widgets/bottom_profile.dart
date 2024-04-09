@@ -4,7 +4,6 @@ import 'package:GetsbyRideshare/features/profile/presentation/pages/edit_profile
 import 'package:GetsbyRideshare/features/profile/presentation/providers/profile_provider.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/presentation/pages/splash_page.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 
 import '../../../../core/presentation/widgets/custom_dialog_logout.dart';

@@ -10,6 +10,7 @@ abstract class PaymentUseCase<Type> {
   // return token when succeed
   Future<Either<Failure, CardListResponseModal>> call();
   Future<Either<Failure, AddCardResponseModal>> execute(FormData formData);
+  Future<Either<Failure, AddCardResponseModal>> delete(FormData formData);
 }
 
 class PaymentCard implements PaymentUseCase<String> {
@@ -29,6 +30,14 @@ class PaymentCard implements PaymentUseCase<String> {
   Future<Either<Failure, AddCardResponseModal>> execute(
       FormData formData) async {
     final result = await repository.addCardDetails(formData);
+    return result.fold((l) => Left(l), (r) {
+      return Right(r);
+    });
+  }
+
+  @override
+  Future<Either<Failure, AddCardResponseModal>> delete(FormData formData) async{
+    final result = await repository.deleteCard(formData);
     return result.fold((l) => Left(l), (r) {
       return Right(r);
     });

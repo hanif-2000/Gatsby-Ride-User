@@ -643,9 +643,8 @@ class HomeProvider with ChangeNotifier {
     String dist = distance.split(' ').first;
     yield VehiclesCategoryLoading();
 
-    final result = await getVehicleCatagory(dist, "0",
-        "${originLatLng.latitude},${originLatLng.longitude}", newTime);
-    yield* result.fold(
+    final result = await getVehicleCatagory.call(dist, "0", "${originLatLng.latitude},${originLatLng.longitude}", newTime);
+        yield* result.fold(
       (failure) async* {
         yield VehiclesCategoryFailure(failure: failure);
       },
