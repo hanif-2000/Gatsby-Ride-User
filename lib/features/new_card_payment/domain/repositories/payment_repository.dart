@@ -7,5 +7,5 @@ import '../../data/models/card_list_response_modal.dart';
 abstract class PaymentRepository {
   Future<Either<Failure, CardListResponseModal>> getCardDetails();
   Future<Either<Failure, AddCardResponseModal>> addCardDetails(FormData formData);
-  Future<Either<Failure, AddCardResponseModal>> deleteCardD(FormData formData);
+  Future<Either<Failure, AddCardResponseModal>> deleteCard(FormData formData);
 }

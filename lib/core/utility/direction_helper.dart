@@ -26,7 +26,7 @@ class DirectionHelper {
 
         throw Exception("Failed to fetch directions");
       }
-    } catch (error, s) {
+    } catch (error) {
       // log("ssssss $s");
       throw Exception(error.toString());
     }

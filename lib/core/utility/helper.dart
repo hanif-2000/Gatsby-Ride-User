@@ -147,8 +147,12 @@ void showNoInternetDialog() {
     context: locator<GlobalKey<NavigatorState>>().currentContext!,
     builder: (BuildContext context) {
       return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10)
+        ),
         title: Text('No Internet Connection'),
         content: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.signal_wifi_off,

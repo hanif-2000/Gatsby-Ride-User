@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:dio/dio.dart';
 
 import '../utility/app_settings.dart';
@@ -11,7 +10,8 @@ class DioClient {
   static late Dio _dio;
   final AppInterceptor appInterceptor = AppInterceptor();
   addInterception() {
-    _dio.interceptors.addAll([appInterceptor]);
+    _dio.interceptors.addAll([appInterceptor],);
+    _dio.interceptors.add(LoggingInterceptors());
   }
 
   DioClient({String base = BASE_URL}) {

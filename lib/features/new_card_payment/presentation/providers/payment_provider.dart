@@ -68,7 +68,7 @@ class PaymentProvider extends FormProvider {
     });
   }
 
-  Stream<AddCardState> deleteCard(String cardId) async* {
+  Stream<AddCardState> deleteCard(int cardId) async* {
 
     yield DeleteCardLoading();
     final formData = FormData.fromMap({

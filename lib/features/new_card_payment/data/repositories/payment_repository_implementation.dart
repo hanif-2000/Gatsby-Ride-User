@@ -19,7 +19,7 @@ class PaymentRepositoryImplementation implements PaymentRepository {
     try {
       final data = await dataSource.getCardDetails();
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure GetCardDetails repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
@@ -31,16 +31,16 @@ class PaymentRepositoryImplementation implements PaymentRepository {
     try {
       final data = await dataSource.addCardDetails(formData);
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure profile repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
   }
 
   @override
-  Future<Either<Failure, AddCardResponseModal>> deleteCardD(FormData formData) async{
+  Future<Either<Failure, AddCardResponseModal>> deleteCard(FormData formData) async{
     try {
-      final data = await dataSource.addCardDetails(formData);
+      final data = await dataSource.deleteCard(formData);
       return Right(data);
     } on DioException catch (e) {
       logMe("Failure profile repository ${e.toString()}");
@@ -48,37 +48,4 @@ class PaymentRepositoryImplementation implements PaymentRepository {
     }
   }
 
-  // @override
-  // Future<Either<Failure, int>> updateProfile(FormData formData) async {
-  //   try {
-  //     final data = await dataSource.updateProfile(formData);
-  //     return Right(data);
-  //   } on DioError catch (e) {
-  //     logMe("Failure profile repository ${e.toString()}");
-  //     return Left(ServerFailure(message: e.message));
-  //   }
-  // }
-
-  // @override
-  // Future<Either<Failure, int>> updateEmail(FormData formData) async {
-  //   try {
-  //     final data = await dataSource.updateEmail(formData);
-  //     return Right(data);
-  //   } on DioError catch (e) {
-  //     logMe("Failure profile repository ${e.toString()}");
-  //     return Left(ServerFailure(message: e.message));
-  //   }
-  // }
-
-  // @override
-  // Future<Either<Failure, EditProfileResponseModel>> updatePassword(
-  //     FormData formData) async {
-  //   try {
-  //     final data = await dataSource.updatePassword(formData);
-  //     return Right(data);
-  //   } on DioError catch (e) {
-  //     logMe("Failure profile repository ${e.toString()}");
-  //     return Left(ServerFailure(message: e.message));
-  //   }
-  // }
 }

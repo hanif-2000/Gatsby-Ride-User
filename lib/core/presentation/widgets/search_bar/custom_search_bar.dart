@@ -2,7 +2,6 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 
-import '../../../static/assets.dart';
 import '../../../static/styles.dart';
 import '../rounded_container.dart';
 

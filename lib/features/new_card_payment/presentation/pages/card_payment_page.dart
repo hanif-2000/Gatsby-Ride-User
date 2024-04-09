@@ -14,7 +14,7 @@ import '../../../../core/utility/helper.dart';
 import '../providers/card_list_state.dart';
 import '../providers/payment_provider.dart';
 
-class CardPaymentExpansionTile extends StatelessWidget {
+class CardPaymentExpansionTile extends StatefulWidget {
   final String assets;
   final String title;
   final Function onTap;
@@ -29,10 +29,15 @@ class CardPaymentExpansionTile extends StatelessWidget {
       required this.provider,
       required this.onTap})
       : super(key: key);
+
+  @override
+  State<CardPaymentExpansionTile> createState() => _CardPaymentExpansionTileState();
+}
+
+class _CardPaymentExpansionTileState extends State<CardPaymentExpansionTile> {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
-
     return Consumer<HomeProvider>(builder: (context, provider, _) {
       return ExpansionTile(
         onExpansionChanged: (value) {},
@@ -44,7 +49,7 @@ class CardPaymentExpansionTile extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.only(left: 10.0),
           child: SvgPicture.asset(
-            assets,
+            widget.assets,
             width: 48,
             height: 48,
             fit: BoxFit.cover,
@@ -81,24 +86,19 @@ class CardPaymentExpansionTile extends StatelessWidget {
                     /******    Show List of Cards */
 
                     StreamBuilder<CardListState>(
-                        stream:
-                            context.read<PaymentProvider>().fetchCardListData(),
+                        stream: context.read<PaymentProvider>().fetchCardListData(),
                         builder: (context, state) {
                           switch (state.data.runtimeType) {
                             case CardListLoading:
-                              return const Center(
-                                  child: CircularProgressIndicator());
+                              return const Center(child: CircularProgressIndicator());
                             case CardListFailure:
                               final failure =
                                   (state.data as CardListFailure).failure;
                               showToast(message: failure);
                               return const SizedBox.shrink();
                             case CardListSuccess:
-                              final _data =
-                                  (state.data as CardListSuccess).data;
-
-                              log("my card list data is" +
-                                  _data.data.toString());
+                              final _data = (state.data as CardListSuccess).data;
+                              log("my card list data is" + _data.data.toString());
                               return ListView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
@@ -134,29 +134,10 @@ class CardPaymentExpansionTile extends StatelessWidget {
                                         print("object");
                                       showDialog(
                                         context: context,
-                                        builder: (BuildContext context) => DeleteConfirmationDialog(),
-                                      ).then((confirmed) {
-                                        if (confirmed == true) {
-                                          context.read<PaymentProvider>().deleteCard(_data.data[index].cardNumber).listen((event) {
-                                            switch (state.runtimeType) {
-                                              case DeleteCardLoading:
-                                                showLoading();
-                                                break;
-                                              case DeleteCardFailure:
-                                                final msg = (state as DeleteCardFailure).failure;
-                                                dismissLoading();
-                                                showToast(message: msg);
-                                                break;
-                                              case DeleteCardSuccess:
-                                                final data = (state as DeleteCardSuccess).data;
-                                                dismissLoading();
-                                                if (data.success == 1) {
-                                                  context.read<PaymentProvider>().fetchCardListData();
-                                                }
-
-                                                break;
-                                            }
-
+                                        builder: (BuildContext context) => DeleteConfirmationDialog(_data.data[index].id),
+                                      ).then((value) {
+                                        if(value){
+                                          setState(() {
 
                                           });
                                         }
@@ -230,22 +211,45 @@ class CardPaymentExpansionTile extends StatelessWidget {
 }
 
 class DeleteConfirmationDialog extends StatelessWidget {
+  final int id;
+  DeleteConfirmationDialog(this.id);
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
       title: Text('Delete Card'),
-      content: Text('Are you sure you want to delete this card?',),
+      content: Text('Are you sure you want to delete this card?',style: TextStyle(
+          fontWeight: FontWeight.w600,fontSize: 16),),
       actions: <Widget>[
         CupertinoDialogAction(
           child: Text('Cancel'),
           onPressed: () {
             Navigator.of(context).pop(false); // Return false indicating cancel
           },
+          textStyle: TextStyle(color: CupertinoColors.activeBlue),
         ),
         CupertinoDialogAction(
           child: Text('Delete'),
           onPressed: () {
-            Navigator.of(context).pop(true); // Return true indicating delete
+            context.read<PaymentProvider>().deleteCard(id).listen((event)async{
+              switch (event.runtimeType) {
+                case DeleteCardLoading:
+                  showLoading();
+                  break;
+                case DeleteCardFailure:
+                  final msg = (event as DeleteCardFailure).failure;
+                  dismissLoading();
+                  Navigator.of(context).pop(true);
+                  showToast(message: msg);
+                  break;
+                case DeleteCardSuccess:
+                  final data = (event as DeleteCardSuccess).data;
+                  dismissLoading();
+                  Navigator.of(context).pop(true);
+                  break;
+              }
+
+
+            });// Return true indicating delete
           },
           isDestructiveAction: true,
         ),

@@ -37,7 +37,7 @@ class PaymentCard implements PaymentUseCase<String> {
 
   @override
   Future<Either<Failure, AddCardResponseModal>> delete(FormData formData) async{
-    final result = await repository.addCardDetails(formData);
+    final result = await repository.deleteCard(formData);
     return result.fold((l) => Left(l), (r) {
       return Right(r);
     });

@@ -7,8 +7,6 @@ import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/ratings.dart';
 import 'package:GetsbyRideshare/features/order/presentation/widgets/driver_info_bottom_sheet.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

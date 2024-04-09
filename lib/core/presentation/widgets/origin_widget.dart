@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/pages/menu_page.dart';
 import 'package:GetsbyRideshare/core/presentation/pages/place_picker_page/place_picker_page.dart';
 import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
