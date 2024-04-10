@@ -94,8 +94,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
 
                         return SingleChildScrollView(
                             child: HtmlWidget(
-                           data!.text ?? '',
-
+                          data!.text ?? '',
                           textStyle: TextStyle(fontFamily: "Yu Gothic"),
                         ));
                     }
@@ -104,3 +103,4 @@ class _AboutUsPageState extends State<AboutUsPage> {
             )));
   }
 }
+//

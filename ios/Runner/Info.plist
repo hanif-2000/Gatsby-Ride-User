@@ -63,6 +63,8 @@
 	<string>This app need access to location of user for navigation</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app need access to photo library to change profile picture</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app need access to microphone for calling</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
