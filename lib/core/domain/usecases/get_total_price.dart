@@ -16,7 +16,7 @@ class GetTotalPrice implements GetTotalPriceUseCase {
 
   @override
   Future<Either<Failure, TotalPrice>> call(
-      String kategoriId, String distance, String night) async {
-    return await repository.getTotalPrice(kategoriId, distance, night);
+      String categoryId, String distance, String night) async {
+    return await repository.getTotalPrice(categoryId, distance, night);
   }
 }

@@ -79,8 +79,7 @@ class PlacePickerProvider with ChangeNotifier {
 
     addressSelected = isSearch ? originTextToShow : val;
     isCurrentLoading = false;
-    destinationLatLng = LatLng(
-        cameraPosition!.target.latitude, cameraPosition!.target.longitude);
+    destinationLatLng = LatLng(cameraPosition!.target.latitude, cameraPosition!.target.longitude);
     destinationName = addressSelected;
     placeDataDestination = {
       'pickUpCoordinate': destinationLatLng,
@@ -206,7 +205,7 @@ class PlacePickerProvider with ChangeNotifier {
   Future<void> fetchGooglePlaces() async {
     newState = PlaceLoading();
 
-    final placeResult = await getGooglePlace(_controller.text);
+    final placeResult = await getGooglePlace.call(_controller.text);
     placeResult.fold(
       (failure) async {
         newState = PlaceFailure(failure: failure);

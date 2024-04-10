@@ -384,8 +384,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return PlaceResultItem(
-                  name: mergeAddress(predictions[index].name,
-                      predictions[index].formattedAddress),
+                  name: mergeAddress(predictions[index].name, predictions[index].formattedAddress),
                   onTap: () async {
                     provider.updateIsSearch(val: true);
 

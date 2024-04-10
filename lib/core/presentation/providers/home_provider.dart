@@ -127,6 +127,7 @@ class HomeProvider with ChangeNotifier {
   bool originIsFilled = false;
   String destinationAddress = appLoc.destination;
   String distance = "1", price = "";
+  int totalDistance =0;
   int estimatedTime = 1;
   String time = '';
   late Text originText;
@@ -182,6 +183,7 @@ class HomeProvider with ChangeNotifier {
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";
+    totalDistance = 0;
     price = "0";
     _selectedCategory = null;
     _paymentMethod = null;
@@ -544,19 +546,18 @@ class HomeProvider with ChangeNotifier {
   Future<void> setActualDistance() async {
     try {
       // Get real distance
-      var response = await Dio().get(
-          'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destinationLatLng.latitude},${destinationLatLng.longitude}&origins=${originLatLng.latitude},${originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
+      var response = await Dio().get('https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destinationLatLng.latitude},${destinationLatLng.longitude}&origins=${originLatLng.latitude},${originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
       log(" response of real distance:--->>> ${response.data}");
 
       var data = GoogleRouteDistanceResponseModal.fromJson(response.data);
+      print("========>${data.toJson()}");
       distance = data.rows[0].elements[0].distance.text;
+      totalDistance = data.rows[0].elements[0].distance.value;
       estimatedTime = data.rows[0].elements[0].duration.value;
       estimatedTimeToShow = data.rows[0].elements[0].duration.text;
 
-      session.setEstimatedDistance =
-          data.rows[0].elements[0].distance.value.toString();
-      session.setEstimatedTime =
-          data.rows[0].elements[0].duration.value.toStringAsFixed(1);
+      session.setEstimatedDistance = data.rows[0].elements[0].distance.value.toString();
+      session.setEstimatedTime = data.rows[0].elements[0].duration.value.toStringAsFixed(1);
 
       notifyListeners();
 
@@ -599,8 +600,7 @@ class HomeProvider with ChangeNotifier {
     } else {
       night = '1';
     }
-    final result = await getTotalPrice(_selectedCategory!.categoryId.toString(),
-        distanceMeter.toString(), night);
+    final result = await getTotalPrice.call(_selectedCategory!.categoryId.toString(), distanceMeter.toString(), night);
     yield* result.fold(
       (failure) async* {
         logMe(failure.message);
@@ -631,6 +631,10 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  double metersToKilometers(int meters) {
+    return meters / 1000;
+  }
+
 //Get all the Vehicles Catagories
   Stream<VehiclesCategoryState> fetchVehicleCategory() async* {
     log("-->>> distance privce --->>>>   $distance");
@@ -640,10 +644,11 @@ class HomeProvider with ChangeNotifier {
 
     String newTime = (estimatedTime / 60).toStringAsFixed(1);
 
-    String dist = distance.split(' ').first;
+    double dist = metersToKilometers(totalDistance);
+    log("-->>> Total Distance in Km --->>>>   $dist");
     yield VehiclesCategoryLoading();
 
-    final result = await getVehicleCatagory.call(dist, "0", "${originLatLng.latitude},${originLatLng.longitude}", newTime);
+    final result = await getVehicleCatagory.call(dist.toString(), "0", "${originLatLng.latitude},${originLatLng.longitude}", newTime);
         yield* result.fold(
       (failure) async* {
         yield VehiclesCategoryFailure(failure: failure);
@@ -684,10 +689,8 @@ class HomeProvider with ChangeNotifier {
     String newTime = (estimatedTime / 60).toStringAsFixed(1);
     log("Submit order Clicked");
     yield CreateOrderLoading();
-    String txtLatLngOrigin =
-        '${originLatLng.latitude},${originLatLng.longitude}';
-    String txtLatLngDestination =
-        '${destinationLatLng.latitude},${destinationLatLng.longitude}';
+    String txtLatLngOrigin = '${originLatLng.latitude},${originLatLng.longitude}';
+    String txtLatLngDestination = '${destinationLatLng.latitude},${destinationLatLng.longitude}';
 
     log(txtLatLngOrigin.toString());
     log(txtLatLngDestination.toString());
@@ -699,13 +702,13 @@ class HomeProvider with ChangeNotifier {
     log(selectedVehicleId.toString());
     log("estimated distacnce while send order is:-->> $distance");
     log("estimated time while send order is:-->> $newTime");
-
+  final dist =  metersToKilometers(totalDistance);
     final formData = FormData.fromMap({
       'start_coordinate': txtLatLngOrigin,
       'end_coordinate': txtLatLngDestination,
       'start_address': originAddress,
       'end_address': destinationAddress,
-      'distance': distance.split(' ').first,
+      'distance':dist,
       'total': price,
       'estimated_time': newTime,
       'payment_method': (_paymentMethod == PaymentMethod.cash)

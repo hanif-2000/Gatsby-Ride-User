@@ -71,8 +71,14 @@ Future<bool> checkPermission() async {
 
 String mergeAddress(String placeName, String address) {
   String result;
-  result = '$placeName, $address';
-  return result;
+  if(address.isNotEmpty && address.contains(placeName)){
+    result = '$address';
+    return result;
+  }else{
+    result = '$placeName, $address';
+    return result;
+  }
+
 }
 
 String mergeTypeTaxi(history.CategoryClass category) {
