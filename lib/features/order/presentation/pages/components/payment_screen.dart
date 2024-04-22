@@ -43,29 +43,39 @@ class PaymentScreen extends StatefulWidget {
   final String distance;
   final dynamic pricePerMin;
   final dynamic pricePerKm;
+  final dynamic techFee;
+  final dynamic baseFare;
+  final dynamic minimumFare;
+  final dynamic timeTaken;
+  final dynamic distanceTravelled;
 
-  const PaymentScreen({
-    Key? key,
-    required this.name,
-    required this.img,
-    required this.carModal,
-    required this.carNo,
-    required this.totalPrice,
-    required this.paymentMode,
-    required this.orderId,
-    required this.driverId,
-    required this.extraDistance,
-    required this.extraTime,
-    required this.extraDistancePrice,
-    required this.extraTimePrice,
-    // required this.grandTotal,
-    required this.vehicleCategory,
-    required this.distance,
-    required this.pricePerKm,
-    required this.pricePerMin,
-    this.pendingAmount,
-    this.newTotal,
-  }) : super(key: key);
+  const PaymentScreen(
+      {Key? key,
+      required this.name,
+      required this.img,
+      required this.carModal,
+      required this.carNo,
+      required this.totalPrice,
+      required this.paymentMode,
+      required this.orderId,
+      required this.driverId,
+      required this.extraDistance,
+      required this.extraTime,
+      required this.extraDistancePrice,
+      required this.extraTimePrice,
+      // required this.grandTotal,
+      required this.vehicleCategory,
+      required this.distance,
+      required this.pricePerKm,
+      required this.pricePerMin,
+      this.pendingAmount,
+      this.newTotal,
+      this.baseFare,
+      this.minimumFare,
+      this.techFee,
+      this.distanceTravelled,
+      this.timeTaken})
+      : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -81,11 +91,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   var session = locator<Session>();
 
   var extraTimeTaken = "0 hr 0 min 0 sec";
+  var totalTimeTaken = "0 hr 0 min 0 sec";
 
   convertSecondsToMinutes() {
+    log("extra time :-->> ${widget.extraTime}");
     if (widget.extraTime != '') {
-      int seconds = int.parse(
-          widget.extraTime); // Replace this with your desired number of seconds
+      int seconds = int.parse(widget.extraTime
+          .toString()); // Replace this with your desired number of seconds
 
       int minutes = seconds ~/ 60;
       int remainingSeconds = seconds % 60;
@@ -99,6 +111,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
       setState(() {
         extraTimeTaken = "$hours"
+            ' hr '
+            '$remainingMinutes'
+            ' min '
+            '$remainingSeconds'
+            ' sec ';
+      });
+    } else {}
+  }
+
+  convertSecondsToMinutesTimeTaken() {
+    log("extra  time rtaken :-->> ${widget.timeTaken}");
+
+    if (widget.timeTaken != '') {
+      int seconds = int.parse(widget.timeTaken
+          .toString()); // Replace this with your desired number of seconds
+
+      int minutes = seconds ~/ 60;
+      int remainingSeconds = seconds % 60;
+
+      int hours = minutes ~/ 60;
+      int remainingMinutes = minutes % 60;
+
+      print('$seconds seconds is equivalent to:');
+      print(
+          '$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
+
+      setState(() {
+        totalTimeTaken = "$hours"
             ' hr '
             '$remainingMinutes'
             ' min '
@@ -231,6 +271,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     log("selected card number is :$cardNumber");
 
     convertSecondsToMinutes();
+    convertSecondsToMinutesTimeTaken();
 
     setState(() {
       totalAmountToPay = widget.newTotal;
@@ -281,16 +322,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     EdgeInsets.only(top: 13, bottom: 13, left: 11, right: 11),
                 child: Column(
                   children: [
+                    // TextInRow(
+                    //   firstText: 'Distance',
+                    //   secondText: "${widget.distance} Km",
+                    // ),
+                    // Divider(
+                    //   color: whiteAccentColor,
+                    // ),
+                    // TextInRow(
+                    //   firstText: 'Estimated Amount',
+                    //   secondText: r'CA$ ' + widget.totalPrice.toString(),
+                    // ),
+                    // Divider(
+                    //   color: whiteAccentColor,
+                    // ),
+
                     TextInRow(
-                      firstText: 'Distance',
-                      secondText: "${widget.distance} Km",
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
-                    TextInRow(
-                      firstText: 'Estimated Amount',
-                      secondText: r'CA$ ' + widget.totalPrice.toString(),
+                      firstText: 'Distance Travelled',
+                      secondText: "${widget.distanceTravelled} Km",
                     ),
                     Divider(
                       color: whiteAccentColor,
@@ -299,7 +348,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     TextInRow(
                       firstText: 'Extra Distance',
                       // secondText: widget.extraDistance + " Km",
-                      secondText: widget.extraDistance + " Km",
+                      secondText: widget.extraDistance.toString() + " Km",
                     ),
                     Divider(
                       color: whiteAccentColor,
@@ -314,6 +363,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       secondText: r'CA$ ' +
                           convertToFixedTwoDecimal(widget.extraDistancePrice),
                     ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+
+                    TextInRow(
+                        firstText: 'Time Taken',
+                        // secondText: widget.extraDistance + " Km",
+                        secondText: extraTimeTaken
+                        //  (widget.extraTime == '')
+                        //     ? "0 Min"
+                        //     : "${(int.parse(widget.extraTime)) / 60}" + " min",
+                        ),
                     Divider(
                       color: whiteAccentColor,
                     ),
@@ -348,19 +409,44 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: whiteAccentColor,
                     ),
 
-                    TextInRow(
-                      firstText: 'Actual Amount',
-                      secondText:
-                          'CA\$ ' + convertToFixedTwoDecimal(widget.totalPrice),
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
+                    // TextInRow(
+                    //   firstText: 'Actual Amount',
+                    //   secondText:
+                    //       'CA\$ ' + convertToFixedTwoDecimal(widget.totalPrice),
+                    // ),
+                    // Divider(
+                    //   color: whiteAccentColor,
+                    // ),
                     TextInRow(
                       firstText: 'Pending Amount',
                       // secondText: widget.extraDistance + " Km",
                       secondText: "CA\$ " +
                           convertToFixedTwoDecimal(widget.pendingAmount),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+
+                    TextInRow(
+                      firstText: 'Tech Fee',
+                      secondText:
+                          'CA\$ ' + convertToFixedTwoDecimal(widget.techFee),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: 'Base Fare',
+                      secondText:
+                          'CA\$ ' + convertToFixedTwoDecimal(widget.baseFare),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: 'Minimum Fare',
+                      secondText: 'CA\$ ' +
+                          convertToFixedTwoDecimal(widget.minimumFare),
                     ),
                     Divider(
                       color: whiteAccentColor,

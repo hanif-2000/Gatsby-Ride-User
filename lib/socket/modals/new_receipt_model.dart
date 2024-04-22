@@ -66,6 +66,10 @@ class ReceiptData {
   dynamic extraTime;
   dynamic extraTimePrice;
   dynamic newTotal;
+  dynamic baseFare;
+  dynamic techFee;
+  dynamic minimumFare;
+  dynamic distance1;
 
   ReceiptData({
     required this.id,
@@ -94,6 +98,10 @@ class ReceiptData {
     required this.extraTime,
     required this.extraTimePrice,
     required this.newTotal,
+    required this.baseFare,
+    required this.minimumFare,
+    required this.techFee,
+    required this.distance1,
   });
 
   factory ReceiptData.fromJson(Map<String, dynamic> json) => ReceiptData(
@@ -106,6 +114,9 @@ class ReceiptData {
         actualTime: json["actual_time"],
         createdAt: DateTime.parse(json["created_at"]),
         total: json["total"] ?? "0.0",
+        techFee: json["tech_fee"] ?? "0.0",
+        baseFare: json["base_fare"] ?? "0.0",
+        minimumFare: json["min_fare"] ?? "0.0",
         pendingAmount: json["pending_amount"],
         driverId: json["driverID"],
         carModel: json["car_model"],
@@ -123,6 +134,7 @@ class ReceiptData {
         extraTime: json["extra_time"],
         extraTimePrice: json["extra_time_price"],
         newTotal: json["new_total"] ?? '0',
+        distance1: json["distance1"] ?? '0',
       );
 
   Map<String, dynamic> toJson() => {
@@ -152,5 +164,6 @@ class ReceiptData {
         "extra_time": extraTime,
         "extra_time_price": extraTimePrice,
         "new_total": newTotal,
+        "distance1": distance1,
       };
 }

@@ -182,7 +182,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                     children: [
                                       Image.asset(starImage),
                                       CommonText(
-                                        text: " " + "${double.parse(provider.receiptResponseModel!.data.driverRating.toString()).toStringAsFixed(1)}",
+                                        text: " " +
+                                            "${double.parse(provider.receiptResponseModel!.data.driverRating.toString()).toStringAsFixed(1)}",
                                         fontWeight: FontWeight.w600,
                                         fontColor: blackColor,
                                         fontFamily: "poPPinMedium",
@@ -393,14 +394,31 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PaymentScreen(
+                                  distanceTravelled: ((provider
+                                                  .receiptResponseModel!
+                                                  .data
+                                                  .distance1 ==
+                                              null) ||
+                                          (provider.receiptResponseModel!.data
+                                                  .distance1
+                                                  .toString() ==
+                                              "0.0") ||
+                                          (provider.receiptResponseModel!.data
+                                                  .distance1 ==
+                                              ""))
+                                      ? 0
+                                      : provider
+                                          .receiptResponseModel!.data.distance1
+                                          .toString(),
                                   pricePerKm: "",
                                   pricePerMin: "",
                                   extraTime: provider.receiptResponseModel!.data
                                           .extraTime ??
                                       "",
 
-                                  extraTimePrice: provider.receiptResponseModel!
-                                      .data.extraTimePrice,
+                                  extraTimePrice: provider
+                                      .receiptResponseModel!.data.extraTimePrice
+                                      .toString(),
                                   newTotal: provider
                                       .receiptResponseModel!.data.newTotal
                                       .toString(),
@@ -436,6 +454,22 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                       .receiptResponseModel!
                                       .data
                                       .extraDistancePrice,
+
+                                  timeTaken: provider.receiptResponseModel!.data
+                                              .actualTime
+                                              .toString() ==
+                                          "0.0"
+                                      ? "0"
+                                      : provider.receiptResponseModel!.data
+                                          .actualTime,
+                                  // provider
+                                  //     .receiptResponseModel!.data.actualTime,
+                                  baseFare: provider
+                                      .receiptResponseModel!.data.baseFare,
+                                  techFee: provider
+                                      .receiptResponseModel!.data.techFee,
+                                  minimumFare: provider
+                                      .receiptResponseModel!.data.minimumFare,
                                   // extraMinPrice:
                                   //     provider.receiptResponseModel!.extraKmPrice,
                                   // extraTime: provider.receiptResponseModel!.extraTime,
