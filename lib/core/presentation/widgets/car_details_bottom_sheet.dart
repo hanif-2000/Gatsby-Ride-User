@@ -134,6 +134,20 @@ class CarDetailWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
+                      "Per Km Fee ",
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Per min Fee",
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
                       "Minimum Fare",
                       style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
@@ -149,20 +163,6 @@ class CarDetailWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "Tech Fee",
-                      style: TextStyle(color: black080808Color, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Extra Per Km Fee ",
-                      style: TextStyle(color: black080808Color, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Extra Per min Fee",
                       style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
@@ -211,6 +211,20 @@ class CarDetailWidget extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
+                      "CA \$ ${perkM}",
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "CA \$ ${perMin}",
+                      style: TextStyle(color: black080808Color, fontSize: 16.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
                       "CA \$ ${minimumFare}",
                       style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
@@ -229,20 +243,7 @@ class CarDetailWidget extends StatelessWidget {
                       style: TextStyle(color: black080808Color, fontSize: 16.0),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "CA \$ ${perkM}",
-                      style: TextStyle(color: black080808Color, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "CA \$ ${perMin}",
-                      style: TextStyle(color: black080808Color, fontSize: 16.0),
-                    ),
-                  ),
+
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(

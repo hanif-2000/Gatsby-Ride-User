@@ -124,11 +124,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
     log("extra  time rtaken :-->> ${widget.timeTaken}");
 
     if (widget.timeTaken != '') {
-      int seconds = int.parse(widget.timeTaken
-          .toString()); // Replace this with your desired number of seconds
+      final seconds = double.parse(widget.timeTaken); // Replace this with your desired number of seconds
 
-      int minutes = seconds ~/ 60;
-      int remainingSeconds = seconds % 60;
+      int minutes = seconds.toInt() ~/ 60;
+      int remainingSeconds = seconds.toInt() % 60;
 
       int hours = minutes ~/ 60;
       int remainingMinutes = minutes % 60;

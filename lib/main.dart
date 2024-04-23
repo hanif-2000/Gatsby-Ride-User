@@ -163,7 +163,6 @@ class MyApp extends StatelessWidget {
       home: const SplashPage(),
       // home: CreateProfilePage(),
       debugShowCheckedModeBanner: false,
-
       builder: FlutterSmartDialog.init(),
     );
 
