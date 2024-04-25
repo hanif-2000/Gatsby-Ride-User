@@ -337,7 +337,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     // ),
 
                     TextInRow(
-                      firstText: 'Distance Travelled',
+                      firstText: 'Total Distance',
                       secondText: "${widget.distanceTravelled} Km",
                     ),
                     Divider(
@@ -367,7 +367,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
 
                     TextInRow(
-                        firstText: 'Time Taken',
+                        firstText: 'Total Time Taken',
                         // secondText: widget.extraDistance + " Km",
                         secondText: extraTimeTaken
                         //  (widget.extraTime == '')
@@ -391,11 +391,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     TextInRow(
                       firstText: "Extra Time Price",
-                      // firstText: widget.vehicleCategory.toString() == "1"
-                      // ? r"Extra Time Price 0.30 /min"
-                      // :
-                      // r"Extra Time Price ${widget.} /min",
-                      // secondText: r'$' + widget.extraDistancePrice,
                       secondText: ((widget.extraTimePrice != null) ||
                               (widget.extraTimePrice != '') ||
                               (widget.extraTimePrice != '0'))
@@ -416,16 +411,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     // Divider(
                     //   color: whiteAccentColor,
                     // ),
+
                     TextInRow(
-                      firstText: 'Pending Amount',
-                      // secondText: widget.extraDistance + " Km",
-                      secondText: "CA\$ " +
-                          convertToFixedTwoDecimal(widget.pendingAmount),
+                      firstText: 'Minimum Fare',
+                      secondText: 'CA\$ ' +
+                          convertToFixedTwoDecimal(widget.minimumFare),
                     ),
                     Divider(
                       color: whiteAccentColor,
                     ),
-
                     TextInRow(
                       firstText: 'Tech Fee',
                       secondText:
@@ -442,79 +436,26 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Divider(
                       color: whiteAccentColor,
                     ),
-                    TextInRow(
-                      firstText: 'Minimum Fare',
-                      secondText: 'CA\$ ' +
-                          convertToFixedTwoDecimal(widget.minimumFare),
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
-                    // TextInRow(
-                    //   firstText: 'Extra Distance',
-                    //   // secondText: widget.extraDistance + " Km",
-                    //   secondText: widget.extraDistance == ''
-                    //       ? '0 Km'
-                    //       : "${widget.extraDistance} Km",
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
-                    // TextInRow(
-                    //   firstText: 'Extra Distance Price',
-                    //   // secondText: widget.extraDistance + " Km",
-                    //   secondText:
-                    //       "CA\$ " + convertToFixed(widget.extraDistancePrice),
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
 
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
-                    // TextInRow(
-                    //   firstText: 'Extra Time',
-                    //   secondText: widget.extraTime.toString() + ' Min',
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
-                    // TextInRow(
-                    //   firstText: widget.vehicleCategory == "2"
-                    //       ? r"Extra Time Price 0.35$CA/Min"
-                    //       : r"Extra Time Price 0.30$CA/Min",
-                    //   secondText: r'$' + widget.extraMinPrice,
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
-
-                    // TextInRow(
-                    //   secondTextweight: FontWeight.w700,
-                    //   firstText: 'Total Distance',
-                    //   secondText: r'$' +
-                    //       ((double.parse(widget.distance)) +
-                    //               (double.parse(widget.extraDistance)))
-                    //           .toStringAsFixed(3)
-                    //           .toString(),
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
-                    // TextInRow(
-                    //   firstText: 'Service Price',
-                    //   secondText: r'$0.00',
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
                     TextInRow(
                       secondTextweight: FontWeight.w700,
+                      titleFontWeight: FontWeight.w700,
                       firstText: 'Grand Total',
                       secondText:
                           r'CA$ ' + convertToFixedTwoDecimal(widget.newTotal),
                     ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      secondTextweight: FontWeight.w700,
+                      titleFontWeight: FontWeight.w700,
+                      firstText: 'Pending Amount',
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: "CA\$ " +
+                          convertToFixedTwoDecimal(widget.pendingAmount),
+                    ),
+
                   ],
                 ),
               ),

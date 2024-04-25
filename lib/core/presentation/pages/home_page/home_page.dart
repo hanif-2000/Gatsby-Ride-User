@@ -45,8 +45,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     socketProvider.updateReceiptResponseModel(receipt).then((value) {
       logMe("RECEIPT DATA UPDATED SUCCESS");
 
-      socketProvider
-          .fetchOrderDetails(int.parse(session.orderId))
+      socketProvider.fetchOrderDetails(int.parse(session.orderId))
           .then((value) {
         logMe(" order details are:::::::::::::: ${value}");
 

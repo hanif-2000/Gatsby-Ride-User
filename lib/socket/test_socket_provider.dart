@@ -128,8 +128,11 @@ class TestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateReceiptResponseModel(data) async {
+  Future<void> updateReceiptResponseModel(data,{bool addData=false}) async {
     receiptResponseModel = data;
+    if(addData){
+      receiptResponseModel?.data = receiptResponseModel!.order;
+    }
     notifyListeners();
   }
 
@@ -753,7 +756,7 @@ class TestSocketProvider extends ChangeNotifier {
     try {
       log("try called : ${apiUrl}");
       final response = await Dio().get(apiUrl);
-      log("--------******* ${response.statusCode}");
+      log("--------******* ${response.data}");
 
       if (response.statusCode == 200) {
         dismissLoading();
@@ -761,9 +764,8 @@ class TestSocketProvider extends ChangeNotifier {
 
         log("response is :${response}");
         // If the server returns a 200 OK response, parse the JSON
-        OrderDetailResponseModel data =
-            OrderDetailResponseModel.fromJson(response.data);
-
+        OrderDetailResponseModel data = OrderDetailResponseModel.fromJson(response.data);
+        updateReceiptResponseModel(ReceiptResponseModel.fromJson(response.data),addData: true);
         session.setOrderStatus = int.parse(data.data.orderStatus.toString());
 
         return data;
@@ -798,10 +800,9 @@ class TestSocketProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         dismissLoading();
-        log("driver details are:-->> ${response}");
+        log("driver details are:-->> ${response.data}");
         // If the server returns a 200 OK response, parse the JSON
-        DriverDetailResponseModel data =
-            DriverDetailResponseModel.fromJson(response.data);
+        DriverDetailResponseModel data = DriverDetailResponseModel.fromJson(response.data);
         return data;
       } else {
         // If the server did not return a 200 OK response, throw an exception.

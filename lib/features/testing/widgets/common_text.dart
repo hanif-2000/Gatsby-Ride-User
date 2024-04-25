@@ -20,7 +20,7 @@ class CommonText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text!,
+      text??"",
       style: TextStyle(
         fontFamily: fontFamily ?? "poPPinMedium",
         fontWeight: fontWeight,

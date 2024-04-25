@@ -8,17 +8,19 @@ String receiptResponseModelToJson(ReceiptResponseModel data) =>
 
 class ReceiptResponseModel {
   dynamic response;
-  String message;
-  String type;
+  String ?message;
+  String? type;
   dynamic orderId;
-  ReceiptData data;
+  ReceiptData ?data;
+  ReceiptData ?order;
 
   ReceiptResponseModel({
-    required this.response,
-    required this.message,
-    required this.type,
-    required this.orderId,
-    required this.data,
+     this.response,
+     this.message,
+     this.type,
+     this.orderId,
+     this.data,
+     this.order,
   });
 
   factory ReceiptResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -27,7 +29,8 @@ class ReceiptResponseModel {
         message: json["message"],
         type: json["type"],
         orderId: json["OrderID"],
-        data: ReceiptData.fromJson(json["data"]),
+        data:json["data"] != null? ReceiptData.fromJson(json["data"]):null,
+        order:json["order"] != null? ReceiptData.fromJson(json["order"]):null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,31 +38,32 @@ class ReceiptResponseModel {
         "message": message,
         "type": type,
         "OrderID": orderId,
-        "data": data.toJson(),
+        "data": data?.toJson(),
+        "order":order?.toJson()
       };
 }
 
 class ReceiptData {
   dynamic id;
-  String startAddress;
-  String endAddress;
+  String ?startAddress;
+  String ?endAddress;
   dynamic distance;
   dynamic paymentMethod;
   dynamic estimatedTime;
   dynamic actualTime;
-  DateTime createdAt;
+  DateTime ?createdAt;
   dynamic total;
   dynamic pendingAmount;
   dynamic driverId;
-  String carModel;
+  String ?carModel;
   dynamic insuranceNumber;
-  String name;
-  String image;
+  String ?name;
+  String ?image;
   dynamic longitude;
   dynamic latitude;
   dynamic phone;
-  String plateNumber;
-  String vehicleName;
+  String ?plateNumber;
+  String ?vehicleName;
   dynamic driverRating;
   dynamic extraDistance;
   dynamic extraDistancePrice;
@@ -72,36 +76,36 @@ class ReceiptData {
   dynamic distance1;
 
   ReceiptData({
-    required this.id,
-    required this.startAddress,
-    required this.endAddress,
-    required this.distance,
-    required this.paymentMethod,
-    required this.estimatedTime,
-    required this.actualTime,
-    required this.createdAt,
-    required this.total,
-    required this.pendingAmount,
-    required this.driverId,
-    required this.carModel,
-    required this.insuranceNumber,
-    required this.name,
-    required this.image,
-    required this.longitude,
-    required this.latitude,
-    required this.phone,
-    required this.plateNumber,
-    required this.vehicleName,
-    required this.driverRating,
-    required this.extraDistance,
-    required this.extraDistancePrice,
-    required this.extraTime,
-    required this.extraTimePrice,
-    required this.newTotal,
-    required this.baseFare,
-    required this.minimumFare,
-    required this.techFee,
-    required this.distance1,
+    this.id,
+    this.startAddress,
+    this.endAddress,
+    this.distance,
+    this.paymentMethod,
+    this.estimatedTime,
+    this.actualTime,
+    this.createdAt,
+    this.total,
+    this.pendingAmount,
+    this.driverId,
+    this.carModel,
+    this.insuranceNumber,
+    this.name,
+    this.image,
+    this.longitude,
+    this.latitude,
+    this.phone,
+    this.plateNumber,
+    this.vehicleName,
+    this.driverRating,
+    this.extraDistance,
+    this.extraDistancePrice,
+    this.extraTime,
+    this.extraTimePrice,
+    this.newTotal,
+    this.baseFare,
+    this.minimumFare,
+    this.techFee,
+    this.distance1,
   });
 
   factory ReceiptData.fromJson(Map<String, dynamic> json) => ReceiptData(
@@ -112,11 +116,11 @@ class ReceiptData {
         paymentMethod: json["payment_method"],
         estimatedTime: json["estimated_time"],
         actualTime: json["actual_time"],
-        createdAt: DateTime.parse(json["created_at"]),
+        createdAt: DateTime.tryParse(json["created_at"]??DateTime.now().toUtc().toString()),
         total: json["total"] ?? "0.0",
         techFee: json["tech_fee"] ?? "0.0",
         baseFare: json["base_fare"] ?? "0.0",
-        minimumFare: json["min_fare"] ?? "0.0",
+        minimumFare: json["min_fare"]??json["min_price"] ?? "0.0",
         pendingAmount: json["pending_amount"],
         driverId: json["driverID"],
         carModel: json["car_model"],
@@ -145,7 +149,7 @@ class ReceiptData {
         "payment_method": paymentMethod,
         "estimated_time": estimatedTime,
         "actual_time": actualTime,
-        "created_at": createdAt.toIso8601String(),
+        "created_at": createdAt?.toIso8601String(),
         "total": total,
         "pending_amount": pendingAmount,
         "driverID": driverId,

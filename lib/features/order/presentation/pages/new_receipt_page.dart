@@ -151,7 +151,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                             children: [
                               CustomCacheNetworkImage(
                                   img:
-                                      provider.receiptResponseModel!.data.image,
+                                      provider.receiptResponseModel!.data!.image??"",
                                   size: 45),
 
                               // CommonCircularImageContainer(
@@ -168,7 +168,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                   /**name */
                                   CommonText(
                                     text: provider
-                                            .receiptResponseModel!.data.name ??
+                                            .receiptResponseModel!.data!.name ??
                                         '',
                                     fontWeight: FontWeight.w500,
                                     fontColor: blackColor,
@@ -182,8 +182,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                     children: [
                                       Image.asset(starImage),
                                       CommonText(
-                                        text: " " +
-                                            "${double.parse(provider.receiptResponseModel!.data.driverRating.toString()).toStringAsFixed(1)}",
+                                        text: provider.receiptResponseModel?.data?.driverRating!= null? " " + "${double.parse(provider.receiptResponseModel!.data!.driverRating.toString()).toStringAsFixed(1)}":"0.0",
                                         fontWeight: FontWeight.w600,
                                         fontColor: blackColor,
                                         fontFamily: "poPPinMedium",
@@ -200,7 +199,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                             children: [
                               CommonText(
                                 text: provider
-                                    .receiptResponseModel!.data.carModel,
+                                    .receiptResponseModel!.data!.carModel,
                                 fontWeight: FontWeight.w400,
                                 fontColor: grey585858Color,
                                 fontFamily: "poPPinMedium",
@@ -209,7 +208,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               //plate number
                               CommonText(
                                 text: provider
-                                    .receiptResponseModel!.data.plateNumber,
+                                    .receiptResponseModel!.data!.plateNumber,
                                 fontWeight: FontWeight.w500,
                                 fontColor: blackColor,
                                 fontFamily: "poPPinMedium",
@@ -231,7 +230,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                         secondText: DateFormat.yMMMd().format(
                             (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
                                     provider
-                                        .receiptResponseModel!.data.createdAt
+                                        .receiptResponseModel!.data!.createdAt
                                         .toString(),
                                     true))
                                 .toLocal()),
@@ -245,7 +244,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                         secondText: DateFormat.jm().format(
                             (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
                                     provider.receiptResponseModel!.data
-                                            .createdAt
+                                            !.createdAt
                                             .toString() ??
                                         DateTime.now().toString(),
                                     true))
@@ -257,14 +256,14 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       ),
                       TextInRow(
                         firstText: appLoc.totalDistance,
-                        secondText: provider.receiptResponseModel!.data.distance
+                        secondText: provider.receiptResponseModel!.data!.distance
                                 .toString() +
                             " Km",
                       ),
                       TextInRow(
                         firstText: "Time Taken",
                         secondText: formatDuration(double.parse(
-                                provider.receiptResponseModel!.data.actualTime)
+                                provider.receiptResponseModel!.data!.actualTime)
                             .toInt()),
                       ),
                       CommonText(
@@ -286,8 +285,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           ),
                           Row(
                             children: [
-                              provider.receiptResponseModel!.data
-                                          .paymentMethod ==
+                              provider.receiptResponseModel!.data!.paymentMethod.toString() ==
                                       "1"
                                   ? SvgPicture.asset(
                                       cashIconSvg,
@@ -295,8 +293,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                       width: 30,
                                       fit: BoxFit.fill,
                                     )
-                                  : provider.receiptResponseModel!.data
-                                              .paymentMethod ==
+                                  : provider.receiptResponseModel!.data!.paymentMethod.toString() ==
                                           "2"
                                       ? SvgPicture.asset(
                                           creditIcon,
@@ -305,7 +302,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                           fit: BoxFit.fill,
                                         )
                                       : provider.receiptResponseModel!.data
-                                                  .paymentMethod ==
+                                                  !.paymentMethod.toString() ==
                                               "3"
                                           ? SvgPicture.asset(
                                               googleIconSvg,
@@ -324,15 +321,15 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               ),
                               CommonText(
                                 text: provider.receiptResponseModel!.data
-                                            .paymentMethod ==
+                                            !.paymentMethod.toString() ==
                                         "1"
                                     ? appLoc.cash
                                     : provider.receiptResponseModel!.data
-                                                .paymentMethod ==
+                                                !.paymentMethod.toString() ==
                                             "2"
                                         ? "Credit Card"
                                         : provider.receiptResponseModel!.data
-                                                    .paymentMethod ==
+                                                    !.paymentMethod.toString() ==
                                                 "3"
                                             ? "Google Pay"
                                             : "Online",
@@ -374,7 +371,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                 firstText: "Total amount to pay ",
                                 secondText: r"CA$ " +
                                     convertToFixedTwoDecimal(provider
-                                        .receiptResponseModel!.data.newTotal)),
+                                        .receiptResponseModel!.data!.newTotal)),
                           ],
                         ),
                       ),
@@ -397,79 +394,75 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                   distanceTravelled: ((provider
                                                   .receiptResponseModel!
                                                   .data
-                                                  .distance1 ==
+                                                  !.distance1 ==
                                               null) ||
                                           (provider.receiptResponseModel!.data
-                                                  .distance1
+                                                  !.distance1
                                                   .toString() ==
                                               "0.0") ||
                                           (provider.receiptResponseModel!.data
-                                                  .distance1 ==
+                                                  !.distance1 ==
                                               ""))
                                       ? 0
                                       : provider
-                                          .receiptResponseModel!.data.distance1
+                                          .receiptResponseModel!.data!.distance1
                                           .toString(),
                                   pricePerKm: "",
                                   pricePerMin: "",
                                   extraTime: provider.receiptResponseModel!.data
-                                          .extraTime ??
+                                          !.extraTime ??
                                       "",
 
                                   extraTimePrice: provider
-                                      .receiptResponseModel!.data.extraTimePrice
+                                      .receiptResponseModel!.data!.extraTimePrice
                                       .toString(),
                                   newTotal: provider
-                                      .receiptResponseModel!.data.newTotal
+                                      .receiptResponseModel!.data!.newTotal
                                       .toString(),
                                   pendingAmount: provider
-                                      .receiptResponseModel!.data.pendingAmount
+                                      .receiptResponseModel!.data!.pendingAmount
                                       .toString(),
                                   distance: provider
-                                      .receiptResponseModel!.data.distance
+                                      .receiptResponseModel!.data!.distance
                                       .toString(),
                                   vehicleCategory: 1.toString(),
-                                  name: provider
-                                      .driverDetailResponseModel!.message.name,
+                                  name: provider.driverDetailResponseModel!.message.name,
                                   img:
-                                      provider.receiptResponseModel!.data.image,
+                                      provider.receiptResponseModel!.data!.image??"",
                                   carModal: provider.driverDetailResponseModel!
                                       .message.carModel,
                                   carNo: provider.driverDetailResponseModel!
                                       .message.plateNumber,
-                                  totalPrice:
-                                      provider.receiptResponseModel!.data.total,
+                                  totalPrice: provider.receiptResponseModel!.data!.total,
                                   paymentMode: int.parse(provider
-                                      .receiptResponseModel!.data.paymentMethod
+                                      .receiptResponseModel!.data!.paymentMethod
                                       .toString()),
                                   driverId: provider
                                       .driverDetailResponseModel!.message.id
                                       .toString(),
                                   orderId: provider
-                                      .receiptResponseModel!.data.id
+                                      .receiptResponseModel!.data!.id
                                       .toString(),
                                   extraDistance: provider
-                                      .receiptResponseModel!.data.extraDistance,
+                                      .receiptResponseModel!.data!.extraDistance,
                                   extraDistancePrice: provider
                                       .receiptResponseModel!
                                       .data
-                                      .extraDistancePrice,
+                                      !.extraDistancePrice,
 
                                   timeTaken: provider.receiptResponseModel!.data
-                                              .actualTime
+                                              !.actualTime
                                               .toString() ==
                                           "0.0"
                                       ? "0"
                                       : provider.receiptResponseModel!.data
-                                          .actualTime,
+                                          !.actualTime,
                                   // provider
                                   //     .receiptResponseModel!.data.actualTime,
                                   baseFare: provider
-                                      .receiptResponseModel!.data.baseFare,
-                                  techFee: provider
-                                      .receiptResponseModel!.data.techFee,
-                                  minimumFare: provider
-                                      .receiptResponseModel!.data.minimumFare,
+                                      .receiptResponseModel!.data!.baseFare,
+                                  techFee: provider.receiptResponseModel!.data!.techFee,
+                                  minimumFare: provider.receiptResponseModel!.data!.minimumFare,
                                   // extraMinPrice:
                                   //     provider.receiptResponseModel!.extraKmPrice,
                                   // extraTime: provider.receiptResponseModel!.extraTime,
