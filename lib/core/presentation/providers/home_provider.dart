@@ -466,8 +466,7 @@ class HomeProvider with ChangeNotifier {
 
 // Show marker on Map according to latlong and addresstype
   displayResult(LatLng latlng, String address, AddressType addressType) async {
-    final MarkerId markerId =
-        MarkerId(addressType == AddressType.origin ? "origin" : "destination");
+    final MarkerId markerId = MarkerId(addressType == AddressType.origin ? "origin" : "destination");
     try {
       final Marker marker = Marker(
         anchor: const Offset(0.5, 0.5),
