@@ -338,7 +338,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                     TextInRow(
                       firstText: 'Total Distance',
-                      secondText: "${widget.distanceTravelled} Km",
+                      secondText: "${double.parse(widget.distanceTravelled).toStringAsFixed(2)} Km",
                     ),
                     Divider(
                       color: whiteAccentColor,

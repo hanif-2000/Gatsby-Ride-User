@@ -503,7 +503,6 @@ class HomeProvider with ChangeNotifier {
         destinationIsFilled = true;
         setPolylinesDirection(originLatLng, destinationLatLng);
       }
-
       markers[markerId] = marker;
       List<Marker> listMarker = [];
       markers.forEach((k, v) => listMarker.add(v));
@@ -517,8 +516,7 @@ class HomeProvider with ChangeNotifier {
 
   Future<void> setPolylinesDirection(LatLng origin, LatLng destination) async {
     polylines.clear();
-    await DirectionHelper()
-        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
+    await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude,
             destination.latitude, destination.longitude)
         .then((result) async {
       if (result.isNotEmpty) {

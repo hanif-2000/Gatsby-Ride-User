@@ -60,9 +60,6 @@ Future<void> main() async {
             ChangeNotifierProvider<HomeProvider>(
               create: (context) => locator<HomeProvider>(),
             ),
-            // ChangeNotifierProvider<OrderProvider>(
-            //   create: (context) => locator<OrderProvider>(),
-            // ),
             ChangeNotifierProvider<PlacePickerProvider>(
               create: (context) => locator<PlacePickerProvider>(),
             ),
@@ -102,25 +99,18 @@ Future<void> main() async {
             ChangeNotifierProvider<LoginProvider>(
               create: (context) => locator<LoginProvider>(),
             ),
-            // ChangeNotifierProvider<SocketProvider>(
-            //   create: (context) => locator<SocketProvider>(),
-            // ),
+
             ChangeNotifierProvider<PaymentProvider>(
               create: (context) => locator<PaymentProvider>(),
             ),
             ChangeNotifierProvider<TestSocketProvider>(
               create: (context) => locator<TestSocketProvider>(),
             ),
-            // ChangeNotifierProvider<LatestSocketProvider>(
-            //   create: (context) => LatestSocketProvider(),
-            // ),
+
             ChangeNotifierProvider<LogOutProvider>(
               create: (context) => locator<LogOutProvider>(),
             ),
 
-            // ChangeNotifierProvider<SocketProvider>(
-            //   create: (context) => SocketProvider(),
-            // ),
           ],
           builder: (context, _) => const MyApp(),
         ),

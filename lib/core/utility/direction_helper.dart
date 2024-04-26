@@ -10,8 +10,7 @@ class DirectionHelper {
   final client = http.Client();
   final googleApiKey = GOOGLEMAPKEY;
 
-  Future<List<PointLatLng>> getRouteBetweenCoordinates(double originLat,
-      double originLong, double destLat, double destLong) async {
+  Future<List<PointLatLng>> getRouteBetweenCoordinates(double originLat, double originLong, double destLat, double destLong) async {
     List<PointLatLng> polylinePoints = [];
     String url = "https://maps.googleapis.com/maps/api/directions/json?origin=$originLat,$originLong&destination=$destLat,$destLong&mode=driving&avoid=tolls&key=$googleApiKey";
 

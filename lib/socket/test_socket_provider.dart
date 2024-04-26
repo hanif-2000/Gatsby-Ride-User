@@ -537,6 +537,7 @@ class TestSocketProvider extends ChangeNotifier {
     if (listenLocation && session.isRunningOrder) {
       if ((isWithDriver) || (currentOrderStatus == 5) || (currentOrderStatus == 7) || (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
+        log("driver:- destination LatLng. $destinationLatLng");
         setPolylinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
       } else {
         log("driver:-  is not with driver. $isWithDriver");
@@ -571,48 +572,6 @@ class TestSocketProvider extends ChangeNotifier {
     )));
     notifyListeners();
   }
-
-// Set polylines Direction
-  // setPolylinesDirection(LatLng origin, LatLng destination) async {
-  //   polylines.clear();
-  //   log("polyline///  --Driver co:" +
-  //       origin.latitude.toString() +
-  //       "," +
-  //       origin.longitude.toString());
-  //   log("polyline/// destination co:" +
-  //       destination.latitude.toString() +
-  //       "," +
-  //       destination.longitude.toString());
-
-  //   await DirectionHelper()
-  //       .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
-  //           destination.latitude, destination.longitude)
-  //       .then((result) {
-  //     log("Polyline results are ::::::::--------------  ${result} ------------********");
-  //     if (result.isNotEmpty) {
-  //       polylineCoordinates = [];
-  //       // polylineCoordinates.clear();
-  //       for (var point in result) {
-  //         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-  //       }
-
-  //       Polyline polyline = Polyline(
-  //           polylineId: const PolylineId("jalur"),
-  //           color: Colors.black,
-  //           points: polylineCoordinates,
-  //           width: 6,
-  //           startCap: Cap.roundCap,
-  //           endCap: Cap.roundCap);
-
-  //       polylines.add(polyline);
-
-  //       log("Polylines are:-->> " + polylines.toString());
-  //       notifyListeners();
-  //     } else {
-  //       log("direction helper result is empty********** $result");
-  //     }
-  //   });
-  // }
 
   setPolylinesDirection(LatLng origin, LatLng destination) async {
     log("polyline///  --Driver co:" +
@@ -1080,19 +1039,14 @@ class TestSocketProvider extends ChangeNotifier {
                   .split(',')
                   .last))!),
           destination: LatLng(
-              (double.tryParse(orderDetailResponseModel!.data.endCoordinate
-                  .split(',')
-                  .first)!),
-              (double.tryParse(orderDetailResponseModel!.data.endCoordinate
-                  .split(',')
-                  .last))!));
+              (double.tryParse(orderDetailResponseModel!.data.endCoordinate.split(',').first)!),
+              (double.tryParse(orderDetailResponseModel!.data.endCoordinate.split(',').last))!));
     } else {
       log("order details response model is empty");
     }
   }
 
-  updateOriginAndDestinationLatLong(
-      {required LatLng origin, required LatLng destination}) {
+  updateOriginAndDestinationLatLong({required LatLng origin, required LatLng destination}) {
     originLatLng = origin;
     destinationLatLng = destination;
     notifyListeners();
