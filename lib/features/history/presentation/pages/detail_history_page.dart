@@ -29,9 +29,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
   var extraTimeTaken = "0 hr 0 Min 0 Sec";
 
   convertSecondsToMinutes() {
-    if (widget.item.extraTime != '') {
-      int seconds = int.parse(widget.item.extraTime.toStringAsFixed(
-          0)); // Replace this with your desired number of seconds
+    if (widget.item.actual_time!= '') {
+      int seconds = int.parse(widget.item.extraTime.toStringAsFixed(0)); // Replace this with your desired number of seconds
 
       int minutes = seconds ~/ 60;
       int remainingSeconds = seconds % 60;
@@ -40,8 +39,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
       int remainingMinutes = minutes % 60;
 
       print('$seconds seconds is equivalent to:');
-      print(
-          '$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
+      print('$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
 
       setState(() {
         extraTimeTaken = "$hours"
@@ -53,6 +51,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
       });
     } else {}
   }
+
 
   @override
   void initState() {
@@ -216,44 +215,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       },
                     ),
 
-                    //  GoogleMap(
-                    //   //given camera position
-                    //   initialCameraPosition: CameraPosition(
-                    //     target: LatLng(
-                    //       provider.originLat,
-                    //       provider.originLang,
-                    //     ),
-                    //     zoom: 15,
-                    //   ),
-                    //   mapType: MapType.normal,
-                    //   markers: provider.markers,
-                    //   // on below line we have enabled location
-                    //   myLocationEnabled: false,
-                    //   myLocationButtonEnabled: false,
-                    //   // on below line we have enabled compass location
-                    //   compassEnabled: true,
-                    //   // on below line we have added polylines
-                    //   polylines: provider.polyline,
-                    //   // displayed google map
-                    //   onMapCreated: (GoogleMapController controller) async {
-                    //     provider.controller.complete(controller);
-
-                    //     // final pickup = LatLng(
-                    //     //     double.tryParse(
-                    //     //         widget.item.startCoordinate!.split(',').first)!,
-                    //     //     double.tryParse(
-                    //     //         widget.item.startCoordinate!.split(',').last)!);
-                    //     // final drop = LatLng(
-                    //     //     double.tryParse(
-                    //     //         widget.item.endCoordinate!.split(',').first)!,
-                    //     //     double.tryParse(
-                    //     //         widget.item.endCoordinate!.split(',').last)!);
-
-                    //     // await provider.createPickupAndDropMarker(pickup, drop);
-
-                    //     // await provider.setPolylineDirection(pickup, drop);
-                    //   },
-                    // ),
                   ),
 
                   /** 
@@ -607,6 +568,29 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                const Text("Cab Type",
+                                                    style: TextStyle(
+                                                        fontFamily: 'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergeTypeTaxi(
+                                                    widget.item.category,
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            /** Current ride payment **/
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
                                             //Distance
                                             Row(
                                               mainAxisAlignment:
@@ -615,7 +599,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Text(appLoc.distance,
+                                                Text("Total Distance",
                                                     style: const TextStyle(
                                                         fontFamily:
                                                             'poPPinSemiBold',
@@ -634,7 +618,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             SizedBox(
                                               height: 8.0,
                                             ),
-                                            //Type of Taxi/Cab Type
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -642,15 +625,13 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                const Text("Cab Type",
-                                                    style: TextStyle(
+                                                Text("Total Time",
+                                                    style: const TextStyle(
                                                         fontFamily:
                                                             'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
-                                                  mergeTypeTaxi(
-                                                    widget.item.category,
-                                                  ),
+                                                  extraTimeTaken,
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
                                                     fontFamily: "Poppins",
@@ -658,76 +639,12 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                 )
                                               ],
                                             ),
-                                            /** Current ride payment **/
                                             SizedBox(
-                                              height: 6.0,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text("Current Ride Payment",
-                                                    style: const TextStyle(
-                                                        fontFamily:
-                                                            'poPPinSemiBold',
-                                                        fontSize: 16)),
-                                                Text(
-                                                  mergePriceTxt(double.parse(
-                                                          widget.item.total
-                                                              .toString())
-                                                      .toStringAsFixed(2)),
-                                                  // mergePriceTxt(widget.item.tip ==
-                                                  //         null
-                                                  //     ? "0.0"
-                                                  //     : widget.item.tip.toString()),
-                                                  style: const TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontFamily: "Poppins",
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-/** Pending/Previous ride payment **/
-                                            SizedBox(
-                                              height: 6.0,
+                                              height: 8.0,
                                             ),
 
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text("Pending Ride Payment",
-                                                    style: const TextStyle(
-                                                        fontFamily:
-                                                            'poPPinSemiBold',
-                                                        fontSize: 16)),
-                                                Text(
-                                                  mergePriceTxt(widget
-                                                      .item.pendingAmount),
-                                                  // mergePriceTxt(widget.item.tip ==
-                                                  //         null
-                                                  //     ? "0.0"
-                                                  //     : widget.item.tip.toString()),
-                                                  style: const TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontFamily: "Poppins",
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
 
-//etxra timne
-                                            SizedBox(
-                                              height: 6.0,
-                                            ),
-
-                                            Row(
+                                       /*     Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
@@ -784,7 +701,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             SizedBox(
                                               height: 6.0,
                                             ),
-
+*/
                                             // PriceTile(
                                             //   title: 'Extra Time Taken',
                                             //   value: ((order!.extraTimeTaken !=
@@ -796,7 +713,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             // ),
 
 // extra time price
-
+/*
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -864,8 +781,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             ),
                                             SizedBox(
                                               height: 6.0,
-                                            ),
-                                            Row(
+                                            ),*/
+                                        /*    Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
@@ -897,7 +814,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   ),
                                                 ),
                                               ],
-                                            ),
+                                            ),*/
 
                                             // Row(
                                             //   mainAxisAlignment:
@@ -918,6 +835,148 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             //     ),
                                             //   ],
                                             // ),
+
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Minimum fare",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(
+                                                      widget.item.minimum_fare == null
+                                                          ? "0.0"
+                                                          : widget.item.minimum_fare
+                                                              .toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Base fare",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(
+                                                      widget.item.base_fare == null
+                                                          ? "0.0"
+                                                          : widget.item.base_fare
+                                                              .toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Tech Fee",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(
+                                                      widget.item.tech_fee == null
+                                                          ? "0.0"
+                                                          : widget.item.tech_fee
+                                                              .toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+                                            //TCurrent Ride Payment
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Current Ride Payment",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                        'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(double.parse(
+                                                      widget.item.newTotal
+                                                          .toString())
+                                                      .toStringAsFixed(2)),
+                                                  // mergePriceTxt(widget.item.tip ==
+                                                  //         null
+                                                  //     ? "0.0"
+                                                  //     : widget.item.tip.toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            /** Pending/Previous ride payment **/
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Pending Ride Payment",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                        'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(widget.item.pendingAmount),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+//etxra timne
                                             SizedBox(
                                               height: 6.0,
                                             ),
@@ -945,6 +1004,9 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   ),
                                                 ),
                                               ],
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
                                             ),
                                           ],
                                         ),

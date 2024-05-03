@@ -31,7 +31,6 @@ class PaymentScreen extends StatefulWidget {
   final int paymentMode;
   final String orderId;
   final String driverId;
-  // final dynamic grandTotal;
   final String vehicleCategory;
   final dynamic pendingAmount;
   final dynamic newTotal;
@@ -283,7 +282,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     log("total amount to pay:-->> ${widget.totalPrice}");
     log("total amount to pay:-->> ${totalAmountToPay}");
     log("new amount to pay:-->> ${widget.newTotal}");
-    log("vehicle catagory is :-->> ${widget.vehicleCategory}");
+    log("vehicle category is :-->> ${widget.vehicleCategory}");
 
     var _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -338,7 +337,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                     TextInRow(
                       firstText: 'Total Distance',
-                      secondText: "${double.parse(widget.distanceTravelled).toStringAsFixed(2)} Km",
+                      secondText: "${double.parse(widget.distanceTravelled.toString()).toStringAsFixed(2)} Km",
                     ),
                     Divider(
                       color: whiteAccentColor,

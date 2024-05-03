@@ -2,6 +2,7 @@
 //
 //     final historyResponseModel = historyResponseModelFromJson(jsonString);
 
+import 'dart:async';
 import 'dart:convert';
 
 HistoryResponseModel historyResponseModelFromJson(String str) =>
@@ -57,6 +58,11 @@ class HistoryOrder {
   dynamic pendingAmount;
   dynamic newTotal;
   dynamic paymentStatus;
+  dynamic minimum_fare;
+  dynamic actual_time;
+  dynamic base_fare;
+  dynamic tech_fee;
+
 
   DateTime orderTime;
   dynamic tip;
@@ -101,11 +107,19 @@ class HistoryOrder {
     required this.ratingList,
     required this.grandTotal,
     required this.paymentStatus,
+    this.minimum_fare,
+    this.actual_time,
+    this.base_fare,
+    this.tech_fee,
   });
 
   factory HistoryOrder.fromJson(Map<String, dynamic> json) => HistoryOrder(
         id: json["id"] ?? '',
         driverId: json["driver_id"] ?? "",
+        actual_time: json["actual_time"] ?? 0.0,
+        minimum_fare: json["minimum_fare"] ?? 0.0,
+         tech_fee: json["tech_fee"] ?? 0.0,
+        base_fare: json["base_fare"] ?? 0.0,
         driverName: json["driver_name"] ?? "",
         image: json["image"] ?? '',
         plateNumber: json["plate_number"] ?? '',

@@ -74,6 +74,7 @@ class ReceiptData {
   dynamic techFee;
   dynamic minimumFare;
   dynamic distance1;
+  dynamic actual_distance;
 
   ReceiptData({
     this.id,
@@ -106,6 +107,7 @@ class ReceiptData {
     this.minimumFare,
     this.techFee,
     this.distance1,
+    this.actual_distance
   });
 
   factory ReceiptData.fromJson(Map<String, dynamic> json) => ReceiptData(
@@ -113,6 +115,7 @@ class ReceiptData {
         startAddress: json["start_address"],
         endAddress: json["end_address"],
         distance: json["distance"],
+       actual_distance: json["actual_distance"],
         paymentMethod: json["payment_method"],
         estimatedTime: json["estimated_time"],
         actualTime: json["actual_time"],
@@ -157,6 +160,7 @@ class ReceiptData {
         "insurance_number": insuranceNumber,
         "name": name,
         "image": image,
+        "actual_distance": actual_distance,
         "Longitude": longitude,
         "Latitude": latitude,
         "phone": phone,

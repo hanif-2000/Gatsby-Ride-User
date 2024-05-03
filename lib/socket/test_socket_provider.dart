@@ -404,9 +404,8 @@ class TestSocketProvider extends ChangeNotifier {
         session.setOrderStatus = 7;
         currentOrderStatus = 7;
         updateCurrentOrderStatus(val: 7);
-
+        print(response);
         updateReceiptResponseModel(ReceiptResponseModel.fromJson(response));
-
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         // receiptData = ReceiptData.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
@@ -719,7 +718,7 @@ class TestSocketProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         dismissLoading();
-        log("--------******* ${response.statusCode}");
+        log("--------******* ${response.data}");
 
         log("response is :${response}");
         // If the server returns a 200 OK response, parse the JSON
@@ -903,7 +902,6 @@ class TestSocketProvider extends ChangeNotifier {
     );
   }
 
-  @override
   Future<SubmitRatingsResponseModel> submitRatings(FormData formData) async {
     String url = 'https://api.gatsbyrideshare.com/api/webservice/order/rating';
     dio.options.headers["Authorization"] = "Bearer ${session.sessionToken}";
