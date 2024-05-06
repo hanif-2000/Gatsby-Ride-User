@@ -238,7 +238,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       ),
                       TextInRow(
                         firstText: appLoc.totalDistance,
-                        secondText: provider.receiptResponseModel!.data!.actual_distance??"0.0" + " Km",
+                        secondText: "${provider.receiptResponseModel!.data!.actual_distance??double.parse(provider.receiptResponseModel!.data!.distance1??"0.0").toStringAsFixed(2)} Km",
                       ),
                       TextInRow(
                         firstText: "Time Taken",
@@ -358,37 +358,14 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PaymentScreen(
-                                  distanceTravelled: ((provider.receiptResponseModel!.data!.distance1 ==
-                                              null) ||
-                                          (provider.receiptResponseModel!.data
-                                                  !.distance1
-                                                  .toString() ==
-                                              "0.0") ||
-                                          (provider.receiptResponseModel!.data
-                                                  !.distance1 ==
-                                              ""))
-                                      ? 0
-                                      : provider
-                                          .receiptResponseModel!.data!.distance1
-                                          .toString(),
+                                  distanceTravelled: provider.receiptResponseModel!.data!.actual_distance ?? provider.receiptResponseModel!.data!.distance1??"0.0",
                                   pricePerKm: "",
                                   pricePerMin: "",
-                                  extraTime: provider.receiptResponseModel!.data
-                                          !.extraTime ??
-                                      "",
-
-                                  extraTimePrice: provider
-                                      .receiptResponseModel!.data!.extraTimePrice
-                                      .toString(),
-                                  newTotal: provider
-                                      .receiptResponseModel!.data!.newTotal
-                                      .toString(),
-                                  pendingAmount: provider
-                                      .receiptResponseModel!.data!.pendingAmount
-                                      .toString(),
-                                  distance: provider
-                                      .receiptResponseModel!.data!.distance
-                                      .toString(),
+                                  extraTime: provider.receiptResponseModel!.data!.extraTime ?? "",
+                                  extraTimePrice: provider.receiptResponseModel!.data!.extraTimePrice.toString(),
+                                  newTotal: provider.receiptResponseModel!.data!.newTotal.toString(),
+                                  pendingAmount: provider.receiptResponseModel!.data!.pendingAmount.toString(),
+                                  distance: provider.receiptResponseModel!.data!.distance.toString(),
                                   vehicleCategory: 1.toString(),
                                   name: provider.driverDetailResponseModel!.message.name,
                                   img: provider.receiptResponseModel!.data!.image??"",
