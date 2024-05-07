@@ -62,6 +62,9 @@ class HistoryOrder {
   dynamic actual_time;
   dynamic base_fare;
   dynamic tech_fee;
+  dynamic price_km;
+  dynamic price_min;
+  dynamic price_per_min;
 
 
   DateTime orderTime;
@@ -111,6 +114,9 @@ class HistoryOrder {
     this.actual_time,
     this.base_fare,
     this.tech_fee,
+    this.price_km,
+    this.price_per_min,
+    this.price_min,
   });
 
   factory HistoryOrder.fromJson(Map<String, dynamic> json) => HistoryOrder(
@@ -123,7 +129,10 @@ class HistoryOrder {
         driverName: json["driver_name"] ?? "",
         image: json["image"] ?? '',
         plateNumber: json["plate_number"] ?? '',
+        price_min: json["price_min"] ?? '',
         rating: json["rating"] ?? 0,
+       price_km: json["price_km"] ?? 0,
+      price_per_min: json["price_per_min"] ?? 0,
         tip: json["tip"],
         startCoordinate: json["start_coordinate"] ?? '',
         endCoordinate: json["end_coordinate"] ?? "",
@@ -176,10 +185,12 @@ class HistoryOrder {
         "rating": rating,
         "start_coordinate": startCoordinate,
         "end_coordinate": endCoordinate,
+        "price_per_min": price_per_min,
         "start_address": startAddress,
         "end_address": endAddress,
         "distance": distance,
         "total": total,
+        "price_min": price_min,
         "pendingAmount": pendingAmount,
         "newTotal": newTotal,
         "grandTotal": grandTotal,
@@ -201,6 +212,7 @@ class CategoryClass {
   int id;
   String? category;
   double? priceKm;
+  double? price_min;
   int? techFee;
   double? baseFare;
   int? distance;
@@ -226,11 +238,13 @@ class CategoryClass {
     required this.createdAt,
     required this.updatedAt,
     required this.deletedAt,
+     this.price_min,
   });
 
   factory CategoryClass.fromJson(Map<String, dynamic> json) => CategoryClass(
         id: json["id"] ?? 0,
         category: json["category"] ?? '',
+        price_min: json["price_min"] ?? '',
         priceKm: json["price_km"]?.toDouble(),
         techFee: json["tech_fee"],
         baseFare: json["base_fare"]?.toDouble(),
@@ -248,6 +262,7 @@ class CategoryClass {
         "id": id,
         "category": category,
         "price_km": priceKm,
+        "price_min": price_min,
         "tech_fee": techFee,
         "base_fare": baseFare,
         "distance": distance,

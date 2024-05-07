@@ -75,6 +75,8 @@ class ReceiptData {
   dynamic minimumFare;
   dynamic distance1;
   dynamic actual_distance;
+  dynamic price_km;
+  dynamic price_min;
 
   ReceiptData({
     this.id,
@@ -107,7 +109,9 @@ class ReceiptData {
     this.minimumFare,
     this.techFee,
     this.distance1,
-    this.actual_distance
+    this.actual_distance,
+    this.price_km,
+    this.price_min
   });
 
   factory ReceiptData.fromJson(Map<String, dynamic> json) => ReceiptData(
@@ -126,6 +130,7 @@ class ReceiptData {
         minimumFare: json["min_fare"]??json["min_price"] ?? "0.0",
         pendingAmount: json["pending_amount"],
         driverId: json["driverID"],
+         price_km: json["price_km"],
         carModel: json["car_model"],
         insuranceNumber: json["insurance_number"],
         name: json["name"],
@@ -142,6 +147,7 @@ class ReceiptData {
         extraTimePrice: json["extra_time_price"],
         newTotal: json["new_total"] ?? '0',
         distance1: json["distance1"] ?? '0',
+         price_min: json["price_min"] ?? '0',
       );
 
   Map<String, dynamic> toJson() => {
@@ -155,6 +161,7 @@ class ReceiptData {
         "created_at": createdAt?.toIso8601String(),
         "total": total,
         "pending_amount": pendingAmount,
+        "price_km": price_km,
         "driverID": driverId,
         "car_model": carModel,
         "insurance_number": insuranceNumber,
@@ -163,6 +170,7 @@ class ReceiptData {
         "actual_distance": actual_distance,
         "Longitude": longitude,
         "Latitude": latitude,
+        "price_min": price_min,
         "phone": phone,
         "plate_number": plateNumber,
         "vehicle_name": vehicleName,

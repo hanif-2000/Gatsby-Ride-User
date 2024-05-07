@@ -359,8 +359,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               MaterialPageRoute(
                                 builder: (context) => PaymentScreen(
                                   distanceTravelled: provider.receiptResponseModel!.data!.actual_distance ?? provider.receiptResponseModel!.data!.distance1??"0.0",
-                                  pricePerKm: "",
-                                  pricePerMin: "",
+                                  pricePerKm: provider.receiptResponseModel!.data!.price_km,
+                                  pricePerMin: provider.receiptResponseModel!.data!.price_min,
                                   extraTime: provider.receiptResponseModel!.data!.extraTime ?? "",
                                   extraTimePrice: provider.receiptResponseModel!.data!.extraTimePrice.toString(),
                                   newTotal: provider.receiptResponseModel!.data!.newTotal.toString(),
@@ -377,14 +377,10 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                   orderId: provider.receiptResponseModel!.data!.id.toString(),
                                   extraDistance: provider.receiptResponseModel!.data!.extraDistance,
                                   extraDistancePrice: provider.receiptResponseModel!.data!.extraDistancePrice,
-                                  timeTaken: provider.receiptResponseModel!.data!.actualTime.toString() == "0.0"
-                                      ? "0"
-                                      : provider.receiptResponseModel!.data
-                                          !.actualTime,
+                                  timeTaken: provider.receiptResponseModel!.data!.actualTime.toString() == "0.0" ? "0" : provider.receiptResponseModel!.data!.actualTime,
                                   // provider
                                   //     .receiptResponseModel!.data.actualTime,
-                                  baseFare: provider
-                                      .receiptResponseModel!.data!.baseFare,
+                                  baseFare: provider.receiptResponseModel!.data!.baseFare,
                                   techFee: provider.receiptResponseModel!.data!.techFee,
                                   minimumFare: provider.receiptResponseModel!.data!.minimumFare,
                                   // extraMinPrice:

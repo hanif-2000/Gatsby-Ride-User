@@ -30,7 +30,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
 
   convertSecondsToMinutes() {
     if (widget.item.actual_time!= '') {
-      int seconds = int.parse(widget.item.extraTime.toStringAsFixed(0)); // Replace this with your desired number of seconds
+      int seconds = double.parse(widget.item.actual_time).toInt(); // Replace this with your desired number of seconds
 
       int minutes = seconds ~/ 60;
       int remainingSeconds = seconds % 60;
@@ -568,6 +568,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+                                            /**  Cab Type  **/
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -591,6 +592,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             SizedBox(
                                               height: 6.0,
                                             ),
+                                            /** Total Distance **/
                                             //Distance
                                             Row(
                                               mainAxisAlignment:
@@ -607,6 +609,33 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                 Text(
                                                   mergeDistanceTxt(
                                                     widget.item.distance!,
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 8.0,
+                                            ),
+                                            /** Total Distance **/
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Per Km Price",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergeDistanceTxt(
+                                                      widget.item.category.priceKm != null? widget.item.category.priceKm.toString():"0.0",
                                                   ),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
@@ -642,136 +671,22 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             SizedBox(
                                               height: 8.0,
                                             ),
-
-
-                                       /*     Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text("Extra Time Taken",
-                                                    style: const TextStyle(
-                                                        fontFamily:
-                                                            'poPPinSemiBold',
-                                                        fontSize: 16)),
-
-                                                Text(
-                                                  (((widget.item.extraTime) ==
-                                                              '') ||
-                                                          (widget.item
-                                                                  .extraTime) ==
-                                                              '0')
-                                                      ? "0 hr 0 min 0 sec"
-                                                      : '$extraTimeTaken',
-                                                  style: const TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontFamily: "Poppins",
-                                                  ),
-                                                )
-
-                                                // Text(
-                                                //   mergePriceTxt(
-                                                //       ((widget.item.extraTime !=
-                                                //                   '') ||
-                                                //               (widget.item
-                                                //                       .extraTime !=
-                                                //                   null) ||
-                                                //               (widget.item
-                                                //                       .extraTime !=
-                                                //                   '0'))
-                                                //           ? '${(int.parse(widget.item.extraTime!)) / 60} Min'
-                                                //           : '0 Min'
-
-                                                //       // widget
-                                                //       //     .item.pendingAmount
-                                                //       ),
-                                                //   // mergePriceTxt(widget.item.tip ==
-                                                //   //         null
-                                                //   //     ? "0.0"
-                                                //   //     : widget.item.tip.toString()),
-                                                //   style: const TextStyle(
-                                                //     fontSize: 16.0,
-                                                //     fontFamily: "poPPinMedium",
-                                                //   ),
-                                                // ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 6.0,
-                                            ),
-*/
-                                            // PriceTile(
-                                            //   title: 'Extra Time Taken',
-                                            //   value: ((order!.extraTimeTaken !=
-                                            //               '') ||
-                                            //           (order!.extraTimeTaken !=
-                                            //               null))
-                                            //       ? '${(int.parse(order!.extraTimeTaken)) / 60} Min'
-                                            //       : '0 Min',
-                                            // ),
-
-// extra time price
-/*
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
+                                              CrossAxisAlignment.center,
                                               children: [
-                                                Text("Extra Time Price",
+                                                Text("Per Minute Price",
                                                     style: const TextStyle(
                                                         fontFamily:
-                                                            'poPPinSemiBold',
+                                                        'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
-                                                  mergePriceTxt(((widget.item
-                                                                  .extraTimePrice ==
-                                                              '') ||
-                                                          (widget.item
-                                                                  .extraTimePrice ==
-                                                              '0'))
-                                                      ? "0"
-                                                      : widget.item
-                                                          .extraTimePrice!),
-                                                  // mergePriceTxt(widget.item.tip ==
-                                                  //         null
-                                                  //     ? "0.0"
-                                                  //     : widget.item.tip.toString()),
-                                                  style: const TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontFamily: "Poppins",
+                                                  mergePriceTxt(
+                                                    widget.item.category.price_min != null? "${widget.item.category.price_min??"0.0"}":"0.0",
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 6.0,
-                                            ),
-                                            //extra distance
-
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text("Extra Distance",
-                                                    style: const TextStyle(
-                                                        fontFamily:
-                                                            'poPPinSemiBold',
-                                                        fontSize: 16)),
-                                                Text(
-                                                  ((widget.item.extraDistance ==
-                                                              '') ||
-                                                          (widget.item
-                                                                  .extraDistance ==
-                                                              ''))
-                                                      ? '0 Km'
-                                                      : '${(widget.item.extraDistance)} Km',
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
                                                     fontFamily: "Poppins",
@@ -780,61 +695,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               ],
                                             ),
                                             SizedBox(
-                                              height: 6.0,
-                                            ),*/
-                                        /*    Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text("Extra Distance Price",
-                                                    style: const TextStyle(
-                                                        fontFamily:
-                                                            'poPPinSemiBold',
-                                                        fontSize: 16)),
-                                                Text(
-                                                  mergePriceTxt(((widget.item
-                                                                  .extraDistancePrice ==
-                                                              '') ||
-                                                          (widget.item
-                                                                  .extraDistancePrice ==
-                                                              '0'))
-                                                      ? '0 '
-                                                      : widget.item
-                                                          .extraDistancePrice!),
-                                                  // mergePriceTxt(widget.item.tip ==
-                                                  //         null
-                                                  //     ? "0.0"
-                                                  //     : widget.item.tip.toString()),
-                                                  style: const TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontFamily: "Poppins",
-                                                  ),
-                                                ),
-                                              ],
-                                            ),*/
-
-                                            // Row(
-                                            //   mainAxisAlignment:
-                                            //       MainAxisAlignment.spaceBetween,
-                                            //   crossAxisAlignment:
-                                            //       CrossAxisAlignment.center,
-                                            //   children: [
-                                            //     Text(appLoc.price,
-                                            //         style: const TextStyle(
-                                            //             fontFamily: 'poPPinSemiBold',
-                                            //             fontSize: 16)),
-                                            //     Text(
-                                            //       mergePriceTxt(widget.item.total!),
-                                            //       style: const TextStyle(
-                                            //         fontSize: 16.0,
-                                            //         fontFamily: "poPPinMedium",
-                                            //       ),
-                                            //     ),
-                                            //   ],
-                                            // ),
+                                              height: 8.0,
+                                            ),
 
                                             Row(
                                               mainAxisAlignment:
@@ -1099,37 +961,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       },
                     ),
                   ),
-                  // Text(
-                  //   appLoc.ratingGiven,
-                  //   style: TextStyle(
-                  //       fontSize: 16.0,
-                  //       fontFamily: 'poPPinMedium',
-                  //       color: grey7D7979Color),
-                  // ),
 
-                  // RatingWidget(
-                  //   ratingDate: "Date",
-                  //   rating: 5.0,
-                  //   review: "sdf",
-                  // ),
-                  // SizedBox(
-                  //   height: 10.0,
-                  // ),
-
-                  // //Rating Given by Driver  ---->>>> customer
-                  // Text(
-                  //   appLoc.ratingReceived,
-                  //   style: TextStyle(
-                  //       fontSize: 16.0,
-                  //       fontFamily: 'poPPinMedium',
-                  //       color: grey7D7979Color),
-                  // ),
-
-                  // RatingWidget(
-                  //   ratingDate: "Date",
-                  //   rating: 5.0,
-                  //   review: "sdf",
-                  // ),
                 ],
               ),
             ),
