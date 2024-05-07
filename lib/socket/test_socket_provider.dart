@@ -708,8 +708,7 @@ class TestSocketProvider extends ChangeNotifier {
 //   /** Get Order Details */
   Future<OrderDetailResponseModel> fetchOrderDetails(int id) async {
     log("fetch order details called");
-    final String apiUrl =
-        'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
+    final String apiUrl = 'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
 
     try {
       log("try called : ${apiUrl}");

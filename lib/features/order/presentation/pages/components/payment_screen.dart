@@ -539,17 +539,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ],
                             ),
                           ),
-
-                          // Container(
-                          //   padding: EdgeInsets.zero,
-                          //   width: _deviceSize.width * .3,
-                          //   child: CustomTextField(
-
-                          //     placeholder: '0.0',
-                          //     controller: tipsTextEditingController,
-                          //     fieldValidator: null,
-                          //   ),
-                          // )
                         ],
                       ),
                     )
