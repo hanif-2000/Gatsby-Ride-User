@@ -1051,9 +1051,6 @@ class TestSocketProvider extends ChangeNotifier {
 
 
 
-afsdfasdf
-
-
   callTrakingDriver(LatLng position) async {
     log("driver position is :${position}");
     await trackingDriver(
