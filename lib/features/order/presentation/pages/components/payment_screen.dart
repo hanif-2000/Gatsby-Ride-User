@@ -36,6 +36,8 @@ class PaymentScreen extends StatefulWidget {
   final dynamic newTotal;
 
   final dynamic extraDistancePrice;
+  final dynamic actualDistancePrice;
+
   final dynamic extraTimePrice;
   final dynamic extraDistance;
   final dynamic extraTime;
@@ -62,7 +64,7 @@ class PaymentScreen extends StatefulWidget {
       required this.extraTime,
       required this.extraDistancePrice,
       required this.extraTimePrice,
-      // required this.grandTotal,
+      required this.actualDistancePrice,
       required this.vehicleCategory,
       required this.distance,
       required this.pricePerKm,
@@ -122,7 +124,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   convertSecondsToMinutesTimeTaken() {
     log("extra  time rtaken :-->> ${widget.timeTaken}");
 
-    if (widget.timeTaken != '') {
+    if (widget.timeTaken != '' || widget.timeTaken != 0) {
       final seconds = double.parse(
           widget.timeTaken); // Replace this with your desired number of seconds
 
@@ -286,6 +288,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     log("total amount to pay:-->> ${totalAmountToPay}");
     log("new amount to pay:-->> ${widget.newTotal}");
     log("vehicle category is :-->> ${widget.vehicleCategory}");
+    log("actual distance priceis :-->> ${widget.actualDistancePrice}");
 
     var _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -323,7 +326,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     EdgeInsets.only(top: 13, bottom: 13, left: 11, right: 11),
                 child: Column(
                   children: [
-
                     TextInRow(
                       firstText: 'Total Distance',
                       secondText:
@@ -332,7 +334,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Divider(
                       color: whiteAccentColor,
                     ),
-
                     TextInRow(
                       firstText: 'Extra Distance',
                       // secondText: widget.extraDistance + " Km",
@@ -343,24 +344,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     TextInRow(
                       firstText: "Per Km Price ",
-                      secondText: r'CA$ ' +
-                          convertToFixedTwoDecimal(widget.pricePerKm),
+                      secondText:
+                          r'CA$ ' + convertToFixedTwoDecimal(widget.pricePerKm),
                     ),
                     Divider(
                       color: whiteAccentColor,
                     ),
                     TextInRow(
                       firstText: "Total Distance Price ",
-                      secondText: r'CA$ ' + convertToFixedTwoDecimal(widget.extraDistancePrice),
+                      secondText: r'CA$ ' +
+                          convertToFixedTwoDecimal(widget.actualDistancePrice),
                     ),
                     Divider(
                       color: whiteAccentColor,
                     ),
-
                     TextInRow(
                         firstText: 'Total Time Taken',
                         // secondText: widget.extraDistance + " Km",
-                        secondText: extraTimeTaken
+                        secondText: totalTimeTaken
                         //  (widget.extraTime == '')
                         //     ? "0 Min"
                         //     : "${(int.parse(widget.extraTime)) / 60}" + " min",
@@ -368,7 +369,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Divider(
                       color: whiteAccentColor,
                     ),
-
                     TextInRow(
                         firstText: 'Extra Time',
                         // secondText: widget.extraDistance + " Km",
@@ -389,7 +389,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               convertToFixedTwoDecimal(widget.pricePerMin)
                           : r'CA$ 0',
                     ),
-
                     Divider(
                       color: whiteAccentColor,
                     ),
@@ -402,11 +401,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               convertToFixedTwoDecimal(widget.extraTimePrice)
                           : r'CA$ 0',
                     ),
-
                     Divider(
                       color: whiteAccentColor,
                     ),
-
                     TextInRow(
                       firstText: 'Minimum Fare',
                       secondText: 'CA\$ ' +
@@ -431,7 +428,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Divider(
                       color: whiteAccentColor,
                     ),
-
                     TextInRow(
                       secondTextweight: FontWeight.w700,
                       titleFontWeight: FontWeight.w700,
@@ -484,7 +480,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                             ),
                           ),
-
                           Container(
                             height: 30,
                             width: _deviceSize.width * .3,
