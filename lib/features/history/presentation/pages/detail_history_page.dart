@@ -29,8 +29,9 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
   var extraTimeTaken = "0 hr 0 Min 0 Sec";
 
   convertSecondsToMinutes() {
-    if (widget.item.actual_time!= '') {
-      int seconds = double.parse(widget.item.actual_time).toInt(); // Replace this with your desired number of seconds
+    if (widget.item.actual_time != '') {
+      int seconds = double.parse(widget.item.actual_time)
+          .toInt(); // Replace this with your desired number of seconds
 
       int minutes = seconds ~/ 60;
       int remainingSeconds = seconds % 60;
@@ -39,7 +40,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
       int remainingMinutes = minutes % 60;
 
       print('$seconds seconds is equivalent to:');
-      print('$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
+      print(
+          '$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
 
       setState(() {
         extraTimeTaken = "$hours"
@@ -51,7 +53,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
       });
     } else {}
   }
-
 
   @override
   void initState() {
@@ -214,7 +215,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                         await provider.setPolylineDirection(pickup, drop);
                       },
                     ),
-
                   ),
 
                   /** 
@@ -540,7 +540,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       ? Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
                           child: Container(
-                            height: _deviceSize.height * .45,
+                            height: _deviceSize.height * .6,
                             color: whiteColor,
                             child: LayoutBuilder(
                               builder: (context, constraints) {
@@ -570,12 +570,16 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           children: [
                                             /**  Cab Type  **/
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 const Text("Cab Type",
                                                     style: TextStyle(
-                                                        fontFamily: 'poPPinSemiBold',
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
                                                   mergeTypeTaxi(
@@ -635,7 +639,13 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                         fontSize: 16)),
                                                 Text(
                                                   mergeDistanceTxt(
-                                                      widget.item.category.priceKm != null? widget.item.category.priceKm.toString():"0.0",
+                                                    widget.item.category
+                                                                .priceKm !=
+                                                            null
+                                                        ? widget.item.category
+                                                            .priceKm
+                                                            .toString()
+                                                        : "0.0",
                                                   ),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
@@ -673,19 +683,23 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             ),
                                             Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 Text("Per Minute Price",
                                                     style: const TextStyle(
                                                         fontFamily:
-                                                        'poPPinSemiBold',
+                                                            'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
                                                   mergePriceTxt(
-                                                    widget.item.category.price_min != null? "${widget.item.category.price_min??"0.0"}":"0.0",
+                                                    widget.item.category
+                                                                .price_min !=
+                                                            null
+                                                        ? "${widget.item.category.price_min ?? "0.0"}"
+                                                        : "0.0",
                                                   ),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
@@ -711,11 +725,12 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                             'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
-                                                  mergePriceTxt(
-                                                      widget.item.minimum_fare == null
-                                                          ? "0.0"
-                                                          : widget.item.minimum_fare
-                                                              .toString()),
+                                                  mergePriceTxt(widget.item
+                                                              .minimum_fare ==
+                                                          null
+                                                      ? "0.0"
+                                                      : widget.item.minimum_fare
+                                                          .toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
                                                     fontFamily: "Poppins",
@@ -739,11 +754,12 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                             'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
-                                                  mergePriceTxt(
-                                                      widget.item.base_fare == null
-                                                          ? "0.0"
-                                                          : widget.item.base_fare
-                                                              .toString()),
+                                                  mergePriceTxt(widget
+                                                              .item.base_fare ==
+                                                          null
+                                                      ? "0.0"
+                                                      : widget.item.base_fare
+                                                          .toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
                                                     fontFamily: "Poppins",
@@ -768,7 +784,8 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                         fontSize: 16)),
                                                 Text(
                                                   mergePriceTxt(
-                                                      widget.item.tech_fee == null
+                                                      widget.item.tech_fee ==
+                                                              null
                                                           ? "0.0"
                                                           : widget.item.tech_fee
                                                               .toString()),
@@ -785,20 +802,20 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                             //TCurrent Ride Payment
                                             Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 Text("Current Ride Payment",
                                                     style: const TextStyle(
                                                         fontFamily:
-                                                        'poPPinSemiBold',
+                                                            'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
                                                   mergePriceTxt(double.parse(
-                                                      widget.item.newTotal
-                                                          .toString())
+                                                          widget.item.newTotal
+                                                              .toString())
                                                       .toStringAsFixed(2)),
                                                   // mergePriceTxt(widget.item.tip ==
                                                   //         null
@@ -818,18 +835,19 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
 
                                             Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 Text("Pending Ride Payment",
                                                     style: const TextStyle(
                                                         fontFamily:
-                                                        'poPPinSemiBold',
+                                                            'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
-                                                  mergePriceTxt(widget.item.pendingAmount),
+                                                  mergePriceTxt(widget
+                                                      .item.pendingAmount),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
                                                     fontFamily: "Poppins",
@@ -961,7 +979,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       },
                     ),
                   ),
-
                 ],
               ),
             ),

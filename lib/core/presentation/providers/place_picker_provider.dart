@@ -79,7 +79,8 @@ class PlacePickerProvider with ChangeNotifier {
 
     addressSelected = isSearch ? originTextToShow : val;
     isCurrentLoading = false;
-    destinationLatLng = LatLng(cameraPosition!.target.latitude, cameraPosition!.target.longitude);
+    destinationLatLng = LatLng(
+        cameraPosition!.target.latitude, cameraPosition!.target.longitude);
     destinationName = addressSelected;
     placeDataDestination = {
       'pickUpCoordinate': destinationLatLng,

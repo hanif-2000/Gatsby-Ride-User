@@ -136,32 +136,24 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
               ],
             ),
           ),
-          Flexible(
-            flex: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      widget.category,
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      widget.platerNumber,
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                widget.category,
+                style: const TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
                 ),
-              ],
-            ),
+              ),
+              Text(
+                widget.platerNumber,
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           )
         ],
       );

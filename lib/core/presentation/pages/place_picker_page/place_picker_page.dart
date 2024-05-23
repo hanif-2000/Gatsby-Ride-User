@@ -50,7 +50,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: kToolbarHeight * 1.63,
+        top: kToolbarHeight * 2.1,
         left: screenWidth * 0.055,
         right: screenWidth * 0.055,
         child: Material(
