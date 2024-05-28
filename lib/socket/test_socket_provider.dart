@@ -88,6 +88,7 @@ class TestSocketProvider extends ChangeNotifier {
     orderDetailResponseModel = data;
     notifyListeners();
   }
+
   updateZoom(CameraPosition val) {
     zoom = val.zoom;
     notifyListeners();
@@ -100,11 +101,12 @@ class TestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateBearing({val,}) {
+  updateBearing({
+    val,
+  }) {
     bearing = val;
     notifyListeners();
   }
-
 
   double _driverLat = 0.0;
   double _driverLng = 0.0;
@@ -128,9 +130,9 @@ class TestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateReceiptResponseModel(data,{bool addData=false}) async {
+  Future<void> updateReceiptResponseModel(data, {bool addData = false}) async {
     receiptResponseModel = data;
-    if(addData){
+    if (addData) {
       receiptResponseModel?.data = receiptResponseModel!.order;
     }
     notifyListeners();
@@ -174,7 +176,8 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   /** update driver details model */
-  Future<void> updateDriverDetailsModel({required DriverDetailResponseModel data}) async {
+  Future<void> updateDriverDetailsModel(
+      {required DriverDetailResponseModel data}) async {
     driverDetailResponseModel = data;
     notifyListeners();
   }
@@ -233,7 +236,6 @@ class TestSocketProvider extends ChangeNotifier {
       log('-----Event  ${response.toString()}');
       print('-----Event  ${response.toString()}');
 
-
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'CustomerBookRequest') {
         bookingDataModel = BookingDataModel.fromJson(response);
@@ -255,12 +257,25 @@ class TestSocketProvider extends ChangeNotifier {
       if (response['type'] == 'UpdatedLatLong') {
         log(response['type']);
         log("****************************      DRIVER UPDATED THE LAT LNG *************************");
-        driverUpdatedPositionModel = DriverUpdatedPositionModel.fromJson(response);
-        updateDriverLatLng(driverLtLng: LatLng(driverUpdatedPositionModel!.latitude, driverUpdatedPositionModel!.latitude));
-        session.setDriverLatLong = "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
+        driverUpdatedPositionModel =
+            DriverUpdatedPositionModel.fromJson(response);
+        updateDriverLatLng(
+            driverLtLng: LatLng(driverUpdatedPositionModel!.latitude,
+                driverUpdatedPositionModel!.latitude));
+        session.setDriverLatLong =
+            "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
         notifyListeners();
-        updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,);
-        if(session.isRunningOrder){
+        updateBearing(
+          val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,
+        );
+
+        if (driverUpdatedPositionModel!.status == 3 ||
+            driverUpdatedPositionModel!.status == 5) {
+          updateIsWithDriver(val: true);
+          isWithDriver = true;
+          notifyListeners();
+        }
+        if (session.isRunningOrder) {
           await trackingDriver(
               listenLocation: true,
               lat: driverUpdatedPositionModel!.latitude,
@@ -326,8 +341,10 @@ class TestSocketProvider extends ChangeNotifier {
 
         session.setOriginAddress = acceptResponseModel!.data.startAddress;
         session.setDestinationAddress = acceptResponseModel!.data.endAddress;
-        session.setOriginLat = double.parse(acceptResponseModel!.data.startCoordinate.split(',').first);
-        session.setOriginLong = double.parse(acceptResponseModel!.data.startCoordinate.split(',').last);
+        session.setOriginLat = double.parse(
+            acceptResponseModel!.data.startCoordinate.split(',').first);
+        session.setOriginLong = double.parse(
+            acceptResponseModel!.data.startCoordinate.split(',').last);
 
         session.setDestinationLat = double.parse(
             acceptResponseModel!.data.endCoordinate.split(',').first);
@@ -335,6 +352,7 @@ class TestSocketProvider extends ChangeNotifier {
             acceptResponseModel!.data.endCoordinate.split(',').last);
 
         updateIsWithDriver(val: false);
+        isWithDriver = false;
 
         notifyListeners();
 
@@ -353,6 +371,7 @@ class TestSocketProvider extends ChangeNotifier {
 
         session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: false);
+        isWithDriver = false;
 
         session.setIsRunningOrder = true;
 
@@ -371,6 +390,7 @@ class TestSocketProvider extends ChangeNotifier {
         session.setOrderStatus = 3;
         session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: true);
+        isWithDriver = true;
         session.setIsRunningOrder = true;
 
         currentOrderStatus = 3;
@@ -390,6 +410,7 @@ class TestSocketProvider extends ChangeNotifier {
         session.setOrderStatus = 5;
         session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: true);
+        isWithDriver = true;
 
         currentOrderStatus = 5;
 
@@ -510,7 +531,11 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   // /**  Tracking Driver */
-  Future<void> trackingDriver({required bool listenLocation, required double lat, required double long, required double bearing}) async {
+  Future<void> trackingDriver(
+      {required bool listenLocation,
+      required double lat,
+      required double long,
+      required double bearing}) async {
     log("driver:- tracking driver called-->>>>>. ${lat} ${long}");
     log("driver:- is listenLocation :$listenLocation");
     updateDriverLatLng(driverLtLng: LatLng(lat, long));
@@ -526,15 +551,19 @@ class TestSocketProvider extends ChangeNotifier {
       markerId: markerId,
       position: LatLng(latDriver, lngDriver),
       icon: driverMarker,
-     // rotation: bearing - 180,
-     // infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
+      // rotation: bearing - 180,
+      // infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
       onTap: () {},
     );
     //googleMapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(latDriver, lngDriver), zoom,),
     //add to marker list
     markers[markerId] = marker;
     if (listenLocation && session.isRunningOrder) {
-      if ((isWithDriver) || (currentOrderStatus == 5) || (currentOrderStatus == 7) || (currentOrderStatus == 3)) {
+      logMe("is with driver called:-->> ${isWithDriver}");
+      if ((isWithDriver) ||
+          (currentOrderStatus == 5) ||
+          (currentOrderStatus == 7) ||
+          (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         log("driver:- destination LatLng. $destinationLatLng");
         setPolylinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
@@ -545,8 +574,7 @@ class TestSocketProvider extends ChangeNotifier {
         setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
       }
     }
-     animateToLocation(LatLng(latDriver, lngDriver));
-
+    animateToLocation(LatLng(latDriver, lngDriver));
   }
 
   // Save UserData to SharedPreferences
@@ -564,7 +592,8 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   Future<void> animateToLocation(LatLng position) async {
-    await googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    await googleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
       target: position,
       bearing: bearing,
       zoom: zoom,
@@ -582,7 +611,10 @@ class TestSocketProvider extends ChangeNotifier {
         "," +
         destination.longitude.toString());
 
-    DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then((result) {
+    DirectionHelper()
+        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
+            destination.latitude, destination.longitude)
+        .then((result) {
       log("Polyline results are ::::::::--------------  ${result} ------------********");
       if (result.isNotEmpty) {
         polylineCoordinates = [];
@@ -708,7 +740,8 @@ class TestSocketProvider extends ChangeNotifier {
 //   /** Get Order Details */
   Future<OrderDetailResponseModel> fetchOrderDetails(int id) async {
     log("fetch order details called");
-    final String apiUrl = 'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
+    final String apiUrl =
+        'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
 
     try {
       log("try called : ${apiUrl}");
@@ -721,8 +754,10 @@ class TestSocketProvider extends ChangeNotifier {
 
         log("response is :${response}");
         // If the server returns a 200 OK response, parse the JSON
-        OrderDetailResponseModel data = OrderDetailResponseModel.fromJson(response.data);
-        updateReceiptResponseModel(ReceiptResponseModel.fromJson(response.data),addData: true);
+        OrderDetailResponseModel data =
+            OrderDetailResponseModel.fromJson(response.data);
+        updateReceiptResponseModel(ReceiptResponseModel.fromJson(response.data),
+            addData: true);
         session.setOrderStatus = int.parse(data.data.orderStatus.toString());
 
         return data;
@@ -759,7 +794,8 @@ class TestSocketProvider extends ChangeNotifier {
         dismissLoading();
         log("driver details are:-->> ${response.data}");
         // If the server returns a 200 OK response, parse the JSON
-        DriverDetailResponseModel data = DriverDetailResponseModel.fromJson(response.data);
+        DriverDetailResponseModel data =
+            DriverDetailResponseModel.fromJson(response.data);
         return data;
       } else {
         // If the server did not return a 200 OK response, throw an exception.
@@ -989,8 +1025,10 @@ class TestSocketProvider extends ChangeNotifier {
         onTap: () {},
       );
 
-      googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(orderDataDetail.originLatLng.latitude, orderDataDetail.originLatLng.longitude),
+      googleMapController
+          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(orderDataDetail.originLatLng.latitude,
+            orderDataDetail.originLatLng.longitude),
         zoom: 15,
       )));
 
@@ -1036,20 +1074,23 @@ class TestSocketProvider extends ChangeNotifier {
                   .split(',')
                   .last))!),
           destination: LatLng(
-              (double.tryParse(orderDetailResponseModel!.data.endCoordinate.split(',').first)!),
-              (double.tryParse(orderDetailResponseModel!.data.endCoordinate.split(',').last))!));
+              (double.tryParse(orderDetailResponseModel!.data.endCoordinate
+                  .split(',')
+                  .first)!),
+              (double.tryParse(orderDetailResponseModel!.data.endCoordinate
+                  .split(',')
+                  .last))!));
     } else {
       log("order details response model is empty");
     }
   }
 
-  updateOriginAndDestinationLatLong({required LatLng origin, required LatLng destination}) {
+  updateOriginAndDestinationLatLong(
+      {required LatLng origin, required LatLng destination}) {
     originLatLng = origin;
     destinationLatLng = destination;
     notifyListeners();
   }
-
-
 
   callTrakingDriver(LatLng position) async {
     log("driver position is :${position}");
@@ -1062,7 +1103,7 @@ class TestSocketProvider extends ChangeNotifier {
 
   moveCameraToDriver() {
     animateToLocation(LatLng(_driverLat, _driverLng));
-   /* googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+    /* googleMapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(
             target: LatLng(_driverLat, _driverLng),
             zoom: zoom,

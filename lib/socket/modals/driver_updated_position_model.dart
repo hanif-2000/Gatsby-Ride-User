@@ -17,6 +17,7 @@ class DriverUpdatedPositionModel {
   double latitude;
   double longitude;
   dynamic bearing;
+  dynamic status;
 
   DriverUpdatedPositionModel(
       {required this.response,
@@ -24,6 +25,7 @@ class DriverUpdatedPositionModel {
       required this.type,
       required this.latitude,
       required this.longitude,
+      required this.status,
       required this.bearing});
 
   factory DriverUpdatedPositionModel.fromJson(Map<String, dynamic> json) =>
@@ -32,6 +34,7 @@ class DriverUpdatedPositionModel {
         message: json["message"],
         type: json["type"],
         bearing: json["bearing"],
+        status: json["status"],
         latitude: json["Latitude"]?.toDouble(),
         longitude: json["Longitude"]?.toDouble(),
       );
@@ -43,5 +46,6 @@ class DriverUpdatedPositionModel {
         "Latitude": latitude,
         "Longitude": longitude,
         "bearing": bearing,
+        "status": status,
       };
 }
