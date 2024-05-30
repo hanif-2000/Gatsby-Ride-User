@@ -342,7 +342,7 @@ class SessionHelper implements Session {
   int get chatToken => pref.getInt(CHAT_TOKEN) ?? 0;
 
   @override
-  int get searchingTime => pref.getInt(SEARCHING_TIME) ?? 300;
+  int get searchingTime => pref.getInt(SEARCHING_TIME) ?? 30;
 
   @override
   String get sessionToken => pref.getString(SESSION_TOKEN) ?? '';

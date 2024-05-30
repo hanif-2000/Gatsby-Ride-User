@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
@@ -75,20 +76,115 @@ class _NewOrderPageState extends State<NewOrderPage>
         if (remainingSeconds <= 0) {
           timer.cancel();
           newSocketProvider.cancelRideByCustomer().then((value) async {
-            session.setSearchingTime = 300;
+            session.setSearchingTime = 30;
             if (value) {
               var homeProvider =
                   Provider.of<HomeProvider>(context, listen: false);
-              await homeProvider.clearState();
+              // await homeProvider.clearState();
+
               session.setIsRunningOrder = false;
 
               dismissLoading();
+              Navigator.pop(context);
 
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                HomePage.routeName,
-                (route) => false,
+              showDialog(
+                barrierDismissible: false,
+                context: locator<GlobalKey<NavigatorState>>().currentContext!,
+                builder: (BuildContext context) {
+                  // return object of type Dialog
+                  return PopScope(
+                    canPop: false,
+                    child: AlertDialog(
+                      title: Text(
+                        "No Nearby Driver Found",
+                        textAlign: TextAlign.center,
+                      ),
+                      // content: new Text("sdf"),
+                      actions: [
+                        // usually buttons at the bottom of the dialog
+                        ElevatedButton(
+                          child: Text("Search Again"),
+                          onPressed: () async {
+                            logMe("search again called-->>");
+                            session.setIsRunningOrder = true;
+
+                            Navigator.pop(context);
+                            newSocketProvider
+                                .createRideRequest(
+                              originLatLng:
+                                  "${homeProvider.originLatLng.latitude},${homeProvider.originLatLng.longitude}",
+                              destinationLatLng:
+                                  "${homeProvider.destinationLatLng.latitude},${homeProvider.destinationLatLng.longitude}",
+                              vehicleCatagory: homeProvider.selectedVehicleId,
+                              startAddress: homeProvider.originAddress,
+                              endAddress: homeProvider.destinationAddress,
+                              estimatedTime: (double.parse(
+                                          session.estimatedTime.toString()) /
+                                      60)
+                                  .toStringAsFixed(1),
+                              distance: (int.parse(session.estimatedDistance
+                                          .toString()) /
+                                      1000)
+                                  .toString(),
+                              total: homeProvider.price,
+                              payment_method: homeProvider.paymentMethod! ==
+                                      PaymentMethod.cash
+                                  ? 1
+                                  : homeProvider.paymentMethod! ==
+                                          PaymentMethod.creditCard
+                                      ? 2
+                                      : homeProvider.paymentMethod! ==
+                                              PaymentMethod.googlePay
+                                          ? 3
+                                          : homeProvider.paymentMethod! ==
+                                                  PaymentMethod.applePay
+                                              ? 4
+                                              : 1,
+                            )
+                                .then((value) {
+                              startTimerAndNavigate(time: 30);
+                              showSearchingVehiclesBottomSheet(
+                                context,
+                              );
+
+                              if (value) {
+                                var session = locator<Session>();
+                                session.setOrderStatus = 0;
+                                session.setIsRunningOrder = true;
+                                session.setBookingTime =
+                                    DateTime.now().toString();
+                              } else {
+                                showToast(
+                                    message:
+                                        "Something went wrong Please try again");
+                              }
+                            });
+                          },
+                        ),
+
+                        ElevatedButton(
+                          child: Text("Cancel ride"),
+                          onPressed: () async {
+                            session.setIsRunningOrder = false;
+
+                            Navigator.pop(context);
+                            _timer?.cancel();
+
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, HomePage.routeName, (route) => false);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
               );
+
+              // Navigator.pushNamedAndRemoveUntil(
+              //   context,
+              //   HomePage.routeName,
+              //   (route) => false,
+              // );
             } else {
               dismissLoading();
               showToast(message: "Something went wrong");
@@ -144,9 +240,8 @@ class _NewOrderPageState extends State<NewOrderPage>
         );
       } else {
         newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
-        session.setSearchingTime = 300;
+        session.setSearchingTime = 30;
 
-        _timer?.cancel();
         log("else called ");
 
         // newSocketProvider.getDriverDetailsById();
@@ -158,8 +253,8 @@ class _NewOrderPageState extends State<NewOrderPage>
 
   @override
   void dispose() {
-    _timer?.cancel();
     super.dispose();
+    _timer?.cancel();
 
     // checkOrderStatusTimer?.cancel();%
     // trackingDriverTimer?.cancel();
@@ -182,8 +277,8 @@ class _NewOrderPageState extends State<NewOrderPage>
           resizeToAvoidBottomInset: false,
           body: Consumer<TestSocketProvider>(builder: (context, provider, _) {
             if (newSocketProvider.isOrderAccepted) {
+              session.setSearchingTime = 30;
               _timer?.cancel();
-              session.setSearchingTime = 300;
 
               Navigator.pop(context, true);
               // newSocketProvider.updateIsOrderAccepted(val: false);
@@ -199,16 +294,18 @@ class _NewOrderPageState extends State<NewOrderPage>
                   myLocationButtonEnabled: true,
                   zoomControlsEnabled: true,
                   initialCameraPosition: CameraPosition(
-                      target: LatLng(newSocketProvider.lat, newSocketProvider.long),
+                      target:
+                          LatLng(newSocketProvider.lat, newSocketProvider.long),
                       zoom: 14,
                       bearing: newSocketProvider.bearing),
                   onMapCreated: (GoogleMapController controller) async {
                     newSocketProvider.googleMapController = controller;
                     await newSocketProvider.setCurrentLocation(widget.location);
                   },
-                  onCameraMove: (val)async{
+                  onCameraMove: (val) async {
                     newSocketProvider.updateZoom(val);
-                    await newSocketProvider.googleMapController.getVisibleRegion();
+                    await newSocketProvider.googleMapController
+                        .getVisibleRegion();
                   },
                   tiltGesturesEnabled: false,
                   rotateGesturesEnabled: false,
@@ -225,11 +322,13 @@ class _NewOrderPageState extends State<NewOrderPage>
                         children: <Widget>[
                       Container(
                         padding: EdgeInsets.symmetric(vertical: 10.0),
-                        margin: EdgeInsets.symmetric(vertical: 20.0,horizontal: 20,),
-                        decoration: BoxDecoration(
-                          color: whiteColor,
-                          borderRadius: BorderRadius.circular(10)
+                        margin: EdgeInsets.symmetric(
+                          vertical: 20.0,
+                          horizontal: 20,
                         ),
+                        decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(10)),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 6.0),
                           child: Container(
@@ -441,9 +540,9 @@ class _NewOrderPageState extends State<NewOrderPage>
               onPopInvoked: (bool didPop) => {},
               child: SearchingRideBottomSheet());
         }).whenComplete(() {
-      log("THis is called after open Bottom sheet");
+      log("THis is called after open Bottom sheet---");
     }).then((value) {
-      if (value) {
+      if (value != null && value) {
         newSocketProvider.updateIsOrderAccepted(val: false);
       }
     });

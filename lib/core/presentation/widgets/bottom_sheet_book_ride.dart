@@ -88,8 +88,12 @@ class BottomSheetBookRide extends StatelessWidget {
                                       onTap: () {
                                         log("on tap on vehicle called");
                                         provider.updatePriceAndCatagortId(
-                                            fare: data[index].totalFare.toString(),
-                                            catagoryId: data[index].categoryId.toString());
+                                            fare: data[index]
+                                                .totalFare
+                                                .toString(),
+                                            catagoryId: data[index]
+                                                .categoryId
+                                                .toString());
 
                                         provider.updateSelectedVehicleIndex(
                                             index: index);
@@ -98,24 +102,39 @@ class BottomSheetBookRide extends StatelessWidget {
                                       },
                                       child: CustomVehicleInfo(
                                         index: index,
-                                        vehicleImage: "${provider.carsImageList[index]}",
+                                        vehicleImage:
+                                            "${provider.carsImageList[index]}",
                                         // time: "${provider.estimatedTimeToShow}",
-                                        time: data[index].estimatedTime.toString() + " min",
-                                        priceMin: data[index].priceMin.toString(),
-                                        baseFare: data[index].base_fare.toString(),
-                                        techFee: data[index].tech_fee.toString(),
-                                        pricePerMin: data[index].price_min.toString(),
-                                        pricePerKM: data[index].price_km.toString(),
+                                        time: data[index]
+                                                .estimatedTime
+                                                .toString() +
+                                            " min",
+                                        priceMin:
+                                            data[index].priceMin.toString(),
+                                        baseFare:
+                                            data[index].base_fare.toString(),
+                                        techFee:
+                                            data[index].tech_fee.toString(),
+                                        pricePerMin:
+                                            data[index].price_min.toString(),
+                                        pricePerKM:
+                                            data[index].price_km.toString(),
                                         // price: data[index].totalFare.toString(),
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
                                         capacity: data[index].seat.toString(),
                                         provider: provider,
-                                        vehicleDetail: provider.vehiclesDetailsList,
-                                        newTotal: data[index].newTotal.toString(),
-                                        pendingAmount: data[index].pendingAmount.toString(),
+                                        vehicleDetail:
+                                            provider.vehiclesDetailsList,
+                                        newTotal:
+                                            data[index].newTotal.toString(),
+                                        pendingAmount: data[index]
+                                            .pendingAmount
+                                            .toString(),
                                         isAvailable: data[index].isAvailable,
-                                        estimatedDistance: data[index].estimatedDistance.toString(),
+                                        estimatedDistance: data[index]
+                                            .estimatedDistance
+                                            .toString(),
                                       ),
                                     ),
                                   );
@@ -250,7 +269,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                       ),
                                       event: () {
                                         var session = locator<Session>();
-                                        session.setSearchingTime = 300;
+                                        session.setSearchingTime = 30;
                                         var socketProvider =
                                             locator<TestSocketProvider>();
                                         if (provider.paymentMethod != null) {
@@ -346,13 +365,12 @@ class BottomSheetBookRide extends StatelessWidget {
                                               .toString());
                                           log(provider.distance.toString());
                                           log(provider.price.toString());
-
                                         } else {
                                           showToast(
                                               message:
                                                   "Please Select Payment Method");
-                                        };
-
+                                        }
+                                        ;
                                       },
                                       buttonHeight: 50,
                                       isRounded: true,
@@ -372,6 +390,5 @@ class BottomSheetBookRide extends StatelessWidget {
           }
           return const SizedBox.shrink();
         });
-
   }
 }

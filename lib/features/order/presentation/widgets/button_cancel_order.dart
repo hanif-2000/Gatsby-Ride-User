@@ -1,5 +1,6 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
@@ -97,20 +98,21 @@ class ButtonCancelOrder extends StatelessWidget {
 
                             session.setIsRunningOrder = false;
                             session.setOrderStatus = 8;
-                            session.setSearchingTime = 300;
+                            session.setSearchingTime = 30;
 
                             showLoading();
 
                             socketProvider
                                 .cancelRideByCustomer()
                                 .then((value) async {
-                              session.setSearchingTime = 300;
+                              session.setSearchingTime = 30;
                               if (value) {
                                 var homeProvider = Provider.of<HomeProvider>(
                                     context,
                                     listen: false);
                                 await homeProvider.clearState();
                                 dismissLoading();
+                                //**---------CREATE RIDE REQUEST AGAIN */
 
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,

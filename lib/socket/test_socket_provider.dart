@@ -551,7 +551,7 @@ class TestSocketProvider extends ChangeNotifier {
       markerId: markerId,
       position: LatLng(latDriver, lngDriver),
       icon: driverMarker,
-      // rotation: bearing - 180,
+      // rotation: bearing - 30,
       // infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
       onTap: () {},
     );
@@ -708,7 +708,7 @@ class TestSocketProvider extends ChangeNotifier {
       print('cancelRideByCustomer -- > ${map.toString()}');
 
       _socket!.send(jsonEncode(map));
-      session.setSearchingTime = 300;
+      session.setSearchingTime = 30;
 
       return true;
     } catch (e) {
