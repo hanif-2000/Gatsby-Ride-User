@@ -19,8 +19,8 @@ class NetworkInfoImplementation implements NetworkInfo {
   Future<bool> get isConnected async {
     final result = await connectivity.checkConnectivity();
 
-    log("Internet connection result is: ${result.name}");
-    switch (result) {
+    log("Internet connection result is: ${result.first}");
+    switch (result.first) {
       case ConnectivityResult.mobile:
       case ConnectivityResult.wifi:
       case ConnectivityResult.ethernet:
