@@ -115,7 +115,7 @@ class Data {
         vehicleName: json["vehicle_name"] ?? "",
         carModel: json["car_model"] ?? "",
         driverRating: json["DriverRating"] ?? 0,
-        phoneNumber: json["phone"] ?? "8547851456",
+        phoneNumber: json["phone"] ?? "",
         extraDistance: json["extra_distance"] ?? "0",
         extraDistancePrice: json["extra_distance_price"] ?? '0',
         extraTime: json["extra_time"],

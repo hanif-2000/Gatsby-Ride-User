@@ -178,7 +178,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   TextEditingController textEditingController = TextEditingController();
 
   var pkToken =
-      "pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U";
+      "pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH";
 
   Future<void> onGooglePayResult(paymentResult) async {
     // final response = await fetchPaymentIntentClientSecret();
@@ -629,7 +629,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         'Content-Type':
                                             'application/x-www-form-urlencoded',
                                         'Authorization':
-                                            'Bearer pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U',
+                                            'Bearer pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH',
                                       };
                                       try {
                                         var body = {
@@ -850,7 +850,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         // var headers = {
                         //   'Content-Type': 'application/x-www-form-urlencoded',
                         //   'Authorization':
-                        //       'Bearer pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U',
+                        //       'Bearer pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH',
                         // };
                         // var data = {
                         //   'card[number]': '4242424242424242',

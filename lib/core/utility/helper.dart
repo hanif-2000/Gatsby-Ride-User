@@ -52,6 +52,7 @@ Future<bool> checkPermission() async {
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
     return false;
+    ;
   }
 
   permission = await Geolocator.checkPermission();
@@ -71,14 +72,13 @@ Future<bool> checkPermission() async {
 
 String mergeAddress(String placeName, String address) {
   String result;
-  if(address.isNotEmpty && address.contains(placeName)){
+  if (address.isNotEmpty && address.contains(placeName)) {
     result = '$address';
     return result;
-  }else{
+  } else {
     result = '$placeName, $address';
     return result;
   }
-
 }
 
 String mergeTypeTaxi(history.CategoryClass category) {
@@ -153,9 +153,7 @@ void showNoInternetDialog() {
     context: locator<GlobalKey<NavigatorState>>().currentContext!,
     builder: (BuildContext context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10)
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: Text('No Internet Connection'),
         content: Column(
           mainAxisSize: MainAxisSize.min,

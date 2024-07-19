@@ -76,7 +76,7 @@ class _NewOrderPageState extends State<NewOrderPage>
         if (remainingSeconds <= 0) {
           timer.cancel();
           newSocketProvider.cancelRideByCustomer().then((value) async {
-            session.setSearchingTime = 30;
+            session.setSearchingTime = 180;
             if (value) {
               var homeProvider =
                   Provider.of<HomeProvider>(context, listen: false);
@@ -99,6 +99,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                         "No Nearby Driver Found",
                         textAlign: TextAlign.center,
                       ),
+
                       // content: new Text("sdf"),
                       actions: [
                         // usually buttons at the bottom of the dialog
@@ -142,7 +143,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                                               : 1,
                             )
                                 .then((value) {
-                              startTimerAndNavigate(time: 30);
+                              startTimerAndNavigate(time: 180);
                               showSearchingVehiclesBottomSheet(
                                 context,
                               );
@@ -160,6 +161,9 @@ class _NewOrderPageState extends State<NewOrderPage>
                               }
                             });
                           },
+                        ),
+                        SizedBox(
+                          width: 20,
                         ),
 
                         ElevatedButton(
@@ -240,7 +244,7 @@ class _NewOrderPageState extends State<NewOrderPage>
         );
       } else {
         newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
-        session.setSearchingTime = 30;
+        session.setSearchingTime = 180;
 
         log("else called ");
 
@@ -277,7 +281,7 @@ class _NewOrderPageState extends State<NewOrderPage>
           resizeToAvoidBottomInset: false,
           body: Consumer<TestSocketProvider>(builder: (context, provider, _) {
             if (newSocketProvider.isOrderAccepted) {
-              session.setSearchingTime = 30;
+              session.setSearchingTime = 180;
               _timer?.cancel();
 
               Navigator.pop(context, true);

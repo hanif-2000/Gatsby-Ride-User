@@ -269,7 +269,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                       ),
                                       event: () {
                                         var session = locator<Session>();
-                                        session.setSearchingTime = 30;
+                                        session.setSearchingTime = 180;
                                         var socketProvider =
                                             locator<TestSocketProvider>();
                                         if (provider.paymentMethod != null) {

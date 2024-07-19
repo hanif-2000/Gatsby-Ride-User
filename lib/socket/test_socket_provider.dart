@@ -296,6 +296,7 @@ class TestSocketProvider extends ChangeNotifier {
           data: OrderDetailResponseModel(
             success: 1,
             data: OrderDetail(
+                phone: acceptResponseModel!.data.phoneNumber.toString(),
                 distance: acceptResponseModel!.data.distance.toString(),
                 driverId: acceptResponseModel!.data.driverId.toString(),
                 endAddress: acceptResponseModel!.data.endAddress.toString(),
@@ -992,7 +993,8 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   callDriver() async {
-    final call = Uri.parse('tel:${_driverDetail?.phone ?? '9876543210'}');
+    final call = Uri.parse(
+        'tel:${orderDetailResponseModel?.data.phone ?? '9876543210'}');
     launchUrl(call);
   }
 

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class OrderDetail extends Equatable {
   final dynamic totalPrice, driverId;
-  final dynamic orderId, userId, orderStatus;
+  final dynamic orderId, userId, orderStatus, phone;
 
   final String startCoordinate,
       endCoordinate,
@@ -21,6 +21,7 @@ class OrderDetail extends Equatable {
     required this.startAddress,
     required this.endAddress,
     required this.orderStatus,
+    required this.phone,
   });
 
   // Factory method to create an OrderDetail instance from a Map (JSON)
@@ -36,6 +37,7 @@ class OrderDetail extends Equatable {
       startAddress: json['startAddress'],
       endAddress: json['endAddress'],
       orderStatus: json['order_status'],
+      phone: json['phone'],
     );
   }
 
@@ -51,7 +53,8 @@ class OrderDetail extends Equatable {
       'endCoordinate': endCoordinate,
       'startAddress': startAddress,
       'endAddress': endAddress,
-      'orderStatus': orderStatus
+      'orderStatus': orderStatus,
+      "phone": phone,
     };
   }
 
@@ -68,6 +71,7 @@ class OrderDetail extends Equatable {
         startCoordinate,
         endCoordinate,
         startAddress,
-        endAddress
+        endAddress,
+        phone
       ];
 }

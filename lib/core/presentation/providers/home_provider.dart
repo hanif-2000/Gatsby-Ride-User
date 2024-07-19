@@ -9,6 +9,7 @@ import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/app_settings.dart';
+import 'package:GetsbyRideshare/core/utility/dummy_data.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/domain/usecases/create_oder.dart';
 import 'package:dio/dio.dart';
@@ -113,13 +114,15 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  double lat = 0.0;
-  double long = 0.0;
+  double lat = 30.7046;
+  double long = 76.7179;
 
   late GoogleMapController googleMapController;
   // Completer<GoogleMapController> mapController = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  late LatLng originLatLng, destinationLatLng;
+  LatLng originLatLng = LatLng(30.7046, 76.7179);
+
+  late LatLng destinationLatLng;
   late BitmapDescriptor driverMarker;
   late BitmapDescriptor pickUpMarker, destinationMarker, initialPickMarker;
   String originAddress = '';
@@ -127,7 +130,7 @@ class HomeProvider with ChangeNotifier {
   bool originIsFilled = false;
   String destinationAddress = appLoc.destination;
   String distance = "1", price = "";
-  int totalDistance =0;
+  int totalDistance = 0;
   int estimatedTime = 1;
   String time = '';
   late Text originText;
@@ -301,8 +304,53 @@ class HomeProvider with ChangeNotifier {
   }
 
 //Set current location in map intially
+  // Future<void> setCurrentLocation() async {
+  //   print("set current location  called");
+  //   clearState();
+  //   clearOldRideData();
+  //   destinationAddress = '';
+  //   notifyListeners();
+  //   originAddress = '';
+  //   destinationIsFilled = false;
+  //   originIsFilled = false;
+
+  //   try {
+  //     bool serviceStatus = await locationService.serviceEnabled();
+
+  //     log("is location service enabled:--> $serviceStatus");
+  //     if (serviceStatus) {
+  //       lctn.LocationData locationData = await locationService.getLocation();
+  //       logMe("locationData");
+  //       logMe(locationData);
+  //       originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
+  //       destinationLatLng =
+  //           LatLng(locationData.latitude!, locationData.longitude!);
+  //       await setAddressFromLatLng();
+  //       //onlocation change
+  //       locationService.onLocationChanged.listen((event) {});
+  //     } else {
+  //       try {
+  //         bool serviceStatusResult = await locationService.requestService();
+  //         logMe("Service status activated after request: $serviceStatusResult");
+  //         if (serviceStatusResult) {
+  //           await setCurrentLocation();
+  //         }
+  //       } catch (e) {
+  //         logMe(e.toString());
+  //       }
+  //     }
+  //   } on PlatformException catch (e) {
+  //     SmartDialog.dismiss();
+  //     if (e.toString() == 'PERMISSION_DENIED') {
+  //       logMe(e.toString());
+  //     } else if (e.code == 'SERVICE_STATUS_ERROR') {
+  //       logMe(e.message);
+  //     }
+  //   }
+  // }
+
   Future<void> setCurrentLocation() async {
-    print("Get current location  called");
+    print("set current location called");
     clearState();
     clearOldRideData();
     destinationAddress = '';
@@ -313,6 +361,8 @@ class HomeProvider with ChangeNotifier {
 
     try {
       bool serviceStatus = await locationService.serviceEnabled();
+      log("is location service enabled:--> $serviceStatus");
+
       if (serviceStatus) {
         lctn.LocationData locationData = await locationService.getLocation();
         logMe("locationData");
@@ -329,98 +379,114 @@ class HomeProvider with ChangeNotifier {
           logMe("Service status activated after request: $serviceStatusResult");
           if (serviceStatusResult) {
             await setCurrentLocation();
+          } else {
+            // Set default location if service request failed
+            setDefaultLocation();
           }
         } catch (e) {
           logMe(e.toString());
+          // Set default location if exception occurs
+          setDefaultLocation();
         }
       }
     } on PlatformException catch (e) {
       SmartDialog.dismiss();
-      if (e.toString() == 'PERMISSION_DENIED') {
+      if (e.code == 'PERMISSION_DENIED') {
         logMe(e.toString());
+        // Set default location if permission is denied
+        setDefaultLocation();
       } else if (e.code == 'SERVICE_STATUS_ERROR') {
         logMe(e.message);
       }
     }
   }
 
-//Get Current Location
-  getCurrentLocation() async {
-    log("get current location home provider =-===>");
-
-    try {
-      bool serviceStatus = await locationService.serviceEnabled();
-      if (serviceStatus) {
-        lctn.LocationData locationData = await locationService.getLocation();
-        logMe("locationData");
-        logMe(locationData);
-        originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-
-        getAddressFromLatLng();
-        //onlocation change
-        locationService.onLocationChanged.listen((event) {});
-      } else {
-        try {
-          bool serviceStatusResult = await locationService.requestService();
-          logMe("Service status activated after request: $serviceStatusResult");
-          if (serviceStatusResult) {
-            getCurrentLocation();
-          }
-        } catch (e) {
-          logMe(e.toString());
-        }
-      }
-    } on PlatformException catch (e) {
-      if (e.toString() == 'PERMISSION_DENIED') {
-        logMe(e.toString());
-      } else if (e.code == 'SERVICE_STATUS_ERROR') {
-        logMe(e.message);
-      }
-    }
+  void setDefaultLocation() {
+    originLatLng = LatLng(30.7046, 76.7179);
+    destinationLatLng = LatLng(30.7046, 76.7179);
+    // Set default address if necessary
+    originAddress = 'Default Origin Address';
+    destinationAddress = 'Default Destination Address';
+    notifyListeners();
   }
 
-// Get address from lat and long
-  getAddressFromLatLng() async {
-    try {
-      List<Placemark> p = await placemarkFromCoordinates(
-          originLatLng.latitude, originLatLng.longitude);
+// //Get Current Location
+//   getCurrentLocation() async {
+//     log("get current location home provider =-===>");
 
-      Placemark place = p[0];
+//     try {
+//       bool serviceStatus = await locationService.serviceEnabled();
+//       if (serviceStatus) {
+//         lctn.LocationData locationData = await locationService.getLocation();
+//         logMe("locationData");
+//         logMe(locationData);
+//         originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
 
-      MarkerId markerId = const MarkerId("origin");
-      final Marker marker = Marker(
-        anchor: const Offset(0.5, 0.5),
-        markerId: markerId,
-        position: LatLng(originLatLng.latitude, originLatLng.longitude),
-        infoWindow: const InfoWindow(title: "Origin"),
-        icon: pickUpMarker,
-        onTap: () {},
-      );
+//         getAddressFromLatLng();
+//         //onlocation change
+//         locationService.onLocationChanged.listen((event) {});
+//       } else {
+//         try {
+//           bool serviceStatusResult = await locationService.requestService();
+//           logMe("Service status activated after request: $serviceStatusResult");
+//           if (serviceStatusResult) {
+//             getCurrentLocation();
+//           }
+//         } catch (e) {
+//           logMe(e.toString());
+//         }
+//       }
+//     } on PlatformException catch (e) {
+//       if (e.toString() == 'PERMISSION_DENIED') {
+//         logMe(e.toString());
+//       } else if (e.code == 'SERVICE_STATUS_ERROR') {
+//         logMe(e.message);
+//       }
+//     }
+//   }
 
-      googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(originLatLng.latitude, originLatLng.longitude),
-        zoom: 16,
-      )));
+// // Get address from lat and long
+//   getAddressFromLatLng() async {
+//     try {
+//       List<Placemark> p = await placemarkFromCoordinates(
+//           originLatLng.latitude, originLatLng.longitude);
 
-      originAddress =
-          "${place.street}, ${place.subLocality}, ${place.locality}";
-      originText = Text(
-        originAddress,
-        softWrap: false,
-        overflow: TextOverflow.ellipsis,
-      );
-      String lat, long;
-      lat = originLatLng.latitude.toString();
-      long = originLatLng.longitude.toString();
-      markers[markerId] = marker;
+//       Placemark place = p[0];
 
-      originIsFilled = true;
-      notifyListeners();
-    } catch (e) {
-      logMe(e);
-    }
-  }
+//       MarkerId markerId = const MarkerId("origin");
+//       final Marker marker = Marker(
+//         anchor: const Offset(0.5, 0.5),
+//         markerId: markerId,
+//         position: LatLng(originLatLng.latitude, originLatLng.longitude),
+//         infoWindow: const InfoWindow(title: "Origin"),
+//         icon: pickUpMarker,
+//         onTap: () {},
+//       );
+
+//       googleMapController
+//           .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+//         target: LatLng(originLatLng.latitude, originLatLng.longitude),
+//         zoom: 16,
+//       )));
+
+//       originAddress =
+//           "${place.street}, ${place.subLocality}, ${place.locality}";
+//       originText = Text(
+//         originAddress,
+//         softWrap: false,
+//         overflow: TextOverflow.ellipsis,
+//       );
+//       String lat, long;
+//       lat = originLatLng.latitude.toString();
+//       long = originLatLng.longitude.toString();
+//       markers[markerId] = marker;
+
+//       originIsFilled = true;
+//       notifyListeners();
+//     } catch (e) {
+//       logMe(e);
+//     }
+//   }
 
 // Set initial Marker in Map i.e Current Location
   Future<void> setAddressFromLatLng() async {
@@ -466,7 +532,8 @@ class HomeProvider with ChangeNotifier {
 
 // Show marker on Map according to latlong and addresstype
   displayResult(LatLng latlng, String address, AddressType addressType) async {
-    final MarkerId markerId = MarkerId(addressType == AddressType.origin ? "origin" : "destination");
+    final MarkerId markerId =
+        MarkerId(addressType == AddressType.origin ? "origin" : "destination");
     try {
       final Marker marker = Marker(
         anchor: const Offset(0.5, 0.5),
@@ -516,7 +583,8 @@ class HomeProvider with ChangeNotifier {
 
   Future<void> setPolylinesDirection(LatLng origin, LatLng destination) async {
     polylines.clear();
-    await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude,
+    await DirectionHelper()
+        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
             destination.latitude, destination.longitude)
         .then((result) async {
       if (result.isNotEmpty) {
@@ -543,7 +611,8 @@ class HomeProvider with ChangeNotifier {
   Future<void> setActualDistance() async {
     try {
       // Get real distance
-      var response = await Dio().get('https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destinationLatLng.latitude},${destinationLatLng.longitude}&origins=${originLatLng.latitude},${originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
+      var response = await Dio().get(
+          'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destinationLatLng.latitude},${destinationLatLng.longitude}&origins=${originLatLng.latitude},${originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
       log(" response of real distance:--->>> ${response.data}");
 
       var data = GoogleRouteDistanceResponseModal.fromJson(response.data);
@@ -553,8 +622,10 @@ class HomeProvider with ChangeNotifier {
       estimatedTime = data.rows[0].elements[0].duration.value;
       estimatedTimeToShow = data.rows[0].elements[0].duration.text;
 
-      session.setEstimatedDistance = data.rows[0].elements[0].distance.value.toString();
-      session.setEstimatedTime = data.rows[0].elements[0].duration.value.toStringAsFixed(1);
+      session.setEstimatedDistance =
+          data.rows[0].elements[0].distance.value.toString();
+      session.setEstimatedTime =
+          data.rows[0].elements[0].duration.value.toStringAsFixed(1);
 
       notifyListeners();
 
@@ -597,7 +668,10 @@ class HomeProvider with ChangeNotifier {
     } else {
       night = '1';
     }
-    final result = await getTotalPrice.call(_selectedCategory!.categoryId.toString(), distanceMeter.toString(), night);
+    final result = await getTotalPrice.call(
+        _selectedCategory!.categoryId.toString(),
+        distanceMeter.toString(),
+        night);
     yield* result.fold(
       (failure) async* {
         logMe(failure.message);
@@ -645,8 +719,9 @@ class HomeProvider with ChangeNotifier {
     log("-->>> Total Distance in Km --->>>>   $dist");
     yield VehiclesCategoryLoading();
 
-    final result = await getVehicleCatagory.call(dist.toString(), "0", "${originLatLng.latitude},${originLatLng.longitude}", newTime);
-        yield* result.fold(
+    final result = await getVehicleCatagory.call(dist.toString(), "0",
+        "${originLatLng.latitude},${originLatLng.longitude}", newTime);
+    yield* result.fold(
       (failure) async* {
         yield VehiclesCategoryFailure(failure: failure);
       },
@@ -686,8 +761,10 @@ class HomeProvider with ChangeNotifier {
     String newTime = (estimatedTime / 60).toStringAsFixed(1);
     log("Submit order Clicked");
     yield CreateOrderLoading();
-    String txtLatLngOrigin = '${originLatLng.latitude},${originLatLng.longitude}';
-    String txtLatLngDestination = '${destinationLatLng.latitude},${destinationLatLng.longitude}';
+    String txtLatLngOrigin =
+        '${originLatLng.latitude},${originLatLng.longitude}';
+    String txtLatLngDestination =
+        '${destinationLatLng.latitude},${destinationLatLng.longitude}';
 
     log(txtLatLngOrigin.toString());
     log(txtLatLngDestination.toString());
@@ -699,13 +776,13 @@ class HomeProvider with ChangeNotifier {
     log(selectedVehicleId.toString());
     log("estimated distacnce while send order is:-->> $distance");
     log("estimated time while send order is:-->> $newTime");
-  final dist =  metersToKilometers(totalDistance);
+    final dist = metersToKilometers(totalDistance);
     final formData = FormData.fromMap({
       'start_coordinate': txtLatLngOrigin,
       'end_coordinate': txtLatLngDestination,
       'start_address': originAddress,
       'end_address': destinationAddress,
-      'distance':dist,
+      'distance': dist,
       'total': price,
       'estimated_time': newTime,
       'payment_method': (_paymentMethod == PaymentMethod.cash)

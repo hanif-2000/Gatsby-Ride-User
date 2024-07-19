@@ -98,14 +98,14 @@ class ButtonCancelOrder extends StatelessWidget {
 
                             session.setIsRunningOrder = false;
                             session.setOrderStatus = 8;
-                            session.setSearchingTime = 30;
+                            session.setSearchingTime = 180;
 
                             showLoading();
 
                             socketProvider
                                 .cancelRideByCustomer()
                                 .then((value) async {
-                              session.setSearchingTime = 30;
+                              session.setSearchingTime = 180;
                               if (value) {
                                 var homeProvider = Provider.of<HomeProvider>(
                                     context,

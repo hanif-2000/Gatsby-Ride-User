@@ -2,7 +2,6 @@ import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-
 import '../../static/app_config.dart';
 import '../pages/menu_page.dart';
 
