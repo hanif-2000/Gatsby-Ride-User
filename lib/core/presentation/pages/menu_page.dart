@@ -121,6 +121,20 @@ class HomeDrawerPage extends StatelessWidget {
                           },
                         ),
 
+                        DrawerButtonItemWidget(
+                          title: "Delete Account",
+                          onTap: () {
+                            deleteAccount(context);
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>
+                            //         const TermsAndConditionsPage(),
+                            //   ),
+                            // );
+                          },
+                        ),
+
                         //Testing Button for payment
 
                         // DrawerButtonItemWidget(
@@ -254,6 +268,37 @@ class HomeDrawerPage extends StatelessWidget {
         ),
       );
     });
+  }
+
+  Future<void> deleteAccount(BuildContext context) async {
+    final session = locator<Session>();
+    String token = session.sessionToken;
+
+    final dio = Dio();
+    const String url =
+        'https://api.gatsbyrideshare.com/api/webservice/customer/account/delete';
+
+    try {
+      // Setting up headers, including authentication token if needed
+      dio.options.headers['Authorization'] = 'Bearer $token';
+
+      // Sending DELETE request
+      final response = await dio.delete(
+        url,
+      );
+
+      if (response.statusCode == 200) {
+        await sessionLogOut().then(
+          (_) => Navigator.of(context)
+              .pushNamedAndRemoveUntil(LoginPage.routeName, (route) => false),
+        );
+      } else {
+        showToast(message: "Something went wrong");
+      }
+    } catch (e) {
+      // Handle errors
+      showToast(message: "Something went wrong");
+    }
   }
 
   void sendPayment() async {

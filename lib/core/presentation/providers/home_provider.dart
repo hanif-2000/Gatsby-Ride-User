@@ -12,6 +12,7 @@ import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:GetsbyRideshare/core/utility/dummy_data.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/domain/usecases/create_oder.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,6 +60,8 @@ class HomeProvider with ChangeNotifier {
   String estimatedTimeToShow = '';
 
   Session session = locator<Session>();
+
+  LatLng defaultLatLng = LatLng(55.170834, -118.794724);
 
 //Socket
 
@@ -349,8 +352,61 @@ class HomeProvider with ChangeNotifier {
   //   }
   // }
 
-  Future<void> setCurrentLocation() async {
-    print("set current location called");
+  // Future<void> setCurrentLocation() async {
+  //   print("set current location called---->>");
+  //   clearState();
+  //   clearOldRideData();
+  //   destinationAddress = '';
+  //   notifyListeners();
+  //   originAddress =
+  //   destinationIsFilled = false;
+  //   originIsFilled = false;
+
+  //   try {
+  //     bool serviceStatus = await locationService.serviceEnabled();
+  //     log("is location service enabled:--> $serviceStatus");
+
+  //     if (serviceStatus) {
+
+  //       lctn.LocationData locationData = await locationService.getLocation();
+  //       logMe("locationData");
+  //       logMe(locationData);
+  //       originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
+  //       destinationLatLng =
+  //           LatLng(locationData.latitude!, locationData.longitude!);
+  //       await setAddressFromLatLng();
+  //       //onlocation change
+  //       locationService.onLocationChanged.listen((event) {});
+  //     } else {
+  //       try {
+  //         bool serviceStatusResult = await locationService.requestService();
+  //         logMe("Service status activated after request: $serviceStatusResult");
+  //         if (serviceStatusResult) {
+  //           await setCurrentLocation();
+  //         } else {
+  //           // Set default location if service request failed
+  //           setDefaultLocation();
+  //         }
+  //       } catch (e) {
+  //         logMe(e.toString());
+  //         // Set default location if exception occurs
+  //         setDefaultLocation();
+  //       }
+  //     }
+  //   } on PlatformException catch (e) {
+  //     SmartDialog.dismiss();
+  //     if (e.code == 'PERMISSION_DENIED') {
+  //       logMe(e.toString());
+  //       // Set default location if permission is denied
+  //       setDefaultLocation();
+  //     } else if (e.code == 'SERVICE_STATUS_ERROR') {
+  //       logMe(e.message);
+  //     }
+  //   }
+  // }
+
+  Future<void> setCurrentLocation(BuildContext context) async {
+    print("set current location called---->>");
     clearState();
     clearOldRideData();
     destinationAddress = '';
@@ -371,44 +427,83 @@ class HomeProvider with ChangeNotifier {
         destinationLatLng =
             LatLng(locationData.latitude!, locationData.longitude!);
         await setAddressFromLatLng();
-        //onlocation change
-        locationService.onLocationChanged.listen((event) {});
+        // Listen for location changes
+        locationService.onLocationChanged.listen((event) {
+          // Handle location change if needed
+        });
       } else {
-        try {
-          bool serviceStatusResult = await locationService.requestService();
-          logMe("Service status activated after request: $serviceStatusResult");
-          if (serviceStatusResult) {
-            await setCurrentLocation();
-          } else {
-            // Set default location if service request failed
-            setDefaultLocation();
-          }
-        } catch (e) {
-          logMe(e.toString());
-          // Set default location if exception occurs
-          setDefaultLocation();
+        bool serviceStatusResult = await locationService.requestService();
+        logMe("Service status activated after request: $serviceStatusResult");
+        if (serviceStatusResult) {
+          await setCurrentLocation(context);
+        } else {
+          // Show dialog to prompt the user to enable location
+          showLocationDialog(context);
         }
       }
     } on PlatformException catch (e) {
       SmartDialog.dismiss();
       if (e.code == 'PERMISSION_DENIED') {
         logMe(e.toString());
-        // Set default location if permission is denied
-        setDefaultLocation();
+        // Show dialog to prompt the user to enable location
+        showLocationDialog(context);
       } else if (e.code == 'SERVICE_STATUS_ERROR') {
         logMe(e.message);
       }
+      // Set default location if an exception occurs
+      setDefaultLocation();
+    } catch (e) {
+      logMe(e.toString());
+      // Set default location if an exception occurs
+      setDefaultLocation();
     }
   }
 
-  void setDefaultLocation() {
-    originLatLng = LatLng(30.7046, 76.7179);
-    destinationLatLng = LatLng(30.7046, 76.7179);
-    // Set default address if necessary
-    originAddress = 'Default Origin Address';
-    destinationAddress = 'Default Destination Address';
-    notifyListeners();
+  void showLocationDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Enable Location Services"),
+          content: Text(
+              "Location services are required for this feature. Please enable location services in your settings."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                AppSettings.openAppSettings(type: AppSettingsType.location);
+              },
+              child: Text("Open Settings"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                setDefaultLocation();
+              },
+              child: Text("Cancel"),
+            ),
+          ],
+        );
+      },
+    );
   }
+
+  void setDefaultLocation() {
+    originLatLng = defaultLatLng;
+    destinationLatLng = defaultLatLng;
+    // Continue with setting the address from the default location if needed
+    setAddressFromLatLng();
+  }
+
+  // void setDefaultLocation() {
+  //   originLatLng =defaultLatLng;
+  //   destinationLatLng =defaultLatLng;
+  //   // Set default address if necessary
+  //   originAddress = 'Default Origin Address';
+  //   destinationAddress = 'Default Destination Address';
+  //   notifyListeners();
+  // }
 
 // //Get Current Location
 //   getCurrentLocation() async {

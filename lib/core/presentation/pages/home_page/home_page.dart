@@ -267,33 +267,33 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             body: Consumer<HomeProvider>(builder: (context, map, _) {
               return Stack(
                 children: <Widget>[
-                  // GoogleMap(
-                  //   mapType: MapType.normal,
-                  //   myLocationButtonEnabled: false,
-                  //   zoomControlsEnabled: false,
-                  //   initialCameraPosition: CameraPosition(
-                  //     target: LatLng(map.lat, map.long),
-                  //     zoom: 14.4746,
-                  //   ),
-                  //   onMapCreated: (GoogleMapController controller) async {
-                  //     map.googleMapController = controller;
-                  //     SmartDialog.showLoading(
-                  //       animationType: SmartAnimationType.fade,
-                  //       backDismiss: false,
-                  //       msg: 'Fetching Current location...',
-                  //       alignment: Alignment.center,
-                  //     );
-                  //     await map.setCurrentLocation().then((value) {
-                  //       log("google map created successfully");
-                  //       SmartDialog.dismiss();
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(map.lat, map.long),
+                      zoom: 14.4746,
+                    ),
+                    onMapCreated: (GoogleMapController controller) async {
+                      map.googleMapController = controller;
+                      SmartDialog.showLoading(
+                        animationType: SmartAnimationType.fade,
+                        backDismiss: false,
+                        msg: 'Fetching Current location...',
+                        alignment: Alignment.center,
+                      );
+                      await map.setCurrentLocation(context).then((value) {
+                        log("google map created successfully");
+                        SmartDialog.dismiss();
 
-                  //       checkSessionDataAndNavigate();
-                  //     });
-                  //     // }
-                  //   },
-                  //   polylines: map.polylines,
-                  //   markers: Set<Marker>.of(map.markers.values),
-                  // ),
+                        checkSessionDataAndNavigate();
+                      });
+                      // }
+                    },
+                    polylines: map.polylines,
+                    markers: Set<Marker>.of(map.markers.values),
+                  ),
                   SafeArea(
                       child: Stack(children: [
                     Container(
@@ -309,69 +309,69 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               decoration: BoxDecoration(
                                   color: whiteColor,
                                   borderRadius: BorderRadius.circular(10)),
-                              child:
-                                  //  map.originAddress == ''
-                                  // ? Center(
-                                  //     child: Padding(
-                                  //     padding:
-                                  //         EdgeInsets.symmetric(vertical: 20.0),
-                                  //     child: CircularProgressIndicator(),
-                                  //   ))
-                                  // :
-                                  Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 6.0),
-                                child: Container(
-                                    child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          locationPngIcon,
-                                          height: 24.0,
-                                          width: 24.0,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        SvgPicture.asset(dottedLine),
-                                        SvgPicture.asset(
-                                          destinationSvgIcon,
-                                          height: 30.0,
-                                          width: 30.0,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ],
-                                    ),
-                                    Expanded(
-                                      child: Column(
+                              child: map.originAddress == ''
+                                  ? Center(
+                                      child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 20.0),
+                                      child: CircularProgressIndicator(),
+                                    ))
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6.0),
+                                      child: Container(
+                                          child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: [
-                                          OriginWidget(
-                                            deviceWidth: _deviceSize.width,
-                                            isFromOrder: false,
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                locationPngIcon,
+                                                height: 24.0,
+                                                width: 24.0,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              SvgPicture.asset(dottedLine),
+                                              SvgPicture.asset(
+                                                destinationSvgIcon,
+                                                height: 30.0,
+                                                width: 30.0,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ],
                                           ),
-                                          Container(
-                                            margin: EdgeInsets.zero,
-                                            width: _deviceSize.width * .8,
-                                            height: 1.0,
-                                            color: whiteEFEFEFColor,
-                                          ),
-                                          Container(
-                                            child: DestinationWidget(
-                                              deviceWidth: _deviceSize.width,
-                                              isFromOrder: false,
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                OriginWidget(
+                                                  deviceWidth:
+                                                      _deviceSize.width,
+                                                  isFromOrder: false,
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.zero,
+                                                  width: _deviceSize.width * .8,
+                                                  height: 1.0,
+                                                  color: whiteEFEFEFColor,
+                                                ),
+                                                Container(
+                                                  child: DestinationWidget(
+                                                    deviceWidth:
+                                                        _deviceSize.width,
+                                                    isFromOrder: false,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
+                                          )
                                         ],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                              ),
+                                      )),
+                                    ),
                             ),
 
                             /** Below is the new UI*/
