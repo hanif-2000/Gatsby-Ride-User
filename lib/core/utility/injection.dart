@@ -112,23 +112,18 @@ final locator = GetIt.instance;
 
 Future<void> init() async {
   //network info
-  locator.registerLazySingleton<NetworkInfo>(
-      () => NetworkInfoImplementation(locator<Connectivity>()));
+  locator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImplementation(locator<Connectivity>()));
 
   //external
   locator.registerLazySingleton<Dio>(() => DioClient().dio);
-  locator.registerLazySingletonAsync<Session>(() async =>
-      SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
-  locator.registerLazySingletonAsync<SharedPreferences>(
-      () async => await SharedPreferences.getInstance());
-  locator.registerLazySingleton<GlobalKey<NavigatorState>>(
-      () => GlobalKey<NavigatorState>());
+  locator.registerLazySingletonAsync<Session>(() async => SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
+  locator.registerLazySingletonAsync<SharedPreferences>(() async => await SharedPreferences.getInstance());
+  locator.registerLazySingleton<GlobalKey<NavigatorState>>(() => GlobalKey<NavigatorState>());
   locator.registerLazySingleton<Connectivity>(() => Connectivity());
   locator.registerLazySingleton<TestSocketProvider>(() => TestSocketProvider());
   // locator.registerSingleton<TestSocketProvider>(TestSocketProvider());
 
-  locator.registerLazySingleton<GlobalKey<ScaffoldState>>(
-      () => GlobalKey<ScaffoldState>());
+  locator.registerLazySingleton<GlobalKey<ScaffoldState>>(() => GlobalKey<ScaffoldState>());
 
   //repository
   locator.registerLazySingleton<CurrencyRepository>(

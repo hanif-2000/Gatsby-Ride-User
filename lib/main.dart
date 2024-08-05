@@ -40,15 +40,11 @@ import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var sp = await SharedPreferences.getInstance();
-  var login = sp.getBool(IS_LOGGED_IN);
   await Firebase.initializeApp(name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
   try {
     await init();
     await FirebaseMessaging.instance.requestPermission();
     await locator.isReady<Session>().then((_) async {
-      var session = locator<Session>();
-      log("is logged in------------->>>>>  " + session.isLoggedIn.toString());
       await NotificationHelper().init();
       await FirebaseHelper.init();
       runApp(

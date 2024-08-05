@@ -19,10 +19,10 @@ class GooglePlaceDataSourceImpl implements GooglePlaceDataSource {
 
     if (myLocale.languageCode == 'ja') {
       path =
-          'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&language=ja&key=$GOOGLEMAPKEY';
+      'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&language=ja&components=country:ca|country:in&key=$GOOGLEMAPKEY';
     } else {
       path =
-          'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=$GOOGLEMAPKEY';
+      'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&components=country:ca|country:in&key=$GOOGLEMAPKEY';
     }
 
     dio.withToken();

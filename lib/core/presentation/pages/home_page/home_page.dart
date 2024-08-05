@@ -229,18 +229,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     log("home page called --------->>>>>>>");
     socketProvider.connectToSocket(context);
-
-    // Provider.of<SocketProvider>(context, listen: false)
-    //     .connectToSocketInBooking(context);
     log("************ IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Provider.of<SocketProvider>(context, listen: false).connectToSocket();
-    // Provider.of<NewSocketProvider>(context, listen: false).connectToSocket();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // showLoading();
-    });
   }
 
   @override

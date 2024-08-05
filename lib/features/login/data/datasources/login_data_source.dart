@@ -85,8 +85,6 @@ class LoginDataSourceImplementation implements LoginDataSource {
   ) async {
     String url = 'api/webservice/login';
     final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
-
-    log("device token:  $deviceToken");
     FormData data = FormData.fromMap({
       'email': email,
       'first_name': firstName,

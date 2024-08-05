@@ -436,17 +436,19 @@ class HomeProvider with ChangeNotifier {
         logMe("Service status activated after request: $serviceStatusResult");
         if (serviceStatusResult) {
           await setCurrentLocation(context);
-        } else {
+        } /*else {
+          showToast(message: "Location service is not enable ");
+
           // Show dialog to prompt the user to enable location
           showLocationDialog(context);
-        }
+        }*/
       }
     } on PlatformException catch (e) {
       SmartDialog.dismiss();
       if (e.code == 'PERMISSION_DENIED') {
         logMe(e.toString());
         // Show dialog to prompt the user to enable location
-        showLocationDialog(context);
+      //  showLocationDialog(context);
       } else if (e.code == 'SERVICE_STATUS_ERROR') {
         logMe(e.message);
       }
