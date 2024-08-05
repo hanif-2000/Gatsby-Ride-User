@@ -21,8 +21,7 @@ class GooglePlaceDataSourceImpl implements GooglePlaceDataSource {
       path =
       'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&language=ja&components=country:ca|country:in&key=$GOOGLEMAPKEY';
     } else {
-      path =
-      'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&components=country:ca|country:in&key=$GOOGLEMAPKEY';
+      path 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&components=country:ca|country:in&key=$GOOGLEMAPKEY';
     }
 
     dio.withToken();
