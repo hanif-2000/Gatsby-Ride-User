@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,14 +18,14 @@ import 'app_settings.dart';
 import 'injection.dart';
 import 'session_helper.dart';
 
-logMe(Object? obj) {
+logMe(Object? obj,{String name="LOGS"}) {
   /* 
     use this for print something, its run only on debug mode.
   */
   if (kDebugMode) {
     print(
         "**************************************👇👇👇👇👇👇👇👇   DEBUG START   👇👇👇👇👇👇👇👇👇👇********************************");
-    print(obj);
+    log(obj.toString(),name: name);
     print(
         "**************************************👆👆👆👆👆👆👆👆   DEBUG END      👆👆👆👆👆👆👆👆👆👆********************************");
   }
@@ -189,10 +190,10 @@ LatLngBounds getBounds(List<Marker> markers) {
   var lngs = markers.map<double>((m) => m.position.longitude).toList();
   var lats = markers.map<double>((m) => m.position.latitude).toList();
 
-  double topMost = lngs.reduce(max);
-  double leftMost = lats.reduce(min);
-  double rightMost = lats.reduce(max);
-  double bottomMost = lngs.reduce(min);
+  double topMost = lngs.reduce(math.max);
+  double leftMost = lats.reduce(math.min);
+  double rightMost = lats.reduce(math.max);
+  double bottomMost = lngs.reduce(math.min);
 
   LatLngBounds bounds = LatLngBounds(
     northeast: LatLng(rightMost, topMost),

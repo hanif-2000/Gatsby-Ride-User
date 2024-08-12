@@ -107,10 +107,8 @@ class OriginWidget extends StatelessWidget {
                                   address: map.originAddress,
                                   latLng: map.originLatLng),
                             ));
-                        map.displayResult(result['pickUpCoordinate'],
-                            result['pickUpName'], result['addressType']);
-                        if (map.destinationIsFilled && map.originIsFilled) {
-                          // map.fetchTotalPrice().listen((event) {});
+                        if(result != null){
+                          map.displayResult(result['pickUpCoordinate'], result['pickUpName'], result['addressType']);
                         }
                       } else {
                         log("user session value is: $value");

@@ -20,11 +20,7 @@ class RegisterDataSourceImplementation implements RegisterDataSource {
     String url = 'api/webservice/user_register';
 
     try {
-      final response = await dio.post(
-        url,
-        data: formData,
-      );
-
+      final response = await dio.post(url, data: formData,);
       log("user register formdata is:-->> ${formData.fields}");
       final model = RegisterResponseModel.fromJson(response.data);
       final session = locator<Session>();

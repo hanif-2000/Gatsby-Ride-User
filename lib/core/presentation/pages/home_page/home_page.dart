@@ -74,9 +74,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (session.isRunningOrder) {
       socketProvider.updateOnlyBitmap();
 
-      socketProvider
-          .fetchOrderDetails(int.parse(session.orderId))
-          .then((value) {
+      socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
         log("order details are:  ${value.data}");
         print("order details are:  ${session.orderStatus}");
 
@@ -92,16 +90,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   "receipt data from session is ${socketProvider.receiptResponseModel}:");
               SmartDialog.dismiss();
               dismissLoading();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  ReceiptScreen.routeName, (route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(ReceiptScreen.routeName, (route) => false);
             });
             /** Navigate to receipt screen */
           } else if (!session.isRatingGiven) {
-            socketProvider
-                .fetchDriverDetails(int.parse(session.driverId))
-                .then((value) {
-              socketProvider
-                  .updateDriverDetailsModel(data: value)
+            socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
+              socketProvider.updateDriverDetailsModel(data: value)
                   .then((value) {
                 logMe(
                     " driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
@@ -278,7 +272,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       await map.setCurrentLocation(context).then((value) {
                         log("google map created successfully");
                         SmartDialog.dismiss();
-
                         checkSessionDataAndNavigate();
                       });
                       // }

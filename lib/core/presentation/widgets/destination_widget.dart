@@ -89,27 +89,17 @@ class DestinationWidget extends StatelessWidget {
                     log("On CLick on Destination field");
                     checkUserSession().then((value) async {
                       if (value) {
-                        final result = await Navigator.push(
-                            context,
+                        final result = await Navigator.push(context,
                             MaterialPageRoute(
                               builder: (context) => PlacePickerPage(
                                   address: map.destinationAddress,
                                   addressType: AddressType.destination,
                                   latLng: map.destinationLatLng),
                             ));
-                        map.displayResult(result['pickUpCoordinate'],
-                            result['pickUpName'], result['addressType']);
-                        if (map.selectedCategory != null) {
-                          // map.fetchTotalPrice().listen((event) {});
-                        }
-
-                        if (result != null) {
+                        if(result != null){
+                          map.displayResult(result['pickUpCoordinate'], result['pickUpName'], result['addressType']);
                           map.toggleIsDestinationSelected();
                         }
-
-                        // log("Result" + result.toString());
-                      } else {
-                        // Navigator.pushNamed(context, LoginPage.routeName);
                       }
                     });
                   },

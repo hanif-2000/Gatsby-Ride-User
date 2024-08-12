@@ -119,10 +119,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                               vehicleCatagory: homeProvider.selectedVehicleId,
                               startAddress: homeProvider.originAddress,
                               endAddress: homeProvider.destinationAddress,
-                              estimatedTime: (double.parse(
-                                          session.estimatedTime.toString()) /
-                                      60)
-                                  .toStringAsFixed(1),
+                              estimatedTime: (double.parse(session.estimatedTime.toString()) / 60).toStringAsFixed(1),
                               distance: (int.parse(session.estimatedDistance
                                           .toString()) /
                                       1000)

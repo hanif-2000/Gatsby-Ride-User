@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:ui' as ui;
+
 import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
 import 'package:GetsbyRideshare/core/domain/usecases/get_total_price.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/total_price_state.dart';
@@ -18,9 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart' as lctn;
 import 'package:web_socket_client/web_socket_client.dart';
 import '../../data/models/google_route_response_modal.dart';
 import '../../domain/entities/price_category.dart';
@@ -31,6 +32,7 @@ import '../../utility/direction_helper.dart';
 import '../../utility/injection.dart';
 import '../../utility/session_helper.dart';
 import 'create_order_state.dart';
+import 'package:permission_handler/permission_handler.dart' as permission;
 
 class HomeProvider with ChangeNotifier {
   var dio = Dio();
@@ -41,12 +43,6 @@ class HomeProvider with ChangeNotifier {
   final CreateOrder createOrder;
   final GetVehiclesCategory getVehicleCatagory;
 
-  //Initial
-  final lctn.Location locationService = lctn.Location();
-  // CameraPosition kJapanCoordinate = CameraPosition(
-  //   target: LatLng(lat, long),
-  //   zoom: 14.4746,
-  // );
   TotalPriceState _stateLoadPrice = TotalPriceInitial();
 
   bool isDestinationSelected = false;
@@ -416,183 +412,66 @@ class HomeProvider with ChangeNotifier {
     originIsFilled = false;
 
     try {
-      bool serviceStatus = await locationService.serviceEnabled();
-      log("is location service enabled:--> $serviceStatus");
-
+      bool serviceStatus = await _getLocationPermissionStatus();
       if (serviceStatus) {
-        lctn.LocationData locationData = await locationService.getLocation();
-        logMe("locationData");
-        logMe(locationData);
-        originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-        destinationLatLng =
-            LatLng(locationData.latitude!, locationData.longitude!);
+        var locationData = await Geolocator.getCurrentPosition(
+          desiredAccuracy:
+          LocationAccuracy.bestForNavigation, //    forceAndroidLocationManager: true,
+        );
+        logMe(locationData,name: "LOCATION DATA");
+        originLatLng = LatLng(locationData.latitude, locationData.longitude);
+        destinationLatLng = LatLng(locationData.latitude, locationData.longitude);
         await setAddressFromLatLng();
-        // Listen for location changes
-        locationService.onLocationChanged.listen((event) {
-          // Handle location change if needed
-        });
       } else {
-        bool serviceStatusResult = await locationService.requestService();
-        logMe("Service status activated after request: $serviceStatusResult");
-        if (serviceStatusResult) {
+         final statusResult = await Geolocator.requestPermission();
+         final permissionStatus = (statusResult ==LocationPermission.always) ||(statusResult ==LocationPermission.whileInUse);
+        if (permissionStatus) {
           await setCurrentLocation(context);
-        } /*else {
-          showToast(message: "Location service is not enable ");
-
-          // Show dialog to prompt the user to enable location
-          showLocationDialog(context);
-        }*/
+        }else{
+          await setDefaultLocation();
+        }
       }
-    } on PlatformException catch (e) {
+    }  catch (e) {
       SmartDialog.dismiss();
-      if (e.code == 'PERMISSION_DENIED') {
-        logMe(e.toString());
-        // Show dialog to prompt the user to enable location
-      //  showLocationDialog(context);
-      } else if (e.code == 'SERVICE_STATUS_ERROR') {
-        logMe(e.message);
+      await setDefaultLocation();
+    }
+    notifyListeners();
+  }
+
+  static Future<bool> _getLocationPermissionStatus() async {
+    try {
+      var permissionStatus = await permission.Permission.location.request();
+      if (permissionStatus == permission.PermissionStatus.granted) {
+        return true;
+      } else if (permissionStatus == permission.PermissionStatus.denied) {
+        return false;
+      } else if (permissionStatus == permission.PermissionStatus.permanentlyDenied) {
+        return false;
+      } else {
+
+        return false;
       }
-      // Set default location if an exception occurs
-      setDefaultLocation();
     } catch (e) {
-      logMe(e.toString());
-      // Set default location if an exception occurs
-      setDefaultLocation();
+      return false;
     }
   }
 
-  void showLocationDialog(BuildContext context) {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Enable Location Services"),
-          content: Text(
-              "Location services are required for this feature. Please enable location services in your settings."),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                AppSettings.openAppSettings(type: AppSettingsType.location);
-              },
-              child: Text("Open Settings"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                setDefaultLocation();
-              },
-              child: Text("Cancel"),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
-  void setDefaultLocation() {
+
+  FutureOr<void> setDefaultLocation() async{
     originLatLng = defaultLatLng;
     destinationLatLng = defaultLatLng;
-    // Continue with setting the address from the default location if needed
-    setAddressFromLatLng();
+     await setAddressFromLatLng();
   }
 
-  // void setDefaultLocation() {
-  //   originLatLng =defaultLatLng;
-  //   destinationLatLng =defaultLatLng;
-  //   // Set default address if necessary
-  //   originAddress = 'Default Origin Address';
-  //   destinationAddress = 'Default Destination Address';
-  //   notifyListeners();
-  // }
-
-// //Get Current Location
-//   getCurrentLocation() async {
-//     log("get current location home provider =-===>");
-
-//     try {
-//       bool serviceStatus = await locationService.serviceEnabled();
-//       if (serviceStatus) {
-//         lctn.LocationData locationData = await locationService.getLocation();
-//         logMe("locationData");
-//         logMe(locationData);
-//         originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-
-//         getAddressFromLatLng();
-//         //onlocation change
-//         locationService.onLocationChanged.listen((event) {});
-//       } else {
-//         try {
-//           bool serviceStatusResult = await locationService.requestService();
-//           logMe("Service status activated after request: $serviceStatusResult");
-//           if (serviceStatusResult) {
-//             getCurrentLocation();
-//           }
-//         } catch (e) {
-//           logMe(e.toString());
-//         }
-//       }
-//     } on PlatformException catch (e) {
-//       if (e.toString() == 'PERMISSION_DENIED') {
-//         logMe(e.toString());
-//       } else if (e.code == 'SERVICE_STATUS_ERROR') {
-//         logMe(e.message);
-//       }
-//     }
-//   }
-
-// // Get address from lat and long
-//   getAddressFromLatLng() async {
-//     try {
-//       List<Placemark> p = await placemarkFromCoordinates(
-//           originLatLng.latitude, originLatLng.longitude);
-
-//       Placemark place = p[0];
-
-//       MarkerId markerId = const MarkerId("origin");
-//       final Marker marker = Marker(
-//         anchor: const Offset(0.5, 0.5),
-//         markerId: markerId,
-//         position: LatLng(originLatLng.latitude, originLatLng.longitude),
-//         infoWindow: const InfoWindow(title: "Origin"),
-//         icon: pickUpMarker,
-//         onTap: () {},
-//       );
-
-//       googleMapController
-//           .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-//         target: LatLng(originLatLng.latitude, originLatLng.longitude),
-//         zoom: 16,
-//       )));
-
-//       originAddress =
-//           "${place.street}, ${place.subLocality}, ${place.locality}";
-//       originText = Text(
-//         originAddress,
-//         softWrap: false,
-//         overflow: TextOverflow.ellipsis,
-//       );
-//       String lat, long;
-//       lat = originLatLng.latitude.toString();
-//       long = originLatLng.longitude.toString();
-//       markers[markerId] = marker;
-
-//       originIsFilled = true;
-//       notifyListeners();
-//     } catch (e) {
-//       logMe(e);
-//     }
-//   }
-
-// Set initial Marker in Map i.e Current Location
   Future<void> setAddressFromLatLng() async {
     try {
-      List<Placemark> p = await placemarkFromCoordinates(
-          originLatLng.latitude, originLatLng.longitude);
-
-      Placemark place = p[0];
-
+      List<Placemark> p = await placemarkFromCoordinates(originLatLng.latitude, originLatLng.longitude);
+      if(p.isEmpty){
+        await setDefaultLocation();
+        return;
+      }
+      Placemark place = p.first;
       MarkerId markerId = const MarkerId("origin");
       final Marker marker = Marker(
         anchor: const Offset(0.5, 0.5),
@@ -604,8 +483,7 @@ class HomeProvider with ChangeNotifier {
       );
       originIsFilled = true;
       notifyListeners();
-      await googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      await googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(originLatLng.latitude, originLatLng.longitude),
         zoom: 16,
       )));
