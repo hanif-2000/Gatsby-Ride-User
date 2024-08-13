@@ -26,159 +26,135 @@ class OriginWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isFromOrder) {
       return Consumer<TestSocketProvider>(builder: (context, map, _) {
-        if (map.originAddress == '') {
-          return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-              child: SizedBox(
-                width: deviceWidth * .8,
-                height: 60,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ));
-        } else {
-          return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-              child: GestureDetector(
-                  onTap: () {},
-                  child: SizedBox(
-                      width: deviceWidth * .8,
-                      height: 80,
-                      child: Card(
-                        child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  appLoc.pickUp,
-                                  style: TextStyle(
-                                      fontFamily: "poPPinRegular",
-                                      fontSize: 13.0,
-                                      color: greyC8C7CCColor),
-                                ),
+        return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+            child: GestureDetector(
+                onTap: () {},
+                child: SizedBox(
+                    width: deviceWidth * .8,
+                    height: 80,
+                    child: Card(
+                      child: Padding(
+                          padding:
+                          const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                appLoc.pickUp,
+                                style: TextStyle(
+                                    fontFamily: "poPPinRegular",
+                                    fontSize: 13.0,
+                                    color: greyC8C7CCColor),
+                              ),
 
-                                ///
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Text(
-                                        map.originAddress,
-                                        softWrap: false,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            fontFamily: 'poPPinRegular',
-                                            fontSize: 17.0,
-                                            color: Colors.black),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )),
-                      ))));
-        }
+                              ///
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: Text(
+                                      map.originAddress,
+                                      softWrap: false,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontFamily: 'poPPinRegular',
+                                          fontSize: 17.0,
+                                          color: Colors.black),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          )),
+                    ))));
       });
     } else {
       return Consumer<HomeProvider>(builder: (context, map, _) {
-        if (map.originAddress == '') {
-          return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-              child: SizedBox(
-                width: deviceWidth * .8,
-                height: 60,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ));
-        } else {
-          return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-              child: GestureDetector(
-                  onTap: () async {
-                    checkUserSession().then((value) async {
-                      if (value) {
-                        final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PlacePickerPage(
-                                  addressType: AddressType.origin,
-                                  address: map.originAddress,
-                                  latLng: map.originLatLng),
-                            ));
-                        if(result != null){
-                          map.displayResult(result['pickUpCoordinate'], result['pickUpName'], result['addressType']);
-                        }
-                      } else {
-                        log("user session value is: $value");
-                        Navigator.pushNamed(context, LoginPage.routeName);
+        return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+            child: GestureDetector(
+                onTap: () async {
+                  checkUserSession().then((value) async {
+                    if (value) {
+                      final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PlacePickerPage(
+                                addressType: AddressType.origin,
+                                address: map.originAddress,
+                                latLng: map.originLatLng),
+                          ));
+                      if(result != null){
+                        map.displayResult(result['pickUpCoordinate'], result['pickUpName'], result['addressType']);
                       }
-                    });
-                  },
-                  child: SizedBox(
-                      width: deviceWidth * .8,
-                      height: 70,
-                      child: Card(
-                        margin: EdgeInsets.zero,
-                        elevation: 0.0,
-                        child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  appLoc.pickUp,
-                                  style: TextStyle(
-                                      fontFamily: "poPPinRegular",
-                                      fontSize: 13.0,
-                                      color: greyC8C7CCColor),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Text(
-                                        map.originAddress,
-                                        softWrap: false,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: 'poPPinRegular',
-                                          fontSize: 17.0,
-                                        ),
+                    } else {
+                      log("user session value is: $value");
+                      Navigator.pushNamed(context, LoginPage.routeName);
+                    }
+                  });
+                },
+                child: SizedBox(
+                    width: deviceWidth * .8,
+                    height: 70,
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      elevation: 0.0,
+                      child: Padding(
+                          padding:
+                          const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                appLoc.pickUp,
+                                style: TextStyle(
+                                    fontFamily: "poPPinRegular",
+                                    fontSize: 13.0,
+                                    color: greyC8C7CCColor),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: Text(
+                                      map.originAddress,
+                                      softWrap: false,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: 'poPPinRegular',
+                                        fontSize: 17.0,
                                       ),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          PageTransition(
-                                            type:
-                                                PageTransitionType.leftToRight,
-                                            child: const HomeDrawerPage(),
-                                          ),
-                                        );
-                                      },
-                                      child: SizedBox(
-                                        height: 30,
-                                        child: const Icon(
-                                          Icons.menu,
-                                          size: 30.0,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                          type:
+                                          PageTransitionType.leftToRight,
+                                          child: const HomeDrawerPage(),
                                         ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      height: 30,
+                                      child: const Icon(
+                                        Icons.menu,
+                                        size: 30.0,
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )),
-                      ))));
-        }
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          )),
+                    ))));
       });
     }
   }

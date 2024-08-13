@@ -28,46 +28,8 @@ class _SplashPageState extends State<SplashPage> {
     // newSocketProvider.connectToSocket();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Timer(const Duration(seconds: 3), () async {
-        // if (kDebugMode) {
-        //   checkPermission().then((value) {
-        //     return log(value.toString());
-        //   });
-        //   // log("This text showing after 2seconds");
-        //   // log(checkPermission().toString());
-        // }
-
-        // if (await checkPermission()) {
-        // log("Check Permission value----" + checkPermission().toString());
-        // await sessionClearOrder();
-
         context.read<SplashProvider>().fetchCurrency().listen((state) async {
-          // Permission.notification.isDenied.then((value) async {
-          //   if (value) {
-          //     Permission.notification.request();
-          //   }
-          // });
-
-          // if (Platform.isAndroid) {
-          //   // PermissionStatus status = await Permission.notification.request();
-          //   // if (status.isGranted) {
-          //   //   log("notification permissin is granetd");
-          //   //   // notification permission is granted
-          //   // } else {
-          //   //   // Permission.notification.request();
-          //   //   log("ask for notification permission ");
-          //   //   AppSettings.openAppSettings(type: AppSettingsType.notification);
-          //   //   // Open settings to enable notification permission
-          //   // }
-          // }
-
           final session = locator<Session>();
-          // final socketProvider = Provider.of<LatestSocketProvider>(
-          //     locator<GlobalKey<NavigatorState>>().currentContext!,
-          //     listen: false);
-
-          // log("session token" + session.sessionToken.toString());
-          // log("order id" + session.orderId.toString());
-
           log("state runtime type:==" + state.runtimeType.toString());
 
           switch (state.runtimeType) {
@@ -85,66 +47,11 @@ class _SplashPageState extends State<SplashPage> {
                   //  socketProvider.connectToSocket(context);
                   Navigator.pushNamedAndRemoveUntil(
                       context, HomePage.routeName, (route) => false);
-
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => OrderPage(
-                  //       location: OrderDataDetail(
-                  //         destinationAddress: session.destinationAddress,
-                  //         originAddress: session.originAddress,
-                  //         originLatLng:
-                  //             LatLng(session.originLat, session.originLong),
-                  //         destinationLatLng: LatLng(
-                  //             session.destinationLat, session.destinationLong),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
                 }
-
-                //   if (session.orderStatus != 100 || session.orderStatus != 8) {
-
-                //     // OrderDataDetail(destinationAddress: session.destinationAddress,originAddress: session.originAddress,
-                //     //   originLatLng: LatLng(session.originLat, session.originLong),destinationLatLng: LatLng(session.destinationLat, session.destinationLong
-
-                //     // Navigator.pushNamedAndRemoveUntil(
-                //     //     context, OrderPage.routeName, (route) => false);
-
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => OrderPage(
-                //           location: OrderDataDetail(
-                //             destinationAddress: session.destinationAddress,
-                //             originAddress: session.originAddress,
-                //             originLatLng:
-                //                 LatLng(session.originLat, session.originLong),
-                //             destinationLatLng: LatLng(
-                //                 session.destinationLat, session.destinationLong),
-                //           ),
-                //         ),
-                //       ),
-                //     );
-                //   } else {
-                //     Navigator.pushNamedAndRemoveUntil(
-                //         context, HomePage.routeName, (route) => false);
-                //   }
               } else {
                 Navigator.pushNamedAndRemoveUntil(
                     context, LoginPage.routeName, (route) => false);
               }
-
-              // if(session.isLoggedIn){
-              //   if(session.orderStatus=)
-              // Navigator.pushNamedAndRemoveUntil(
-              //     context, OrderPage.routeName, (route) => false);
-              // }
-              // session.isLoggedIn
-              //     ? Navigator.pushNamedAndRemoveUntil(
-              //         context, HomePage.routeName, (route) => false)
-              //     : Navigator.pushNamedAndRemoveUntil(
-              //         context, LoginPage.routeName, (route) => false);
 
               break;
           }
