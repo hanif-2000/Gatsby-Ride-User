@@ -54,7 +54,8 @@ class LoginProvider extends FormProvider {
 
   Stream<LoginState> doLoginApiSocial() async* {
     yield LoginLoading();
-    final loginResultSocial = await doLoginSocial.callSocial(email, firstName, lastName, "social", sessionHelper.device, socialId);
+    final loginResultSocial = await doLoginSocial.callSocial(
+        email, firstName, lastName, "social", sessionHelper.device, socialId);
     yield* loginResultSocial.fold((statusCode) async* {
       log(statusCode.toString());
       log("yield======" + statusCode.message);
@@ -72,51 +73,39 @@ class LoginProvider extends FormProvider {
   }
 
   //Update Social Login Data
-  Future<bool> updateSocialLoginData({
+  bool updateSocialLoginData({
     required String userEmail,
     required String name,
     required String id,
-  }) async {
-    log("Update login called");
+  }) {
     email = userEmail;
-
     firstName = name.split(' ').first;
     lastName = name.split(' ').last;
     socialId = id;
     notifyListeners();
-
-    log("first name: " +
-        firstName +
-        "last name: " +
-        lastName +
-        "Email: " +
-        email +
-        " Social: " +
-        socialId);
-    await GoogleSignIn().signOut();
     return true;
   }
 
-  // Future<void> signInWithGoogle() async {
-  //   final GoogleSignIn googleSignIn = GoogleSignIn();
-  //   final GoogleSignInAccount? googleSignInAccount =
-  //       await googleSignIn.signIn();
-  //   // if (googleSignInAccount != null) {
-  //   //   final GoogleSignInAuthentication googleSignInAuthentication =
-  //   //       await googleSignInAccount.authentication;
-  //   //   final AuthCredential authCredential = GoogleAuthProvider.credential(
-  //   //       idToken: googleSignInAuthentication.idToken,
-  //   //       accessToken: googleSignInAuthentication.accessToken);
+// Future<void> signInWithGoogle() async {
+//   final GoogleSignIn googleSignIn = GoogleSignIn();
+//   final GoogleSignInAccount? googleSignInAccount =
+//       await googleSignIn.signIn();
+//   // if (googleSignInAccount != null) {
+//   //   final GoogleSignInAuthentication googleSignInAuthentication =
+//   //       await googleSignInAccount.authentication;
+//   //   final AuthCredential authCredential = GoogleAuthProvider.credential(
+//   //       idToken: googleSignInAuthentication.idToken,
+//   //       accessToken: googleSignInAuthentication.accessToken);
 
-  //   //   // Getting users credential
-  //   //   UserCredential result = await auth.signInWithCredential(authCredential);
-  //   //   User user = result.user;
+//   //   // Getting users credential
+//   //   UserCredential result = await auth.signInWithCredential(authCredential);
+//   //   User user = result.user;
 
-  //   //   if (result != null) {
-  //   //     Navigator.pushReplacement(
-  //   //         context, MaterialPageRoute(builder: (context) => HomePage()));
-  //   //   } // if result not null we simply call the MaterialpageRoute,
-  //   //   // for go to the HomePage screen
-  //   // }
-  // }
+//   //   if (result != null) {
+//   //     Navigator.pushReplacement(
+//   //         context, MaterialPageRoute(builder: (context) => HomePage()));
+//   //   } // if result not null we simply call the MaterialpageRoute,
+//   //   // for go to the HomePage screen
+//   // }
+// }
 }

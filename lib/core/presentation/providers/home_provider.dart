@@ -10,19 +10,17 @@ import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/app_settings.dart';
-import 'package:GetsbyRideshare/core/utility/dummy_data.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/domain/usecases/create_oder.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:web_socket_client/web_socket_client.dart';
+
 import '../../data/models/google_route_response_modal.dart';
 import '../../domain/entities/price_category.dart';
 import '../../domain/usecases/get_price_category.dart';
@@ -32,7 +30,6 @@ import '../../utility/direction_helper.dart';
 import '../../utility/injection.dart';
 import '../../utility/session_helper.dart';
 import 'create_order_state.dart';
-import 'package:permission_handler/permission_handler.dart' as permission;
 
 class HomeProvider with ChangeNotifier {
   var dio = Dio();
@@ -107,6 +104,7 @@ class HomeProvider with ChangeNotifier {
   // }
 
   bool isAccepted = false;
+  bool isMapLoading = true;
 
   updateTermsAccepted(value) {
     isAccepted = value;
@@ -180,8 +178,6 @@ class HomeProvider with ChangeNotifier {
 
   //clear state
   clearState() async {
-    // await sessionClearOrder();
-    // session.setOrderStatus = 100;
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";
@@ -189,12 +185,9 @@ class HomeProvider with ChangeNotifier {
     price = "0";
     _selectedCategory = null;
     _paymentMethod = null;
-
     markers.clear();
     selectedVehicleIndex = -1;
-
     originIsFilled = false;
-
     notifyListeners();
   }
 
@@ -257,17 +250,17 @@ class HomeProvider with ChangeNotifier {
       required this.getPriceCategory,
       required this.createOrder,
       required this.getVehicleCatagory}) {
-    getBytesFromAsset(driverMarkerIcon, 70).then((value) {
-      driverMarker = BitmapDescriptor.fromBytes(value);
+    getBytesFromAsset(driverMarkerIcon, 100).then((value) {
+      driverMarker = BitmapDescriptor.bytes(value);
     });
-    getBytesFromAsset(initialPickUpIcon, 250).then((value) async {
-      pickUpMarker = BitmapDescriptor.fromBytes(value);
+    getBytesFromAsset(initialPickUpIcon, 100).then((value) async {
+      pickUpMarker = BitmapDescriptor.bytes(value);
     });
-    getBytesFromAsset(destinationIcon, 100).then((value) async {
-      destinationMarker = BitmapDescriptor.fromBytes(value);
+    getBytesFromAsset(destinationIcon, 40).then((value) async {
+      destinationMarker = BitmapDescriptor.bytes(value);
     });
-    getBytesFromAsset(initialPickUpIcon, 250).then((value) async {
-      initialPickMarker = BitmapDescriptor.fromBytes(value);
+    getBytesFromAsset(initialPickUpIcon,100).then((value) async {
+      initialPickMarker = BitmapDescriptor.bytes(value);
     });
 
     final session = locator<Session>();
@@ -295,142 +288,33 @@ class HomeProvider with ChangeNotifier {
         .asUint8List();
   }
 
-//updat LatLong initially
   updateLatLong({required double latitude, required double longitude}) {
     lat = latitude;
     long = longitude;
     notifyListeners();
   }
 
-//Set current location in map intially
-  // Future<void> setCurrentLocation() async {
-  //   print("set current location  called");
-  //   clearState();
-  //   clearOldRideData();
-  //   destinationAddress = '';
-  //   notifyListeners();
-  //   originAddress = '';
-  //   destinationIsFilled = false;
-  //   originIsFilled = false;
-
-  //   try {
-  //     bool serviceStatus = await locationService.serviceEnabled();
-
-  //     log("is location service enabled:--> $serviceStatus");
-  //     if (serviceStatus) {
-  //       lctn.LocationData locationData = await locationService.getLocation();
-  //       logMe("locationData");
-  //       logMe(locationData);
-  //       originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-  //       destinationLatLng =
-  //           LatLng(locationData.latitude!, locationData.longitude!);
-  //       await setAddressFromLatLng();
-  //       //onlocation change
-  //       locationService.onLocationChanged.listen((event) {});
-  //     } else {
-  //       try {
-  //         bool serviceStatusResult = await locationService.requestService();
-  //         logMe("Service status activated after request: $serviceStatusResult");
-  //         if (serviceStatusResult) {
-  //           await setCurrentLocation();
-  //         }
-  //       } catch (e) {
-  //         logMe(e.toString());
-  //       }
-  //     }
-  //   } on PlatformException catch (e) {
-  //     SmartDialog.dismiss();
-  //     if (e.toString() == 'PERMISSION_DENIED') {
-  //       logMe(e.toString());
-  //     } else if (e.code == 'SERVICE_STATUS_ERROR') {
-  //       logMe(e.message);
-  //     }
-  //   }
-  // }
-
-  // Future<void> setCurrentLocation() async {
-  //   print("set current location called---->>");
-  //   clearState();
-  //   clearOldRideData();
-  //   destinationAddress = '';
-  //   notifyListeners();
-  //   originAddress =
-  //   destinationIsFilled = false;
-  //   originIsFilled = false;
-
-  //   try {
-  //     bool serviceStatus = await locationService.serviceEnabled();
-  //     log("is location service enabled:--> $serviceStatus");
-
-  //     if (serviceStatus) {
-
-  //       lctn.LocationData locationData = await locationService.getLocation();
-  //       logMe("locationData");
-  //       logMe(locationData);
-  //       originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-  //       destinationLatLng =
-  //           LatLng(locationData.latitude!, locationData.longitude!);
-  //       await setAddressFromLatLng();
-  //       //onlocation change
-  //       locationService.onLocationChanged.listen((event) {});
-  //     } else {
-  //       try {
-  //         bool serviceStatusResult = await locationService.requestService();
-  //         logMe("Service status activated after request: $serviceStatusResult");
-  //         if (serviceStatusResult) {
-  //           await setCurrentLocation();
-  //         } else {
-  //           // Set default location if service request failed
-  //           setDefaultLocation();
-  //         }
-  //       } catch (e) {
-  //         logMe(e.toString());
-  //         // Set default location if exception occurs
-  //         setDefaultLocation();
-  //       }
-  //     }
-  //   } on PlatformException catch (e) {
-  //     SmartDialog.dismiss();
-  //     if (e.code == 'PERMISSION_DENIED') {
-  //       logMe(e.toString());
-  //       // Set default location if permission is denied
-  //       setDefaultLocation();
-  //     } else if (e.code == 'SERVICE_STATUS_ERROR') {
-  //       logMe(e.message);
-  //     }
-  //   }
-  // }
-
   Future<void> setCurrentLocation(BuildContext context) async {
-    print("set current location called---->>");
+    print("*********** GET Current Location******************* ");
     clearState();
     clearOldRideData();
     destinationAddress = '';
-    notifyListeners();
     originAddress = '';
     destinationIsFilled = false;
     originIsFilled = false;
 
     try {
-      bool serviceStatus = await _getLocationPermissionStatus();
-      if (serviceStatus) {
-        var locationData = await Geolocator.getCurrentPosition(
-          desiredAccuracy:
-          LocationAccuracy.bestForNavigation, //    forceAndroidLocationManager: true,
-        );
-        logMe(locationData,name: "LOCATION DATA");
+      final locationData = await DirectionHelper.getCurrentLocation();
+      if (locationData != null) {
+        logMe("${locationData.latitude} ${locationData.longitude}",name: "LOCATION DATA");
         originLatLng = LatLng(locationData.latitude, locationData.longitude);
         destinationLatLng = LatLng(locationData.latitude, locationData.longitude);
         await setAddressFromLatLng();
       } else {
-         final statusResult = await Geolocator.requestPermission();
-         final permissionStatus = (statusResult ==LocationPermission.always) ||(statusResult ==LocationPermission.whileInUse);
-        if (permissionStatus) {
-          await setCurrentLocation(context);
-        }else{
-          await setDefaultLocation();
-        }
+        await setDefaultLocation();
       }
+      isMapLoading =false;
+      notifyListeners();
     }  catch (e) {
       SmartDialog.dismiss();
       await setDefaultLocation();
@@ -438,23 +322,7 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  static Future<bool> _getLocationPermissionStatus() async {
-    try {
-      var permissionStatus = await permission.Permission.location.request();
-      if (permissionStatus == permission.PermissionStatus.granted) {
-        return true;
-      } else if (permissionStatus == permission.PermissionStatus.denied) {
-        return false;
-      } else if (permissionStatus == permission.PermissionStatus.permanentlyDenied) {
-        return false;
-      } else {
 
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
 
 
 
@@ -485,13 +353,11 @@ class HomeProvider with ChangeNotifier {
       notifyListeners();
       await googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(originLatLng.latitude, originLatLng.longitude),
-        zoom: 16,
+        zoom: 12.4746,
       )));
 
-      originAddress =
-          "${place.street}, ${place.subLocality}, ${place.locality}";
-      destinationAddress =
-          "${place.street}, ${place.subLocality}, ${place.locality}";
+      originAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
+      destinationAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
       originText = Text(
         originAddress,
         softWrap: false,
@@ -558,10 +424,7 @@ class HomeProvider with ChangeNotifier {
 
   Future<void> setPolylinesDirection(LatLng origin, LatLng destination) async {
     polylines.clear();
-    await DirectionHelper()
-        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
-            destination.latitude, destination.longitude)
-        .then((result) async {
+    await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then((result) async {
       if (result.isNotEmpty) {
         polylineCoordinates = [];
         for (var point in result) {

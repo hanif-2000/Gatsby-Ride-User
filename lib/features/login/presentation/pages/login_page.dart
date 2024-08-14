@@ -206,46 +206,15 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                   ),
                   image: SvgPicture.asset('assets/icons/google.svg'),
                   event: () async {
-                    final GoogleSignIn _googleSignIn = GoogleSignIn(signInOption: SignInOption.standard);
-
-                    // Trigger the authentication flow
-                    final GoogleSignInAccount? googleUser =
-                        await _googleSignIn.signIn();
-
-                    log("google user:--> $googleUser");
-
-                    // Obtain the auth details from the request
-                    final GoogleSignInAuthentication? googleAuth =
-                        await googleUser?.authentication;
-
-                    log("Google auth$googleAuth");
-
-                    // Create a new credential
-                    final credential = GoogleAuthProvider.credential(
-                      accessToken: googleAuth?.accessToken,
-                      idToken: googleAuth?.idToken,
-                    );
-                    log("Credential$credential");
-                    final FirebaseAuth auth = FirebaseAuth.instance;
-                    await auth.signInWithCredential(credential).then((value) {
-                      log("value is -->> $value");
-
-                      log("email is :-->> ${value.user!.email}");
-                      log("name is :-->> ${value.user!.displayName}");
-                      log("google name is :-->> ${googleUser!.displayName!}");
-
-                      log("uid is :-->> ${value.user!.uid}");
-
-                      var provider =
-                          Provider.of<LoginProvider>(context, listen: false);
-                      provider
-                          .updateSocialLoginData(
-                        userEmail: value.user!.email!,
-                        name:
-                            value.user!.displayName ?? googleUser.displayName!,
-                        id: value.user!.uid,
-                      )
-                          .then((value) {
+                    await signInWithGoogle().then((value) {
+                      if(value != null){
+                        log("value" + value.toString());
+                        var provider = Provider.of<LoginProvider>(context, listen: false);
+                        provider.updateSocialLoginData(
+                          userEmail: value.email??"",
+                          name: value.name??"",
+                          id: value.socialId??""
+                        );
                         provider.doLoginApiSocial().listen((state) async {
                           log(state.toString());
                           switch (state.runtimeType) {
@@ -275,8 +244,9 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                               break;
                           }
                         });
-                      });
-                      log("value" + value.toString());
+                      }
+
+
                     });
                   },
                   buttonHeight: 50,
@@ -306,12 +276,14 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                         image: SvgPicture.asset('assets/icons/apple.svg'),
                         event: () async {
                          await signInWithApple().then((value){
-                           var provider = Provider.of<LoginProvider>(context, listen: false);
-                           provider.updateSocialLoginData(
-                             userEmail: value?.email??"",
-                             name: value?.name ?? "",
-                             id: value?.socialId??"",
-                           ).then((value) {
+                           if(value != null){
+                             log("value" + value.toString());
+                             var provider = Provider.of<LoginProvider>(context, listen: false);
+                             provider.updateSocialLoginData(
+                               userEmail: value.email??"",
+                               name: value.name ?? "",
+                               id: value.socialId??"",
+                             );
                              provider.doLoginApiSocial().listen((state) async {
                                log(state.toString());
                                switch (state.runtimeType) {
@@ -342,8 +314,7 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                                    break;
                                }
                              });
-                           });
-                           log("value" + value.toString());
+                           }
                          });
                         },
                         buttonHeight: 50,
@@ -353,50 +324,6 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                       ),
                     )
                   : SizedBox(),
-
-              // Center(
-              //   child: InkWell(
-              //     onTap: () {
-              //       Navigator.pushNamedAndRemoveUntil(
-              //           context, HomePage.routeName, (route) => false);
-              //     },
-              //     child: const Text(
-              //       'Skip for now',
-              //       style: TextStyle(
-              //         fontFamily: 'poPPinRegular',
-              //         fontSize: 15,
-              //         fontWeight: FontWeight.w400,
-              //         color: greyA2A0A8Color,
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-
-              // mediumVerticalSpacing(),
-              //
-              // Padding(
-              //     padding: const EdgeInsets.only(
-              //       left: sizeMedium,
-              //       right: sizeMedium,
-              //       bottom: sizeMedium,
-              //     ),
-              //     child: CustomButton(
-              //         text: Text(
-              //           appLoc.signup.toUpperCase(),
-              //           style: txtButtonStyle,
-              //         ),
-              //         event: () {
-              //           Navigator.pushNamed(
-              //             context,
-              //             RegisterPage.routeName,
-              //           );
-              //         },
-              //         buttonHeight: MediaQuery.of(context).size.height * 0.080,
-              //         isRounded: true,
-              //         bgColor: blackColor,),),
             ],
           ),
         ),

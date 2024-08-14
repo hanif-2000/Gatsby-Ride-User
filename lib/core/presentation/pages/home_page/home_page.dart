@@ -10,6 +10,7 @@ import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -71,16 +72,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   checkSessionDataAndNavigate() {
-    if (session.isRunningOrder) {
+    if (session.isRunningOrder && session.orderId.isNotEmpty) {
       socketProvider.updateOnlyBitmap();
-
-      socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
+     final orderId = int.tryParse(session.orderId);
+      socketProvider.fetchOrderDetails(orderId??0).then((value) {
         log("order details are:  ${value.data}");
         print("order details are:  ${session.orderStatus}");
-
         socketProvider.updateOrderDetailsModel(data: value);
         dismissLoading();
-
         if (session.orderStatus.toString() == "7") {
           if (!session.isPaymentDone) {
             retrieveOrderReceiptFromLocal().then((value) {
@@ -212,8 +211,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           });
         }
       });
-
-      // }
     } else {
       logMe("---NO OLD ORDER RUNNING*-----");
     }
@@ -247,37 +244,49 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             backgroundColor: whiteColor,
-            // appBar: const CustomAppBar(
-            //   centerTitle: false,
-            // ),
             body: Consumer<HomeProvider>(builder: (context, map, _) {
+              final mapProver = Provider.of<HomeProvider>(context,listen: false);
               return Stack(
                 children: <Widget>[
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(map.lat, map.long),
-                      zoom: 14.4746,
-                    ),
-                    onMapCreated: (GoogleMapController controller) async {
-                      map.googleMapController = controller;
-                      SmartDialog.showLoading(
-                        animationType: SmartAnimationType.fade,
-                        backDismiss: false,
-                        msg: 'Fetching Current location...',
-                        alignment: Alignment.center,
-                      );
-                      await map.setCurrentLocation(context).then((value) {
-                        log("google map created successfully");
-                        SmartDialog.dismiss();
-                        checkSessionDataAndNavigate();
-                      });
-                      // }
-                    },
-                    polylines: map.polylines,
-                    markers: Set<Marker>.of(map.markers.values),
+                  Stack(
+                    children: [
+                      GoogleMap(
+                        mapType: MapType.normal,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(map.lat, map.long),
+                          zoom: 12.4746,
+                        ),
+                        onMapCreated: (GoogleMapController controller) async {
+                          map.googleMapController = controller;
+                          SmartDialog.showLoading(
+                            animationType: SmartAnimationType.fade,
+                            backDismiss: false,
+                            msg: 'Fetching Current location...',
+                            alignment: Alignment.center,
+                          );
+                          await map.setCurrentLocation(context).then((value) {
+                            log("google map created successfully");
+                            SmartDialog.dismiss();
+                            checkSessionDataAndNavigate();
+                          });
+                          // }
+                        },
+                        polylines: map.polylines,
+                        markers: Set<Marker>.of(map.markers.values),
+                      ),
+                      Visibility(
+                        visible: mapProver.isMapLoading,
+                        child: SizedBox(
+                          height: _deviceSize.height,
+                          width: _deviceSize.width,
+                          child: Center(
+                            child: CupertinoActivityIndicator(color:primaryColor,radius: 10,),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   SafeArea(
                       child: Stack(children: [

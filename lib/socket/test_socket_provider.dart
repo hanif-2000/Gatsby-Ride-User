@@ -1095,7 +1095,7 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   callTrakingDriver(LatLng position) async {
-    log("driver position is :${position}");
+    log("driver position is :${position.latitude}, ${position.longitude}");
     await trackingDriver(
         bearing: bearing,
         listenLocation: true,

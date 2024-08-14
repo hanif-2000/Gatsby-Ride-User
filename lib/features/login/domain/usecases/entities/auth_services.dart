@@ -10,7 +10,7 @@ import '../../../data/models/user_model.dart';
 
 mixin AuthServices {
 
-  Future<UserModel?> signInWithGoogle(BuildContext context) async {
+  Future<UserModel?> signInWithGoogle() async {
     try {
       GoogleSignIn googleSignIn = GoogleSignIn(
         scopes: ['email'],
@@ -33,33 +33,6 @@ mixin AuthServices {
       return null;
     }
   }
-
-/*  Future<UserModel?> facebookLogin() async {
-    try {
-      final res = await FacebookAuth.instance.login(
-        permissions: ['email', 'public_profile'],
-      );
-
-      switch (res.status) {
-        case LoginStatus.success:
-          final accessToken = res.accessToken;
-          printLog('Access token: ${accessToken?.tokenString}');
-          if (accessToken?.tokenString == null) {
-            return null;
-          }
-          final facebookAuthCredential = FacebookAuthProvider.credential(accessToken!.tokenString);
-          return await _signInWithCredential(facebookAuthCredential, socialType: "facebook");
-        case LoginStatus.failed:
-          blocLog(msg: 'Facebook login failed: ${res.message}', bloc: "AuthServices");
-          return null;
-        default:
-          return null;
-      }
-    } catch (e, s) {
-      blocLog(msg: 'Facebook login error: $e', bloc: "AuthServices", exp: s.toString());
-      return null;
-    }
-  }*/
 
   Future<UserModel?> signInWithApple() async {
     try {
@@ -95,6 +68,7 @@ mixin AuthServices {
       return null;
     }
   }
+
    String _getFullName(String? firstName, String? lastName) {
     if (firstName != null && lastName != null) {
       return "$firstName $lastName";

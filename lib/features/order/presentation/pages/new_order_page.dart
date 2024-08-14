@@ -48,9 +48,7 @@ class _NewOrderPageState extends State<NewOrderPage>
     WidgetsBinding.instance.addObserver(this);
     newSocketProvider.updateBitsImage().then((value) {
       if (session.isRunningOrder) {
-        newSocketProvider.callTrakingDriver(LatLng(
-            double.parse(session.driverLatLng.split(',').first),
-            double.parse(session.driverLatLng.split(',').last)));
+        newSocketProvider.callTrakingDriver(LatLng(double.parse(session.driverLatLng.split(',').first), double.parse(session.driverLatLng.split(',').last)));
       }
 
       if (session.driverId != '') {

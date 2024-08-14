@@ -189,10 +189,9 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
 
                             provider.setAddressLoad(false);
                           } else {
-                            FocusScope.of(context).unfocus();
-                            provider.setDestinationAddress =
-                                "${placemarks.first.name}, ${placemarks.first.locality}";
+                            provider.setDestinationAddress = "${placemarks.first.name}, ${placemarks.first.locality}";
                             provider.setAddressLoad(false);
+                            FocusScope.of(context).unfocus();
                           }
                         }
                       },
