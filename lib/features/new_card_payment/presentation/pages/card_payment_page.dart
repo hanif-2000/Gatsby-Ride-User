@@ -86,14 +86,14 @@ class _CardPaymentExpansionTileState extends State<CardPaymentExpansionTile> {
                     /******    Show List of Cards */
 
                     StreamBuilder<CardListState>(
+                        initialData: CardListLoading(),
                         stream: context.read<PaymentProvider>().fetchCardListData(),
                         builder: (context, state) {
                           switch (state.data.runtimeType) {
                             case CardListLoading:
                               return const Center(child: CircularProgressIndicator());
                             case CardListFailure:
-                              final failure =
-                                  (state.data as CardListFailure).failure;
+                              final failure = (state.data as CardListFailure).failure;
                               showToast(message: failure);
                               return const SizedBox.shrink();
                             case CardListSuccess:

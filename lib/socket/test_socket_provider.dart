@@ -59,7 +59,7 @@ class TestSocketProvider extends ChangeNotifier {
       destinationMarker,
       initialMarker,
       driverMarker;
-  String originAddress = 'From';
+  String originAddress = 'Pickup Address';
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
@@ -178,6 +178,16 @@ class TestSocketProvider extends ChangeNotifier {
   Future<void> updateDriverDetailsModel(
       {required DriverDetailResponseModel data}) async {
     driverDetailResponseModel = data;
+    notifyListeners();
+  }
+  //clear state
+  FutureOr<void> clearState() async {
+    await sessionClearOrder();
+    polylines.clear();
+    markers.clear();
+    isWithDriver = false;
+    originIsFilled = false;
+    originAddress = 'Pickup Address';
     notifyListeners();
   }
 
@@ -467,7 +477,7 @@ class TestSocketProvider extends ChangeNotifier {
                         child: Text("Find Next Driver"),
                         onPressed: () async {
                           session.setIsRunningOrder = false;
-                          await _homeProvider.clearState();
+                           _homeProvider.clearState();
 
                           Navigator.pop(context);
 
@@ -953,14 +963,7 @@ class TestSocketProvider extends ChangeNotifier {
     }
   }
 
-  //clear state
-  FutureOr<void> clearState() async {
-    await sessionClearOrder();
-    polylines.clear();
-    markers.clear();
-    isWithDriver = false;
-    notifyListeners();
-  }
+
 
   FutureOr<void> setCurrentLocation(OrderDataDetail orderDataDetail) async {
     log("set current location called :$orderDataDetail");

@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/domain/usecases/get_google_place.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/debouncer.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +17,7 @@ class PlacePickerProvider with ChangeNotifier {
   final GetGooglePlace getGooglePlace;
   final TextEditingController _controller = TextEditingController();
   final lctn.Location locationService = lctn.Location();
-
+  final _debouncer = Debouncer(milliseconds: 1500);
   late GoogleMapController googleMapController;
   CameraPosition? cameraPosition;
   PlaceAutoCompleteState _state = PlaceInitial();
@@ -203,16 +204,17 @@ class PlacePickerProvider with ChangeNotifier {
   PlaceAutoCompleteState get state => _state;
   String get changeValue => _changeValue;
 
+
+
   Future<void> fetchGooglePlaces() async {
     newState = PlaceLoading();
-
     final placeResult = await getGooglePlace.call(_controller.text);
     placeResult.fold(
       (failure) async {
         newState = PlaceFailure(failure: failure);
       },
       (data) async {
-        logMe(data);
+        logMe(data,name: "newState");
         newState = PlaceAutoLoaded(data: data);
       },
     );

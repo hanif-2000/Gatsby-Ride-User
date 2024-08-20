@@ -94,14 +94,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             });
             /** Navigate to receipt screen */
           } else if (!session.isRatingGiven) {
-            socketProvider
-                .fetchDriverDetails(int.parse(session.driverId))
-                .then((value) {
-              socketProvider
-                  .updateDriverDetailsModel(data: value)
-                  .then((value) {
-                logMe(
-                    " driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
+            socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
+              socketProvider.updateDriverDetailsModel(data: value).then((value) {
+                logMe(" driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
                 SmartDialog.dismiss();
                 Navigator.push(
                   context,
@@ -260,11 +255,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         zoomControlsEnabled: false,
                         initialCameraPosition: CameraPosition(
                           target: LatLng(map.lat, map.long),
-                          zoom: 12.4746,
+                          zoom: 11.4746,
                         ),
                         onMapCreated: (GoogleMapController controller) async {
                           map.googleMapController = controller;
                           map.updateMapLoaded();
+                          checkSessionDataAndNavigate();
                           // }
                         },
                         polylines: map.polylines,
@@ -286,12 +282,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           visible: !map.isDestinationSelected,
                           child: GestureDetector(
                             onTap: () async {
-                              await map
-                                  .setCurrentLocation(context)
-                                  .then((value) {
+                              await map.setCurrentLocation(context).then((value) {
                                 log("google map created successfully");
                                 SmartDialog.dismiss();
-                                checkSessionDataAndNavigate();
                               });
                             },
                             child: Container(
@@ -421,18 +414,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     !map.destinationIsFilled) {
                                   showToast(message: "Select Address");
                                 } else {
-                                  // try {
-                                  //   // Get real distance
-                                  //   var response = await Dio().get(
-                                  //       'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${map.destinationLatLng.latitude},${map.destinationLatLng.longitude}&origins=${map.originLatLng.latitude},${map.originLatLng.longitude}&key=AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs');
-                                  //   log(" response of real distance:--->>> ${response.data}");
-
-                                  //   var data = routeModal
-                                  //           .GoogleRouteDistanceResponseModal
-                                  //       .fromJson(response.data);
-                                  // } catch (e) {
-                                  //   print(e);
-                                  // }
                                   map.fetchVehicleCategory().listen((event) {
                                     log("========>>>>>>" + event.toString());
                                   });

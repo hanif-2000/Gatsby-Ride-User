@@ -34,7 +34,7 @@ class PaymentProvider extends FormProvider {
   }
 
   Stream<CardListState> fetchCardListData() async* {
-    logMe("loading");
+    logMe("loading fetchCardListData",name: "GET CARDS");
     yield CardListLoading();
     final result = await paymentCard.call();
     yield* result.fold((failure) async* {

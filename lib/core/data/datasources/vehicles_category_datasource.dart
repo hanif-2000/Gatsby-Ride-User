@@ -77,6 +77,7 @@ class VehicleCategoryDataSourceImplementation
       );
 
       log("bikbbu" + response.data.toString());
+      log("Complete Url=========>>>>>>" + response.realUri.path);
 
       if ((response.data["success"] == 0) &&
           (response.data["message"] == "Account Suspended")) {

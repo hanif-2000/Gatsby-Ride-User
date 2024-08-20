@@ -248,7 +248,7 @@ class FeedBackScreen extends StatelessWidget {
                             //     Provider.of<LatestSocketProvider>(context,
                             //         listen: false);
                             session.setIsRatingGiven = true;
-                            await homeProvider.clearState();
+                            homeProvider.clearState();
                             await provider.clearState();
 
                             Navigator.pushNamedAndRemoveUntil(

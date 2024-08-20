@@ -161,7 +161,6 @@ class BottomSheetBookRide extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 provider.setPaymentMethod = PaymentMethod.cash;
-
                                 showModalBottomSheet(
                                   barrierColor: Colors.transparent,
                                   useRootNavigator: true,

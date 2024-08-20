@@ -241,6 +241,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
      log(paymentResult.toString());
    }catch(e, s){
      log("$e, $s",name: "STRIPE LOG");
+     showToast(message: e.toString());
    }
   }
 
@@ -257,6 +258,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     setState(() {
     });
   }
+
   void _getTotalAmount(){
     _paymentItems.clear();
     _paymentItems.add(PaymentItem(

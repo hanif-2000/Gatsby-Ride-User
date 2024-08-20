@@ -50,6 +50,8 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
+
   String estimatedTimeToShow = '';
 
   Session session = locator<Session>();
@@ -111,8 +113,8 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  double lat = 30.7046;
-  double long = 76.7179;
+  double lat = 55.170834;
+  double long = -118.794724;
 
   late GoogleMapController googleMapController;
   // Completer<GoogleMapController> mapController = Completer();
@@ -129,8 +131,6 @@ class HomeProvider with ChangeNotifier {
   int totalDistance = 0;
   int estimatedTime = 1;
   String time = '';
-  late Text originText;
-  late Text destinationText;
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
   static List<PriceCategory> _priceCategory = [];
@@ -181,7 +181,7 @@ class HomeProvider with ChangeNotifier {
   }
 
   //clear state
-  clearState() async {
+  clearState(){
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";
@@ -192,6 +192,8 @@ class HomeProvider with ChangeNotifier {
     markers.clear();
     selectedVehicleIndex = -1;
     originIsFilled = false;
+    originAddress = 'Pickup Address';
+    isDestinationSelected= false;
     notifyListeners();
   }
 
@@ -368,12 +370,6 @@ class HomeProvider with ChangeNotifier {
 
       originAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
       destinationAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
-      originText = Text(
-        originAddress,
-        softWrap: false,
-        overflow: TextOverflow.ellipsis,
-      );
-
       markers[markerId] = marker;
       notifyListeners();
     } catch (e) {
@@ -383,8 +379,7 @@ class HomeProvider with ChangeNotifier {
 
 // Show marker on Map according to latlong and addresstype
   displayResult(LatLng latlng, String address, AddressType addressType) async {
-    final MarkerId markerId =
-        MarkerId(addressType == AddressType.origin ? "origin" : "destination");
+    final MarkerId markerId = MarkerId(addressType == AddressType.origin ? "origin" : "destination");
     try {
       final Marker marker = Marker(
         anchor: const Offset(0.5, 0.5),
@@ -398,11 +393,6 @@ class HomeProvider with ChangeNotifier {
 
       if (addressType == AddressType.origin) {
         originAddress = address;
-        originText = Text(
-          originAddress,
-          softWrap: false,
-          overflow: TextOverflow.ellipsis,
-        );
         originLatLng = latlng;
 
         originIsFilled = true;
@@ -412,14 +402,9 @@ class HomeProvider with ChangeNotifier {
         }
       } else {
         destinationAddress = address;
-        destinationText = Text(
-          destinationAddress,
-          softWrap: false,
-          overflow: TextOverflow.ellipsis,
-        );
         destinationLatLng = latlng;
         destinationIsFilled = true;
-        setPolylinesDirection(originLatLng, destinationLatLng);
+       await setPolylinesDirection(originLatLng, destinationLatLng);
       }
       markers[markerId] = marker;
       List<Marker> listMarker = [];
@@ -666,8 +651,7 @@ class HomeProvider with ChangeNotifier {
 
     var res = await dio.get(
       url,
-      options:
-          Options(headers: {"Authorization": "Bearer ${session.sessionToken}"}),
+      options: Options(headers: {"Authorization": "Bearer ${session.sessionToken}"}),
     );
 
     log("list of card are====>>>" + res.toString());

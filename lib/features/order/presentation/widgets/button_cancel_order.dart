@@ -110,7 +110,7 @@ class ButtonCancelOrder extends StatelessWidget {
                                 var homeProvider = Provider.of<HomeProvider>(
                                     context,
                                     listen: false);
-                                await homeProvider.clearState();
+                                 homeProvider.clearState();
                                 dismissLoading();
                                 //**---------CREATE RIDE REQUEST AGAIN */
 

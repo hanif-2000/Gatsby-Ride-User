@@ -74,9 +74,8 @@ class RatingSubmittedScreen extends StatelessWidget {
                         session.setOrderStatus = 100;
                         session.clearOrderSession();
 
-                        var homeProvider =
-                            Provider.of<HomeProvider>(context, listen: false);
-                        await homeProvider.clearState();
+                        var homeProvider = Provider.of<HomeProvider>(context, listen: false);
+                         homeProvider.clearState();
                         await orderProvider.clearState();
 
                         Navigator.pushNamedAndRemoveUntil(

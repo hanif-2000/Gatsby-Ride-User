@@ -77,9 +77,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
   Widget build(BuildContext context) {
     MediaQueryData queryData = MediaQuery.of(context);
     return ChangeNotifierProvider(
-        create: (_) => locator<PlacePickerProvider>()
-          ..setupCurrentLatLongValues(
-              widget.latLng, widget.address, widget.addressType),
+        create: (_) => locator<PlacePickerProvider>()..setupCurrentLatLongValues(widget.latLng, widget.address, widget.addressType),
         builder: (context, child) {
           return Consumer<PlacePickerProvider>(builder: (context, provider, _) {
             return Scaffold(
@@ -116,12 +114,10 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         onSubmitted: (String query) async {
                           dev.log("search query is -->> $query");
                           _displayOverlay(buildSearchingOverlay());
-                          await provider.fetchGooglePlaces();
+                           await provider.fetchGooglePlaces();
                           if (provider.state.runtimeType == PlaceAutoLoaded) {
-                            final data =
-                                (provider.state as PlaceAutoLoaded).data;
-                            _displayOverlay(
-                                buildPredictionOverlay(data, context));
+                            final data = (provider.state as PlaceAutoLoaded).data;
+                            _displayOverlay(buildPredictionOverlay(data, context));
                           }
                         },
                         onChanged: (String val) async {
