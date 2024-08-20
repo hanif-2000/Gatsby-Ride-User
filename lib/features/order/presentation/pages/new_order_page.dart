@@ -299,7 +299,7 @@ class _NewOrderPageState extends State<NewOrderPage>
                       bearing: newSocketProvider.bearing),
                   onMapCreated: (GoogleMapController controller) async {
                     newSocketProvider.googleMapController = controller;
-                    await newSocketProvider.setCurrentLocation(widget.location);
+                     newSocketProvider.setCurrentLocation(widget.location);
                   },
                   onCameraMove: (val) async {
                     newSocketProvider.updateZoom(val);

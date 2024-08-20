@@ -125,19 +125,6 @@ class DestinationWidget extends StatelessWidget {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    // SvgPicture.asset(
-                                    //   'assets/icons/destination.svg',
-                                    //   currentColor: Colors.red,
-                                    // ),
-                                    // SvgPicture.asset(
-                                    //   'assets/icons/destination_logo.svg',
-                                    //   height: 30.0,
-                                    //   width: 30.0,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-                                    // const SizedBox(
-                                    //   width: 10,
-                                    // ),
                                     Flexible(
                                       child: Text(
                                         map.destinationIsFilled

@@ -2,7 +2,6 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/presentation/widgets/custom_app_title_bar.dart';
@@ -20,23 +19,17 @@ class AboutUsPage extends StatefulWidget {
 }
 
 class _AboutUsPageState extends State<AboutUsPage> {
-  String appVersion = '';
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      getVersion();
-    });
-  }
+  String appVersion = '1.0.1';
 
-  Future getVersion() async {
+
+/*  Future getVersion() async {
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
       setState(() {
         appVersion = packageInfo.version;
         logMe('appVersion $appVersion');
       });
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

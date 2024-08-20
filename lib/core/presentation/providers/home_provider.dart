@@ -117,12 +117,11 @@ class HomeProvider with ChangeNotifier {
   late GoogleMapController googleMapController;
   // Completer<GoogleMapController> mapController = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  LatLng originLatLng = LatLng(30.7046, 76.7179);
-
-  late LatLng destinationLatLng;
+  LatLng originLatLng = LatLng(55.170834, -118.794724);
+  LatLng destinationLatLng = LatLng(55.170834, -118.794724);
   late BitmapDescriptor driverMarker;
   late BitmapDescriptor pickUpMarker, destinationMarker, initialPickMarker;
-  String originAddress = '';
+  String originAddress = 'Pickup Address';
   bool destinationIsFilled = false;
   bool originIsFilled = false;
   String destinationAddress = appLoc.destination;
@@ -161,6 +160,11 @@ class HomeProvider with ChangeNotifier {
   //Update Estimated Time
   updateEstimatedTime(val) {
     estimatedTime = val;
+    notifyListeners();
+  }
+  //Update Estimated Time
+  void updateMapLoaded() {
+    isMapLoading = false;
     notifyListeners();
   }
 
@@ -295,11 +299,17 @@ class HomeProvider with ChangeNotifier {
   }
 
   Future<void> setCurrentLocation(BuildContext context) async {
+    SmartDialog.showLoading(
+      animationType: SmartAnimationType.fade,
+      backDismiss: false,
+      msg: 'Fetching Current location...',
+      alignment: Alignment.center,
+    );
     print("*********** GET Current Location******************* ");
     clearState();
     clearOldRideData();
     destinationAddress = '';
-    originAddress = '';
+    originAddress = 'Pickup Address';
     destinationIsFilled = false;
     originIsFilled = false;
 

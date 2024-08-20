@@ -54,6 +54,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app need access to camera to capture profile picture</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app does not access your music library, but this permission is required due to included libraries.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app need access to location of user for navigation</string>
 	<key>NSLocationAlwaysUsageDescription</key>

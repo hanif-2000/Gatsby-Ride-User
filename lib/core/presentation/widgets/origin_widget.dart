@@ -71,7 +71,7 @@ class OriginWidget extends StatelessWidget {
     } else {
       return Consumer<HomeProvider>(builder: (context, map, _) {
         return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
             child: GestureDetector(
                 onTap: () async {
                   checkUserSession().then((value) async {
@@ -124,8 +124,8 @@ class OriginWidget extends StatelessWidget {
                                       map.originAddress,
                                       softWrap: false,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Colors.black,
+                                      style:  TextStyle(
+                                        color:  map.originIsFilled?Colors.black:  Colors.grey,
                                         fontFamily: 'poPPinRegular',
                                         fontSize: 17.0,
                                       ),

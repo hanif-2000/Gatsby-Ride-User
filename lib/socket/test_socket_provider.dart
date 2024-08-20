@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -49,6 +50,7 @@ class TestSocketProvider extends ChangeNotifier {
   DriverDetailResponseModel? driverDetailResponseModel;
   OrderDetailResponseModel? orderDetailResponseModel;
   bool isWithDriver = false;
+  bool originIsFilled = false;
   int unreadMessageCount = 0;
   String destinationAddress = "Destination";
   bool isLoading = false;
@@ -57,7 +59,7 @@ class TestSocketProvider extends ChangeNotifier {
       destinationMarker,
       initialMarker,
       driverMarker;
-  String originAddress = '';
+  String originAddress = 'From';
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
@@ -67,9 +69,6 @@ class TestSocketProvider extends ChangeNotifier {
   double bearing = 0.0;
 
   double ratingGiven = 1;
-  late Text originText;
-  late Text destinationText;
-
   late GoogleMapController googleMapController;
   double zoom = 15;
 
@@ -835,7 +834,7 @@ class TestSocketProvider extends ChangeNotifier {
         .asUint8List();
   }
 
-  joinExitRoom(
+  void joinExitRoom(
       {int? receiverId, required String type, required BuildContext context}) {
     print("chat page join exit room called");
     print("connection state ${_socket!.connection.state}");
@@ -869,7 +868,7 @@ class TestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  markMessageAsRead({
+  void markMessageAsRead({
     int? receiverId,
   }) {
     log("mark message as read  called");
@@ -892,13 +891,13 @@ class TestSocketProvider extends ChangeNotifier {
     // updateUnreadCount("0");
   }
 
-  clearChatList() {
+  void clearChatList() {
     _chatMessagesList.clear();
     _chatMessagesList = [];
     notifyListeners();
   }
 
-  sendChatMessage({
+  void sendChatMessage({
     String? message,
     int? receiverId,
     String? messageType = 'Text',
@@ -955,18 +954,15 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   //clear state
-  clearState() async {
+  FutureOr<void> clearState() async {
     await sessionClearOrder();
     polylines.clear();
     markers.clear();
     isWithDriver = false;
-    // isFirstTracking = true;
-    // _orderStatus = OrderStatus.lookingDriver;
-
     notifyListeners();
   }
 
-  setCurrentLocation(OrderDataDetail orderDataDetail) async {
+  FutureOr<void> setCurrentLocation(OrderDataDetail orderDataDetail) async {
     log("set current location called :$orderDataDetail");
     try {
       bool serviceStatus = await locationService.serviceEnabled();
@@ -992,13 +988,13 @@ class TestSocketProvider extends ChangeNotifier {
     }
   }
 
-  callDriver() async {
+  void callDriver() async {
     final call = Uri.parse(
         'tel:${orderDetailResponseModel?.data.phone ?? '9876543210'}');
     launchUrl(call);
   }
 
-  setAddressFromLatLng(OrderDataDetail orderDataDetail) async {
+  void setAddressFromLatLng(OrderDataDetail orderDataDetail) async {
     log("set address from lat long  ORDER DETAILS : ${orderDataDetail}");
     try {
       MarkerId markerIdOrigin = const MarkerId("origin");
@@ -1017,8 +1013,7 @@ class TestSocketProvider extends ChangeNotifier {
       final Marker markerDestination = Marker(
         anchor: const Offset(0.5, 0.5),
         markerId: markerIdDestination,
-        position: LatLng(orderDataDetail.destinationLatLng.latitude,
-            orderDataDetail.destinationLatLng.longitude),
+        position: LatLng(orderDataDetail.destinationLatLng.latitude, orderDataDetail.destinationLatLng.longitude),
         infoWindow: const InfoWindow(title: "destination"),
         icon: await getBytesFromAsset(destinationIcon, 100).then((value) {
           log("destination marker--->> ${value}");
@@ -1038,11 +1033,6 @@ class TestSocketProvider extends ChangeNotifier {
       destinationAddress = orderDataDetail.destinationAddress;
       originLatLng = orderDataDetail.originLatLng;
       destinationLatLng = orderDataDetail.destinationLatLng;
-      originText = Text(
-        originAddress,
-        softWrap: false,
-        overflow: TextOverflow.ellipsis,
-      );
       markers[markerIdOrigin] = markerOrigin;
       markers[markerIdDestination] = markerDestination;
       notifyListeners();

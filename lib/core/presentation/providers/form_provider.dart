@@ -9,29 +9,20 @@ import '../../utility/image_picker_helper.dart';
 class FormProvider with ChangeNotifier {
   // initial
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController =
-      TextEditingController(text: kDebugMode ? "testdev@gmail.com" : '');
+  final TextEditingController _emailController = TextEditingController(text: kDebugMode ? "dev@gmail.com" : '');
   final TextEditingController _emailConfirmController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController(text: kDebugMode ? "Pass@123" : '');
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-  final TextEditingController _currentPasswordController =
-      TextEditingController();
-  final TextEditingController _passwordConfirmController =
-      TextEditingController();
+  final TextEditingController _passwordController = TextEditingController(text: kDebugMode ? "Pass@123" : '');
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _currentPasswordController = TextEditingController();
+  final TextEditingController _passwordConfirmController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _countryController =
-      TextEditingController(text: "Canada");
-  final TextEditingController _contactMessageController =
-      TextEditingController();
-
+  final TextEditingController _countryController = TextEditingController(text: "Canada");
+  final TextEditingController _contactMessageController = TextEditingController();
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _cardCvvController = TextEditingController();
-  final TextEditingController _accountHolderController =
-      TextEditingController();
+  final TextEditingController _accountHolderController = TextEditingController();
   final TextEditingController _expiryController = TextEditingController();
 
   // final TextEditingController _otpController = TextEditingController();

@@ -28,11 +28,11 @@ const String defaultApplePay = '''{
   "provider": "apple_pay",
   "data": {
     "merchantIdentifier": "merchant.getride.user.taxi",
-    "displayName": "Sam's Fish",
+    "displayName": "Ride Fare",
     "merchantCapabilities": ["3DS", "debit", "credit"],
     "supportedNetworks": ["amex", "visa", "discover", "masterCard"],
-    "countryCode": "US",
-    "currencyCode": "USD",
+    "countryCode": "CA",
+    "currencyCode": "CAD",
     "requiredBillingContactFields": ["emailAddress", "name", "phoneNumber", "postalAddress"],
     "requiredShippingContactFields": [],
     "shippingMethods": [

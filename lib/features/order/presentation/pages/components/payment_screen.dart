@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import 'package:lottie/lottie.dart';
@@ -177,107 +178,92 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   TextEditingController textEditingController = TextEditingController();
 
-  var pkToken =
-      "pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH";
-
-  Future<void> onGooglePayResult(paymentResult) async {
-    // final response = await fetchPaymentIntentClientSecret();
-    // final clientSecret = response['clientSecret'];
-    // final token = paymentResult['paymentMethodData']['tokenizationData']['token'];
-    // final tokenJson = Map.castFrom(json.decode(token));
-
-    // final params = PaymentMethodParams.cardFromToken(
-    //   token: tokenJson['id'],
-    // );
-    // // Confirm Google pay payment method
-    // await Stripe.instance.confirmPayment(
-    //   clientSecret,
-    //   params,
-    // );-
-  }
-
-  //   debugPrint(paymentResult.toString());
-  // }
 
   void onApplePayResult(paymentResult) async {
-    final token =
-        await stripe.Stripe.instance.createApplePayToken(paymentResult);
-    log("-->>> Token id is <<<<-----" + token.id);
+   try{
+     final token = await stripe.Stripe.instance.createApplePayToken(paymentResult);
+     log("-->>> Token id is <<<<-----" + token.id);
 
-    var body = {
-      'tip': tipsTextEditingController.text,
-      'token': token.id,
-      'order_id': int.parse(widget.orderId),
-      "driver_id": int.parse(widget.driverId),
-      "amount": totalAmountToPay
-    };
+     var body = {
+       'tip': tipsTextEditingController.text,
+       'token': token.id,
+       'order_id': int.parse(widget.orderId),
+       "driver_id": int.parse(widget.driverId),
+       "amount": totalAmountToPay
+     };
 
-    log("apple card body is-->>  " + body.toString());
+     log("apple card body is-->>  " + body.toString());
 
-    var response = await dio.post(
-      '${BASE_URL}api/webservice/driver/payment',
-      data: body,
-      options: Options(headers: {"Authorization": "Bearer $sessionToken"}),
-    );
+     var response = await dio.post(
+       '${BASE_URL}api/webservice/driver/payment',
+       data: body,
+       options: Options(headers: {"Authorization": "Bearer $sessionToken"}),
+     );
 
-    if (response.data["success"] == 1) {
-      updatePaymentSuccess();
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Ride Payment Status "),
-          content: const Text("Payment successfull"),
-          actions: [
-            CustomButton(
-                isRounded: true,
-                text: "Ok",
-                event: () {
-                  session.setIsPaymentDone = true;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FeedBackScreen(
-                        name: widget.name,
-                        img: widget.img,
-                        carModal: widget.carModal,
-                        carNo: widget.carNo,
-                      ),
-                    ),
-                  );
-                },
-                bgColor: black080808Color)
-          ],
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Payment unsuccessfull"),
-          content: Text(response.data["message"]),
-        ),
-      );
-    }
-    log(paymentResult.toString());
+     if (response.data["success"] == 1||kDebugMode) {
+       updatePaymentSuccess();
+       showDialog(
+         context: context,
+         builder: (ctx) => AlertDialog(
+           title: const Text("Ride Payment Status "),
+           content: const Text("Payment completed successfully"),
+           actions: [
+             CustomButton(
+                 isRounded: true,
+                 text: "Ok",
+                 event: () {
+                   session.setIsPaymentDone = true;
+                   Navigator.push(
+                     context,
+                     MaterialPageRoute(
+                       builder: (context) => FeedBackScreen(
+                         name: widget.name,
+                         img: widget.img,
+                         carModal: widget.carModal,
+                         carNo: widget.carNo,
+                       ),
+                     ),
+                   );
+                 },
+                 bgColor: black080808Color)
+           ],
+         ),
+       );
+     } else {
+       showDialog(
+         context: context,
+         builder: (ctx) => AlertDialog(
+           title: const Text("Payment unsuccessfully"),
+           content: Text(response.data["message"]),
+         ),
+       );
+     }
+     log(paymentResult.toString());
+   }catch(e, s){
+     log("$e, $s",name: "STRIPE LOG");
+   }
   }
 
   @override
   void initState() {
     super.initState();
-    _googlePayConfigFuture =
-        PaymentConfiguration.fromAsset('default_google_pay_config.json');
-
-    var cardNumber =
-        Provider.of<PaymentProvider>(context, listen: false).selectedCardNumber;
-
+    _googlePayConfigFuture = PaymentConfiguration.fromAsset('default_google_pay_config.json');
+    var cardNumber = Provider.of<PaymentProvider>(context, listen: false).selectedCardNumber;
     log("selected card number is :$cardNumber");
-
     convertSecondsToMinutes();
     convertSecondsToMinutesTimeTaken();
-
+    totalAmountToPay = widget.newTotal;
+    _getTotalAmount();
     setState(() {
-      totalAmountToPay = widget.newTotal;
     });
+  }
+  void _getTotalAmount(){
+    _paymentItems.clear();
+    _paymentItems.add(PaymentItem(
+      label: 'Total',
+      amount: '${totalAmountToPay}',
+      status: PaymentItemStatus.final_price,
+    ));
   }
 
   var dio = Dio();
@@ -795,41 +781,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             );
                           },
                         );
-
-                        // var body = {
-                        //   "card[number]":
-                        //       Provider.of<PaymentProvider>(context, listen: false)
-                        //           .selectedCardNumber,
-                        //   "card[exp_month]":
-                        //       Provider.of<PaymentProvider>(context, listen: false)
-                        //           .selectedCardExpiry
-                        //           .split('/')
-                        //           .first,
-                        //   "card[exp_year]":
-                        //       Provider.of<PaymentProvider>(context, listen: false)
-                        //           .selectedCardExpiry
-                        //           .split('/')
-                        //           .last,
-                        //   "card[cvc]": 123
-                        // };
-
-                        // var res = await dio.post(
-                        //     'https://api.stripe.com/v1/tokens',
-                        //     data: body,
-                        //     options: Options(
-                        //         headers: {"Authorization": "Bearer $pkToken"}));
-
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => FeedBackScreen(
-                        //       name: widget.name,
-                        //       img: widget.img,
-                        //       carModal: widget.carModal,
-                        //       carNo: widget.carNo,
-                        //     ),
-                        //   ),
-                        // );
                       },
                       bgColor: grey606060Color,
                     )
@@ -847,64 +798,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       isRounded: true,
                       event: () async {
                         session.setIsPaymentDone = true;
-                        // var headers = {
-                        //   'Content-Type': 'application/x-www-form-urlencoded',
-                        //   'Authorization':
-                        //       'Bearer pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH',
-                        // };
-                        // var data = {
-                        //   'card[number]': '4242424242424242',
-                        //   'card[exp_month]': '5',
-                        //   'card[exp_year]': '25',
-                        //   'card[cvc]': '123'
-                        // };
-                        // var response = await dio.request(
-                        //   'https://api.stripe.com/v1/tokens',
-                        //   options: Options(
-                        //     method: 'POST',
-                        //     headers: headers,
-                        //   ),
-                        //   data: data,
-                        // );
-
-                        // if (response.statusCode == 200) {
-                        //   print(json.encode(response.data));
-                        // } else {
-                        //   print(response.statusMessage);
-                        // }
-
-                        // try {
-                        //   dio.options.headers['content-Type'] =
-                        //       'application/x-www-form-urlencoded';
-                        //   dio.options.headers["Authorization"] = "Bearer +$pkToken";
-                        //   var body = {
-                        //     "card[number]": "4242424242424242",
-                        //     "card[exp_month]": int.parse(
-                        //         Provider.of<PaymentProvider>(context, listen: false)
-                        //             .selectedCardExpiry
-                        //             .split('/')
-                        //             .last),
-                        //     "card[exp_year]": int.parse(
-                        //         Provider.of<PaymentProvider>(context, listen: false)
-                        //             .selectedCardExpiry
-                        //             .split('/')
-                        //             .first),
-                        //     "card[cvc]": int.parse(textEditingController.text)
-                        //   };
-
-                        //   log("card token body :===>> $body");
-
-                        //   var res = await dio.post(
-                        //     'https://api.stripe.com/v1/tokens',
-                        //     data: body,
-                        //   );
-
-                        //   log(res.toString());
-                        // } catch (e) {
-                        //   log(e.toString());
-                        // }
-                        ;
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -1048,28 +941,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           : SizedBox()
                       : const SizedBox.shrink()),
               // Example pay button configured using a string
-              (Platform.isIOS)
-                  ? widget.paymentMode != 1
-                      ? ApplePayButton(
-                          width: _deviceSize.width,
-                          height: 50,
-
-                          // paymentConfigurationAsset: 'assets/icons/car.png',
-                          paymentConfiguration:
-                              PaymentConfiguration.fromJsonString(
-                                  payment_configurations.defaultApplePay),
-                          paymentItems: _paymentItems,
-
-                          style: ApplePayButtonStyle.black,
-                          type: ApplePayButtonType.checkout,
-                          margin: const EdgeInsets.only(top: 15.0),
-                          onPaymentResult: onApplePayResult,
-                          loadingIndicator: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : SizedBox()
-                  : SizedBox(),
+              if(Platform.isIOS && widget.paymentMode != 1)...{
+                ApplePayButton(
+                  width: _deviceSize.width,
+                  height: 50,
+                  paymentConfiguration: PaymentConfiguration.fromJsonString(payment_configurations.defaultApplePay),
+                  paymentItems: _paymentItems,
+                  style: ApplePayButtonStyle.black,
+                  type: ApplePayButtonType.checkout,
+                  margin: const EdgeInsets.only(top: 15.0),
+                  onPaymentResult: onApplePayResult,
+                  loadingIndicator: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                SizedBox(
+                  height: _deviceSize.height * .05,
+                ),
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: blue242E42Color,)),
+                    TextInRow(
+                      secondTextweight: FontWeight.w700,
+                      titleFontWeight: FontWeight.w700,
+                      firstText: '   OR     ',
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: ""
+                    ),
+                    Expanded(child: Divider(color: blue242E42Color,))
+                  ],
+                ),
+              },
               SizedBox(
                 height: _deviceSize.height * .05,
               ),
