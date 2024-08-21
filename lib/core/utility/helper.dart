@@ -223,7 +223,7 @@ String getPaymentMethod(history.HistoryOrder data) {
   } else if (data.paymentMethod == "3") {
     result = "Google Pay";
   } else {
-    result = "Apple Pay";
+    result = "";
   }
   return result;
 }

@@ -71,50 +71,47 @@ class _SplashPageState extends State<SplashPage> {
     appLoc = AppLocalizations.of(context)!;
     myLocale = Localizations.localeOf(context);
     sessionHelper = locator<Session>();
-
-    return SafeArea(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          double imgHeight = constraints.maxWidth * 0.5;
-          double imgWidth = imgHeight;
-          return Container(
-            height: constraints.maxHeight,
-            width: constraints.maxWidth,
-            color: Colors.white,
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment:CrossAxisAlignment.center ,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: constraints.maxHeight * 0.35),
-                  child: Image.asset(
-                    logoSplash,
-                    //height: imgHeight,
-                    width: imgWidth,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double imgHeight = constraints.maxWidth * 0.5;
+        double imgWidth = imgHeight;
+        return Container(
+          height: constraints.maxHeight,
+          width: constraints.maxWidth,
+          color: Colors.white,
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment:CrossAxisAlignment.center ,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: constraints.maxHeight * 0.35),
+                child: Image.asset(
+                  logoSplash,
+                  //height: imgHeight,
+                  width: imgWidth,
                 ),
-                // Center(
-                //   child: Hero(
-                //     tag: "taxiIcon",
-                //     child: Image.asset(
-                //       logoSplash,
-                //       //height: imgHeight,
-                //       width: imgWidth,
-                //     ),
-                //   ),
-                // ),
-                const Spacer(),
-                Image.asset(
-                  splashTaxiImage,
-                  // height: imgHeight,
-                  alignment: Alignment.bottomCenter,
-                  width: constraints.maxWidth,
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+              // Center(
+              //   child: Hero(
+              //     tag: "taxiIcon",
+              //     child: Image.asset(
+              //       logoSplash,
+              //       //height: imgHeight,
+              //       width: imgWidth,
+              //     ),
+              //   ),
+              // ),
+              const Spacer(),
+              Image.asset(
+                splashTaxiImage,
+                // height: imgHeight,
+                alignment: Alignment.bottomCenter,
+                width: constraints.maxWidth,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

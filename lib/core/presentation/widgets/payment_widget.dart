@@ -55,29 +55,6 @@ class PaymentOption extends StatelessWidget {
                           height: _deviceSize.height,
                           child: Column(
                             children: [
-                              // SizedBox(
-                              //   // height: constaints.maxHeight * 0.25,
-                              //   child: Padding(
-                              //       padding: const EdgeInsets.only(
-                              //           top: 8.0, left: 15.0, bottom: 0.0),
-                              //       child: Row(
-                              //         children: const [
-                              //           Icon(Icons.arrow_back),
-                              //           Text(
-                              //             "Payment Method",
-
-                              //           )
-                              //         ],
-                              //       )
-
-                              //       //  Text(
-                              //       //   appLoc.selectPaymentMethod,
-                              //       //   style: selectPamyemntStyle,
-                              //       // ),
-                              //       ),
-                              // ),
-
-                              //Cash Payment
                               SizedBox(
                                   child: PaymentTile(
                                 title: "Cash",
@@ -113,48 +90,11 @@ class PaymentOption extends StatelessWidget {
                                         : false,
                                 provider: provider,
                               )),
-                              // SizedBox(
-                              //     child: PaymentTile(
-                              //   title: "Debit/Credit Card",
-                              //   assets: 'assets/icons/mastercard.svg',
-                              //   onTap: () {
-                              //     provider.setPaymentMethod =
-                              //         PaymentMethod.creditCard;
-                              //     // Navigator.pop(context);
-                              //   },
-                              //   selected: provider.paymentMethod == null
-                              //       ? false
-                              //       : provider.paymentMethod ==
-                              //               PaymentMethod.creditCard
-                              //           ? true
-                              //           : false,
-                              // )),
-
-                              // SizedBox(
-                              //     child: CreditCardTile(
-                              //   title: "*** *** *** 14 15 25",
-                              //   assets: 'assets/icons/logos_mastercard.svg',
-                              //   onTap: () {
-                              //     provider.setPaymentMethod =
-                              //         PaymentMethod.creditCard;
-                              //     // Navigator.pop(context);
-                              //   },
-                              //   selected: provider.paymentMethod == null
-                              //       ? false
-                              //       : provider.paymentMethod ==
-                              //               PaymentMethod.creditCard
-                              //           ? true
-                              //           : false,
-                              // )
-                              // ),
-
-                              //Apple PAY
-
                               (Platform.isIOS)
                                   ? SizedBox(
                                       child: PaymentTile(
-                                      title: "Apple Pay",
-                                      assets: 'assets/icons/apple.svg',
+                                      title: "",
+                                      assets: 'assets/icons/apple_pay_logo.svg',
                                       onTap: () {
                                         provider.setPaymentMethod =
                                             enums.PaymentMethod.applePay;

@@ -168,6 +168,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   TextEditingController tipsTextEditingController =
       TextEditingController(text: "0.0");
 
+
   var _paymentItems = [
     PaymentItem(
       label: 'Total',
@@ -259,7 +260,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     });
   }
 
-  void _getTotalAmount(){
+  void _getTotalAmount()async{
     _paymentItems.clear();
     _paymentItems.add(PaymentItem(
       label: 'Total',
@@ -534,7 +535,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 secondText:
                     "CA\$ ${convertToFixedTwoDecimal(totalAmountToPay)} ",
               ),
-              Padding(
+            /*  Padding(
                 padding:
                     EdgeInsets.symmetric(vertical: _deviceSize.height * .02),
                 child: Text(
@@ -573,7 +574,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   )
                 ],
-              ),
+              ),*/
 
               widget.paymentMode == 2
                   ? CustomButton(
@@ -945,14 +946,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
               // Example pay button configured using a string
               if(Platform.isIOS && widget.paymentMode != 1)...{
                 ApplePayButton(
-                  width: _deviceSize.width,
+                  width: double.infinity, // or a fixed width if necessary
                   height: 50,
-                  paymentConfiguration: PaymentConfiguration.fromJsonString(payment_configurations.defaultApplePay),
+                  paymentConfiguration: PaymentConfiguration.fromJsonString(
+                    payment_configurations.defaultApplePay,
+                  ),
                   paymentItems: _paymentItems,
-                  style: ApplePayButtonStyle.black,
-                  type: ApplePayButtonType.checkout,
+                  style: ApplePayButtonStyle.black, // Adjust based on app design
                   margin: const EdgeInsets.only(top: 15.0),
                   onPaymentResult: onApplePayResult,
+                  onPressed: () {
+                    if (_paymentItems.isEmpty) {
+                      return;
+                    }
+                  },
                   loadingIndicator: const Center(
                     child: CircularProgressIndicator(),
                   ),
