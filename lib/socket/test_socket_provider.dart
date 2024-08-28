@@ -42,6 +42,7 @@ class TestSocketProvider extends ChangeNotifier {
   List<ChatModel> _chatMessagesList = [];
 
   TestSocketProvider.internal();
+
   BookingDataModel? bookingDataModel;
   AcceptResponseModel? acceptResponseModel;
   ReceiptResponseModel? receiptResponseModel;
@@ -54,6 +55,7 @@ class TestSocketProvider extends ChangeNotifier {
   int unreadMessageCount = 0;
   String destinationAddress = "Destination";
   bool isLoading = false;
+
   List<ChatModel> get chatMessageList => _chatMessagesList;
   late BitmapDescriptor pickUpMarker,
       destinationMarker,
@@ -79,12 +81,22 @@ class TestSocketProvider extends ChangeNotifier {
   String commentGiven = '';
   TextEditingController commentsEditingController = TextEditingController();
   DriverDetail? _driverDetail;
+
   DriverDetail? get driverDetail => _driverDetail;
 
   /** update order details model */
 
   updateOrderDetailsModel({required OrderDetailResponseModel data}) {
     orderDetailResponseModel = data;
+
+     print("================>>>> ${orderDetailResponseModel?.toJson()}");
+     if(orderDetailResponseModel?.data != null){
+       var data = orderDetailResponseModel?.data;
+       final oriLatLng = LatLng(double.tryParse(data!.startCoordinate.split(",").first)??0.0, double.tryParse(data.startCoordinate.split(",").last)??0.0,);
+       final destLatLng = LatLng(double.tryParse(data.endCoordinate.split(",").first)??0.0, double.tryParse(data.endCoordinate.split(",").last)??0.0,);
+       updateOriginAndDestinationLatLong(origin: oriLatLng, destination: destLatLng);
+
+     }
     notifyListeners();
   }
 
@@ -180,6 +192,7 @@ class TestSocketProvider extends ChangeNotifier {
     driverDetailResponseModel = data;
     notifyListeners();
   }
+
   //clear state
   FutureOr<void> clearState() async {
     await sessionClearOrder();
@@ -256,6 +269,9 @@ class TestSocketProvider extends ChangeNotifier {
 
         if (bookingDataModel!.data.customerId == session.userId) {
           session.setOrderId = bookingDataModel!.data.id;
+          final oriLatLng = LatLng(double.tryParse(bookingDataModel!.data.startCoordinate.split(",").first)??0.0, double.tryParse(bookingDataModel!.data.startCoordinate.split(",").last)??0.0,);
+          final destLatLng = LatLng(double.tryParse(bookingDataModel!.data.endCoordinate.split(",").first)??0.0, double.tryParse(bookingDataModel!.data.endCoordinate.split(",").last)??0.0,);
+          updateOriginAndDestinationLatLong(origin: oriLatLng, destination: destLatLng);
         }
 
         notifyListeners();
@@ -266,13 +282,9 @@ class TestSocketProvider extends ChangeNotifier {
       if (response['type'] == 'UpdatedLatLong') {
         log(response['type']);
         log("****************************      DRIVER UPDATED THE LAT LNG *************************");
-        driverUpdatedPositionModel =
-            DriverUpdatedPositionModel.fromJson(response);
-        updateDriverLatLng(
-            driverLtLng: LatLng(driverUpdatedPositionModel!.latitude,
-                driverUpdatedPositionModel!.latitude));
-        session.setDriverLatLong =
-            "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
+        driverUpdatedPositionModel = DriverUpdatedPositionModel.fromJson(response);
+        updateDriverLatLng(driverLtLng: LatLng(driverUpdatedPositionModel!.latitude, driverUpdatedPositionModel!.latitude));
+        session.setDriverLatLong = "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
         notifyListeners();
         updateBearing(
           val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,
@@ -285,7 +297,7 @@ class TestSocketProvider extends ChangeNotifier {
           notifyListeners();
         }
         if (session.isRunningOrder) {
-          await trackingDriver(
+          trackingDriver(
               listenLocation: true,
               lat: driverUpdatedPositionModel!.latitude,
               bearing: bearing,
@@ -309,12 +321,10 @@ class TestSocketProvider extends ChangeNotifier {
                 distance: acceptResponseModel!.data.distance.toString(),
                 driverId: acceptResponseModel!.data.driverId.toString(),
                 endAddress: acceptResponseModel!.data.endAddress.toString(),
-                endCoordinate:
-                    acceptResponseModel!.data.endCoordinate.toString(),
+                endCoordinate: acceptResponseModel!.data.endCoordinate.toString(),
                 orderId: acceptResponseModel!.data.id.toString(),
                 startAddress: acceptResponseModel!.data.startAddress.toString(),
-                startCoordinate:
-                    acceptResponseModel!.data.startCoordinate.toString(),
+                startCoordinate: acceptResponseModel!.data.startCoordinate.toString(),
                 totalPrice: acceptResponseModel!.data.total.toString(),
                 userId: session.userId.toString(),
                 orderStatus: "1"),
@@ -477,7 +487,7 @@ class TestSocketProvider extends ChangeNotifier {
                         child: Text("Find Next Driver"),
                         onPressed: () async {
                           session.setIsRunningOrder = false;
-                           _homeProvider.clearState();
+                          _homeProvider.clearState();
 
                           Navigator.pop(context);
 
@@ -565,8 +575,7 @@ class TestSocketProvider extends ChangeNotifier {
       // infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
       onTap: () {},
     );
-    //googleMapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(latDriver, lngDriver), zoom,),
-    //add to marker list
+
     markers[markerId] = marker;
     if (listenLocation && session.isRunningOrder) {
       logMe("is with driver called:-->> ${isWithDriver}");
@@ -576,15 +585,15 @@ class TestSocketProvider extends ChangeNotifier {
           (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         log("driver:- destination LatLng. $destinationLatLng");
-        setPolylinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
+        await setPolylinesDirection(
+            LatLng(latDriver, lngDriver), destinationLatLng);
       } else {
         log("driver:-  is not with driver. $isWithDriver");
         log("driver:-  is not with driver.origin lat long $originLatLng");
-
-        setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
+        await setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
       }
     }
-    animateToLocation(LatLng(latDriver, lngDriver));
+    await animateToLocation(LatLng(latDriver, lngDriver));
   }
 
   // Save UserData to SharedPreferences
@@ -602,16 +611,19 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   Future<void> animateToLocation(LatLng position) async {
-    await googleMapController
-        .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: position,
-      bearing: bearing,
-      zoom: zoom,
-    )));
-    notifyListeners();
+try{
+  await googleMapController
+      .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    target: position,
+    bearing: bearing,
+    zoom: zoom,
+  )));
+}catch(e){
+  logMe("UNABLE TO ANIMATE");
+}
   }
 
-  setPolylinesDirection(LatLng origin, LatLng destination) async {
+  Future<void> setPolylinesDirection(LatLng origin, LatLng destination) async {
     log("polyline///  --Driver co:" +
         origin.latitude.toString() +
         "," +
@@ -963,8 +975,6 @@ class TestSocketProvider extends ChangeNotifier {
     }
   }
 
-
-
   FutureOr<void> setCurrentLocation(OrderDataDetail orderDataDetail) async {
     log("set current location called :$orderDataDetail");
     try {
@@ -1016,10 +1026,10 @@ class TestSocketProvider extends ChangeNotifier {
       final Marker markerDestination = Marker(
         anchor: const Offset(0.5, 0.5),
         markerId: markerIdDestination,
-        position: LatLng(orderDataDetail.destinationLatLng.latitude, orderDataDetail.destinationLatLng.longitude),
+        position: LatLng(orderDataDetail.destinationLatLng.latitude,
+            orderDataDetail.destinationLatLng.longitude),
         infoWindow: const InfoWindow(title: "destination"),
         icon: await getBytesFromAsset(destinationIcon, 100).then((value) {
-          log("destination marker--->> ${value}");
           return destinationMarker = BitmapDescriptor.fromBytes(value);
         }),
         onTap: () {},
@@ -1029,7 +1039,7 @@ class TestSocketProvider extends ChangeNotifier {
           .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(orderDataDetail.originLatLng.latitude,
             orderDataDetail.originLatLng.longitude),
-        zoom: 15,
+        zoom: zoom,
       )));
 
       originAddress = orderDataDetail.originAddress;
@@ -1059,49 +1069,27 @@ class TestSocketProvider extends ChangeNotifier {
       initialMarker = BitmapDescriptor.fromBytes(value);
     });
 
-    if (orderDetailResponseModel != null) {
-      updateOriginAndDestinationLatLong(
-          origin: LatLng(
-              (double.tryParse(orderDetailResponseModel!.data.startCoordinate
-                  .split(',')
-                  .first)!),
-              (double.tryParse(orderDetailResponseModel!.data.startCoordinate
-                  .split(',')
-                  .last))!),
-          destination: LatLng(
-              (double.tryParse(orderDetailResponseModel!.data.endCoordinate
-                  .split(',')
-                  .first)!),
-              (double.tryParse(orderDetailResponseModel!.data.endCoordinate
-                  .split(',')
-                  .last))!));
-    } else {
-      log("order details response model is empty");
-    }
   }
 
-  updateOriginAndDestinationLatLong(
-      {required LatLng origin, required LatLng destination}) {
+  updateOriginAndDestinationLatLong({required LatLng origin, required LatLng destination}) {
     originLatLng = origin;
     destinationLatLng = destination;
     notifyListeners();
   }
 
-  callTrakingDriver(LatLng position) async {
-    log("driver position is :${position.latitude}, ${position.longitude}");
-    await trackingDriver(
-        bearing: bearing,
-        listenLocation: true,
-        lat: position.latitude,
-        long: position.longitude);
+  callTrakingDriver(LatLng position) async {log("driver position is :${position.latitude}, ${position.longitude}");
+    try {
+      await trackingDriver(
+          bearing: bearing,
+          listenLocation: true,
+          lat: position.latitude,
+          long: position.longitude);
+    } catch (e, s) {
+      print("$e, $s");
+    }
   }
 
   moveCameraToDriver() {
     animateToLocation(LatLng(_driverLat, _driverLng));
-    /* googleMapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-            target: LatLng(_driverLat, _driverLng),
-            zoom: zoom,
-            bearing: bearing)));*/
   }
 }

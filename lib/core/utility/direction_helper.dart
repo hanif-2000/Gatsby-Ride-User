@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/utility/app_settings.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -77,9 +79,16 @@ class DirectionHelper {
     try {
       final permissionStatus = await _getLocationPermissionStatus();
       if (permissionStatus) {
+        SmartDialog.showLoading(
+          animationType: SmartAnimationType.fade,
+          backDismiss: false,
+          msg: 'Fetching Current location...',
+          alignment: Alignment.center,
+        );
         var location = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
+        SmartDialog.dismiss();
         return LatLng(location.latitude, location.longitude);
       } else {
         return null;

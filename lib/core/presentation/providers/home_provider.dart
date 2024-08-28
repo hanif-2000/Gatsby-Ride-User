@@ -129,6 +129,7 @@ class HomeProvider with ChangeNotifier {
   String destinationAddress = appLoc.destination;
   String distance = "1", price = "";
   int totalDistance = 0;
+  double zoom = 15.4746;
   int estimatedTime = 1;
   String time = '';
   List<LatLng> polylineCoordinates = [];
@@ -300,13 +301,7 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setCurrentLocation(BuildContext context) async {
-    SmartDialog.showLoading(
-      animationType: SmartAnimationType.fade,
-      backDismiss: false,
-      msg: 'Fetching Current location...',
-      alignment: Alignment.center,
-    );
+  Future<void> setCurrentLocation() async {
     print("*********** GET Current Location******************* ");
     clearState();
     clearOldRideData();
@@ -314,7 +309,6 @@ class HomeProvider with ChangeNotifier {
     originAddress = 'Pickup Address';
     destinationIsFilled = false;
     originIsFilled = false;
-
     try {
       final locationData = await DirectionHelper.getCurrentLocation();
       if (locationData != null) {
@@ -365,7 +359,7 @@ class HomeProvider with ChangeNotifier {
       notifyListeners();
       await googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(originLatLng.latitude, originLatLng.longitude),
-        zoom: 12.4746,
+        zoom: zoom,
       )));
 
       originAddress = "${place.street}, ${place.subLocality}, ${place.locality}";

@@ -338,12 +338,7 @@ class _HistoryItemState extends State<HistoryItem> {
             );
           }),
         )
-        // child: Container(
-        //     decoration: BoxDecoration(
-        //         borderRadius: BorderRadius.only(
-        //             topLeft: Radius.circular(20),
-        //             topRight: Radius.circular(20))),
-        //     child: Text('asd'))),
+
         );
   }
 }

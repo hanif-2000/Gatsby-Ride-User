@@ -30,15 +30,10 @@ class NewOrderPage extends StatefulWidget {
   State<NewOrderPage> createState() => _NewOrderPageState();
 }
 
-class _NewOrderPageState extends State<NewOrderPage>
-    with WidgetsBindingObserver {
-  // Timer? checkOrderStatusTimer, trackingDriverTimer;
-
+class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver {
   final session = locator<Session>();
-
   final newSocketProvider = locator<TestSocketProvider>();
   final homeProvider = locator<HomeProvider>();
-
   Timer? _timer;
 
   @override
@@ -47,10 +42,11 @@ class _NewOrderPageState extends State<NewOrderPage>
     dismissLoading();
     WidgetsBinding.instance.addObserver(this);
     newSocketProvider.updateBitsImage().then((value) {
-      if (session.isRunningOrder) {
-        newSocketProvider.callTrakingDriver(LatLng(double.parse(session.driverLatLng.split(',').first), double.parse(session.driverLatLng.split(',').last)));
-      }
-
+    /*  if (session.isRunningOrder) {
+        newSocketProvider.callTrakingDriver(
+            LatLng(double.parse(session.driverLatLng.split(',').first),
+            double.parse(session.driverLatLng.split(',').last)));
+      }*/
       if (session.driverId != '') {
         newSocketProvider.joinExitRoom(
             type: "unJoin",
@@ -58,6 +54,7 @@ class _NewOrderPageState extends State<NewOrderPage>
             receiverId: int.parse(session.driverId.toString()));
       }
     });
+
     String formatDuration(int seconds) {
       final minutes = (seconds / 60).floor();
       final remainingSeconds = seconds % 60;
@@ -70,16 +67,12 @@ class _NewOrderPageState extends State<NewOrderPage>
 
       _timer = Timer.periodic(Duration(seconds: 1), (timer) {
         print('Remaining time: ${remainingSeconds}');
-
         if (remainingSeconds <= 0) {
           timer.cancel();
           newSocketProvider.cancelRideByCustomer().then((value) async {
             session.setSearchingTime = 180;
             if (value) {
-              var homeProvider =
-                  Provider.of<HomeProvider>(context, listen: false);
-              // await homeProvider.clearState();
-
+              var homeProvider = Provider.of<HomeProvider>(context, listen: false);
               session.setIsRunningOrder = false;
 
               dismissLoading();
@@ -178,12 +171,6 @@ class _NewOrderPageState extends State<NewOrderPage>
                   );
                 },
               );
-
-              // Navigator.pushNamedAndRemoveUntil(
-              //   context,
-              //   HomePage.routeName,
-              //   (route) => false,
-              // );
             } else {
               dismissLoading();
               showToast(message: "Something went wrong");
@@ -196,39 +183,10 @@ class _NewOrderPageState extends State<NewOrderPage>
       });
     }
 
-    // void startTimerAndNavigate({time}) {
 
-    //   Duration duration = Duration(minutes: time);
-
-    //   _timer = Timer(duration, () {
-    //     newSocketProvider.cancelRideByCustomer().then((value) async {
-    //       if (value) {
-    //         var homeProvider =
-    //             Provider.of<HomeProvider>(context, listen: false);
-    //         await homeProvider.clearState();
-    //         dismissLoading();
-
-    //         Navigator.pushNamedAndRemoveUntil(
-    //           context,
-    //           HomePage.routeName,
-    //           (route) => false,
-    //         );
-    //       } else {
-    //         dismissLoading();
-    //         showToast(message: "Something went wrong");
-    //       }
-    //     });
-    //     // );
-    //   });
-    // }
-
-    // var orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
     log("order status is:  -->> ${session.orderStatus}");
 
-    // if (session.orderStatus != 0) {
-    //   log("session order status is not ==== 0");
-    // }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // homeProvider.clearOldRideData();
@@ -255,9 +213,6 @@ class _NewOrderPageState extends State<NewOrderPage>
     super.dispose();
     _timer?.cancel();
 
-    // checkOrderStatusTimer?.cancel();%
-    // trackingDriverTimer?.cancel();
-    // newSocketProvider.disconnectSocket();
     WidgetsBinding.instance.removeObserver(this);
   }
 
@@ -270,7 +225,6 @@ class _NewOrderPageState extends State<NewOrderPage>
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) => {},
       child: SafeArea(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -278,10 +232,7 @@ class _NewOrderPageState extends State<NewOrderPage>
             if (newSocketProvider.isOrderAccepted) {
               session.setSearchingTime = 180;
               _timer?.cancel();
-
               Navigator.pop(context, true);
-              // newSocketProvider.updateIsOrderAccepted(val: false);
-
               log("order status is: ${newSocketProvider.currentOrderStatus}");
             } else {}
 
@@ -293,9 +244,8 @@ class _NewOrderPageState extends State<NewOrderPage>
                   myLocationButtonEnabled: true,
                   zoomControlsEnabled: true,
                   initialCameraPosition: CameraPosition(
-                      target:
-                          LatLng(newSocketProvider.lat, newSocketProvider.long),
-                      zoom: 14,
+                      target: LatLng(newSocketProvider.lat, newSocketProvider.long),
+                      zoom: newSocketProvider.zoom,
                       bearing: newSocketProvider.bearing),
                   onMapCreated: (GoogleMapController controller) async {
                     newSocketProvider.googleMapController = controller;

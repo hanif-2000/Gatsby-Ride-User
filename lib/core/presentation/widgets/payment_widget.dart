@@ -184,46 +184,6 @@ class PaymentOption extends StatelessWidget {
           );
           // });
         },
-        // child: Card(
-        //     child: Padding(
-        //         padding: const EdgeInsets.all(8.0),
-        //         child: SizedBox(
-        //           height: 40,
-        //           child: Row(
-        //             mainAxisAlignment: MainAxisAlignment.start,
-        //             crossAxisAlignment: CrossAxisAlignment.center,
-        //             children: [
-        //               const Padding(
-        //                 padding: EdgeInsets.only(
-        //                     left: 10, top: 10, bottom: 10, right: 12),
-        //                 child: Icon(
-        //                   Icons.payment,
-        //                   color: primaryColor,
-        //                 ),
-        //               ),
-        //               Flexible(
-        //                 flex: 5,
-        //                 fit: FlexFit.tight,
-        //                 child: Text(
-        //                   provider.paymentMethod == null
-        //                       ? appLoc.selectPaymentMethod
-        //                       : provider.paymentMethod!.getString(),
-        //                   style: selectPamyemntStyle,
-        //                 ),
-        //               ),
-        //               Expanded(
-        //                   child: Row(
-        //                 mainAxisAlignment: MainAxisAlignment.end,
-        //                 children: const [
-        //                   Icon(
-        //                     Icons.arrow_forward_ios,
-        //                     color: primaryColor,
-        //                   ),
-        //                 ],
-        //               ))
-        //             ],
-        //           ),
-        //         ))),
       ),
     );
     // );

@@ -17,7 +17,6 @@ class PlacePickerProvider with ChangeNotifier {
   final GetGooglePlace getGooglePlace;
   final TextEditingController _controller = TextEditingController();
   final lctn.Location locationService = lctn.Location();
-  final _debouncer = Debouncer(milliseconds: 1500);
   late GoogleMapController googleMapController;
   CameraPosition? cameraPosition;
   PlaceAutoCompleteState _state = PlaceInitial();
@@ -174,12 +173,10 @@ class PlacePickerProvider with ChangeNotifier {
         googleMapController.moveCamera(CameraUpdate.newCameraPosition(
             CameraPosition(
                 target: LatLng(originLatLng.latitude, originLatLng.longitude),
-                zoom: 18)));
+                zoom: 17.5)));
         cameraPosition = CameraPosition(
             target: LatLng(originLatLng.latitude, originLatLng.longitude),
             zoom: 18);
-
-        locationService.onLocationChanged.listen((event) {});
       } else {
         try {
           bool serviceStatusResult = await locationService.requestService();

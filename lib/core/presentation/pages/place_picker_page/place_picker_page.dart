@@ -157,7 +157,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         target: widget.addressType == AddressType.origin
                             ? provider.originLatLng
                             : provider.destinationLatLng,
-                        zoom: 18.0,
+                        zoom: 17.5,
                       ),
                       mapType: MapType.normal,
                       onMapCreated: (controller) {
