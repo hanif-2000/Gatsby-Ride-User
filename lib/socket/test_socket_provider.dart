@@ -297,7 +297,7 @@ class TestSocketProvider extends ChangeNotifier {
           notifyListeners();
         }
         if (session.isRunningOrder) {
-          trackingDriver(
+         await trackingDriver(
               listenLocation: true,
               lat: driverUpdatedPositionModel!.latitude,
               bearing: bearing,
@@ -551,8 +551,7 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   // /**  Tracking Driver */
-  Future<void> trackingDriver(
-      {required bool listenLocation,
+  Future<void> trackingDriver({required bool listenLocation,
       required double lat,
       required double long,
       required double bearing}) async {
@@ -579,18 +578,14 @@ class TestSocketProvider extends ChangeNotifier {
     markers[markerId] = marker;
     if (listenLocation && session.isRunningOrder) {
       logMe("is with driver called:-->> ${isWithDriver}");
-      if ((isWithDriver) ||
-          (currentOrderStatus == 5) ||
-          (currentOrderStatus == 7) ||
-          (currentOrderStatus == 3)) {
+      if ((isWithDriver) || (currentOrderStatus == 5) || (currentOrderStatus == 7) || (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         log("driver:- destination LatLng. $destinationLatLng");
-        await setPolylinesDirection(
-            LatLng(latDriver, lngDriver), destinationLatLng);
+        await setPolyLinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
       } else {
         log("driver:-  is not with driver. $isWithDriver");
         log("driver:-  is not with driver.origin lat long $originLatLng");
-        await setPolylinesDirection(LatLng(latDriver, lngDriver), originLatLng);
+        await setPolyLinesDirection(LatLng(latDriver, lngDriver), originLatLng);
       }
     }
     await animateToLocation(LatLng(latDriver, lngDriver));
@@ -623,7 +618,7 @@ try{
 }
   }
 
-  Future<void> setPolylinesDirection(LatLng origin, LatLng destination) async {
+  Future<void> setPolyLinesDirection(LatLng origin, LatLng destination) async {
     log("polyline///  --Driver co:" +
         origin.latitude.toString() +
         "," +
@@ -632,11 +627,7 @@ try{
         destination.latitude.toString() +
         "," +
         destination.longitude.toString());
-
-    DirectionHelper()
-        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
-            destination.latitude, destination.longitude)
-        .then((result) {
+   await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then((result) {
       log("Polyline results are ::::::::--------------  ${result} ------------********");
       if (result.isNotEmpty) {
         polylineCoordinates = [];
@@ -654,11 +645,7 @@ try{
 
         polylines.clear(); // Clearing polylines is not necessary here
         polylines.add(polyline);
-
         log("Polylines are:-->> " + polylines.toString());
-        notifyListeners();
-      } else {
-        log("direction helper result is empty********** $result");
       }
       notifyListeners();
     });
@@ -1075,18 +1062,6 @@ try{
     originLatLng = origin;
     destinationLatLng = destination;
     notifyListeners();
-  }
-
-  callTrakingDriver(LatLng position) async {log("driver position is :${position.latitude}, ${position.longitude}");
-    try {
-      await trackingDriver(
-          bearing: bearing,
-          listenLocation: true,
-          lat: position.latitude,
-          long: position.longitude);
-    } catch (e, s) {
-      print("$e, $s");
-    }
   }
 
   moveCameraToDriver() {

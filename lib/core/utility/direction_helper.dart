@@ -33,11 +33,10 @@ class DirectionHelper {
         }
       } else {
         log("Error fetching directions: ${response.statusCode}");
-        throw Exception("Failed to fetch directions: ${response.statusCode}");
+        return [];
       }
     } catch (error) {
-      log("Error: $error");
-      throw Exception("An error occurred: $error");
+      log("Error fetching directions: ${error}");
     }
 
     return polylinePoints;
