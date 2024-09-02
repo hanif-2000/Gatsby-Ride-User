@@ -28,6 +28,7 @@ import 'core/utility/firebase_helper.dart';
 import 'core/utility/helper.dart';
 import 'core/utility/injection.dart';
 import 'core/utility/notification_service.dart';
+import 'core/utility/push_notification_helper.dart';
 import 'core/utility/session_helper.dart';
 import 'features/about_us/presentation/providers/aboutus_provider.dart';
 import 'features/history/presentation/providers/history_provider.dart';
@@ -49,9 +50,10 @@ Future<void> main() async {
   try {
     await init();
     await FirebaseMessaging.instance.requestPermission();
-    await locator.isReady<Session>().then((_) async {
-      await NotificationHelper().init();
-      await FirebaseHelper.init();
+     locator.isReady<Session>().then((_) async {
+      await NotificationService().init();
+     // await NotificationHelper().init();
+      //await FirebaseHelper.init();
       runApp(
         MultiProvider(
           providers: [

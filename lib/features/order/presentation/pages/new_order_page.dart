@@ -50,7 +50,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
       if (session.driverId != '') {
         newSocketProvider.joinExitRoom(
             type: "unJoin",
-            context: context,
             receiverId: int.parse(session.driverId.toString()));
       }
     });
@@ -422,7 +421,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                                       if (unread) {
                                         provider.joinExitRoom(
                                           type: "unJoin",
-                                          context: context,
                                           receiverId:
                                               int.parse(session.driverId),
                                         );

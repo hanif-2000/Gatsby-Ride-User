@@ -49,7 +49,6 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print("WidgetsBinding");
       socketProvider.joinExitRoom(
-          context: context,
           receiverId: int.parse(session.driverId),
           type: "Join");
       socketProvider.markMessageAsRead(receiverId: int.parse(session.driverId));
@@ -64,13 +63,11 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       log(" app lifecycle state is ------>>>>>>>   $state");
       if (state == AppLifecycleState.paused) {
         socketProvider.joinExitRoom(
-          context: context,
           type: 'unJoin',
           receiverId: int.parse(session.driverId),
         );
       } else if (state == AppLifecycleState.resumed) {
         socketProvider.joinExitRoom(
-            context: context,
             receiverId: int.parse(session.driverId),
             type: 'Join');
       }
@@ -189,7 +186,6 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                           onPressed: () {
                             socketProvider.joinExitRoom(
                                 type: 'unJoin',
-                                context: context,
                                 receiverId: int.parse(session.driverId));
                             socketProvider.updateUnReadMessages(count: 0);
 

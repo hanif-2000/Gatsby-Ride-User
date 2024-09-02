@@ -843,8 +843,7 @@ try{
         .asUint8List();
   }
 
-  void joinExitRoom(
-      {int? receiverId, required String type, required BuildContext context}) {
+  void joinExitRoom({int? receiverId, required String type}) {
     print("chat page join exit room called");
     print("connection state ${_socket!.connection.state}");
     log('-----Event  ${_socket!.connection.state}');
