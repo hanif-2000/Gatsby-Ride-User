@@ -38,7 +38,7 @@ class FormProvider with ChangeNotifier {
 
   final _imagePicker = ImagePicker();
   dynamic _imagePickerError;
-  XFile? _imageFile;
+  String? _imageFile;
   bool _returnData = false;
 
   // setter
@@ -73,7 +73,7 @@ class FormProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set setImageFile(XFile? file) {
+  set setImageFile(String? file) {
     _imageFile = file;
     notifyListeners();
   }
@@ -128,8 +128,8 @@ class FormProvider with ChangeNotifier {
   bool get phoneError => _phoneError;
   bool get checkBox => _checkBox;
 
-  XFile? get imageFile => _imageFile;
-  String get imageFilePath => _imageFile?.path ?? '';
+  String? get imageFile => _imageFile;
+  String get imageFilePath => _imageFile ?? '';
   dynamic get imagePickerError => _imagePickerError;
   bool get returnData => _returnData;
 
@@ -174,9 +174,12 @@ class FormProvider with ChangeNotifier {
       context: context,
       imagePicker: _imagePicker,
       successCallBack: (file) {
+        if(file== null){
+          return;
+        }
         setImageFile = file;
-        logMe('++++++>${file?.name}:${file?.path}');
-        if (file!.path != "") {
+        logMe('++++++>file:${file}');
+        if (file != "") {
           setReturnData = true;
         }
       },

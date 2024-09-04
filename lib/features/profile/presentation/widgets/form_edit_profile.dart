@@ -65,7 +65,7 @@ class _FormEditProfileState extends State<FormEditProfile> {
                                                 provider.imageUrl),
                                           )
                                         : Image.file(
-                                            File(provider.imageFile!.path),
+                                            File(provider.imageFile!),
                                             fit: BoxFit.fill,
                                           ),
                                   ),

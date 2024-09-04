@@ -52,8 +52,6 @@ Future<void> main() async {
     await FirebaseMessaging.instance.requestPermission();
      locator.isReady<Session>().then((_) async {
       await NotificationService().init();
-     // await NotificationHelper().init();
-      //await FirebaseHelper.init();
       runApp(
         MultiProvider(
           providers: [

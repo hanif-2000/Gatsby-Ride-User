@@ -44,14 +44,14 @@ class ProfileEditProvider extends FormProvider {
       required String lastName,
       required String phone,
       required String country,
-      XFile? photo}) async* {
+      String? photo}) async* {
     yield ProfileLoading();
     final data = FormData.fromMap({
       'name': '${firstName} ${lastName}',
       'first_name': firstName,
       'phone': phone,
       if (photo != null)
-        'image': await MultipartFile.fromFile(photo.path, filename: photo.name),
+        'image': await MultipartFile.fromFile(photo, filename: photo),
       'last_name': lastName,
       "country": "Canada"
     });

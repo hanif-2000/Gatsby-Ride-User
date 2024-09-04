@@ -13,8 +13,10 @@ class UploadProfileImageProvider extends FormProvider {
   UploadProfileImageProvider({required this.doUploadProfileImage});
 
   Stream<UploadProfileImageState> doUploadProfileImageApi(context) async* {
-    var imageFilePath =
-        Provider.of<CreateProfileProvider>(context, listen: false).imageFile;
+    var imageFilePath = Provider.of<CreateProfileProvider>(context, listen: false).imageFile;
+    if(imageFilePath?.isEmpty??true){
+      return;
+    }
 
     // log(imageFilePath.toString());
     //show loader
@@ -22,7 +24,7 @@ class UploadProfileImageProvider extends FormProvider {
 
     //formdata
     var formData = FormData.fromMap({
-      'upload': await MultipartFile.fromFile(imageFilePath!.path,
+      'upload': await MultipartFile.fromFile(imageFilePath!,
           filename: 'profile'),
     });
     // logMe(formData.files[0].toString());

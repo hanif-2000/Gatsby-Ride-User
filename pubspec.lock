@@ -213,10 +213,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "0dfb6b6a1979dac1c1245e17cef824d7b452ea29bd33d3467269f9bef3715fb0"
+      sha256: "5598aa796bbf4699afd5c67c0f5f6e2ed542afc956884b9cd58c306966efc260"
       url: "https://pub.dev"
     source: hosted
-    version: "5.6.0"
+    version: "5.7.0"
   dio_web_adapter:
     dependency: transitive
     description:
@@ -249,14 +249,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
-  facebook_auth_desktop:
-    dependency: transitive
-    description:
-      name: facebook_auth_desktop
-      sha256: "223e04414e078271682dadd2a694da1f4d329634137414b30217b2f478457fdb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -414,30 +406,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.1"
-  flutter_facebook_auth:
+  flutter_image_compress:
     dependency: "direct main"
     description:
-      name: flutter_facebook_auth
-      sha256: faa92fb7626c230837f30d02de7d92b6af334b77ba744867c63545d4ad7e171f
+      name: flutter_image_compress
+      sha256: "45a3071868092a61b11044c70422b04d39d4d9f2ef536f3c5b11fb65a1e7dd90"
       url: "https://pub.dev"
     source: hosted
-    version: "7.1.0"
-  flutter_facebook_auth_platform_interface:
+    version: "2.3.0"
+  flutter_image_compress_common:
     dependency: transitive
     description:
-      name: flutter_facebook_auth_platform_interface
-      sha256: a416f89de881ba98188942060aecf17b434b06677d4557731f19e859343df54c
+      name: flutter_image_compress_common
+      sha256: "7f79bc6c8a363063620b4e372fa86bc691e1cb28e58048cd38e030692fbd99ee"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
-  flutter_facebook_auth_web:
+    version: "1.0.5"
+  flutter_image_compress_macos:
     dependency: transitive
     description:
-      name: flutter_facebook_auth_web
-      sha256: "8a6890a98522604169ca9f958d7189c9f579dbf05ba4d3d7adf26eca4c4c4c93"
+      name: flutter_image_compress_macos
+      sha256: "26df6385512e92b3789dc76b613b54b55c457a7f1532e59078b04bf189782d47"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.1"
+    version: "1.0.2"
+  flutter_image_compress_ohos:
+    dependency: transitive
+    description:
+      name: flutter_image_compress_ohos
+      sha256: e76b92bbc830ee08f5b05962fc78a532011fcd2041f620b5400a593e96da3f51
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
+  flutter_image_compress_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_image_compress_platform_interface
+      sha256: "579cb3947fd4309103afe6442a01ca01e1e6f93dc53bb4cbd090e8ce34a41889"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
+  flutter_image_compress_web:
+    dependency: transitive
+    description:
+      name: flutter_image_compress_web
+      sha256: f02fe352b17f82b72f481de45add240db062a2585850bea1667e82cc4cd6c311
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4+1"
   flutter_keychain:
     dependency: "direct main"
     description:
@@ -499,62 +515,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.1"
-  flutter_secure_storage:
-    dependency: transitive
-    description:
-      name: flutter_secure_storage
-      sha256: "165164745e6afb5c0e3e3fcc72a012fb9e58496fb26ffb92cf22e16a821e85d0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.2.2"
-  flutter_secure_storage_linux:
-    dependency: transitive
-    description:
-      name: flutter_secure_storage_linux
-      sha256: "4d91bfc23047422cbcd73ac684bc169859ee766482517c22172c86596bf1464b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.1"
-  flutter_secure_storage_macos:
-    dependency: transitive
-    description:
-      name: flutter_secure_storage_macos
-      sha256: "1693ab11121a5f925bbea0be725abfcfbbcf36c1e29e571f84a0c0f436147a81"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.2"
-  flutter_secure_storage_platform_interface:
-    dependency: transitive
-    description:
-      name: flutter_secure_storage_platform_interface
-      sha256: cf91ad32ce5adef6fba4d736a542baca9daf3beac4db2d04be350b87f69ac4a8
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.2"
-  flutter_secure_storage_web:
-    dependency: transitive
-    description:
-      name: flutter_secure_storage_web
-      sha256: f4ebff989b4f07b2656fb16b47852c0aab9fed9b4ec1c70103368337bc1886a9
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.1"
-  flutter_secure_storage_windows:
-    dependency: transitive
-    description:
-      name: flutter_secure_storage_windows
-      sha256: b20b07cb5ed4ed74fc567b78a72936203f587eba460af1df11281c9326cd3709
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.2"
   flutter_smart_dialog:
     dependency: "direct main"
     description:
       name: flutter_smart_dialog
-      sha256: "3d376ba47f64391cc657f706815b32dd6ff2e0f80553a5c9f33b812ba7c59462"
+      sha256: "6b5fd32cd2900745df30c1d95ef597ea0ee1ee8cfa557eab62010e3db1d3d717"
       url: "https://pub.dev"
     source: hosted
-    version: "4.9.8"
+    version: "4.9.8+1"
   flutter_stripe:
     dependency: "direct main"
     description:
@@ -769,10 +737,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_android
-      sha256: "5a47ebec9af97daf0822e800e4f101c3340b5ebc3f6898cf860c1a71b53cf077"
+      sha256: "0608de03fc541ece4f91ba3e01a68b17cce7a6cf42bd59e40bbe5c55cc3a49d8"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.28"
+    version: "6.1.30"
   google_sign_in_ios:
     dependency: transitive
     description:
@@ -1542,10 +1510,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: "83d37c7ad7aaf9aa8e275490669535c8080377cfa7a7004c24dfac53afffaa90"
+      sha256: f33d6bb662f0e4f79dcd7ada2e6170f3b3a2530c28fc41f49a411ddedd576a77
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.2"
+    version: "4.5.0"
   vector_graphics:
     dependency: transitive
     description:
@@ -1650,14 +1618,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.15.0"
-  win32:
-    dependency: transitive
-    description:
-      name: win32
-      sha256: "68d1e89a91ed61ad9c370f9f8b6effed9ae5e0ede22a270bdfa6daf79fc2290a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.5.4"
   xdg_directories:
     dependency: transitive
     description:
