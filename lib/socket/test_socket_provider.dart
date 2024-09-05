@@ -31,18 +31,8 @@ import '../../features/order/domain/entities/order_detail.dart';
 import 'package:location/location.dart' as lctn;
 
 class TestSocketProvider extends ChangeNotifier {
-  static final TestSocketProvider _provider = TestSocketProvider.internal();
-
-  factory TestSocketProvider() {
-    return _provider;
-  }
-
-  // GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   WebSocket? _socket;
   List<ChatModel> _chatMessagesList = [];
-
-  TestSocketProvider.internal();
-
   BookingDataModel? bookingDataModel;
   AcceptResponseModel? acceptResponseModel;
   ReceiptResponseModel? receiptResponseModel;
@@ -55,6 +45,7 @@ class TestSocketProvider extends ChangeNotifier {
   int unreadMessageCount = 0;
   String destinationAddress = "Destination";
   bool isLoading = false;
+  bool isConnected = false;
 
   List<ChatModel> get chatMessageList => _chatMessagesList;
   late BitmapDescriptor pickUpMarker,
@@ -89,14 +80,19 @@ class TestSocketProvider extends ChangeNotifier {
   updateOrderDetailsModel({required OrderDetailResponseModel data}) {
     orderDetailResponseModel = data;
 
-     print("================>>>> ${orderDetailResponseModel?.toJson()}");
-     if(orderDetailResponseModel?.data != null){
-       var data = orderDetailResponseModel?.data;
-       final oriLatLng = LatLng(double.tryParse(data!.startCoordinate.split(",").first)??0.0, double.tryParse(data.startCoordinate.split(",").last)??0.0,);
-       final destLatLng = LatLng(double.tryParse(data.endCoordinate.split(",").first)??0.0, double.tryParse(data.endCoordinate.split(",").last)??0.0,);
-       updateOriginAndDestinationLatLong(origin: oriLatLng, destination: destLatLng);
-
-     }
+    print("================>>>> ${orderDetailResponseModel?.toJson()}");
+    if (orderDetailResponseModel?.data != null) {
+      var data = orderDetailResponseModel?.data;
+      final oriLatLng = LatLng(
+        double.tryParse(data!.startCoordinate.split(",").first) ?? 0.0,
+        double.tryParse(data.startCoordinate.split(",").last) ?? 0.0,
+      );
+      final destLatLng = LatLng(
+        double.tryParse(data.endCoordinate.split(",").first) ?? 0.0,
+        double.tryParse(data.endCoordinate.split(",").last) ?? 0.0,
+      );
+      updateOriginAndDestinationLatLong(origin: oriLatLng, destination: destLatLng);
+    }
     notifyListeners();
   }
 
@@ -137,7 +133,6 @@ class TestSocketProvider extends ChangeNotifier {
 
   updateDriverLatLng({required LatLng driverLtLng}) {
     driverLatLng = driverLtLng;
-
     notifyListeners();
   }
 
@@ -205,72 +200,61 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   // -----> function to connect the socket <--------- //
-  Future<dynamic> connectToSocket(BuildContext context) async {
-    log("-------->CONNECTING TO SOCKET <--------");
-
-    // ws://3.97.35.163:8051
-    print(
-        '-------> uri === "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}""');
-    // _socket = WebSocket(Uri.parse(
-    //     "ws://shakti.parastechnologies.in:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
-
-    _socket = WebSocket(Uri.parse(
-        "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
+  Future<void> connectToSocket() async {
+    if(isConnected){
+      return;
+    }
+    print("-------->CONNECTING TO SOCKET <--------");
+    print('Socket Url===>>>> "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}""');
+    _socket = WebSocket(Uri.parse("ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
 
     _socket!.connection.listen((event) {
-      print("event is :-->. ${_socket!.connection.state}");
+      print("connection state is :-->. ${_socket!.connection.state}");
       if (event is Connected) {
-        log("************ Connectd ***********");
-        print("************ Connectd ***********");
-
-        listenSocketRequests(context);
-        // showToast(message: "connected");
-        //      listenGetChat();
-        // postCurrentPosition(context);
+        isConnected= true;
+        print("************ Connected ***********");
+        listenSocketRequests();
       } else if (event is Disconnected) {
-        log("************ DisConnectd ***********");
+        isConnected= false;
+        print("************ Disconnected ***********");
         // showToast(message: "disconnected");
       } else if (event is Connecting) {
-        log("************ CONNECTING ***********");
+        isConnected= false;
+        print("************ CONNECTING ***********");
         // showToast(message: "CONNECTING");
       } else if (event is Reconnecting) {
-        log("************ Reconnecting ***********");
-        // showToast(message: "Reconnecting");
+        isConnected= false;
+        print("************ Reconnecting ***********");
       } else if (event is Reconnected) {
-        listenSocketRequests(context);
-
-        log("************ Reconnected ***********");
-        // showToast(message: "Reconnected");
+        isConnected= true;
+        listenSocketRequests();
+        print("************ Reconnected ***********");
       } else {
-        log("************ DisConnectd ***********");
-        // showToast(message: "${_socket!.connection.state}");
+        isConnected= false;
+        print("************ else $event ***********");
       }
     });
   }
 
-  void listenSocketRequests(BuildContext context) {
-    log("************ listen to socket called");
+  void listenSocketRequests() {
     print("************ listen to socket called");
-
     _socket!.messages.listen((event) async {
-      //  Decoding data
       final response = jsonDecode(event);
-      log('-----Event  ${response.toString()}');
-      print('-----Event  ${response.toString()}');
-
+      print('-----Event Messages ========>>>>>>>>>  ${response.toString()}');
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'CustomerBookRequest') {
         bookingDataModel = BookingDataModel.fromJson(response);
-        // bookingList.add(bookingDataModel!.data);
-
         log("order id is :--->> ${bookingDataModel!.data.id} and Customer Id  is:--->> ${bookingDataModel!.data.customerId}");
-        print(
-            "order id is :--->> ${bookingDataModel!.data.id} and Customer Id  is:--->> ${bookingDataModel!.data.customerId}");
-
+        print("order id is :--->> ${bookingDataModel!.data.id} and Customer Id  is:--->> ${bookingDataModel!.data.customerId}");
         if (bookingDataModel!.data.customerId == session.userId) {
           session.setOrderId = bookingDataModel!.data.id;
-          final oriLatLng = LatLng(double.tryParse(bookingDataModel!.data.startCoordinate.split(",").first)??0.0, double.tryParse(bookingDataModel!.data.startCoordinate.split(",").last)??0.0,);
-          final destLatLng = LatLng(double.tryParse(bookingDataModel!.data.endCoordinate.split(",").first)??0.0, double.tryParse(bookingDataModel!.data.endCoordinate.split(",").last)??0.0,);
+          final oriLatLng = LatLng(
+            double.tryParse(bookingDataModel!.data.startCoordinate.split(",").first) ?? 0.0,
+            double.tryParse(bookingDataModel!.data.startCoordinate.split(",").last) ?? 0.0,);
+          final destLatLng = LatLng(
+            double.tryParse(bookingDataModel!.data.endCoordinate.split(",").first) ?? 0.0,
+            double.tryParse(bookingDataModel!.data.endCoordinate.split(",").last) ?? 0.0,
+          );
           updateOriginAndDestinationLatLong(origin: oriLatLng, destination: destLatLng);
         }
 
@@ -286,18 +270,14 @@ class TestSocketProvider extends ChangeNotifier {
         updateDriverLatLng(driverLtLng: LatLng(driverUpdatedPositionModel!.latitude, driverUpdatedPositionModel!.latitude));
         session.setDriverLatLong = "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
         notifyListeners();
-        updateBearing(
-          val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,
-        );
-
-        if (driverUpdatedPositionModel!.status == 3 ||
-            driverUpdatedPositionModel!.status == 5) {
+        updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,);
+        if (driverUpdatedPositionModel!.status == 3 || driverUpdatedPositionModel!.status == 5) {
           updateIsWithDriver(val: true);
           isWithDriver = true;
           notifyListeners();
         }
         if (session.isRunningOrder) {
-         await trackingDriver(
+          await trackingDriver(
               listenLocation: true,
               lat: driverUpdatedPositionModel!.latitude,
               bearing: bearing,
@@ -321,10 +301,12 @@ class TestSocketProvider extends ChangeNotifier {
                 distance: acceptResponseModel!.data.distance.toString(),
                 driverId: acceptResponseModel!.data.driverId.toString(),
                 endAddress: acceptResponseModel!.data.endAddress.toString(),
-                endCoordinate: acceptResponseModel!.data.endCoordinate.toString(),
+                endCoordinate:
+                    acceptResponseModel!.data.endCoordinate.toString(),
                 orderId: acceptResponseModel!.data.id.toString(),
                 startAddress: acceptResponseModel!.data.startAddress.toString(),
-                startCoordinate: acceptResponseModel!.data.startCoordinate.toString(),
+                startCoordinate:
+                    acceptResponseModel!.data.startCoordinate.toString(),
                 totalPrice: acceptResponseModel!.data.total.toString(),
                 userId: session.userId.toString(),
                 orderStatus: "1"),
@@ -551,7 +533,8 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   // /**  Tracking Driver */
-  Future<void> trackingDriver({required bool listenLocation,
+  Future<void> trackingDriver(
+      {required bool listenLocation,
       required double lat,
       required double long,
       required double bearing}) async {
@@ -578,10 +561,14 @@ class TestSocketProvider extends ChangeNotifier {
     markers[markerId] = marker;
     if (listenLocation && session.isRunningOrder) {
       logMe("is with driver called:-->> ${isWithDriver}");
-      if ((isWithDriver) || (currentOrderStatus == 5) || (currentOrderStatus == 7) || (currentOrderStatus == 3)) {
+      if ((isWithDriver) ||
+          (currentOrderStatus == 5) ||
+          (currentOrderStatus == 7) ||
+          (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         log("driver:- destination LatLng. $destinationLatLng");
-        await setPolyLinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
+        await setPolyLinesDirection(
+            LatLng(latDriver, lngDriver), destinationLatLng);
       } else {
         log("driver:-  is not with driver. $isWithDriver");
         log("driver:-  is not with driver.origin lat long $originLatLng");
@@ -606,16 +593,16 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   Future<void> animateToLocation(LatLng position) async {
-try{
-  await googleMapController
-      .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-    target: position,
-    bearing: bearing,
-    zoom: zoom,
-  )));
-}catch(e){
-  logMe("UNABLE TO ANIMATE");
-}
+    try {
+      await googleMapController
+          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: position,
+        bearing: bearing,
+        zoom: zoom,
+      )));
+    } catch (e) {
+      logMe("UNABLE TO ANIMATE");
+    }
   }
 
   Future<void> setPolyLinesDirection(LatLng origin, LatLng destination) async {
@@ -627,7 +614,10 @@ try{
         destination.latitude.toString() +
         "," +
         destination.longitude.toString());
-   await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then((result) {
+    await DirectionHelper()
+        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
+            destination.latitude, destination.longitude)
+        .then((result) {
       log("Polyline results are ::::::::--------------  ${result} ------------********");
       if (result.isNotEmpty) {
         polylineCoordinates = [];
@@ -726,7 +716,7 @@ try{
   }
 
   //   //Get total number of unread message
-  getTotalUnreadCount(int? receiverId) {
+  void getTotalUnreadCount(int? receiverId) {
     log("get total count");
     final map = {
       "userID": session.userId,
@@ -1054,16 +1044,15 @@ try{
     await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
       initialMarker = BitmapDescriptor.fromBytes(value);
     });
-
   }
 
-  updateOriginAndDestinationLatLong({required LatLng origin, required LatLng destination}) {
+  void updateOriginAndDestinationLatLong({required LatLng origin, required LatLng destination}) {
     originLatLng = origin;
     destinationLatLng = destination;
     notifyListeners();
   }
 
-  moveCameraToDriver() {
-    animateToLocation(LatLng(_driverLat, _driverLng));
+  Future<void> moveCameraToDriver() async {
+    await animateToLocation(LatLng(_driverLat, _driverLng));
   }
 }

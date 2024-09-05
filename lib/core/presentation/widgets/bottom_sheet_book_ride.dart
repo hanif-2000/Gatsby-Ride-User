@@ -269,8 +269,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                       event: () {
                                         var session = locator<Session>();
                                         session.setSearchingTime = 180;
-                                        var socketProvider =
-                                            locator<TestSocketProvider>();
+                                        var socketProvider = context.read<TestSocketProvider>();
                                         if (provider.paymentMethod != null) {
                                           if (provider.price.isEmpty ||
                                               provider
@@ -296,8 +295,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                                     destinationAddress: provider
                                                         .destinationAddress);
                                             /*** NEW RIDE REQUEST SEND VIA SOCKET */
-                                            socketProvider
-                                                .createRideRequest(
+                                            socketProvider.createRideRequest(
                                               originLatLng:
                                                   "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
                                               destinationLatLng:

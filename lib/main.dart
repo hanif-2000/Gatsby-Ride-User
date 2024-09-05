@@ -105,7 +105,8 @@ Future<void> main() async {
               create: (context) => locator<PaymentProvider>(),
             ),
             ChangeNotifierProvider<TestSocketProvider>(
-              create: (context) => locator<TestSocketProvider>(),
+              create: (context) => TestSocketProvider(),
+
             ),
 
             ChangeNotifierProvider<LogOutProvider>(

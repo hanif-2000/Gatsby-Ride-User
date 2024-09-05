@@ -30,7 +30,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
-  var socketProvider = locator<TestSocketProvider>();
 
   // var orderProvider = locator<OrderProvider>();
   // var chatProvider = locator<ChatProvider>();
@@ -39,13 +38,10 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
-    // socketProvider.connectToSocket(context);
-
+    var socketProvider = context.read<TestSocketProvider>();
     WidgetsBinding.instance.addObserver(this);
 
     print("init in chat page called");
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print("WidgetsBinding");
       socketProvider.joinExitRoom(
@@ -60,6 +56,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (context.mounted) {
+      var socketProvider = context.read<TestSocketProvider>();
       log(" app lifecycle state is ------>>>>>>>   $state");
       if (state == AppLifecycleState.paused) {
         socketProvider.joinExitRoom(
@@ -92,11 +89,11 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    var socketProvider = context.read<TestSocketProvider>();
     return PopScope(
       canPop: false,
       child: SafeArea(
-        child: Consumer<TestSocketProvider>(
-            builder: (context, latestSocketProvider, _) {
+        child: Consumer<TestSocketProvider>(builder: (context, latestSocketProvider, _) {
           return Scaffold(
               extendBody: false,
               resizeToAvoidBottomInset: true,

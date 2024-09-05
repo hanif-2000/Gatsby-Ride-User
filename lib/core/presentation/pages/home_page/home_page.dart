@@ -33,10 +33,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  TestSocketProvider socketProvider = locator<TestSocketProvider>();
+
 
   Future<void> retrieveOrderReceiptFromLocal() async {
-    // Retrieve the JSON string from local storage
+    final socketProvider = context.read<TestSocketProvider>();
     String? jsonData = session.orderReceipt;
     Map<String, dynamic> dataMap = jsonDecode(jsonData);
 
@@ -52,7 +52,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         logMe(" order details are:::::::::::::: ${value}");
 
         socketProvider.updateOrderDetailsModel(data: value);
-
         socketProvider
             .fetchDriverDetails(int.parse(session.driverId))
             .then((value) {
@@ -72,7 +71,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
  FutureOr<void> checkSessionDataAndNavigate()async {
-    if (session.isRunningOrder && session.orderId.isNotEmpty) {
+   final socketProvider = context.read<TestSocketProvider>();
+   if (session.isRunningOrder && session.orderId.isNotEmpty) {
       socketProvider.updateOnlyBitmap();
       final orderId = int.tryParse(session.orderId);
       await socketProvider.fetchOrderDetails(orderId ?? 0).then((value)async {
@@ -211,9 +211,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    log("home page called --------->>>>>>>");
-    socketProvider.connectToSocket(context);
-    log("************ IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
+    final socketProvider = context.read<TestSocketProvider>();
+    socketProvider.connectToSocket();
+    log("************HomePage initState ==>> IS ORDER RUNNING ${session.isRunningOrder}**********--------->>..");
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -237,8 +237,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             resizeToAvoidBottomInset: false,
             backgroundColor: whiteColor,
             body: Consumer<HomeProvider>(builder: (context, map, _) {
-              final mapProver =
-                  Provider.of<HomeProvider>(context, listen: false);
+              final mapProver = Provider.of<HomeProvider>(context, listen: false);
               return Stack(
                 children: <Widget>[
                   Stack(

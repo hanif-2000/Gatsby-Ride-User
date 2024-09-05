@@ -120,7 +120,7 @@ Future<void> init() async {
   locator.registerLazySingletonAsync<SharedPreferences>(() async => await SharedPreferences.getInstance());
   locator.registerLazySingleton<GlobalKey<NavigatorState>>(() => GlobalKey<NavigatorState>());
   locator.registerLazySingleton<Connectivity>(() => Connectivity());
-  locator.registerLazySingleton<TestSocketProvider>(() => TestSocketProvider());
+ // locator.registerLazySingleton<TestSocketProvider>(() => TestSocketProvider());
   // locator.registerSingleton<TestSocketProvider>(TestSocketProvider());
 
   locator.registerLazySingleton<GlobalKey<ScaffoldState>>(() => GlobalKey<ScaffoldState>());

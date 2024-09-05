@@ -32,7 +32,6 @@ class NewOrderPage extends StatefulWidget {
 
 class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver {
   final session = locator<Session>();
-  final newSocketProvider = locator<TestSocketProvider>();
   final homeProvider = locator<HomeProvider>();
   Timer? _timer;
 
@@ -40,6 +39,7 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
   void initState() {
     super.initState();
     dismissLoading();
+    var newSocketProvider = context.read<TestSocketProvider>();
     WidgetsBinding.instance.addObserver(this);
     newSocketProvider.updateBitsImage().then((value) {
     /*  if (session.isRunningOrder) {
@@ -219,7 +219,7 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
   Widget build(BuildContext context) {
     final session = locator<Session>();
     var _deviceSize = MediaQuery.of(context).size;
-
+    var newSocketProvider = context.read<TestSocketProvider>();
     log("location in order page:--->>${widget.location}");
 
     return PopScope(
@@ -484,12 +484,13 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
         builder: (context) {
           return PopScope(
               canPop: false,
-              onPopInvoked: (bool didPop) => {},
+              onPopInvokedWithResult: (_,__) => {},
               child: SearchingRideBottomSheet());
         }).whenComplete(() {
       log("THis is called after open Bottom sheet---");
     }).then((value) {
       if (value != null && value) {
+        var newSocketProvider = context.read<TestSocketProvider>();
         newSocketProvider.updateIsOrderAccepted(val: false);
       }
     });
