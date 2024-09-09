@@ -275,9 +275,7 @@ class HomeDrawerPage extends StatelessWidget {
     String token = session.sessionToken;
 
     final dio = Dio();
-    const String url =
-        'https://api.gatsbyrideshare.com/api/webservice/customer/account/delete';
-
+    const String url = 'https://api.gatsbyrideshare.com/api/webservice/customer/account/delete';
     try {
       // Setting up headers, including authentication token if needed
       dio.options.headers['Authorization'] = 'Bearer $token';
@@ -288,9 +286,7 @@ class HomeDrawerPage extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
-        await sessionLogOut().then(
-          (_) => Navigator.of(context)
-              .pushNamedAndRemoveUntil(LoginPage.routeName, (route) => false),
+        await sessionLogOut().then((_) => Navigator.of(context).pushNamedAndRemoveUntil(LoginPage.routeName, (route) => false),
         );
       } else {
         showToast(message: "Something went wrong");
@@ -301,25 +297,4 @@ class HomeDrawerPage extends StatelessWidget {
     }
   }
 
-  void sendPayment() async {
-    // String upiurl =
-    //     'upi://pay?pa=user@hdfgbank&pn=SenderName&tn=TestingGpay&am=100&cu=INR';
-    // await launchUrl(Uri.parse(upiurl));
-
-    // final res = await EasyUpiPaymentPlatform.instance.startPayment(
-    //   EasyUpiPaymentModel(
-    //     payeeVpa: 'amitbahadur@aubank',
-    //     payeeName: 'Amit Bahadur',
-    //     amount: 10.0,
-    //     description: 'Testing payment',
-    //   ),
-    // );
-    // TODO: add your success logic here
-    // print(res);
-  }
-
-  //   on EasyUpiPaymentException {
-  //     // TODO: add your exception logic here
-  //   }
-  // }
 }

@@ -187,9 +187,10 @@ class HomeProvider with ChangeNotifier {
     destinationIsFilled = false;
     distance = "0";
     totalDistance = 0;
-    price = "0";
+    price = "";
+    _paymentMethod =null;
+    selectedVehicleId = "";
     _selectedCategory = null;
-    _paymentMethod = null;
     markers.clear();
     selectedVehicleIndex = -1;
     originIsFilled = false;

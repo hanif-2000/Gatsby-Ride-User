@@ -60,13 +60,11 @@ class PaymentOption extends StatelessWidget {
                                 title: "Cash",
                                 assets: 'assets/icons/cash.svg',
                                 onTap: () {
-                                  provider.setPaymentMethod =
-                                      enums.PaymentMethod.cash;
+                                  provider.setPaymentMethod = enums.PaymentMethod.cash;
                                 },
                                 selected: provider.paymentMethod == null
                                     ? false
-                                    : provider.paymentMethod ==
-                                            enums.PaymentMethod.cash
+                                    : provider.paymentMethod == enums.PaymentMethod.cash
                                         ? true
                                         : false,
                               )),

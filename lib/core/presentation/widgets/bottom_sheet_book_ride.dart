@@ -182,13 +182,11 @@ class BottomSheetBookRide extends StatelessWidget {
                                 );
                               },
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: _deviceSize.width * .05),
+                                padding: EdgeInsets.symmetric(horizontal: _deviceSize.width * .05),
                                 child: Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
@@ -271,51 +269,27 @@ class BottomSheetBookRide extends StatelessWidget {
                                         session.setSearchingTime = 180;
                                         var socketProvider = context.read<TestSocketProvider>();
                                         if (provider.paymentMethod != null) {
-                                          if (provider.price.isEmpty ||
-                                              provider
-                                                  .selectedVehicleId.isEmpty) {
-                                            showToast(
-                                                message:
-                                                    appLoc.taxiTypeNotSelected);
-                                          } else if ((provider.isAvailable ==
-                                                  '') ||
-                                              provider.isAvailable == 'no') {
-                                            showToast(
-                                                message:
-                                                    "Selected vehicle is not available yet, Please select another");
+                                          if (provider.price.isEmpty || provider.selectedVehicleId.isEmpty) {
+                                            showToast(message: appLoc.taxiTypeNotSelected);
+                                          } else if ((provider.isAvailable == '') || provider.isAvailable == 'no') {
+                                            showToast(message: "Selected vehicle is not available yet, Please select another");
                                           } else {
-                                            final OrderDataDetail
-                                                orderDataDetail = OrderDataDetail(
-                                                    originLatLng:
-                                                        provider.originLatLng,
-                                                    destinationLatLng: provider
-                                                        .destinationLatLng,
-                                                    originAddress:
-                                                        provider.originAddress,
-                                                    destinationAddress: provider
-                                                        .destinationAddress);
+                                            final OrderDataDetail orderDataDetail = OrderDataDetail(
+                                                    originLatLng: provider.originLatLng,
+                                                    destinationLatLng: provider.destinationLatLng,
+                                                    originAddress: provider.originAddress,
+                                                    destinationAddress: provider.destinationAddress);
                                             /*** NEW RIDE REQUEST SEND VIA SOCKET */
                                             socketProvider.createRideRequest(
-                                              originLatLng:
-                                                  "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
-                                              destinationLatLng:
-                                                  "${provider.destinationLatLng.latitude},${provider.destinationLatLng.longitude}",
-                                              vehicleCatagory:
-                                                  provider.selectedVehicleId,
-                                              startAddress:
-                                                  provider.originAddress,
-                                              endAddress:
-                                                  provider.destinationAddress,
-                                              estimatedTime: data[0]
-                                                  .estimatedTime
-                                                  .toString(),
-                                              distance: data[0]
-                                                  .estimatedDistance
-                                                  .toString(),
+                                              originLatLng: "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
+                                              destinationLatLng: "${provider.destinationLatLng.latitude},${provider.destinationLatLng.longitude}",
+                                              vehicleCatagory: provider.selectedVehicleId,
+                                              startAddress: provider.originAddress,
+                                              endAddress: provider.destinationAddress,
+                                              estimatedTime: data[0].estimatedTime.toString(),
+                                              distance: data[0].estimatedDistance.toString(),
                                               total: provider.price,
-                                              payment_method: provider
-                                                          .paymentMethod! ==
-                                                      PaymentMethod.cash
+                                              payment_method: provider.paymentMethod! == PaymentMethod.cash
                                                   ? 1
                                                   : provider.paymentMethod! ==
                                                           PaymentMethod
@@ -363,11 +337,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                           log(provider.distance.toString());
                                           log(provider.price.toString());
                                         } else {
-                                          showToast(
-                                              message:
-                                                  "Please Select Payment Method");
-                                        }
-                                        ;
+                                          showToast(message: "Please Select Payment Method");
+                                        };
                                       },
                                       buttonHeight: 50,
                                       isRounded: true,

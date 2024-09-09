@@ -301,12 +301,10 @@ class TestSocketProvider extends ChangeNotifier {
                 distance: acceptResponseModel!.data.distance.toString(),
                 driverId: acceptResponseModel!.data.driverId.toString(),
                 endAddress: acceptResponseModel!.data.endAddress.toString(),
-                endCoordinate:
-                    acceptResponseModel!.data.endCoordinate.toString(),
+                endCoordinate: acceptResponseModel!.data.endCoordinate.toString(),
                 orderId: acceptResponseModel!.data.id.toString(),
                 startAddress: acceptResponseModel!.data.startAddress.toString(),
-                startCoordinate:
-                    acceptResponseModel!.data.startCoordinate.toString(),
+                startCoordinate: acceptResponseModel!.data.startCoordinate.toString(),
                 totalPrice: acceptResponseModel!.data.total.toString(),
                 userId: session.userId.toString(),
                 orderStatus: "1"),
@@ -326,9 +324,6 @@ class TestSocketProvider extends ChangeNotifier {
                 rating: acceptResponseModel!.data.driverRating!.toString(),
               )),
         );
-
-        notifyListeners();
-
         log("aceeep sdf name==>>${acceptResponseModel!.data.name}");
         session.setOrderId = acceptResponseModel!.data.id.toString();
         session.setDriverId = acceptResponseModel!.data.driverId.toString();
@@ -343,19 +338,12 @@ class TestSocketProvider extends ChangeNotifier {
 
         session.setOriginAddress = acceptResponseModel!.data.startAddress;
         session.setDestinationAddress = acceptResponseModel!.data.endAddress;
-        session.setOriginLat = double.parse(
-            acceptResponseModel!.data.startCoordinate.split(',').first);
-        session.setOriginLong = double.parse(
-            acceptResponseModel!.data.startCoordinate.split(',').last);
-
-        session.setDestinationLat = double.parse(
-            acceptResponseModel!.data.endCoordinate.split(',').first);
-        session.setDestinationLong = double.parse(
-            acceptResponseModel!.data.endCoordinate.split(',').last);
-
+        session.setOriginLat = double.parse(acceptResponseModel!.data.startCoordinate.split(',').first);
+        session.setOriginLong = double.parse(acceptResponseModel!.data.startCoordinate.split(',').last);
+        session.setDestinationLat = double.parse(acceptResponseModel!.data.endCoordinate.split(',').first);
+        session.setDestinationLong = double.parse(acceptResponseModel!.data.endCoordinate.split(',').last);
         updateIsWithDriver(val: false);
         isWithDriver = false;
-
         notifyListeners();
 
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
@@ -470,11 +458,8 @@ class TestSocketProvider extends ChangeNotifier {
                         onPressed: () async {
                           session.setIsRunningOrder = false;
                           _homeProvider.clearState();
-
                           Navigator.pop(context);
-
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, HomePage.routeName, (route) => false);
+                          Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
                         },
                       ),
                     ],
@@ -674,8 +659,7 @@ class TestSocketProvider extends ChangeNotifier {
         // _socket!.connection.listen((event) {
         // if (event is Connected) {
         _socket!.send(json.encode(map));
-        print(map.toString());
-
+        print("UserBookDriver ===========>>> ${map.toString()}");
         logMe(' CONNECTED:-->> Send New ride request -- > ${map.toString()}');
         notifyListeners();
         return true;
