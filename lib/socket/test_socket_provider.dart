@@ -196,6 +196,7 @@ class TestSocketProvider extends ChangeNotifier {
     isWithDriver = false;
     originIsFilled = false;
     originAddress = 'Pickup Address';
+   // originLatLng =
     notifyListeners();
   }
 
@@ -244,7 +245,6 @@ class TestSocketProvider extends ChangeNotifier {
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'CustomerBookRequest') {
         bookingDataModel = BookingDataModel.fromJson(response);
-        log("order id is :--->> ${bookingDataModel!.data.id} and Customer Id  is:--->> ${bookingDataModel!.data.customerId}");
         print("order id is :--->> ${bookingDataModel!.data.id} and Customer Id  is:--->> ${bookingDataModel!.data.customerId}");
         if (bookingDataModel!.data.customerId == session.userId) {
           session.setOrderId = bookingDataModel!.data.id;
@@ -536,14 +536,10 @@ class TestSocketProvider extends ChangeNotifier {
     markers[markerId] = marker;
     if (listenLocation && session.isRunningOrder) {
       logMe("is with driver called:-->> ${isWithDriver}");
-      if ((isWithDriver) ||
-          (currentOrderStatus == 5) ||
-          (currentOrderStatus == 7) ||
-          (currentOrderStatus == 3)) {
+      if ((isWithDriver) || (currentOrderStatus == 5) || (currentOrderStatus == 7) || (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         log("driver:- destination LatLng. $destinationLatLng");
-        await setPolyLinesDirection(
-            LatLng(latDriver, lngDriver), destinationLatLng);
+        await setPolyLinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
       } else {
         log("driver:-  is not with driver. $isWithDriver");
         log("driver:-  is not with driver.origin lat long $originLatLng");
@@ -609,8 +605,8 @@ class TestSocketProvider extends ChangeNotifier {
 //   /** Send RIDE REQUEST to Drivers **/
 
   Future<bool> createRideRequest({
-    required originLatLng,
-    required destinationLatLng,
+    required originLatLngs,
+    required destinationLatLngs,
     required vehicleCatagory,
     required startAddress,
     required endAddress,
@@ -624,8 +620,8 @@ class TestSocketProvider extends ChangeNotifier {
         'serviceType': 'UserBookDriver',
         'UserID': session.userId,
         'vehicle_category_id': vehicleCatagory,
-        'start_coordinate': originLatLng,
-        'end_coordinate': destinationLatLng,
+        'start_coordinate': originLatLngs,
+        'end_coordinate': destinationLatLngs,
         'start_address': startAddress,
         'end_address': endAddress,
         'estimated_time': estimatedTime,
@@ -954,8 +950,7 @@ class TestSocketProvider extends ChangeNotifier {
       final Marker markerOrigin = Marker(
         anchor: const Offset(0.5, 0.5),
         markerId: markerIdOrigin,
-        position: LatLng(orderDataDetail.originLatLng.latitude,
-            orderDataDetail.originLatLng.longitude),
+        position: LatLng(orderDataDetail.originLatLng.latitude, orderDataDetail.originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),
         icon: await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
           return initialMarker = BitmapDescriptor.fromBytes(value);
@@ -974,10 +969,8 @@ class TestSocketProvider extends ChangeNotifier {
         onTap: () {},
       );
 
-      googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(orderDataDetail.originLatLng.latitude,
-            orderDataDetail.originLatLng.longitude),
+      googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(orderDataDetail.originLatLng.latitude, orderDataDetail.originLatLng.longitude),
         zoom: zoom,
       )));
 

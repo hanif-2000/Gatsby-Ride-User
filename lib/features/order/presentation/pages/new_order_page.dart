@@ -42,11 +42,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
     var newSocketProvider = context.read<TestSocketProvider>();
     WidgetsBinding.instance.addObserver(this);
     newSocketProvider.updateBitsImage().then((value) {
-    /*  if (session.isRunningOrder) {
-        newSocketProvider.callTrakingDriver(
-            LatLng(double.parse(session.driverLatLng.split(',').first),
-            double.parse(session.driverLatLng.split(',').last)));
-      }*/
       if (session.driverId != '') {
         newSocketProvider.joinExitRoom(
             type: "unJoin",
@@ -76,100 +71,90 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
 
               dismissLoading();
               Navigator.pop(context);
+              WidgetsBinding.instance.addPostFrameCallback((callback){
+                showDialog(
+                  barrierDismissible: false,
+                  context: locator<GlobalKey<NavigatorState>>().currentContext!,
+                  builder: (BuildContext context) {
+                    // return object of type Dialog
+                    return PopScope(
+                      canPop: false,
+                      child: AlertDialog(
+                        title: Text(
+                          "No Nearby Driver Found",
+                          textAlign: TextAlign.center,
+                        ),
 
-              showDialog(
-                barrierDismissible: false,
-                context: locator<GlobalKey<NavigatorState>>().currentContext!,
-                builder: (BuildContext context) {
-                  // return object of type Dialog
-                  return PopScope(
-                    canPop: false,
-                    child: AlertDialog(
-                      title: Text(
-                        "No Nearby Driver Found",
-                        textAlign: TextAlign.center,
+                        // content: new Text("sdf"),
+                        actions: [
+                          // usually buttons at the bottom of the dialog
+                          ElevatedButton(
+                            child: Text("Search Again"),
+                            onPressed: () async {
+                              logMe("search again called-->>");
+                              session.setIsRunningOrder = true;
+                              Navigator.pop(context);
+                              newSocketProvider.createRideRequest(
+                                originLatLngs: "${homeProvider.originLatLng.latitude},${homeProvider.originLatLng.longitude}",
+                                destinationLatLngs: "${homeProvider.destinationLatLng.latitude},${homeProvider.destinationLatLng.longitude}",
+                                vehicleCatagory: homeProvider.selectedVehicleId,
+                                startAddress: homeProvider.originAddress,
+                                endAddress: homeProvider.destinationAddress,
+                                estimatedTime: (double.parse(session.estimatedTime.toString()) / 60).toStringAsFixed(1),
+                                distance: (int.parse(session.estimatedDistance.toString()) / 1000).toString(),
+                                total: homeProvider.price,
+                                payment_method: homeProvider.paymentMethod! == PaymentMethod.cash
+                                    ? 1
+                                    : homeProvider.paymentMethod! ==
+                                    PaymentMethod.creditCard
+                                    ? 2
+                                    : homeProvider.paymentMethod! ==
+                                    PaymentMethod.googlePay
+                                    ? 3
+                                    : homeProvider.paymentMethod! ==
+                                    PaymentMethod.applePay
+                                    ? 4
+                                    : 1,
+                              ).then((value) {
+                                startTimerAndNavigate(time: 180);
+                                showSearchingVehiclesBottomSheet(
+                                  context,
+                                );
+                                if (value) {
+                                  var session = locator<Session>();
+                                  session.setOrderStatus = 0;
+                                  session.setIsRunningOrder = true;
+                                  session.setBookingTime = DateTime.now().toString();
+                                } else {
+                                  showToast(message: "Something went wrong Please try again");
+                                }
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+
+                          ElevatedButton(
+                            child: Text("Cancel ride"),
+                            onPressed: () async {
+                              session.setIsRunningOrder = false;
+
+                              Navigator.pop(context);
+                              _timer?.cancel();
+
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, HomePage.routeName, (route) => false);
+                            },
+                          ),
+                        ],
                       ),
+                    );
+                  },
+                );
+              });
 
-                      // content: new Text("sdf"),
-                      actions: [
-                        // usually buttons at the bottom of the dialog
-                        ElevatedButton(
-                          child: Text("Search Again"),
-                          onPressed: () async {
-                            logMe("search again called-->>");
-                            session.setIsRunningOrder = true;
 
-                            Navigator.pop(context);
-                            newSocketProvider
-                                .createRideRequest(
-                              originLatLng:
-                                  "${homeProvider.originLatLng.latitude},${homeProvider.originLatLng.longitude}",
-                              destinationLatLng:
-                                  "${homeProvider.destinationLatLng.latitude},${homeProvider.destinationLatLng.longitude}",
-                              vehicleCatagory: homeProvider.selectedVehicleId,
-                              startAddress: homeProvider.originAddress,
-                              endAddress: homeProvider.destinationAddress,
-                              estimatedTime: (double.parse(session.estimatedTime.toString()) / 60).toStringAsFixed(1),
-                              distance: (int.parse(session.estimatedDistance
-                                          .toString()) /
-                                      1000)
-                                  .toString(),
-                              total: homeProvider.price,
-                              payment_method: homeProvider.paymentMethod! ==
-                                      PaymentMethod.cash
-                                  ? 1
-                                  : homeProvider.paymentMethod! ==
-                                          PaymentMethod.creditCard
-                                      ? 2
-                                      : homeProvider.paymentMethod! ==
-                                              PaymentMethod.googlePay
-                                          ? 3
-                                          : homeProvider.paymentMethod! ==
-                                                  PaymentMethod.applePay
-                                              ? 4
-                                              : 1,
-                            )
-                                .then((value) {
-                              startTimerAndNavigate(time: 180);
-                              showSearchingVehiclesBottomSheet(
-                                context,
-                              );
-
-                              if (value) {
-                                var session = locator<Session>();
-                                session.setOrderStatus = 0;
-                                session.setIsRunningOrder = true;
-                                session.setBookingTime =
-                                    DateTime.now().toString();
-                              } else {
-                                showToast(
-                                    message:
-                                        "Something went wrong Please try again");
-                              }
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-
-                        ElevatedButton(
-                          child: Text("Cancel ride"),
-                          onPressed: () async {
-                            session.setIsRunningOrder = false;
-
-                            Navigator.pop(context);
-                            _timer?.cancel();
-
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, HomePage.routeName, (route) => false);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
             } else {
               dismissLoading();
               showToast(message: "Something went wrong");
@@ -188,7 +173,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
 
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // homeProvider.clearOldRideData();
       if (session.orderStatus.toString() == "0") {
         startTimerAndNavigate(time: session.searchingTime);
         showSearchingVehiclesBottomSheet(
@@ -197,14 +181,8 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
       } else {
         newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
         session.setSearchingTime = 180;
-
-        log("else called ");
-
-        // newSocketProvider.getDriverDetailsById();
       }
     });
-
-    log("location in orde page is:-->> ${widget.location.originAddress}");
   }
 
   @override

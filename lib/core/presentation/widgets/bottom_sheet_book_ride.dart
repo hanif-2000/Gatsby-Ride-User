@@ -88,17 +88,10 @@ class BottomSheetBookRide extends StatelessWidget {
                                       onTap: () {
                                         log("on tap on vehicle called");
                                         provider.updatePriceAndCatagortId(
-                                            fare: data[index]
-                                                .totalFare
-                                                .toString(),
-                                            catagoryId: data[index]
-                                                .categoryId
-                                                .toString());
-
-                                        provider.updateSelectedVehicleIndex(
-                                            index: index);
-                                        provider.updateIsAvailable(
-                                            val: data[index].isAvailable);
+                                            fare: data[index].totalFare.toString(),
+                                            catagoryId: data[index].categoryId.toString());
+                                        provider.updateSelectedVehicleIndex(index: index);
+                                        provider.updateIsAvailable(val: data[index].isAvailable);
                                       },
                                       child: CustomVehicleInfo(
                                         index: index,
@@ -281,8 +274,8 @@ class BottomSheetBookRide extends StatelessWidget {
                                                     destinationAddress: provider.destinationAddress);
                                             /*** NEW RIDE REQUEST SEND VIA SOCKET */
                                             socketProvider.createRideRequest(
-                                              originLatLng: "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
-                                              destinationLatLng: "${provider.destinationLatLng.latitude},${provider.destinationLatLng.longitude}",
+                                              originLatLngs: "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
+                                              destinationLatLngs: "${provider.destinationLatLng.latitude},${provider.destinationLatLng.longitude}",
                                               vehicleCatagory: provider.selectedVehicleId,
                                               startAddress: provider.originAddress,
                                               endAddress: provider.destinationAddress,
@@ -307,21 +300,11 @@ class BottomSheetBookRide extends StatelessWidget {
                                             )
                                                 .then((value) {
                                               if (value) {
-                                                var session =
-                                                    locator<Session>();
+                                                var session = locator<Session>();
                                                 session.setOrderStatus = 0;
-                                                session.setIsRunningOrder =
-                                                    true;
-                                                session.setBookingTime =
-                                                    DateTime.now().toString();
-
-                                                Navigator
-                                                    .pushNamedAndRemoveUntil(
-                                                        context,
-                                                        NewOrderPage.routeName,
-                                                        (route) => false,
-                                                        arguments:
-                                                            orderDataDetail);
+                                                session.setIsRunningOrder = true;
+                                                session.setBookingTime = DateTime.now().toString();
+                                                Navigator.pushNamedAndRemoveUntil(context, NewOrderPage.routeName, (route) => false, arguments: orderDataDetail);
                                               } else {
                                                 showToast(
                                                     message:
