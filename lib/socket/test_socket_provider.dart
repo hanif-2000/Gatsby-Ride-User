@@ -240,7 +240,7 @@ class TestSocketProvider extends ChangeNotifier {
     print("************ listen to socket called");
     _socket!.messages.listen((event) async {
       final response = jsonDecode(event);
-      print('-----Event Messages ========>>>>>>>>>  ${response.toString()}');
+      print('----- Event Messages ===============\n  ${response.toString()} \n ===============');
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'CustomerBookRequest') {
         bookingDataModel = BookingDataModel.fromJson(response);
@@ -263,18 +263,16 @@ class TestSocketProvider extends ChangeNotifier {
 
       /// *************** DRIVER UPDATED LAT LONG ********* -------
 
-      if (response['type'] == 'UpdatedLatLong') {
+      else if (response['type'] == 'UpdatedLatLong') {
         log(response['type']);
         log("****************************      DRIVER UPDATED THE LAT LNG *************************");
         driverUpdatedPositionModel = DriverUpdatedPositionModel.fromJson(response);
         updateDriverLatLng(driverLtLng: LatLng(driverUpdatedPositionModel!.latitude, driverUpdatedPositionModel!.latitude));
         session.setDriverLatLong = "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
-        notifyListeners();
         updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,);
         if (driverUpdatedPositionModel!.status == 3 || driverUpdatedPositionModel!.status == 5) {
           updateIsWithDriver(val: true);
           isWithDriver = true;
-          notifyListeners();
         }
         if (session.isRunningOrder) {
           await trackingDriver(
@@ -283,12 +281,13 @@ class TestSocketProvider extends ChangeNotifier {
               bearing: bearing,
               long: driverUpdatedPositionModel!.longitude);
         }
+        notifyListeners();
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
       /// *************** RIDE ACCEPTED ********* -------
 
-      if (response['type'] == 'Accept') {
+      else if (response['type'] == 'Accept') {
         log("****************************      DRIVER ACCEPTED THE RIDE *************************");
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
@@ -345,14 +344,12 @@ class TestSocketProvider extends ChangeNotifier {
         updateIsWithDriver(val: false);
         isWithDriver = false;
         notifyListeners();
-
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
       /// *************** DEPARTURE TO CUSTOMER ********* -------
-      if (response['type'] == 'DepartToCustomer') {
-        log("****************************      DRIVER DEPARTURE TO CUSTOMER *************************");
-
+      else if (response['type'] == 'DepartToCustomer') {
+        log("****************************     DRIVER DEPARTURE TO CUSTOMER *************************");
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
         session.setOrderStatus = 2;
@@ -372,7 +369,7 @@ class TestSocketProvider extends ChangeNotifier {
       }
 
       /// *************** REACH TO CUSTOMER LOCATION  ********* -------
-      if (response['type'] == 'reachLocation') {
+      else if (response['type'] == 'reachLocation') {
         log("****************************      DRIVER REACH YOUR LOCATION *************************");
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
@@ -392,7 +389,7 @@ class TestSocketProvider extends ChangeNotifier {
 
       /// *************** START TRIP  ********* -------
 
-      if (response['type'] == 'startTrip') {
+      else if (response['type'] == 'startTrip') {
         log("****************************      DRIVER START THE RIDE *************************");
 
         acceptResponseModel = AcceptResponseModel.fromJson(response);
@@ -410,7 +407,7 @@ class TestSocketProvider extends ChangeNotifier {
 
       /// *************** END TRIP  ********* -------
 
-      if (response['type'] == 'endTrip') {
+      else if (response['type'] == 'endTrip') {
         log("****************************      DRIVER END THE RIDE *************************");
         session.setOrderStatus = 7;
         currentOrderStatus = 7;
@@ -418,17 +415,15 @@ class TestSocketProvider extends ChangeNotifier {
         print(response);
         updateReceiptResponseModel(ReceiptResponseModel.fromJson(response));
         acceptResponseModel = AcceptResponseModel.fromJson(response);
-        // receiptData = ReceiptData.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
         saveOrderReceipt();
-
         notifyListeners();
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
       /// *************** DRIVER CANCEL THE RIDE  ********* -------
 
-      if (response['type'] == 'Reject') {
+      else if (response['type'] == 'Reject') {
         log("****************************      DRIVER CANCEL THE RIDE *************************");
 
         if (response["data"]["driverID"] != null) {
@@ -439,42 +434,38 @@ class TestSocketProvider extends ChangeNotifier {
           updateCurrentOrderStatus(val: 8);
 
           notifyListeners();
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            showDialog(
-              barrierDismissible: false,
-              context: locator<GlobalKey<NavigatorState>>().currentContext!,
-              builder: (BuildContext context) {
-                // return object of type Dialog
-                return PopScope(
-                  canPop: false,
-                  child: AlertDialog(
-                    title: Text("Ride is Cancelled by the Driver"),
-                    // content: new Text("sdf"),
-                    actions: [
-                      // usually buttons at the bottom of the dialog
-                      ElevatedButton(
-                        child: Text("Find Next Driver"),
-                        onPressed: () async {
-                          session.setIsRunningOrder = false;
-                          _homeProvider.clearState();
-                          Navigator.pop(context);
-                          Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          });
+          showDialog(
+            barrierDismissible: false,
+            context: locator<GlobalKey<NavigatorState>>().currentContext!,
+            builder: (BuildContext context) {
+              return PopScope(
+                canPop: false,
+                child: AlertDialog(
+                  title: Text("Ride is Cancelled by the Driver"),
+                  // content: new Text("sdf"),
+                  actions: [
+                    // usually buttons at the bottom of the dialog
+                    ElevatedButton(
+                      child: Text("Find Next Driver"),
+                      onPressed: () async {
+                        session.setIsRunningOrder = false;
+                        _homeProvider.clearState();
+                        Navigator.pop(context);
+                        Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
 
           log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
         }
       }
 
       // <----------- Checking When request come ---------> //
-      if (response['type'] == 'MessageList') {
+      else if (response['type'] == 'MessageList') {
         isLoading = false;
         notifyListeners();
         log("messgae type is MESSAGE LIST");
@@ -498,7 +489,8 @@ class TestSocketProvider extends ChangeNotifier {
           // dismissLoading();
         }
       }
-      if (response['type'] == 'Chat') {
+
+      else if (response['type'] == 'Chat') {
         addSingleChat(
           ChatModel.fromMap(
             response['data'],
@@ -507,13 +499,11 @@ class TestSocketProvider extends ChangeNotifier {
 
         log("chat data is :-->>${chatMessageList.length}");
       }
-      if (response['type'] == 'UnreadCount') {
+      else  if (response['type'] == 'UnreadCount') {
         log("unread message count called");
 
         updateUnReadMessages(count: response['data']);
       }
-
-      log('-----Event  ${response.toString()}');
     });
   }
 
@@ -579,8 +569,7 @@ class TestSocketProvider extends ChangeNotifier {
 
   Future<void> animateToLocation(LatLng position) async {
     try {
-      await googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      await googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: position,
         bearing: bearing,
         zoom: zoom,
@@ -591,18 +580,9 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   Future<void> setPolyLinesDirection(LatLng origin, LatLng destination) async {
-    log("polyline///  --Driver co:" +
-        origin.latitude.toString() +
-        "," +
-        origin.longitude.toString());
-    log("polyline/// destination co:" +
-        destination.latitude.toString() +
-        "," +
-        destination.longitude.toString());
-    await DirectionHelper()
-        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
-            destination.latitude, destination.longitude)
-        .then((result) {
+    log("polyline///  --Driver co:" + origin.latitude.toString() + "," + origin.longitude.toString());
+    log("polyline/// destination co:" + destination.latitude.toString() + "," + destination.longitude.toString());
+    await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then((result) {
       log("Polyline results are ::::::::--------------  ${result} ------------********");
       if (result.isNotEmpty) {
         polylineCoordinates = [];
@@ -962,8 +942,7 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   void callDriver() async {
-    final call = Uri.parse(
-        'tel:${orderDetailResponseModel?.data.phone ?? '9876543210'}');
+    final call = Uri.parse('tel:${orderDetailResponseModel?.data.phone ?? '9876543210'}');
     launchUrl(call);
   }
 

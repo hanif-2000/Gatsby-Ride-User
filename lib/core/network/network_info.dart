@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
