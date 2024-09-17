@@ -48,8 +48,7 @@ class TestSocketProvider extends ChangeNotifier {
   bool isConnected = false;
 
   List<ChatModel> get chatMessageList => _chatMessagesList;
-  late BitmapDescriptor pickUpMarker,
-      destinationMarker,
+  late BitmapDescriptor destinationMarker,
       initialMarker,
       driverMarker;
   String originAddress = 'Pickup Address';
@@ -570,6 +569,7 @@ class TestSocketProvider extends ChangeNotifier {
         bearing: bearing,
         zoom: zoom,
       )));
+      //googleMapController.moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
     } catch (e) {
       logMe("UNABLE TO ANIMATE");
     }
@@ -629,7 +629,6 @@ class TestSocketProvider extends ChangeNotifier {
         'total': total,
         'payment_method': payment_method,
       };
-
       try {
         log("connection status :-->>${_socket!.connection.state}");
         // _socket!.connection.listen((event) {
@@ -639,9 +638,6 @@ class TestSocketProvider extends ChangeNotifier {
         logMe(' CONNECTED:-->> Send New ride request -- > ${map.toString()}');
         notifyListeners();
         return true;
-
-        // }
-        // });
       } catch (e) {
         print(e.toString());
         return false;
@@ -767,21 +763,6 @@ class TestSocketProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateOnlyBitmap() async {
-    await getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
-      pickUpMarker = BitmapDescriptor.fromBytes(value);
-    });
-    await getBytesFromAsset(destinationIcon, 100).then((value) async {
-      destinationMarker = BitmapDescriptor.fromBytes(value);
-    });
-    await getBytesFromAsset(carIconAsset, 150).then((value) {
-      driverMarker = BitmapDescriptor.fromBytes(value);
-    });
-
-    await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
-      initialMarker = BitmapDescriptor.fromBytes(value);
-    });
-  }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -916,7 +897,7 @@ class TestSocketProvider extends ChangeNotifier {
     try {
       bool serviceStatus = await locationService.serviceEnabled();
       if (serviceStatus) {
-        setAddressFromLatLng(orderDataDetail);
+        await setAddressFromLatLng(orderDataDetail);
       } else {
         try {
           bool serviceStatusResult = await locationService.requestService();
@@ -942,7 +923,7 @@ class TestSocketProvider extends ChangeNotifier {
     launchUrl(call);
   }
 
-  void setAddressFromLatLng(OrderDataDetail orderDataDetail) async {
+  Future<void> setAddressFromLatLng(OrderDataDetail orderDataDetail) async {
     log("set address from lat long  ORDER DETAILS : ${orderDataDetail}");
     try {
       MarkerId markerIdOrigin = const MarkerId("origin");
@@ -952,20 +933,15 @@ class TestSocketProvider extends ChangeNotifier {
         markerId: markerIdOrigin,
         position: LatLng(orderDataDetail.originLatLng.latitude, orderDataDetail.originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),
-        icon: await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
-          return initialMarker = BitmapDescriptor.fromBytes(value);
-        }),
+        icon: initialMarker,
         onTap: () {},
       );
       final Marker markerDestination = Marker(
         anchor: const Offset(0.5, 0.5),
         markerId: markerIdDestination,
-        position: LatLng(orderDataDetail.destinationLatLng.latitude,
-            orderDataDetail.destinationLatLng.longitude),
+        position: LatLng(orderDataDetail.destinationLatLng.latitude, orderDataDetail.destinationLatLng.longitude),
         infoWindow: const InfoWindow(title: "destination"),
-        icon: await getBytesFromAsset(destinationIcon, 100).then((value) {
-          return destinationMarker = BitmapDescriptor.fromBytes(value);
-        }),
+        icon: destinationMarker,
         onTap: () {},
       );
 
@@ -987,18 +963,14 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   Future<void> updateBitsImage() async {
-    await getBytesFromAsset(initialPickUpIcon, 300).then((value) async {
-      pickUpMarker = BitmapDescriptor.fromBytes(value);
+    await getBytesFromAsset(initialPickUpIcon, 80).then((value) async {
+      initialMarker =BitmapDescriptor.bytes(value);
     });
-    await getBytesFromAsset(destinationIcon, 100).then((value) async {
-      destinationMarker = BitmapDescriptor.fromBytes(value);
+    await getBytesFromAsset(destinationIcon, 40).then((value) async {
+      destinationMarker = BitmapDescriptor.bytes(value);
     });
-    await getBytesFromAsset(carIconAsset, 150).then((value) {
-      driverMarker = BitmapDescriptor.fromBytes(value);
-    });
-
-    await getBytesFromAsset(initialPickUpIcon, 300).then((value) {
-      initialMarker = BitmapDescriptor.fromBytes(value);
+    await getBytesFromAsset(carIconAsset, 60).then((value) {
+      driverMarker = BitmapDescriptor.bytes(value);
     });
   }
 

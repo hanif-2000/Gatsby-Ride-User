@@ -111,21 +111,13 @@ late bool isLoggedIn;
 final locator = GetIt.instance;
 
 Future<void> init() async {
-  //network info
   locator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImplementation(locator<Connectivity>()));
-
-  //external
   locator.registerLazySingleton<Dio>(() => DioClient().dio);
   locator.registerLazySingletonAsync<Session>(() async => SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
   locator.registerLazySingletonAsync<SharedPreferences>(() async => await SharedPreferences.getInstance());
   locator.registerLazySingleton<GlobalKey<NavigatorState>>(() => GlobalKey<NavigatorState>());
   locator.registerLazySingleton<Connectivity>(() => Connectivity());
- // locator.registerLazySingleton<TestSocketProvider>(() => TestSocketProvider());
-  // locator.registerSingleton<TestSocketProvider>(TestSocketProvider());
-
   locator.registerLazySingleton<GlobalKey<ScaffoldState>>(() => GlobalKey<ScaffoldState>());
-
-  //repository
   locator.registerLazySingleton<CurrencyRepository>(
     () => CurrencyRepositoryImplementation(
       dataSource: locator<CurrencyDataSource>(),
@@ -191,12 +183,6 @@ Future<void> init() async {
       dataSource: locator<OrderDataSource>(),
     ),
   );
-  //   locator.registerLazySingleton<OrderRepository>(
-  //   () => OrderRepositoryImplementation(
-  //     dataSource: locator<OrderDataSource>(),
-  //   ),
-  // );
-
   locator.registerLazySingleton<CreateProfileRepository>(
     () => CreateProfileRepositoryImplementation(
       dataSource: locator<CreateProfileDataSource>(),
@@ -220,15 +206,6 @@ Future<void> init() async {
       dataSource: locator<PaymentDataSource>(),
     ),
   );
-
-  // locator.registerLazySingleton<PaymentRepository>(
-  //   () => PaymentRepositoryImplementation(
-  //     dataSource: locator<PaymentDataSource>(),
-  //   ),
-  // );
-  // locator.registerLazySingleton<SocketProvider>(() => SocketProvider());
-
-  //datasource
   locator.registerLazySingleton<CurrencyDataSource>(
       () => CurrencyDataSourceImplementation(dio: locator<Dio>()));
   locator.registerLazySingleton<PriceCategoryDataSource>(
@@ -267,7 +244,6 @@ Future<void> init() async {
   locator.registerLazySingleton<PaymentDataSource>(
       () => PaymentDataSourceImplementation(dio: locator<Dio>()));
 
-  //usecase
   locator.registerLazySingleton<GetCurrency>(
       () => GetCurrency(locator<CurrencyRepository>()));
   locator.registerLazySingleton<GetPriceCategory>(
@@ -316,9 +292,6 @@ Future<void> init() async {
 
   locator.registerLazySingleton<SubmitRatings>(
       () => SubmitRatings(repository: locator<OrderRepository>()));
-
-  // locator.registerLazySingleton<GetDriverDetail>(
-  //     () => GetDriverDetail(repository: locator<OrderRepository>()));
   locator.registerLazySingleton<GetDriverLocation>(
       () => GetDriverLocation(repository: locator<OrderRepository>()));
   locator.registerLazySingleton<CreateProfile>(
@@ -331,14 +304,8 @@ Future<void> init() async {
 
   locator.registerLazySingleton<PaymentCard>(
       () => PaymentCard(repository: locator<PaymentRepository>()));
-  // locator.registerLazySingleton<TestSocketProvider>(() => TestSocketProvider());
 
-  //   locator.registerLazySingleton<DoCardList>(
-  // () => DoCardList(repository: locator<CardListRepository>()));
-
-  /**             providers             **/
-  locator.registerFactory(
-    () => SplashProvider(getCurrency: locator<GetCurrency>()),
+  locator.registerFactory(() => SplashProvider(),
   );
   locator.registerFactory(
     () => HomeProvider(
@@ -348,17 +315,6 @@ Future<void> init() async {
       getVehicleCatagory: locator<GetVehiclesCategory>(),
     ),
   );
-  // locator.registerFactory(
-  //   () => OrderProvider(
-  //       updateStatusOrder: locator<UpdateStatusOrder>(),
-  //       getDriverDetail: locator<GetDriverDetail>(),
-  //       getDriverLocation: locator<GetDriverLocation>(),
-  //       getOrderDetail: locator<GetOrderDetail>(),
-  //       getStatusOrder: locator<GetStatusOrder>(),
-  //       submitRatings: locator<SubmitRatings>(),
-  //       orderReceipt: locator<GetOrderReceipt>()),
-  // );
-
   locator.registerFactory<PlacePickerProvider>(
       () => PlacePickerProvider(getGooglePlace: locator<GetGooglePlace>()));
   locator.registerFactory<LoginProvider>(() => LoginProvider(
@@ -398,9 +354,5 @@ Future<void> init() async {
       () => ContactusProvider(doContactus: locator()));
   locator.registerFactory<PaymentProvider>(
       () => PaymentProvider(paymentCard: locator()));
-
-  // locator.registerFactory<TestSocketProvider>(() => TestSocketProvider());
-  // locator.registerFactory<LatestSocketProvider>(() => LatestSocketProvider());
   locator.registerFactory<LogOutProvider>(() => LogOutProvider());
-  // locator.registerFactory<ChatProvider>(() => ChatProvider());
 }

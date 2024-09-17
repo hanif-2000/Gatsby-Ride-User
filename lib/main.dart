@@ -42,16 +42,10 @@ import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey = publishKeyLive;
-  Stripe.merchantIdentifier = 'merchant.getride.user.taxi';
-  Stripe.urlScheme = 'flutterstripe';
-  await Stripe.instance.applySettings();
   await Firebase.initializeApp(name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
   try {
     await init();
-    await FirebaseMessaging.instance.requestPermission();
      locator.isReady<Session>().then((_) async {
-      await NotificationService().init();
       runApp(
         MultiProvider(
           providers: [
@@ -100,7 +94,6 @@ Future<void> main() async {
             ChangeNotifierProvider<LoginProvider>(
               create: (context) => locator<LoginProvider>(),
             ),
-
             ChangeNotifierProvider<PaymentProvider>(
               create: (context) => locator<PaymentProvider>(),
             ),
@@ -108,7 +101,6 @@ Future<void> main() async {
               create: (context) => TestSocketProvider(),
 
             ),
-
             ChangeNotifierProvider<LogOutProvider>(
               create: (context) => locator<LogOutProvider>(),
             ),
@@ -123,10 +115,27 @@ Future<void> main() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    _initStripe();
+    super.initState();
+  }
+  _initStripe()async{
+    Stripe.publishableKey = publishKeyLive;
+    Stripe.merchantIdentifier = 'merchant.getride.user.taxi';
+    Stripe.urlScheme = 'flutterstripe';
+    await Stripe.instance.applySettings();
+    await FirebaseMessaging.instance.requestPermission();
+    await NotificationService().init();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -150,16 +159,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('en', 'US'),
       ],
-      // Initialize routes
       onGenerateRoute: generateRoute,
       home: const SplashPage(),
-      // home: CreateProfilePage(),
       debugShowCheckedModeBanner: false,
       builder: FlutterSmartDialog.init(),
     );
-
-    // return MaterialApp(
-    //   home: PaymentScreen(),
-    // );
   }
 }

@@ -14,6 +14,7 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../../core/utility/duration_helper.dart';
 import '../../../../../core/utility/dynamic_toasstring_helper.dart';
 import '../../../../../core/utility/injection.dart';
 import '../../../../../core/utility/session_helper.dart';
@@ -92,63 +93,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   var session = locator<Session>();
 
-  var extraTimeTaken = "0 hr 0 min 0 sec";
-  var totalTimeTaken = "0 hr 0 min 0 sec";
-
-  convertSecondsToMinutes() {
-    log("extra time :-->> ${widget.extraTime}");
-    if (widget.extraTime != '') {
-      int seconds = int.parse(widget.extraTime
-          .toString()); // Replace this with your desired number of seconds
-
-      int minutes = seconds ~/ 60;
-      int remainingSeconds = seconds % 60;
-
-      int hours = minutes ~/ 60;
-      int remainingMinutes = minutes % 60;
-
-      print('$seconds seconds is equivalent to:');
-      print(
-          '$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
-
-      setState(() {
-        extraTimeTaken = "$hours"
-            ' hr '
-            '$remainingMinutes'
-            ' min '
-            '$remainingSeconds'
-            ' sec ';
-      });
-    } else {}
-  }
-
-  convertSecondsToMinutesTimeTaken() {
-    log("extra  time rtaken :-->> ${widget.timeTaken}");
-
-    if (widget.timeTaken != '' || widget.timeTaken != 0) {
-      final seconds = double.parse(
-          widget.timeTaken); // Replace this with your desired number of seconds
-
-      int minutes = seconds.toInt() ~/ 60;
-      int remainingSeconds = seconds.toInt() % 60;
-
-      int hours = minutes ~/ 60;
-      int remainingMinutes = minutes % 60;
-
-      print('$seconds seconds is equivalent to:');
-      print(
-          '$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
-
-      setState(() {
-        totalTimeTaken = "$hours"
-            ' hr '
-            '$remainingMinutes'
-            ' min '
-            '$remainingSeconds'
-            ' sec ';
-      });
-    } else {}
-  }
 
   updatePaymentSuccess() {
     setState(() {
@@ -252,8 +196,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _googlePayConfigFuture = PaymentConfiguration.fromAsset('default_google_pay_config.json');
     var cardNumber = Provider.of<PaymentProvider>(context, listen: false).selectedCardNumber;
     log("selected card number is :$cardNumber");
-    convertSecondsToMinutes();
-    convertSecondsToMinutesTimeTaken();
     totalAmountToPay = widget.newTotal;
     _getTotalAmount();
     setState(() {
@@ -323,14 +265,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Divider(
                       color: whiteAccentColor,
                     ),
-                    TextInRow(
-                      firstText: 'Extra Distance',
-                      // secondText: widget.extraDistance + " Km",
-                      secondText: widget.extraDistance.toString() + " Km",
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
+                    // TextInRow(
+                    //   firstText: 'Extra Distance',
+                    //   // secondText: widget.extraDistance + " Km",
+                    //   secondText: widget.extraDistance.toString() + " Km",
+                    // ),
+                    // Divider(
+                    //   color: whiteAccentColor,
+                    // ),
                     TextInRow(
                       firstText: "Per Km Price ",
                       secondText:
@@ -349,16 +291,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     TextInRow(
                         firstText: 'Total Time Taken',
-                        // secondText: widget.extraDistance + " Km",
-                        secondText: totalTimeTaken
-                        //  (widget.extraTime == '')
-                        //     ? "0 Min"
-                        //     : "${(int.parse(widget.extraTime)) / 60}" + " min",
+                        secondText: formatDuration(double.parse(widget.timeTaken.toString()).toInt()),
                         ),
                     Divider(
                       color: whiteAccentColor,
                     ),
-                    TextInRow(
+                /*    TextInRow(
                         firstText: 'Extra Time',
                         // secondText: widget.extraDistance + " Km",
                         secondText: extraTimeTaken
@@ -368,7 +306,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ),
                     Divider(
                       color: whiteAccentColor,
-                    ),
+                    ),*/
                     TextInRow(
                       firstText: "Per Minute Price",
                       secondText: ((widget.pricePerMin != null) ||
@@ -535,47 +473,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 secondText:
                     "CA\$ ${convertToFixedTwoDecimal(totalAmountToPay)} ",
               ),
-            /*  Padding(
-                padding:
-                    EdgeInsets.symmetric(vertical: _deviceSize.height * .02),
-                child: Text(
-                  "Payment Through",
-                  style: TextStyle(
-                    fontFamily: "poPPinMedium",
-                    fontSize: 13.0,
-                    color: grey7D7979Color,
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  widget.paymentMode == 1
-                      ? SvgPicture.asset('assets/icons/cash.svg')
-                      : widget.paymentMode == 2
-                          ? SvgPicture.asset('assets/icons/card.svg')
-                          : widget.paymentMode == 3
-                              ? SvgPicture.asset('assets/icons/google.svg')
-                              : SvgPicture.asset('assets/icons/apple.svg'),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    widget.paymentMode == 1
-                        ? "Cash"
-                        : widget.paymentMode == 2
-                            ? "Credit Card"
-                            : widget.paymentMode == 3
-                                ? "Google Pay"
-                                : "Apple Pay",
-                    style: TextStyle(
-                      fontFamily: "poPPinRegular",
-                      fontSize: 16.0,
-                      color: grey7D7979Color,
-                    ),
-                  )
-                ],
-              ),*/
-
               widget.paymentMode == 2
                   ? CustomButton(
                       borderRadius: 50.0,

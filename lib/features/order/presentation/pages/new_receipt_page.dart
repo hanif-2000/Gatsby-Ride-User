@@ -120,7 +120,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
             ),
           ),
           body: Consumer<TestSocketProvider>(
-            builder: (context, provider, child) {
+            builder: (context, socketProvider, child) {
+              final provider = context.read<TestSocketProvider>();
               return Container(
                 height: height,
                 width: width,
@@ -136,16 +137,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           Row(
                             children: [
                               CustomCacheNetworkImage(
-                                  img: provider
-                                          .receiptResponseModel!.data!.image ??
-                                      "",
+                                  img: provider.receiptResponseModel!.data!.image ?? "",
                                   size: 45),
-
-                              // CommonCircularImageContainer(
-                              //   height: 45,
-                              //   width: 45,
-                              //   image: data.orderReceipt![0].image,
-                              // ),
                               SizedBox(
                                 width: 11,
                               ),
@@ -253,9 +246,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       ),
                       TextInRow(
                         firstText: "Time Taken",
-                        secondText: formatDuration(double.parse(
-                                provider.receiptResponseModel!.data!.actualTime)
-                            .toInt()),
+                        secondText: formatDuration(double.parse(provider.receiptResponseModel!.data!.actualTime).toInt()),
                       ),
                       CommonText(
                         text: appLoc.paymentInformation,
@@ -439,8 +430,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                               .toString() ==
                                           "0.0"
                                       ? "0"
-                                      : provider.receiptResponseModel!.data!
-                                          .actualTime,
+                                      : provider.receiptResponseModel!.data!.actualTime,
                                   // provider
                                   //     .receiptResponseModel!.data.actualTime,
                                   baseFare: provider

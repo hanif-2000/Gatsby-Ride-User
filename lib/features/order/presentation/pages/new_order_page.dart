@@ -49,11 +49,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
       }
     });
 
-    String formatDuration(int seconds) {
-      final minutes = (seconds / 60).floor();
-      final remainingSeconds = seconds % 60;
-      return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
-    }
 
     void startTimerAndNavigate({required int time}) {
       Duration duration = Duration(seconds: time);
@@ -197,7 +192,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
   Widget build(BuildContext context) {
     final session = locator<Session>();
     var _deviceSize = MediaQuery.of(context).size;
-    var newSocketProvider = context.read<TestSocketProvider>();
     log("location in order page:--->>${widget.location}");
 
     return PopScope(
@@ -206,13 +200,13 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Consumer<TestSocketProvider>(builder: (context, provider, _) {
+            final newSocketProvider = context.read<TestSocketProvider>();
             if (newSocketProvider.isOrderAccepted) {
               session.setSearchingTime = 180;
               _timer?.cancel();
               Navigator.pop(context, true);
               log("order status is: ${newSocketProvider.currentOrderStatus}");
-            } else {}
-
+            }
             return Stack(
               children: <Widget>[
                 //Google Maps
@@ -225,7 +219,7 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                       zoom: newSocketProvider.zoom,
                       bearing: newSocketProvider.bearing),
                   onMapCreated: (GoogleMapController controller) async {
-                    newSocketProvider.googleMapController = controller;
+                     newSocketProvider.googleMapController = controller;
                      newSocketProvider.setCurrentLocation(widget.location);
                   },
                   onCameraMove: (val) async {

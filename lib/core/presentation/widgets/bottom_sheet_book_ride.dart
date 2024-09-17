@@ -35,8 +35,7 @@ class BottomSheetBookRide extends StatelessWidget {
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: Center(
-                  child:
-                      LottieBuilder.asset('assets/icons/lottie_animation.json'),
+                  child: LottieBuilder.asset('assets/icons/lottie_animation.json'),
                 ),
 
                 // Center(child: CircularProgressIndicator()),
@@ -47,7 +46,8 @@ class BottomSheetBookRide extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 0.0, bottom: 0.0),
                 child: Scaffold(
                   backgroundColor: whiteColor,
-                  body: Consumer<HomeProvider>(builder: (context, provider, _) {
+                  body: Consumer<HomeProvider>(builder: (context, homeProvider, _) {
+                    final provider = context.read<HomeProvider>();
                     return Container(
                       decoration: const BoxDecoration(
                         color: whiteColor,
@@ -258,16 +258,16 @@ class BottomSheetBookRide extends StatelessWidget {
                                         ),
                                       ),
                                       event: () {
-                                        var session = locator<Session>();
+                                        final session = locator<Session>();
                                         session.setSearchingTime = 180;
-                                        var socketProvider = context.read<TestSocketProvider>();
+                                        final socketProvider = context.read<TestSocketProvider>();
                                         if (provider.paymentMethod != null) {
                                           if (provider.price.isEmpty || provider.selectedVehicleId.isEmpty) {
                                             showToast(message: appLoc.taxiTypeNotSelected);
                                           } else if ((provider.isAvailable == '') || provider.isAvailable == 'no') {
                                             showToast(message: "Selected vehicle is not available yet, Please select another");
                                           } else {
-                                            final OrderDataDetail orderDataDetail = OrderDataDetail(
+                                            final orderDataDetail = OrderDataDetail(
                                                     originLatLng: provider.originLatLng,
                                                     destinationLatLng: provider.destinationLatLng,
                                                     originAddress: provider.originAddress,
@@ -297,28 +297,21 @@ class BottomSheetBookRide extends StatelessWidget {
                                                                       .applePay
                                                               ? 4
                                                               : 1,
-                                            )
-                                                .then((value) {
+                                            ).then((value) {
                                               if (value) {
-                                                var session = locator<Session>();
                                                 session.setOrderStatus = 0;
                                                 session.setIsRunningOrder = true;
                                                 session.setBookingTime = DateTime.now().toString();
                                                 Navigator.pushNamedAndRemoveUntil(context, NewOrderPage.routeName, (route) => false, arguments: orderDataDetail);
                                               } else {
-                                                showToast(
-                                                    message:
-                                                        "Something went wrong Please try again");
+                                                showToast(message: "Something went wrong Please try again");
                                               }
                                             });
                                           }
-
-                                          log(provider.originAddress
-                                              .toString());
-                                          log(provider.destinationAddress
-                                              .toString());
-                                          log(provider.distance.toString());
-                                          log(provider.price.toString());
+                                          log(provider.originAddress.toString(),name: "ORIGIN ADDRESS");
+                                          log(provider.destinationAddress.toString(),name: "DESTINATION ADDRESS");
+                                          log(provider.distance.toString(),name: "TOTAL DISTANCE");
+                                          log(provider.price.toString(),name: "TOTAL ESTIMATED PRICE");
                                         } else {
                                           showToast(message: "Please Select Payment Method");
                                         };

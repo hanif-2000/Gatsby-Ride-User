@@ -71,141 +71,143 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
  FutureOr<void> checkSessionDataAndNavigate()async {
-   final socketProvider = context.read<TestSocketProvider>();
-   if (session.isRunningOrder && session.orderId.isNotEmpty) {
-      socketProvider.updateOnlyBitmap();
-      final orderId = int.tryParse(session.orderId);
-      await socketProvider.fetchOrderDetails(orderId ?? 0).then((value)async {
-        log("order details are:  ${value.data}");
-        print("order details are:  ${session.orderStatus}");
-        {
-          socketProvider.updateOrderDetailsModel(data: value);
-          dismissLoading();
-          if (session.orderStatus.toString() == "7") {
-            if (!session.isPaymentDone) {
-              retrieveOrderReceiptFromLocal().then((value) {
-                logMe(
-                    "receipt data from session is ${socketProvider.receiptResponseModel}:");
-                SmartDialog.dismiss();
-                dismissLoading();
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    ReceiptScreen.routeName, (route) => false);
-              });
-              /** Navigate to receipt screen */
-            } else if (!session.isRatingGiven) {
-              await socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
-                socketProvider.updateDriverDetailsModel(data: value).then((value) {
-                  logMe(" driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
+    if(context.mounted){
+      final socketProvider = context.read<TestSocketProvider>();
+      if (session.isRunningOrder && session.orderId.isNotEmpty) {
+        socketProvider.updateBitsImage();
+        final orderId = int.tryParse(session.orderId);
+        await socketProvider.fetchOrderDetails(orderId ?? 0).then((value)async {
+          log("order details are:  ${value.data}");
+          print("order details are:  ${session.orderStatus}");
+          {
+            socketProvider.updateOrderDetailsModel(data: value);
+            dismissLoading();
+            if (session.orderStatus.toString() == "7") {
+              if (!session.isPaymentDone) {
+                retrieveOrderReceiptFromLocal().then((value) {
+                  logMe(
+                      "receipt data from session is ${socketProvider.receiptResponseModel}:");
                   SmartDialog.dismiss();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FeedBackScreen(
-                        name: socketProvider
-                            .driverDetailResponseModel!.message.name,
-                        img: socketProvider
-                            .driverDetailResponseModel!.message.image,
-                        carModal: socketProvider
-                            .driverDetailResponseModel!.message.carModel,
-                        carNo: socketProvider
-                            .driverDetailResponseModel!.message.plateNumber,
-                      ),
-                    ),
-                  );
+                  dismissLoading();
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      ReceiptScreen.routeName, (route) => false);
                 });
+                /** Navigate to receipt screen */
+              } else if (!session.isRatingGiven) {
+                await socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
+                  socketProvider.updateDriverDetailsModel(data: value).then((value) {
+                    logMe(" driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
+                    SmartDialog.dismiss();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FeedBackScreen(
+                          name: socketProvider
+                              .driverDetailResponseModel!.message.name,
+                          img: socketProvider
+                              .driverDetailResponseModel!.message.image,
+                          carModal: socketProvider
+                              .driverDetailResponseModel!.message.carModel,
+                          carNo: socketProvider
+                              .driverDetailResponseModel!.message.plateNumber,
+                        ),
+                      ),
+                    );
+                  });
+                });
+              } else {
+                logMe("--------   payment and ratings are done   ---- ");
+              }
+            } else if (session.orderStatus.toString() == "0") {
+              showLoading();
+              getDifferenceInSeconds(
+                  startTimeStr: session.bookingTime,
+                  endTimeStr: DateTime.now().toString())
+                  .then((value) =>
+              {log("searching time differnece is : -->> $value  seconds")});
+
+              log("Customer searching for driver");
+
+              log("order id is : " + session.orderId);
+
+              await socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
+                log("order details are:  ${value.data}");
+                socketProvider.updateOrderDetailsModel(data: value);
+                dismissLoading();
+
+                Navigator.pushNamedAndRemoveUntil(
+                    context, NewOrderPage.routeName, (route) => false,
+                    arguments: OrderDataDetail(
+                        originAddress: socketProvider
+                            .orderDetailResponseModel!.data.startAddress,
+                        destinationAddress: socketProvider
+                            .orderDetailResponseModel!.data.endAddress,
+                        originLatLng: LatLng(
+                            double.parse(socketProvider
+                                .orderDetailResponseModel!.data.startCoordinate
+                                .split(',')
+                                .first),
+                            double.parse(socketProvider
+                                .orderDetailResponseModel!.data.startCoordinate
+                                .split(',')
+                                .last)),
+                        destinationLatLng: LatLng(
+                            double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
+                            double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
               });
             } else {
-              logMe("--------   payment and ratings are done   ---- ");
+              logMe(
+                  "-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
+              await socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
+                socketProvider.updateCurrentOrderStatus(val: int.parse(value.data.orderStatus.toString()));
+
+                session.setDriverId = value.data.driverId.toString();
+
+                if (value.data.orderStatus.toString() == "8") {
+                  session.setIsPaymentDone = true;
+                  session.setIsRunningOrder = false;
+                  session.setIsPaymentDone = true;
+
+                  showToast(message: "Previous Ride is Canceled");
+                } else {
+                  logMe(" order details are:::::::::::::: ${value}");
+
+                  socketProvider.updateOrderDetailsModel(data: value);
+
+                  socketProvider
+                      .fetchDriverDetails(int.parse(session.driverId))
+                      .then((value) {
+                    socketProvider.updateDriverDetailsModel(data: value);
+                    logMe(" driver details are::::::::::::::---- ${value}");
+                    SmartDialog.dismiss();
+
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, NewOrderPage.routeName, (route) => false,
+                        arguments: OrderDataDetail(
+                            originAddress: socketProvider
+                                .orderDetailResponseModel!.data.startAddress,
+                            destinationAddress: socketProvider
+                                .orderDetailResponseModel!.data.endAddress,
+                            originLatLng: LatLng(
+                                double.parse(socketProvider
+                                    .orderDetailResponseModel!.data.startCoordinate
+                                    .split(',')
+                                    .first),
+                                double.parse(socketProvider
+                                    .orderDetailResponseModel!.data.startCoordinate
+                                    .split(',')
+                                    .last)),
+                            destinationLatLng:
+                            LatLng(double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first), double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
+                  });
+                }
+              });
             }
-          } else if (session.orderStatus.toString() == "0") {
-            showLoading();
-            getDifferenceInSeconds(
-                startTimeStr: session.bookingTime,
-                endTimeStr: DateTime.now().toString())
-                .then((value) =>
-            {log("searching time differnece is : -->> $value  seconds")});
-
-            log("Customer searching for driver");
-
-            log("order id is : " + session.orderId);
-
-            await socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
-              log("order details are:  ${value.data}");
-              socketProvider.updateOrderDetailsModel(data: value);
-              dismissLoading();
-
-              Navigator.pushNamedAndRemoveUntil(
-                  context, NewOrderPage.routeName, (route) => false,
-                  arguments: OrderDataDetail(
-                      originAddress: socketProvider
-                          .orderDetailResponseModel!.data.startAddress,
-                      destinationAddress: socketProvider
-                          .orderDetailResponseModel!.data.endAddress,
-                      originLatLng: LatLng(
-                          double.parse(socketProvider
-                              .orderDetailResponseModel!.data.startCoordinate
-                              .split(',')
-                              .first),
-                          double.parse(socketProvider
-                              .orderDetailResponseModel!.data.startCoordinate
-                              .split(',')
-                              .last)),
-                      destinationLatLng: LatLng(
-                          double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
-                          double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
-            });
-          } else {
-            logMe(
-                "-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
-            await socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
-              socketProvider.updateCurrentOrderStatus(val: int.parse(value.data.orderStatus.toString()));
-
-              session.setDriverId = value.data.driverId.toString();
-
-              if (value.data.orderStatus.toString() == "8") {
-                session.setIsPaymentDone = true;
-                session.setIsRunningOrder = false;
-                session.setIsPaymentDone = true;
-
-                showToast(message: "Previous Ride is Canceled");
-              } else {
-                logMe(" order details are:::::::::::::: ${value}");
-
-                socketProvider.updateOrderDetailsModel(data: value);
-
-                socketProvider
-                    .fetchDriverDetails(int.parse(session.driverId))
-                    .then((value) {
-                  socketProvider.updateDriverDetailsModel(data: value);
-                  logMe(" driver details are::::::::::::::---- ${value}");
-                  SmartDialog.dismiss();
-
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, NewOrderPage.routeName, (route) => false,
-                      arguments: OrderDataDetail(
-                          originAddress: socketProvider
-                              .orderDetailResponseModel!.data.startAddress,
-                          destinationAddress: socketProvider
-                              .orderDetailResponseModel!.data.endAddress,
-                          originLatLng: LatLng(
-                              double.parse(socketProvider
-                                  .orderDetailResponseModel!.data.startCoordinate
-                                  .split(',')
-                                  .first),
-                              double.parse(socketProvider
-                                  .orderDetailResponseModel!.data.startCoordinate
-                                  .split(',')
-                                  .last)),
-                          destinationLatLng:
-                          LatLng(double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first), double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
-                });
-              }
-            });
           }
-        }
-      });
-    } else {
-      logMe("---NO OLD ORDER RUNNING*-----");
+        });
+      } else {
+        logMe("---NO OLD ORDER RUNNING*-----");
+      }
     }
   }
 

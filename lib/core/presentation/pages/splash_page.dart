@@ -23,39 +23,40 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
+
     super.initState();
 
     // newSocketProvider.connectToSocket();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Timer(const Duration(seconds: 3), () async {
-        context.read<SplashProvider>().fetchCurrency().listen((state) async {
-          final session = locator<Session>();
+    WidgetsBinding.instance.addPostFrameCallback((_)async {
+      final session = locator<Session>();
+      final splashProvider = context.read<SplashProvider>();
+      splashProvider.getDeviceType();
+      splashProvider.getSessionData();
+      Timer(const Duration(seconds: 3), (){
+        if (session.isLoggedIn) {
+          Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
+        /*  if (session.orderStatus == 100 || session.orderStatus == 8) {
+            Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
+          } else {
+            Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
+          }*/
+        } else {
+          Navigator.pushNamedAndRemoveUntil(context, LoginPage.routeName, (route) => false);
+        }
+
+   /*     context.read<SplashProvider>().fetchCurrency().listen((state) async {
+
           log("state runtime type:==" + state.runtimeType.toString());
 
           switch (state.runtimeType) {
             case CurrencyLoading:
               break;
             case CurrencyLoaded:
-              if (session.isLoggedIn) {
-                if (session.orderStatus == 100 || session.orderStatus == 8) {
-                  //  socketProvider.connectToSocket(context);
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, HomePage.routeName, (route) => false);
-                } else {
-                  log("orogin lat lat :->> ${session.originLat}");
-                  log("orogin lat long :->> ${session.originLong}");
-                  //  socketProvider.connectToSocket(context);
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, HomePage.routeName, (route) => false);
-                }
-              } else {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, LoginPage.routeName, (route) => false);
-              }
+
 
               break;
           }
-        });
+        });*/
         // }
       });
     });

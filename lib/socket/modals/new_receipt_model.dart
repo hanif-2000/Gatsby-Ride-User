@@ -52,6 +52,7 @@ class ReceiptData {
   dynamic paymentMethod;
   dynamic estimatedTime;
   dynamic actualTime;
+  dynamic actual_time;
   DateTime? createdAt;
   dynamic total;
   dynamic pendingAmount;
@@ -115,7 +116,7 @@ class ReceiptData {
       this.actual_distance,
       this.actual_distance_price,
       this.price_km,
-      this.price_min});
+      this.price_min,this.actual_time});
 
   factory ReceiptData.fromJson(Map<String, dynamic> json) => ReceiptData(
         id: json["id"],
@@ -125,7 +126,8 @@ class ReceiptData {
         actual_distance: json["actual_distance"],
         paymentMethod: json["payment_method"],
         estimatedTime: json["estimated_time"],
-        actualTime: json["actual_time"],
+        actualTime: json["actualTime"],
+        actual_time: json["actual_time"],
         createdAt: DateTime.tryParse(
             json["created_at"] ?? DateTime.now().toUtc().toString()),
         total: json["total"] ?? "0.0",
@@ -162,7 +164,8 @@ class ReceiptData {
         "distance": distance,
         "payment_method": paymentMethod,
         "estimated_time": estimatedTime,
-        "actual_time": actualTime,
+        "actual_time": actual_time,
+        "actualTime": actualTime,
         "created_at": createdAt?.toIso8601String(),
         "total": total,
         "pending_amount": pendingAmount,
