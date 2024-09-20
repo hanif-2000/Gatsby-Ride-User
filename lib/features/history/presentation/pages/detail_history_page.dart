@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utility/app_settings.dart';
+import '../../../../core/utility/duration_helper.dart';
 import '../../../../core/utility/helper.dart';
 import '../../../order/presentation/pages/components/ratings.dart';
 import '../../../testing/widgets/rating_widget.dart';
@@ -26,37 +27,9 @@ class DetailHistoryPage extends StatefulWidget {
 }
 
 class _DetailHistoryPageState extends State<DetailHistoryPage> {
-  var extraTimeTaken = "0 hr 0 Min 0 Sec";
-
-  convertSecondsToMinutes() {
-    if (widget.item.actual_time != '') {
-      int seconds = double.parse(widget.item.actual_time)
-          .toInt(); // Replace this with your desired number of seconds
-
-      int minutes = seconds ~/ 60;
-      int remainingSeconds = seconds % 60;
-
-      int hours = minutes ~/ 60;
-      int remainingMinutes = minutes % 60;
-
-      print('$seconds seconds is equivalent to:');
-      print(
-          '$hours hours, $remainingMinutes minutes, and $remainingSeconds seconds');
-
-      setState(() {
-        extraTimeTaken = "$hours"
-            ' hr '
-            '$remainingMinutes'
-            ' min '
-            '$remainingSeconds'
-            ' sec ';
-      });
-    } else {}
-  }
 
   @override
   void initState() {
-    convertSecondsToMinutes();
     super.initState();
   }
 
@@ -198,8 +171,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       markers: Set<Marker>.of(provider.markers.values),
                       onMapCreated: (GoogleMapController controller) async {
                         provider.googleMapController = controller;
-                        // await provider.setCurrentLocation(
-                        //     widget.orderDetail, widget.customerDetail);
                         final pickup = LatLng(
                             double.tryParse(
                                 widget.item.startCoordinate!.split(',').first)!,
@@ -638,15 +609,10 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                             'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
-                                                  mergeDistanceTxt(
-                                                    widget.item.category
-                                                                .priceKm !=
-                                                            null
-                                                        ? widget.item.category
-                                                            .priceKm
-                                                            .toString()
-                                                        : "0.0",
-                                                  ),
+                                                  mergePriceTxt(widget.item.category.priceKm ==
+                                                      null
+                                                      ? "0.0"
+                                                      : widget.item.category.priceKm.toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
                                                     fontFamily: "Poppins",
@@ -670,7 +636,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                             'poPPinSemiBold',
                                                         fontSize: 16)),
                                                 Text(
-                                                  extraTimeTaken,
+                                                  formatDuration(double.tryParse(widget.item.actual_time.toString())?.toInt()??0),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
                                                     fontFamily: "Poppins",
@@ -695,8 +661,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                         fontSize: 16)),
                                                 Text(
                                                   mergePriceTxt(
-                                                    widget.item.category
-                                                                .price_min !=
+                                                    widget.item.category.price_min !=
                                                             null
                                                         ? "${widget.item.category.price_min ?? "0.0"}"
                                                         : "0.0",

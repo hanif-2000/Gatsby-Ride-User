@@ -695,8 +695,7 @@ class TestSocketProvider extends ChangeNotifier {
 //   /** Get Order Details */
   Future<OrderDetailResponseModel> fetchOrderDetails(int id) async {
     log("fetch order details called");
-    final String apiUrl =
-        'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
+    final String apiUrl = 'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
 
     try {
       log("try called : ${apiUrl}");
@@ -705,14 +704,9 @@ class TestSocketProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         dismissLoading();
-        log("--------******* ${response.data}");
-
-        log("response is :${response}");
-        // If the server returns a 200 OK response, parse the JSON
-        OrderDetailResponseModel data =
-            OrderDetailResponseModel.fromJson(response.data);
-        updateReceiptResponseModel(ReceiptResponseModel.fromJson(response.data),
-            addData: true);
+        log("api/webservice/getOrder response is :${response}");
+        OrderDetailResponseModel data = OrderDetailResponseModel.fromJson(response.data);
+        updateReceiptResponseModel(ReceiptResponseModel.fromJson(response.data), addData: true);
         session.setOrderStatus = int.parse(data.data.orderStatus.toString());
 
         return data;
