@@ -128,6 +128,8 @@ class _MyAppState extends State<MyApp> {
     _initStripe();
     super.initState();
   }
+
+
   _initStripe()async{
     Stripe.publishableKey = publishKeyLive;
     Stripe.merchantIdentifier = 'merchant.getride.user.taxi';
@@ -136,6 +138,8 @@ class _MyAppState extends State<MyApp> {
     await FirebaseMessaging.instance.requestPermission();
     await NotificationService().init();
   }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
