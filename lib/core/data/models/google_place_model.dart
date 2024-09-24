@@ -4,17 +4,21 @@ import 'geometry_model.dart';
 
 class GooglePlaceSearchModel extends GooglePlaceSearch {
   const GooglePlaceSearchModel(
-      {required String formattedAddress,
+      { String? formattedAddress,
       required Geometry geometry,
-      required String name})
-      : super(
-            formattedAddress: formattedAddress, geometry: geometry, name: name);
+      required String place_id,
+      required String name,
+        String? vicinity})
+      : super(formattedAddress: formattedAddress, geometry: geometry, name: name,place_id: place_id,vicinity: vicinity);
 
   factory GooglePlaceSearchModel.fromJson(Map<String, dynamic> json) =>
       GooglePlaceSearchModel(
-        formattedAddress: json["formatted_address"],
+        formattedAddress: json["formatted_address"]??json["vicinity"]??"",
         geometry: GeometryModel.fromJson(json["geometry"]),
         name: json["name"],
+        place_id: json["place_id"],
+        vicinity: json["vicinity"],
+
       );
 
   @override
@@ -22,5 +26,6 @@ class GooglePlaceSearchModel extends GooglePlaceSearch {
         "formatted_address": formattedAddress,
         "geometry": geometry.toJson(),
         "name": name,
+        "place_id": place_id,
       };
 }

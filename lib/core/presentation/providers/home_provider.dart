@@ -54,7 +54,7 @@ class HomeProvider with ChangeNotifier {
 
   String estimatedTimeToShow = '';
 
-  Session session = locator<Session>();
+  final session = locator<Session>();
 
   LatLng defaultLatLng = LatLng(55.170834, -118.794724);
 
@@ -278,12 +278,10 @@ class HomeProvider with ChangeNotifier {
 
     if (session.currentLat != '') {
       updateLatLong(
-        latitude: double.parse(session.currentLat),
-        longitude: double.parse(session.currentLong),
+        latitude: session.currentLat,
+        longitude: session.currentLat,
       );
     }
-
-    // connectToSocket();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -342,6 +340,8 @@ class HomeProvider with ChangeNotifier {
   Future<void> setAddressFromLatLng() async {
     try {
       List<Placemark> p = await placemarkFromCoordinates(originLatLng.latitude, originLatLng.longitude);
+      session.setCurrentLat = originLatLng.latitude;
+      session.setCurrentLong =originLatLng.longitude;
       if(p.isEmpty){
         await setDefaultLocation();
         return;

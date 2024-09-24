@@ -5,4 +5,5 @@ import '../entities/google_places.dart';
 
 abstract class GooglePlaceRepository {
   Future<Either<Failure, List<GooglePlaceSearch>>> getGooglePlace(String query);
+  Future<Either<Failure, List<GooglePlaceSearch>>> getGooglePlaceNearBy(String query,double latitude, double longitude);
 }

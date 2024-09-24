@@ -21,8 +21,8 @@ abstract class Session {
   set setOrderStatus(int orderStatus);
   set setDriverId(String driverId);
   set setUserId(String userId);
-  set setCurrentLat(String currentLat);
-  set setCurrentLong(String currentLong);
+  set setCurrentLat(double currentLat);
+  set setCurrentLong(double currentLong);
   set setDeviceType(String device);
   set setEstimatedDistance(String distance);
   set setEstimatedTime(String time);
@@ -74,8 +74,8 @@ abstract class Session {
   String get driverId;
   String get userId;
   int get orderStatus;
-  String get currentLat;
-  String get currentLong;
+  double get currentLat;
+  double get currentLong;
   String get device;
   String get driverLatLng;
 
@@ -259,13 +259,13 @@ class SessionHelper implements Session {
   }
 
   @override
-  set setCurrentLat(String currentLat) {
-    pref.setString(CURRENT_LAT, currentLat);
+  set setCurrentLat(double currentLat) {
+    pref.setDouble(CURRENT_LAT, currentLat);
   }
 
   @override
-  set setCurrentLong(String currentLong) {
-    pref.setString(CURRENT_LONG, currentLong);
+  set setCurrentLong(double currentLong) {
+    pref.setDouble(CURRENT_LONG, currentLong);
   }
 
   @override
@@ -411,10 +411,10 @@ class SessionHelper implements Session {
   //driver details end
 
   @override
-  String get currentLat => pref.getString(CURRENT_LAT) ?? '';
+  double get currentLat => pref.getDouble(CURRENT_LAT) ?? 0.0;
 
   @override
-  String get currentLong => pref.getString(CURRENT_LONG) ?? '';
+  double get currentLong => pref.getDouble(CURRENT_LONG) ?? 0.0;
 
   @override
   Future<void> clearSession() async {

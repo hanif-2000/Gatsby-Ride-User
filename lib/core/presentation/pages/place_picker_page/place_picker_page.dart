@@ -132,8 +132,7 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                           if (provider.state.runtimeType == PlaceAutoLoaded) {
                             final data =
                                 (provider.state as PlaceAutoLoaded).data;
-                            _displayOverlay(
-                                buildPredictionOverlay(data, context));
+                            _displayOverlay(buildPredictionOverlay(data, context));
                           }
                         },
                       ),
@@ -171,18 +170,11 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                         if (provider.cameraPosition != null) {
                           provider.setAddressLoad(true);
 
-                          List<Placemark> placemarks =
-                              await placemarkFromCoordinates(
-                                  provider.cameraPosition!.target.latitude,
-                                  provider.cameraPosition!.target.longitude);
-
+                          List<Placemark> placemarks = await placemarkFromCoordinates(provider.cameraPosition!.target.latitude, provider.cameraPosition!.target.longitude);
                           log("placemark from coordinates:-->> $placemarks");
                           if (widget.addressType == AddressType.origin) {
                             FocusScope.of(context).unfocus();
-
-                            provider.setOriginAddress =
-                                "${placemarks.first.name}, ${placemarks.first.locality}";
-
+                            provider.setOriginAddress = "${placemarks.first.name}, ${placemarks.first.locality}";
                             provider.setAddressLoad(false);
                           } else {
                             provider.setDestinationAddress = "${placemarks.first.name}, ${placemarks.first.locality}";
@@ -292,14 +284,14 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                                           width: double.infinity,
                                           child: ElevatedButton(
                                             style: ButtonStyle(
-                                              shape: MaterialStateProperty.all(
+                                              shape: WidgetStateProperty.all(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(0),
                                                 ),
                                               ),
                                               backgroundColor:
-                                                  MaterialStateProperty.all(
+                                              WidgetStateProperty.all(
                                                 provider.isAddressLoading
                                                     ? Colors.grey
                                                     : blackColor,
@@ -396,14 +388,10 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return PlaceResultItem(
-                  name: mergeAddress(predictions[index].name,
-                      predictions[index].formattedAddress),
+                  name: mergeAddress(predictions[index].name, predictions[index].formattedAddress??""),
                   onTap: () async {
                     provider.updateIsSearch(val: true);
-
-                    provider.updateOriginTextShow(mergeAddress(
-                        predictions[index].name,
-                        predictions[index].formattedAddress));
+                    provider.updateOriginTextShow(mergeAddress(predictions[index].name, predictions[index].formattedAddress??""));
                     dev.log("On Tap on predict location called");
                     FocusScope.of(context).unfocus();
                     provider.clearController();
@@ -416,12 +404,12 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
 
                     dev.log(
                         mergeAddress(predictions[index].name,
-                                predictions[index].formattedAddress)
+                                predictions[index].formattedAddress??"")
                             .toString(),
                         name: "Ankit");
                     provider.addressSelected = mergeAddress(
                             predictions[index].name,
-                            predictions[index].formattedAddress)
+                            predictions[index].formattedAddress??"")
                         .toString();
                     clearOverlay();
                     provider.googleMapController.moveCamera(
@@ -448,13 +436,13 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
         itemBuilder: (context, index) {
           return PlaceResultItem(
             name: mergeAddress(
-                predictions[index].name, predictions[index].formattedAddress),
+                predictions[index].name, predictions[index].formattedAddress??""),
             onTap: () async {
               provider.updateIsSearch(val: true);
 
               provider.updateOriginTextShow(mergeAddress(
                   predictions[index].name,
-                  predictions[index].formattedAddress));
+                  predictions[index].formattedAddress??""));
               dev.log("On Tap on when item < 4predict location called");
               FocusScope.of(context).unfocus();
               provider.clearController();

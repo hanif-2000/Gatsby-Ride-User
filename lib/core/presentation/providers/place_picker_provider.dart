@@ -11,6 +11,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as lctn;
 
+import '../../utility/injection.dart';
+import '../../utility/session_helper.dart';
 import 'place_auto_complete_state.dart';
 
 class PlacePickerProvider with ChangeNotifier {
@@ -42,7 +44,7 @@ class PlacePickerProvider with ChangeNotifier {
   bool get textFieldIsEmpty => _controller.text.isEmpty;
 
   bool isSearch = false;
-
+  final session = locator<Session>();
   updateIsSearch({val}) {
     isSearch = val;
     notifyListeners();
@@ -165,18 +167,8 @@ class PlacePickerProvider with ChangeNotifier {
       if (serviceStatus) {
         lctn.LocationData locationData = await locationService.getLocation();
         originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-        List<Placemark> p = await placemarkFromCoordinates(
-            originLatLng.latitude, originLatLng.longitude);
-
-        Placemark place = p[0];
-
-        googleMapController.moveCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(
-                target: LatLng(originLatLng.latitude, originLatLng.longitude),
-                zoom: 17.5)));
-        cameraPosition = CameraPosition(
-            target: LatLng(originLatLng.latitude, originLatLng.longitude),
-            zoom: 18);
+        googleMapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(originLatLng.latitude, originLatLng.longitude), zoom: 17.5)));
+        cameraPosition = CameraPosition(target: LatLng(originLatLng.latitude, originLatLng.longitude), zoom: 18);
       } else {
         try {
           bool serviceStatusResult = await locationService.requestService();
@@ -205,7 +197,8 @@ class PlacePickerProvider with ChangeNotifier {
 
   Future<void> fetchGooglePlaces() async {
     newState = PlaceLoading();
-    final placeResult = await getGooglePlace.call(_controller.text);
+   //final placeResult = await getGooglePlace.call(_controller.text);
+    final placeResult = await getGooglePlace.callNearByApi(_controller.text.trim(),session.currentLat,session.currentLong);
     placeResult.fold(
       (failure) async {
         newState = PlaceFailure(failure: failure);
