@@ -28,6 +28,7 @@ import '../../domain/usecases/get_vehicle_catagory.dart';
 import '../../static/order_status.dart';
 import '../../utility/direction_helper.dart';
 import '../../utility/injection.dart';
+import '../../utility/push_notification_helper.dart';
 import '../../utility/session_helper.dart';
 import 'create_order_state.dart';
 
@@ -182,7 +183,7 @@ class HomeProvider with ChangeNotifier {
   }
 
   //clear state
-  clearState(){
+ Future<void> clearState()async{
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";
@@ -197,6 +198,7 @@ class HomeProvider with ChangeNotifier {
     originAddress = 'Pickup Address';
     isDestinationSelected= false;
     notifyListeners();
+    await NotificationService().clearAllNotifications();
   }
 
   //Clear google maps data when ride create
