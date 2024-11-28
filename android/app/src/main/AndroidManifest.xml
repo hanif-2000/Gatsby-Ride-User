@@ -15,7 +15,8 @@
         android:label="Gatsby Rideshare"
         android:name="${applicationName}"
         android:allowBackup="false"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/ic_launcher_round"
+       android:roundIcon="@mipmap/ic_launcher_round">
                 
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAEcqthk6N17_4Q3pyqDrKAQPpiYURZxJs"/>
