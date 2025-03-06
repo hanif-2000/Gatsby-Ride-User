@@ -85,32 +85,6 @@ class _FormRegisterState extends State<FormRegister> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // CustomTextField(
-                  //   placeholder: appLoc.name,
-                  //   title: appLoc.name,
-                  //   controller: provider.nameController,
-                  //   inputType: TextInputType.text,
-                  //   isError: provider.nameError,
-                  //   fieldValidator: ValidationHelper(
-                  //     loc: appLoc,
-                  //     isError: (bool value) => provider.setNameError = value,
-                  //     typeField: TypeField.name,
-                  //   ).validate(),
-                  // ),
-                  // mediumVerticalSpacing(),
-                  // CustomTextField(
-                  //   placeholder: appLoc.phoneNumber,
-                  //   title: appLoc.phoneNumber,
-                  //   controller: provider.phoneController,
-                  //   inputType: TextInputType.phone,
-                  //   isError: provider.phoneError,
-                  //   fieldValidator: ValidationHelper(
-                  //     loc: appLoc,
-                  //     isError: (bool value) => provider.setPhoneError = value,
-                  //     typeField: TypeField.name,
-                  //   ).validate(),
-                  // ),
-                  // mediumVerticalSpacing(),
                   CustomTextField(
                     placeholder: appLoc.emailAddress,
                     title: appLoc.emailAddress,
@@ -151,18 +125,10 @@ class _FormRegisterState extends State<FormRegister> {
                   mediumVerticalSpacing(),
                   CustomTextField(
                     placeholder: "Confirm Password",
-                    // placeholder: appLoc.confirmPassword,
-                    // title: appLoc.confirmPassword,
                     controller: provider.confirmPasswordController,
                     inputType: TextInputType.visiblePassword,
                     isSecure: true,
                     isError: provider.confirmPasswordError,
-                    // fieldValidator: ValidationHelper(
-                    //   loc: appLoc,
-                    //   isError: (bool value) =>
-                    //       provider.setConfirmPasswordError = value,
-                    //   typeField: TypeField.confirmPassword,
-                    // ).validate(context),
                     fieldValidator: (val) {
                       if (val == '') {
                         return appLoc.mustNotEmpty;
@@ -173,13 +139,7 @@ class _FormRegisterState extends State<FormRegister> {
                       return null;
                     },
                     prefixIcon: const Icon(Icons.lock_outline),
-                    // prefixIcon: Image.asset(
-                    //   passwordLockIcon,
-                    //   width: 24,
-                    //   height: 24,
-                    // ),
                   ),
-
                   mediumVerticalSpacing(),
                   Row(
                     children: [
@@ -190,9 +150,9 @@ class _FormRegisterState extends State<FormRegister> {
                           provider.updateCheckBox();
                           print("checkBox${provider.checkBox}");
                         },
-                        fillColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled)) {
+                        fillColor: WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.disabled)) {
                             return Colors.white;
                           }
                           return grey9B9B9BColor;

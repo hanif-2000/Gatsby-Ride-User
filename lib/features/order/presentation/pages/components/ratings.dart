@@ -34,6 +34,7 @@ class RatingsScreen extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
+              /////
               centerTitle: true,
               title: CommonText(
                 text: appLoc.ratings,
@@ -218,9 +219,6 @@ class RatingsScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ));
-                        // : Center(
-                        //     child: Text("No Rating Given yet"),
-                        // );
                       }
                       ;
                       return const SizedBox.shrink();

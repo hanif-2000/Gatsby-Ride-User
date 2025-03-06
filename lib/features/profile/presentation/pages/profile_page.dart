@@ -41,12 +41,6 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: whiteColor,
           elevation: 0.0,
         ),
-        // appBar: CustomAppTtitleBar(
-        //   centerTitle: true,
-        //   canBack: true,
-        //   title: appLoc.profile.toUpperCase(),
-        //   hideShadow: true,
-        // ),
         body: SafeArea(
           child: Consumer<ProfileProvider>(builder: (context, provider, _) {
             return StreamBuilder<ProfileState>(

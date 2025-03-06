@@ -42,23 +42,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     )
   ];
 
-  Future<void> onGooglePayResult(paymentResult) async {
-    // final response = await fetchPaymentIntentClientSecret();
-    // final clientSecret = response['clientSecret'];
-    // final token = paymentResult['paymentMethodData']['tokenizationData']['token'];
-    // final tokenJson = Map.castFrom(json.decode(token));
-
-    // final params = PaymentMethodParams.cardFromToken(
-    //   token: tokenJson['id'],
-    // );
-    // // Confirm Google pay payment method
-    // await Stripe.instance.confirmPayment(
-    //   clientSecret,
-    //   params,
-    // );
-  }
-  //   debugPrint(paymentResult.toString());
-  // }
+  Future<void> onGooglePayResult(paymentResult) async {}
 
   void onApplePayResult(paymentResult) {
     debugPrint(paymentResult.toString());
@@ -137,7 +121,9 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           Row(
                             children: [
                               CustomCacheNetworkImage(
-                                  img: provider.receiptResponseModel!.data!.image ?? "",
+                                  img: provider
+                                          .receiptResponseModel!.data!.image ??
+                                      "",
                                   size: 45),
                               SizedBox(
                                 width: 11,
@@ -183,7 +169,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               CommonText(
-                                text: provider.receiptResponseModel!.data!.carModel,
+                                text: provider
+                                    .receiptResponseModel!.data!.carModel,
                                 fontWeight: FontWeight.w400,
                                 fontColor: grey585858Color,
                                 fontFamily: "poPPinMedium",
@@ -191,7 +178,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                               ),
                               //plate number
                               CommonText(
-                                text: provider.receiptResponseModel!.data!.plateNumber,
+                                text: provider
+                                    .receiptResponseModel!.data!.plateNumber,
                                 fontWeight: FontWeight.w500,
                                 fontColor: blackColor,
                                 fontFamily: "poPPinMedium",
@@ -211,7 +199,12 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       TextInRow(
                         firstText: appLoc.date,
                         secondText: DateFormat.yMMMd().format(
-                            (DateFormat("yyyy-MM-dd HH:mm:ss").parse(provider.receiptResponseModel!.data!.createdAt.toString(), true)).toLocal()),
+                            (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+                                    provider
+                                        .receiptResponseModel!.data!.createdAt
+                                        .toString(),
+                                    true))
+                                .toLocal()),
 
                         // DateFormat('dd MMM yyyy')
                         //     .format(provider.receiptResponseModel!.orderTime)
@@ -221,16 +214,27 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                         firstText: appLoc.time,
                         secondText: DateFormat.jm().format(
                             (DateFormat("yyyy-MM-dd HH:mm:ss").parse(
-                                    provider.receiptResponseModel!.data!.createdAt.toString(), true))
+                                    provider
+                                        .receiptResponseModel!.data!.createdAt
+                                        .toString(),
+                                    true))
                                 .toLocal()),
                       ),
                       TextInRow(
                         firstText: appLoc.totalDistance,
-                        secondText: "${provider.receiptResponseModel!.data!.actual_distance ?? double.parse(provider.receiptResponseModel!.data!.distance1 ?? "0.0").toStringAsFixed(2)} Km",
+                        secondText:
+                            "${provider.receiptResponseModel!.data!.actual_distance ?? double.parse(provider.receiptResponseModel!.data!.distance1 ?? "0.0").toStringAsFixed(2)} Km",
                       ),
                       TextInRow(
                         firstText: "Time Taken",
-                        secondText:provider.receiptResponseModel!.data!.actual_time!= null? formatDuration(num.parse(provider.receiptResponseModel!.data!.actual_time.toString()).toInt()):"0.0",
+                        secondText:
+                            provider.receiptResponseModel!.data!.actual_time !=
+                                    null
+                                ? formatDuration(num.parse(provider
+                                        .receiptResponseModel!.data!.actual_time
+                                        .toString())
+                                    .toInt())
+                                : "0.0",
                       ),
                       CommonText(
                         text: appLoc.paymentInformation,
@@ -409,8 +413,13 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                       .receiptResponseModel!
                                       .data!
                                       .extraDistancePrice,
-                                  timeTaken: provider.receiptResponseModel!.data!.actual_time.toString() == "0.0" ? "0"
-                                      : provider.receiptResponseModel!.data!.actual_time,
+                                  timeTaken: provider.receiptResponseModel!
+                                              .data!.actual_time
+                                              .toString() ==
+                                          "0.0"
+                                      ? "0"
+                                      : provider.receiptResponseModel!.data!
+                                          .actual_time,
                                   baseFare: provider
                                       .receiptResponseModel!.data!.baseFare,
                                   techFee: provider
@@ -554,9 +563,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                 ),
               );
             },
-          )
-
-          ),
+          )),
     );
     // );
   }
