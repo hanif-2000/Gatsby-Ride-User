@@ -12,4 +12,8 @@ class GetGooglePlace {
   Future<Either<Failure, List<GooglePlaceSearch>>> call(String query) async {
     return await repository.getGooglePlace(query);
   }
+
+  Future<Either<Failure, List<GooglePlaceSearch>>> callNearByApi(String query,double latitude, double longitude) async {
+    return await repository.getGooglePlaceNearBy(query,latitude,longitude);
+  }
 }

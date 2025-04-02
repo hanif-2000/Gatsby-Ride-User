@@ -1,5 +1,6 @@
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/features/register/presentation/providers/register_provider.dart';
+import 'package:GetsbyRideshare/features/terms_and_conditions/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
@@ -84,32 +85,6 @@ class _FormRegisterState extends State<FormRegister> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // CustomTextField(
-                  //   placeholder: appLoc.name,
-                  //   title: appLoc.name,
-                  //   controller: provider.nameController,
-                  //   inputType: TextInputType.text,
-                  //   isError: provider.nameError,
-                  //   fieldValidator: ValidationHelper(
-                  //     loc: appLoc,
-                  //     isError: (bool value) => provider.setNameError = value,
-                  //     typeField: TypeField.name,
-                  //   ).validate(),
-                  // ),
-                  // mediumVerticalSpacing(),
-                  // CustomTextField(
-                  //   placeholder: appLoc.phoneNumber,
-                  //   title: appLoc.phoneNumber,
-                  //   controller: provider.phoneController,
-                  //   inputType: TextInputType.phone,
-                  //   isError: provider.phoneError,
-                  //   fieldValidator: ValidationHelper(
-                  //     loc: appLoc,
-                  //     isError: (bool value) => provider.setPhoneError = value,
-                  //     typeField: TypeField.name,
-                  //   ).validate(),
-                  // ),
-                  // mediumVerticalSpacing(),
                   CustomTextField(
                     placeholder: appLoc.emailAddress,
                     title: appLoc.emailAddress,
@@ -150,18 +125,10 @@ class _FormRegisterState extends State<FormRegister> {
                   mediumVerticalSpacing(),
                   CustomTextField(
                     placeholder: "Confirm Password",
-                    // placeholder: appLoc.confirmPassword,
-                    // title: appLoc.confirmPassword,
                     controller: provider.confirmPasswordController,
                     inputType: TextInputType.visiblePassword,
                     isSecure: true,
                     isError: provider.confirmPasswordError,
-                    // fieldValidator: ValidationHelper(
-                    //   loc: appLoc,
-                    //   isError: (bool value) =>
-                    //       provider.setConfirmPasswordError = value,
-                    //   typeField: TypeField.confirmPassword,
-                    // ).validate(context),
                     fieldValidator: (val) {
                       if (val == '') {
                         return appLoc.mustNotEmpty;
@@ -172,13 +139,7 @@ class _FormRegisterState extends State<FormRegister> {
                       return null;
                     },
                     prefixIcon: const Icon(Icons.lock_outline),
-                    // prefixIcon: Image.asset(
-                    //   passwordLockIcon,
-                    //   width: 24,
-                    //   height: 24,
-                    // ),
                   ),
-
                   mediumVerticalSpacing(),
                   Row(
                     children: [
@@ -189,9 +150,9 @@ class _FormRegisterState extends State<FormRegister> {
                           provider.updateCheckBox();
                           print("checkBox${provider.checkBox}");
                         },
-                        fillColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled)) {
+                        fillColor: WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.disabled)) {
                             return Colors.white;
                           }
                           return grey9B9B9BColor;
@@ -207,14 +168,25 @@ class _FormRegisterState extends State<FormRegister> {
                           fontSize: 12,
                         ),
                       ),
-                      const Text(
-                        "Terms and Conditions ",
-                        // appLoc.welcome.toUpperCase(),
-                        style: TextStyle(
-                          fontFamily: "poPPinMedium",
-                          fontWeight: FontWeight.w500,
-                          color: blackColor,
-                          fontSize: 12,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const TermsAndConditionsPage(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Terms and Conditions ",
+                          // appLoc.welcome.toUpperCase(),
+                          style: TextStyle(
+                            fontFamily: "poPPinMedium",
+                            fontWeight: FontWeight.w500,
+                            color: blackColor,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],

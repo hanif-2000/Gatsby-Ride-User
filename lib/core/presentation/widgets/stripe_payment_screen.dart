@@ -20,7 +20,7 @@ class _NewPaymentScreenState extends State<NewPaymentScreen> {
       "sk_test_51NbHA8L2KkuOUsISb7LUBs3SVvCSJO5fNUgfc0YqzZlnKUdF6nFECHw75PMkYAxHPopJToObrFXu1z445rC7jI6P00H8ZXzRRz"; // Secret Key
 
   var publishableKey =
-      'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
+      'pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH';
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +158,7 @@ class _NewPaymentScreenState extends State<NewPaymentScreen> {
     // Replace with your actual secret API key
 
     var publishableKey =
-        'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
+        'pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH';
     final String apiKey =
         'sk_test_51NbHA8L2KkuOUsISb7LUBs3SVvCSJO5fNUgfc0YqzZlnKUdF6nFECHw75PMkYAxHPopJToObrFXu1z445rC7jI6P00H8ZXzRRz';
 
@@ -217,7 +217,7 @@ class _NewPaymentScreenState extends State<NewPaymentScreen> {
 //                 'cvc': '314',
 // };
     var publishableKey =
-        'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
+        'pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH';
     final String apiKey =
         'sk_test_51NbHA8L2KkuOUsISb7LUBs3SVvCSJO5fNUgfc0YqzZlnKUdF6nFECHw75PMkYAxHPopJToObrFXu1z445rC7jI6P00H8ZXzRRz';
 

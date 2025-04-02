@@ -28,6 +28,10 @@ class HistoryDataSourceImplementation implements HistoryDataSource {
       );
 
       log("history response :$response");
+      if ((response.data["success"] == 0) &&
+          (response.data["message"] == "Account Suspended")) {
+        showToast(message: "Account Suspended");
+      }
 
       if ((response.data['success'] == 0) &&
           (response.data['message'] == "record not found")) {}

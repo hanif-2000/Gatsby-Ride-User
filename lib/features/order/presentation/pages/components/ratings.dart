@@ -8,6 +8,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/static/assets.dart';
+import '../../../../../core/utility/dynamic_toasstring_helper.dart';
 import '../../../../../core/utility/helper.dart';
 import '../../../../history/presentation/providers/ratings_state.dart';
 import '../../widgets/custom_rating_item.dart';
@@ -33,6 +34,7 @@ class RatingsScreen extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
+              /////
               centerTitle: true,
               title: CommonText(
                 text: appLoc.ratings,
@@ -140,10 +142,13 @@ class RatingsScreen extends StatelessWidget {
                                             child: Row(
                                               children: [
                                                 CommonText(
-                                                  text: double.tryParse(data
-                                                          .rating
-                                                          .toString())
-                                                      .toString(),
+                                                  text:
+                                                      convertToFixedOneDecimal(
+                                                          data.rating),
+                                                  // double.tryParse(data
+                                                  //         .rating
+                                                  //         .toString())
+                                                  //     .toString(),
                                                   fontWeight: FontWeight.w500,
                                                   fontColor: blackColor,
                                                   fontFamily: "poPPinMedium",
@@ -214,9 +219,6 @@ class RatingsScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ));
-                        // : Center(
-                        //     child: Text("No Rating Given yet"),
-                        // );
                       }
                       ;
                       return const SizedBox.shrink();

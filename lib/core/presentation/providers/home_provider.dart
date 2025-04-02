@@ -1,25 +1,26 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui' as ui;
+
 import 'package:GetsbyRideshare/core/domain/entities/vehicles_category.dart';
 import 'package:GetsbyRideshare/core/domain/usecases/get_total_price.dart';
-import 'package:GetsbyRideshare/core/presentation/providers/price_category_state.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/total_price_state.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/vehicle_category_state.dart';
 import 'package:GetsbyRideshare/core/static/assets.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/order/domain/usecases/create_oder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart' as lctn;
 import 'package:web_socket_client/web_socket_client.dart';
+
 import '../../data/models/google_route_response_modal.dart';
 import '../../domain/entities/price_category.dart';
 import '../../domain/usecases/get_price_category.dart';
@@ -27,6 +28,7 @@ import '../../domain/usecases/get_vehicle_catagory.dart';
 import '../../static/order_status.dart';
 import '../../utility/direction_helper.dart';
 import '../../utility/injection.dart';
+import '../../utility/push_notification_helper.dart';
 import '../../utility/session_helper.dart';
 import 'create_order_state.dart';
 
@@ -39,12 +41,6 @@ class HomeProvider with ChangeNotifier {
   final CreateOrder createOrder;
   final GetVehiclesCategory getVehicleCatagory;
 
-  //Initial
-  final lctn.Location locationService = lctn.Location();
-  // CameraPosition kJapanCoordinate = CameraPosition(
-  //   target: LatLng(lat, long),
-  //   zoom: 14.4746,
-  // );
   TotalPriceState _stateLoadPrice = TotalPriceInitial();
 
   bool isDestinationSelected = false;
@@ -55,9 +51,13 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
+
   String estimatedTimeToShow = '';
 
-  Session session = locator<Session>();
+  final session = locator<Session>();
+
+  LatLng defaultLatLng = LatLng(55.170834, -118.794724);
 
 //Socket
 
@@ -93,44 +93,46 @@ class HomeProvider with ChangeNotifier {
 
   //send request to socket
 
-  sendRequest() {
-    socket!
-        // .send("serviceType: UserBookDriver, id: ${session.userId.toString()}");
-        .send(jsonEncode({
-      "serviceType": "UserBookDriver",
-      "UserID": "${session.userId.toString()}"
-    }));
+  // sendRequest() {
+  //   socket!
+  //       // .send("serviceType: UserBookDriver, id: ${session.userId.toString()}");
+  //       .send(jsonEncode({
+  //     "serviceType": "UserBookDriver",
+  //     "UserID": "${session.userId.toString()}"
+  //   }));
 
-    socket!.connection.listen((state) => print('state: "$state"'));
+  //   socket!.connection.listen((state) => print('state: "$state"'));
 
-    log("send request");
-  }
+  //   log("send request");
+  // }
 
   bool isAccepted = false;
+  bool isMapLoading = true;
 
   updateTermsAccepted(value) {
     isAccepted = value;
     notifyListeners();
   }
 
-  double lat = 0.0;
-  double long = 0.0;
+  double lat = 55.170834;
+  double long = -118.794724;
 
   late GoogleMapController googleMapController;
   // Completer<GoogleMapController> mapController = Completer();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  late LatLng originLatLng, destinationLatLng;
+  LatLng originLatLng = LatLng(55.170834, -118.794724);
+  LatLng destinationLatLng = LatLng(55.170834, -118.794724);
   late BitmapDescriptor driverMarker;
   late BitmapDescriptor pickUpMarker, destinationMarker, initialPickMarker;
-  String originAddress = '';
+  String originAddress = 'Pickup Address';
   bool destinationIsFilled = false;
   bool originIsFilled = false;
   String destinationAddress = appLoc.destination;
-  String distance = "0", price = "";
-  int estimatedTime = 0;
+  String distance = "1", price = "";
+  int totalDistance = 0;
+  double zoom = 15.4746;
+  int estimatedTime = 1;
   String time = '';
-  late Text originText;
-  late Text destinationText;
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
   static List<PriceCategory> _priceCategory = [];
@@ -162,6 +164,11 @@ class HomeProvider with ChangeNotifier {
     estimatedTime = val;
     notifyListeners();
   }
+  //Update Estimated Time
+  void updateMapLoaded() {
+    isMapLoading = false;
+    notifyListeners();
+  }
 
   set setPaymentMethod(val) {
     _paymentMethod = val;
@@ -176,21 +183,32 @@ class HomeProvider with ChangeNotifier {
   }
 
   //clear state
-  clearState() async {
-    await sessionClearOrder();
-    session.setOrderStatus = 100;
+ Future<void> clearState()async{
     polylines.clear();
     destinationIsFilled = false;
     distance = "0";
-    price = "0";
+    totalDistance = 0;
+    price = "";
+    _paymentMethod =null;
+    selectedVehicleId = "";
     _selectedCategory = null;
-    _paymentMethod = null;
-
     markers.clear();
     selectedVehicleIndex = -1;
-
     originIsFilled = false;
+    originAddress = 'Pickup Address';
+    isDestinationSelected= false;
+    notifyListeners();
+    await NotificationService().clearAllNotifications();
+  }
 
+  //Clear google maps data when ride create
+
+  clearOldRideData() {
+    log("*********CLEAR PREVIOUS POLYLINE CALLED-------");
+    polylines.clear();
+    destinationIsFilled = false;
+    markers.clear();
+    destinationAddress = appLoc.destination;
     notifyListeners();
   }
 
@@ -242,26 +260,30 @@ class HomeProvider with ChangeNotifier {
       required this.getPriceCategory,
       required this.createOrder,
       required this.getVehicleCatagory}) {
-    getBytesFromAsset(driverMarkerIcon, 70).then((value) {
-      driverMarker = BitmapDescriptor.fromBytes(value);
+    getBytesFromAsset(driverMarkerIcon, 100).then((value) {
+      driverMarker = BitmapDescriptor.bytes(value);
     });
-    getBytesFromAsset(initialPickUpIcon, 250).then((value) async {
-      pickUpMarker = BitmapDescriptor.fromBytes(value);
+    getBytesFromAsset(initialPickUpIcon, 100).then((value) async {
+      pickUpMarker = BitmapDescriptor.bytes(value);
     });
-    getBytesFromAsset(destinationIcon, 100).then((value) async {
-      destinationMarker = BitmapDescriptor.fromBytes(value);
+    getBytesFromAsset(destinationIcon, 40).then((value) async {
+      destinationMarker = BitmapDescriptor.bytes(value);
     });
-    getBytesFromAsset(initialPickUpIcon, 250).then((value) async {
-      initialPickMarker = BitmapDescriptor.fromBytes(value);
+    getBytesFromAsset(initialPickUpIcon,100).then((value) async {
+      initialPickMarker = BitmapDescriptor.bytes(value);
     });
 
     final session = locator<Session>();
-    updateLatLong(
-      latitude: double.parse(session.currentLat),
-      longitude: double.parse(session.currentLong),
-    );
 
-    // connectToSocket();
+    log("session.currentLat is :${session.currentLat}");
+    log("session.currentLong is :${session.currentLong}");
+
+    if (session.currentLat != '') {
+      updateLatLong(
+        latitude: session.currentLat,
+        longitude: session.currentLat,
+      );
+    }
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -274,134 +296,59 @@ class HomeProvider with ChangeNotifier {
         .asUint8List();
   }
 
-//updat LatLong initially
   updateLatLong({required double latitude, required double longitude}) {
     lat = latitude;
-
     long = longitude;
     notifyListeners();
   }
 
-//Set current location in map intially
-  setCurrentLocation() async {
-    log("Get current location  called");
+  Future<void> setCurrentLocation() async {
+    print("*********** GET Current Location******************* ");
+    clearState();
+    clearOldRideData();
+    destinationAddress = '';
+    originAddress = 'Pickup Address';
+    destinationIsFilled = false;
+    originIsFilled = false;
     try {
-      bool serviceStatus = await locationService.serviceEnabled();
-      if (serviceStatus) {
-        lctn.LocationData locationData = await locationService.getLocation();
-        logMe("locationData");
-        logMe(locationData);
-        originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-        destinationLatLng =
-            LatLng(locationData.latitude!, locationData.longitude!);
-        setAddressFromLatLng();
-        //onlocation change
-        locationService.onLocationChanged.listen((event) {});
+      final locationData = await DirectionHelper.getCurrentLocation();
+      if (locationData != null) {
+        logMe("${locationData.latitude} ${locationData.longitude}",name: "LOCATION DATA");
+        originLatLng = LatLng(locationData.latitude, locationData.longitude);
+        destinationLatLng = LatLng(locationData.latitude, locationData.longitude);
+        await setAddressFromLatLng();
       } else {
-        try {
-          bool serviceStatusResult = await locationService.requestService();
-          logMe("Service status activated after request: $serviceStatusResult");
-          if (serviceStatusResult) {
-            setCurrentLocation();
-          }
-        } catch (e) {
-          logMe(e.toString());
-        }
+        await setDefaultLocation();
       }
-    } on PlatformException catch (e) {
-      if (e.toString() == 'PERMISSION_DENIED') {
-        logMe(e.toString());
-      } else if (e.code == 'SERVICE_STATUS_ERROR') {
-        logMe(e.message);
-      }
-    }
-  }
-
-//Get Current Location
-  getCurrentLocation() async {
-    log("get current location home provider =-===>");
-
-    try {
-      bool serviceStatus = await locationService.serviceEnabled();
-      if (serviceStatus) {
-        lctn.LocationData locationData = await locationService.getLocation();
-        logMe("locationData");
-        logMe(locationData);
-        originLatLng = LatLng(locationData.latitude!, locationData.longitude!);
-
-        getAddressFromLatLng();
-        //onlocation change
-        locationService.onLocationChanged.listen((event) {});
-      } else {
-        try {
-          bool serviceStatusResult = await locationService.requestService();
-          logMe("Service status activated after request: $serviceStatusResult");
-          if (serviceStatusResult) {
-            getCurrentLocation();
-          }
-        } catch (e) {
-          logMe(e.toString());
-        }
-      }
-    } on PlatformException catch (e) {
-      if (e.toString() == 'PERMISSION_DENIED') {
-        logMe(e.toString());
-      } else if (e.code == 'SERVICE_STATUS_ERROR') {
-        logMe(e.message);
-      }
-    }
-  }
-
-// Get address from lat and long
-  getAddressFromLatLng() async {
-    try {
-      List<Placemark> p = await placemarkFromCoordinates(
-          originLatLng.latitude, originLatLng.longitude);
-
-      Placemark place = p[0];
-
-      MarkerId markerId = const MarkerId("origin");
-      final Marker marker = Marker(
-        markerId: markerId,
-        position: LatLng(originLatLng.latitude, originLatLng.longitude),
-        infoWindow: const InfoWindow(title: "Origin"),
-        icon: pickUpMarker,
-        onTap: () {},
-      );
-
-      googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(originLatLng.latitude, originLatLng.longitude),
-        zoom: 16,
-      )));
-
-      originAddress =
-          "${place.street}, ${place.subLocality}, ${place.locality}";
-      originText = Text(
-        originAddress,
-        softWrap: false,
-        overflow: TextOverflow.ellipsis,
-      );
-      String lat, long;
-      lat = originLatLng.latitude.toString();
-      long = originLatLng.longitude.toString();
-      markers[markerId] = marker;
-
-      originIsFilled = true;
+      isMapLoading =false;
       notifyListeners();
-    } catch (e) {
-      logMe(e);
+    }  catch (e) {
+      SmartDialog.dismiss();
+      await setDefaultLocation();
     }
+    notifyListeners();
   }
 
-// Set initial Marker in Map i.e Current Location
-  setAddressFromLatLng() async {
+
+
+
+
+  FutureOr<void> setDefaultLocation() async{
+    originLatLng = defaultLatLng;
+    destinationLatLng = defaultLatLng;
+     await setAddressFromLatLng();
+  }
+
+  Future<void> setAddressFromLatLng() async {
     try {
-      List<Placemark> p = await placemarkFromCoordinates(
-          originLatLng.latitude, originLatLng.longitude);
-
-      Placemark place = p[0];
-
+      List<Placemark> p = await placemarkFromCoordinates(originLatLng.latitude, originLatLng.longitude);
+      session.setCurrentLat = originLatLng.latitude;
+      session.setCurrentLong =originLatLng.longitude;
+      if(p.isEmpty){
+        await setDefaultLocation();
+        return;
+      }
+      Placemark place = p.first;
       MarkerId markerId = const MarkerId("origin");
       final Marker marker = Marker(
         anchor: const Offset(0.5, 0.5),
@@ -413,23 +360,13 @@ class HomeProvider with ChangeNotifier {
       );
       originIsFilled = true;
       notifyListeners();
-
-      googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      await googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(originLatLng.latitude, originLatLng.longitude),
-        zoom: 16,
+        zoom: zoom,
       )));
 
-      originAddress =
-          "${place.street}, ${place.subLocality}, ${place.locality}";
-      destinationAddress =
-          "${place.street}, ${place.subLocality}, ${place.locality}";
-      originText = Text(
-        originAddress,
-        softWrap: false,
-        overflow: TextOverflow.ellipsis,
-      );
-
+      originAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
+      destinationAddress = "${place.street}, ${place.subLocality}, ${place.locality}";
       markers[markerId] = marker;
       notifyListeners();
     } catch (e) {
@@ -439,8 +376,7 @@ class HomeProvider with ChangeNotifier {
 
 // Show marker on Map according to latlong and addresstype
   displayResult(LatLng latlng, String address, AddressType addressType) async {
-    final MarkerId markerId =
-        MarkerId(addressType == AddressType.origin ? "origin" : "destination");
+    final MarkerId markerId = MarkerId(addressType == AddressType.origin ? "origin" : "destination");
     try {
       final Marker marker = Marker(
         anchor: const Offset(0.5, 0.5),
@@ -454,11 +390,6 @@ class HomeProvider with ChangeNotifier {
 
       if (addressType == AddressType.origin) {
         originAddress = address;
-        originText = Text(
-          originAddress,
-          softWrap: false,
-          overflow: TextOverflow.ellipsis,
-        );
         originLatLng = latlng;
 
         originIsFilled = true;
@@ -468,16 +399,10 @@ class HomeProvider with ChangeNotifier {
         }
       } else {
         destinationAddress = address;
-        destinationText = Text(
-          destinationAddress,
-          softWrap: false,
-          overflow: TextOverflow.ellipsis,
-        );
         destinationLatLng = latlng;
         destinationIsFilled = true;
-        setPolylinesDirection(originLatLng, destinationLatLng);
+       await setPolylinesDirection(originLatLng, destinationLatLng);
       }
-
       markers[markerId] = marker;
       List<Marker> listMarker = [];
       markers.forEach((k, v) => listMarker.add(v));
@@ -489,12 +414,9 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
-  setPolylinesDirection(LatLng origin, LatLng destination) async {
+  Future<void> setPolylinesDirection(LatLng origin, LatLng destination) async {
     polylines.clear();
-    await DirectionHelper()
-        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
-            destination.latitude, destination.longitude)
-        .then((result) {
+    await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then((result) async {
       if (result.isNotEmpty) {
         polylineCoordinates = [];
         for (var point in result) {
@@ -510,13 +432,13 @@ class HomeProvider with ChangeNotifier {
             endCap: Cap.roundCap);
         polylines.add(polyline);
         // setPriceAndDistance();
-        setActualDistance();
+        await setActualDistance();
         notifyListeners();
       }
     });
   }
 
-  setActualDistance() async {
+  Future<void> setActualDistance() async {
     try {
       // Get real distance
       var response = await Dio().get(
@@ -524,7 +446,9 @@ class HomeProvider with ChangeNotifier {
       log(" response of real distance:--->>> ${response.data}");
 
       var data = GoogleRouteDistanceResponseModal.fromJson(response.data);
+      print("========>${data.toJson()}");
       distance = data.rows[0].elements[0].distance.text;
+      totalDistance = data.rows[0].elements[0].distance.value;
       estimatedTime = data.rows[0].elements[0].duration.value;
       estimatedTimeToShow = data.rows[0].elements[0].duration.text;
 
@@ -574,8 +498,10 @@ class HomeProvider with ChangeNotifier {
     } else {
       night = '1';
     }
-    final result = await getTotalPrice(_selectedCategory!.categoryId.toString(),
-        distanceMeter.toString(), night);
+    final result = await getTotalPrice.call(
+        _selectedCategory!.categoryId.toString(),
+        distanceMeter.toString(),
+        night);
     yield* result.fold(
       (failure) async* {
         logMe(failure.message);
@@ -606,6 +532,10 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  double metersToKilometers(int meters) {
+    return meters / 1000;
+  }
+
 //Get all the Vehicles Catagories
   Stream<VehiclesCategoryState> fetchVehicleCategory() async* {
     log("-->>> distance privce --->>>>   $distance");
@@ -615,10 +545,11 @@ class HomeProvider with ChangeNotifier {
 
     String newTime = (estimatedTime / 60).toStringAsFixed(1);
 
-    String dist = distance.split(' ').first;
+    double dist = metersToKilometers(totalDistance);
+    log("-->>> Total Distance in Km --->>>>   $dist");
     yield VehiclesCategoryLoading();
 
-    final result = await getVehicleCatagory(dist, "0",
+    final result = await getVehicleCatagory.call(dist.toString(), "0",
         "${originLatLng.latitude},${originLatLng.longitude}", newTime);
     yield* result.fold(
       (failure) async* {
@@ -636,22 +567,22 @@ class HomeProvider with ChangeNotifier {
   }
 
 //Old Method to get vehicles Catagories
-  Stream<PriceCategoryState> fetchPriceCategory() async* {
-    yield PriceCategoryLoading();
+  // Stream<PriceCategoryState> fetchPriceCategory() async* {
+  //   yield PriceCategoryLoading();
 
-    final result = await getPriceCategory("10", "0", "30.7046083,76.6843826");
-    yield* result.fold(
-      (failure) async* {
-        yield PriceCategoryFailure(failure: failure);
-      },
-      (data) async* {
-        _priceCategory = data.data;
-        logMe("_priceCategory");
-        logMe(_priceCategory);
-        yield PriceCategoryLoaded(data: _priceCategory);
-      },
-    );
-  }
+  //   final result = await getPriceCategory("10", "0", "30.7046083,76.6843826");
+  //   yield* result.fold(
+  //     (failure) async* {
+  //       yield PriceCategoryFailure(failure: failure);
+  //     },
+  //     (data) async* {
+  //       _priceCategory = data.data;
+  //       logMe("_priceCategory");
+  //       logMe(_priceCategory);
+  //       yield PriceCategoryLoaded(data: _priceCategory);
+  //     },
+  //   );
+  // }
 
 //update selected car category
 
@@ -675,13 +606,13 @@ class HomeProvider with ChangeNotifier {
     log(selectedVehicleId.toString());
     log("estimated distacnce while send order is:-->> $distance");
     log("estimated time while send order is:-->> $newTime");
-
+    final dist = metersToKilometers(totalDistance);
     final formData = FormData.fromMap({
       'start_coordinate': txtLatLngOrigin,
       'end_coordinate': txtLatLngDestination,
       'start_address': originAddress,
       'end_address': destinationAddress,
-      'distance': distance.split(' ').first,
+      'distance': dist,
       'total': price,
       'estimated_time': newTime,
       'payment_method': (_paymentMethod == PaymentMethod.cash)
@@ -713,13 +644,11 @@ class HomeProvider with ChangeNotifier {
 
 // Get List of credit cards
   getListOfCard() async {
-    var url =
-        'https://php.parastechnologies.in/taxi/public/api/webservice/card/list';
+    var url = '${BASE_URL}api/webservice/card/list';
 
     var res = await dio.get(
       url,
-      options:
-          Options(headers: {"Authorization": "Bearer ${session.sessionToken}"}),
+      options: Options(headers: {"Authorization": "Bearer ${session.sessionToken}"}),
     );
 
     log("list of card are====>>>" + res.toString());

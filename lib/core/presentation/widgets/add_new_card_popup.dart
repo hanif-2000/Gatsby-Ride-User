@@ -45,6 +45,8 @@ class AddNewCardPopUp extends StatelessWidget {
 
                 //Enter card number
                 CustomTextField(
+                  maxLength: 19,
+
                   // onChanged: (val) {
                   //   log("val: $val");
                   // },
@@ -63,8 +65,7 @@ class AddNewCardPopUp extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: SvgPicture.asset('assets/icons/card.svg'),
                   ),
-                  controller: Provider.of<PaymentProvider>(context)
-                      .cardNumberController,
+                  controller: Provider.of<PaymentProvider>(context).cardNumberController,
                   fieldValidator: (val) {
                     log("value print :- $val");
                     if (val == '') {
@@ -74,28 +75,6 @@ class AddNewCardPopUp extends StatelessWidget {
                   },
                 ),
 
-                // Enter CVV Number
-                // CustomTextField(
-                //   fillColor: greyE7E7E7Color.withOpacity(.2),
-                //   hintStyle: const TextStyle(
-                //       fontFamily: 'poPPinRegular',
-                //       fontWeight: FontWeight.w400,
-                //       color: grey9c9c9cColor,
-                //       fontSize: 12.0),
-                //   placeholder: "Enter CVV Number",
-                //   prefixIcon: Padding(
-                //     padding: const EdgeInsets.all(10.0),
-                //     child: SvgPicture.asset('assets/icons/card.svg'),
-                //   ),
-                //   controller:
-                //       Provider.of<PaymentProvider>(context).cardCvvController,
-                //   fieldValidator: (val) {
-                //     if (val == '') {
-                //       return appLoc.mustNotEmpty;
-                //     }
-                //     return null;
-                //   },
-                // ),
 
                 //Account Holder name
                 CustomTextField(
@@ -130,24 +109,7 @@ class AddNewCardPopUp extends StatelessWidget {
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
                         initialMonthYearPickerMode: MonthYearPickerMode.year,
-                        lastDate: DateTime(DateTime.now().year + 30)
-                        // showCupertinoDialog<void>(
-                        //   context: context,
-                        //   builder: (BuildContext context) {
-                        //     return Container(
-                        //       height: 200,
-                        //       child: CupertinoDatePicker(
-                        //         mode: CupertinoDatePickerMode.date,
-                        //         initialDateTime: DateTime.now(),
-                        //         onDateTimeChanged: (DateTime newDate) {
-                        //           // setState(() {
-                        //           //   _selectedDate = newDate;
-                        //           // });
-                        //         },
-                        //       ),
-                        //     );
-                        //   },
-                        );
+                        lastDate: DateTime(DateTime.now().year + 30));
 
                     if (picked != null) {
                       log("picked:  ${picked}");
@@ -156,43 +118,6 @@ class AddNewCardPopUp extends StatelessWidget {
 
                       provider.setExpiryDate = formattedDate;
                     }
-                    // CupertinoDatePicker(
-                    //     mode: CupertinoDatePickerMode.date,
-                    //     initialDateTime: DateTime.now(),
-                    //     onDateTimeChanged: (DateTime newDate) {
-                    //       // setState(() {
-                    //       //  _selectedDate = newDate;
-                    //     });
-                    //  };
-
-                    // ),
-                    // DateTime? pickedDate = await showDatePicker(
-                    //     context: context,
-                    //     initialDate: DateTime.now(),
-                    //     firstDate: DateTime.now(),
-                    //     initialDatePickerMode: DatePickerMode.year,
-                    //     lastDate: DateTime(DateTime.now().year + 30));
-                    // if (pickedDate != null) {
-                    //   log(pickedDate.toString());
-                    //   log(pickedDate.toString());
-                    //   String formattedDate =
-                    //       DateFormat('yyyy/MM').format(pickedDate);
-                    //   log(formattedDate);
-
-                    //   provider.setExpiryDate = formattedDate;
-
-                    // Provider.of<PaymentProvider>(context)
-                    //     .expiryController
-                    //     .text = formattedDate;
-
-                    // expairyController.text = formattedDate;
-                    // }
-
-                    // log("celcil sdfa");
-                    // var date = DatePickerDialog(
-                    //     initialDate: DateTime.now(),
-                    //     firstDate: DateTime.now(),
-                    //     lastDate: DateTime(DateTime.now().year + 20));
                   },
                   child: IgnorePointer(
                     child: CustomTextField(

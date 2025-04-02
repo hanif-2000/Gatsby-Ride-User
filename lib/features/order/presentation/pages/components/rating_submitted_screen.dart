@@ -1,7 +1,9 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -20,21 +22,21 @@ class RatingSubmittedScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
           backgroundColor: whiteColor,
-          appBar: AppBar(
-            backgroundColor: whiteColor,
-            elevation: 0.0,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: blackColor,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body: Consumer<OrderProvider>(builder: (BuildContext context,
-              OrderProvider orderProvider, Widget? child) {
+          // appBar: AppBar(
+          //   backgroundColor: whiteColor,
+          //   elevation: 0.0,
+          //   leading: IconButton(
+          //     icon: Icon(
+          //       Icons.arrow_back,
+          //       color: blackColor,
+          //     ),
+          //     onPressed: () {
+          //       Navigator.pop(context);
+          //     },
+          //   ),
+          // ),
+          body: Consumer<TestSocketProvider>(
+              builder: (BuildContext context, orderProvider, Widget? child) {
             return Container(
               width: size.width,
               child: Padding(
@@ -66,10 +68,14 @@ class RatingSubmittedScreen extends StatelessWidget {
                       isRounded: true,
                       text: appLoc.done,
                       event: () async {
+                        var session = locator<Session>();
                         // orderProvider.submitRatingsReview();
-                        var homeProvider =
-                            Provider.of<HomeProvider>(context, listen: false);
-                        await homeProvider.clearState();
+                        session.setIsRunningOrder = false;
+                        session.setOrderStatus = 100;
+                        session.clearOrderSession();
+
+                        var homeProvider = Provider.of<HomeProvider>(context, listen: false);
+                         homeProvider.clearState();
                         await orderProvider.clearState();
 
                         Navigator.pushNamedAndRemoveUntil(

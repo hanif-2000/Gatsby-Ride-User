@@ -28,11 +28,11 @@ const String defaultApplePay = '''{
   "provider": "apple_pay",
   "data": {
     "merchantIdentifier": "merchant.getride.user.taxi",
-    "displayName": "Sam's Fish",
+    "displayName": "Ride Fare",
     "merchantCapabilities": ["3DS", "debit", "credit"],
     "supportedNetworks": ["amex", "visa", "discover", "masterCard"],
-    "countryCode": "US",
-    "currencyCode": "USD",
+    "countryCode": "CA",
+    "currencyCode": "CAD",
     "requiredBillingContactFields": ["emailAddress", "name", "phoneNumber", "postalAddress"],
     "requiredShippingContactFields": [],
     "shippingMethods": [
@@ -74,7 +74,7 @@ const String defaultGooglePay = '''{
           "parameters": {
             "gateway": "stripe",
             "stripe:version": "2023-08-16",
-            "stripe:publishableKey": "pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U"
+            "stripe:publishableKey": "pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH"
           }
         },
         "parameters": {

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/domain/entities/currency.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../domain/repositories/currency_repository.dart';
@@ -20,7 +21,10 @@ class CurrencyRepositoryImplementation implements CurrencyRepository {
   @override
   Future<Either<Failure, Currency>> getCurrency() async {
     if (!await networkInfo.isConnected) {
+      showToast(message: "Please Check your connection");
       return const Left(ConnectionFailure());
+    } else if (await networkInfo.isSlow) {
+      showToast(message: "Network is Slow");
     }
 
     try {

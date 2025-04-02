@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../../../core/utility/injection.dart';
 import '../../../../core/utility/session_helper.dart';
@@ -20,6 +22,7 @@ abstract class LoginDataSource {
     String lastName,
     String loginType,
     String deviceType,
+    String socialId,
   );
 }
 
@@ -36,14 +39,12 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String deviceType,
   ) async {
     String url = 'api/webservice/login';
-    final session = locator<Session>();
-    String fcmToken = session.sessionFcmToken;
-
-    log("fcm token : " + fcmToken.toString());
+    final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    log("fcm token : " + deviceToken.toString());
     FormData data = FormData.fromMap({
       'email': email,
       'password': password,
-      'fcm_token': fcmToken,
+      'fcm_token': deviceToken,
       'login_type': loginType,
       'device_type': deviceType
     });
@@ -80,20 +81,19 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String lastName,
     String loginType,
     String deviceType,
+    String socialId,
   ) async {
     String url = 'api/webservice/login';
-    final session = locator<Session>();
-    String fcmToken = session.sessionFcmToken;
-
-    log(fcmToken.toString());
+    final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
     FormData data = FormData.fromMap({
       'email': email,
       'first_name': firstName,
       'last_name': lastName,
-      'fcm_token': fcmToken,
-      'login_type': loginType,
-      'device_type': deviceType,
-      'country': 'Canada'
+      'fcm_token': deviceToken,
+      'login_type': 'social',
+      'device_type': Platform.isAndroid ? "android" : "ios",
+      'country': 'Canada',
+      "social_id": socialId,
     });
 
     log("----Social login ----> ${data.fields}");

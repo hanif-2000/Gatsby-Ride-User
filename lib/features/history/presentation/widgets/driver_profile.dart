@@ -1,17 +1,19 @@
 import 'package:GetsbyRideshare/core/presentation/widgets/cache_network_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../order/presentation/providers/order_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../core/utility/dynamic_toasstring_helper.dart';
 
 class DriverProfileWidget extends StatefulWidget {
   final String category;
   final String driverId;
   final String driverName;
   final String driverImage;
-  final String rating;
+  final dynamic rating;
   final String platerNumber;
 
   final VoidCallback? onClickOnReview;
@@ -45,7 +47,7 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
 
-    return Consumer<OrderProvider>(builder: (context, provider, _) {
+    return Consumer<TestSocketProvider>(builder: (context, provider, _) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -106,7 +108,8 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              double.tryParse(widget.rating).toString(),
+                              // double.tryParse(widget.rating).toString(),
+                              convertToFixedOneDecimal(widget.rating),
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w600,
@@ -133,32 +136,24 @@ class _DriverProfileWidgetState extends State<DriverProfileWidget> {
               ],
             ),
           ),
-          Flexible(
-            flex: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      widget.category,
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      widget.platerNumber,
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                widget.category,
+                style: const TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
                 ),
-              ],
-            ),
+              ),
+              Text(
+                widget.platerNumber,
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           )
         ],
       );

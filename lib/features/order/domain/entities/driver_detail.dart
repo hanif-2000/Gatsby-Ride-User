@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 class DriverDetail extends Equatable {
-  final String name, phone, model, plat;
-  final int id;
-  String? image;
-  int? rating;
+  final String name, phone, model, plat, id, rating, image;
+  // final int id;
+  // String? image;
+  // int? rating;
 
   DriverDetail({
     required this.name,
@@ -12,8 +12,8 @@ class DriverDetail extends Equatable {
     required this.model,
     required this.plat,
     required this.id,
-    this.image,
-    this.rating,
+    required this.image,
+    required this.rating,
   });
 
   toJson() {}

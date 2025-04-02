@@ -1,11 +1,16 @@
 import 'package:equatable/equatable.dart';
 
 class VehiclesCategory extends Equatable {
-  final num categoryId, priceMin, drivers, extraKm;
+  final dynamic categoryId, priceMin, drivers, extraKm, base_fare, tech_fee;
   final String categoryCar, seat, totalFare;
-  final double priceKm, minKm;
+  final dynamic priceKm, minKm, price_km, price_min;
 
-  final dynamic time, pendingAmount, newTotal, isAvailable;
+  final dynamic time,
+      pendingAmount,
+      newTotal,
+      isAvailable,
+      estimatedTime,
+      estimatedDistance;
 
   const VehiclesCategory({
     required this.categoryId,
@@ -21,6 +26,12 @@ class VehiclesCategory extends Equatable {
     required this.pendingAmount,
     required this.newTotal,
     required this.isAvailable,
+    required this.estimatedTime,
+    required this.estimatedDistance,
+    this.base_fare,
+    this.tech_fee,
+    this.price_min,
+    this.price_km,
   });
 
   toJson() {}
@@ -42,6 +53,12 @@ class VehiclesCategory extends Equatable {
         minKm,
         newTotal,
         pendingAmount,
-        isAvailable
+        isAvailable,
+        estimatedTime,
+        estimatedDistance,
+        base_fare,
+        tech_fee,
+        price_min,
+        price_km
       ];
 }

@@ -7,17 +7,23 @@ class GooglePlaceSearch extends Equatable {
     required this.formattedAddress,
     required this.geometry,
     required this.name,
+    required this.place_id,
+    required this.vicinity,
   });
 
-  final String formattedAddress;
+  final String ?formattedAddress;
   final Geometry geometry;
   final String name;
+  final String place_id;
+  final String ?vicinity;
 
   @override
   List<Object?> get props => [
         formattedAddress,
         geometry,
         name,
+    place_id,
+    vicinity,
       ];
   toJson() {}
 }

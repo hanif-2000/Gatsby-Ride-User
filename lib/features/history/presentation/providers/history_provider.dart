@@ -38,10 +38,7 @@ class HistoryProvider extends FormProvider {
 
   setPolylineDirection(LatLng origin, LatLng destination) async {
     polylines.clear();
-    await DirectionHelper()
-        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
-            destination.latitude, destination.longitude)
-        .then(
+    await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then(
       (result) {
         logMe('Polyline ---> ${result.toString()}');
         if (result.isNotEmpty) {

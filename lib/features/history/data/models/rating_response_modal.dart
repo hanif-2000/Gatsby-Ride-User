@@ -7,11 +7,11 @@ String getRatingResponseModalToJson(GetRatingResponseModal data) =>
     json.encode(data.toJson());
 
 class GetRatingResponseModal {
-  int success;
+  dynamic success;
   String message;
-  int? rating;
+  dynamic rating;
   List<ListElement>? list;
-  int? ratingCount;
+  dynamic ratingCount;
 
   GetRatingResponseModal({
     required this.success,
@@ -50,7 +50,7 @@ class GetRatingResponseModal {
 }
 
 class ListElement {
-  int id;
+  dynamic id;
   String name;
   String image;
   String rating;

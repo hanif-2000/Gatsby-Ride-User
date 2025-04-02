@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utility/app_settings.dart';
+import '../../../../core/utility/duration_helper.dart';
 import '../../../../core/utility/helper.dart';
 import '../../../order/presentation/pages/components/ratings.dart';
 import '../../../testing/widgets/rating_widget.dart';
@@ -26,6 +27,7 @@ class DetailHistoryPage extends StatefulWidget {
 }
 
 class _DetailHistoryPageState extends State<DetailHistoryPage> {
+
   @override
   void initState() {
     super.initState();
@@ -169,8 +171,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       markers: Set<Marker>.of(provider.markers.values),
                       onMapCreated: (GoogleMapController controller) async {
                         provider.googleMapController = controller;
-                        // await provider.setCurrentLocation(
-                        //     widget.orderDetail, widget.customerDetail);
                         final pickup = LatLng(
                             double.tryParse(
                                 widget.item.startCoordinate!.split(',').first)!,
@@ -186,45 +186,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                         await provider.setPolylineDirection(pickup, drop);
                       },
                     ),
-
-                    //  GoogleMap(
-                    //   //given camera position
-                    //   initialCameraPosition: CameraPosition(
-                    //     target: LatLng(
-                    //       provider.originLat,
-                    //       provider.originLang,
-                    //     ),
-                    //     zoom: 15,
-                    //   ),
-                    //   mapType: MapType.normal,
-                    //   markers: provider.markers,
-                    //   // on below line we have enabled location
-                    //   myLocationEnabled: false,
-                    //   myLocationButtonEnabled: false,
-                    //   // on below line we have enabled compass location
-                    //   compassEnabled: true,
-                    //   // on below line we have added polylines
-                    //   polylines: provider.polyline,
-                    //   // displayed google map
-                    //   onMapCreated: (GoogleMapController controller) async {
-                    //     provider.controller.complete(controller);
-
-                    //     // final pickup = LatLng(
-                    //     //     double.tryParse(
-                    //     //         widget.item.startCoordinate!.split(',').first)!,
-                    //     //     double.tryParse(
-                    //     //         widget.item.startCoordinate!.split(',').last)!);
-                    //     // final drop = LatLng(
-                    //     //     double.tryParse(
-                    //     //         widget.item.endCoordinate!.split(',').first)!,
-                    //     //     double.tryParse(
-                    //     //         widget.item.endCoordinate!.split(',').last)!);
-
-                    //     // await provider.createPickupAndDropMarker(pickup, drop);
-
-                    //     // await provider.setPolylineDirection(pickup, drop);
-                    //   },
-                    // ),
                   ),
 
                   /** 
@@ -303,7 +264,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               style: TextStyle(
                                                 fontFamily: 'poPPinSemiBold',
                                                 fontWeight: FontWeight.w600,
-                                                fontSize: 18,
+                                                fontSize: 16,
                                               ),
                                             ),
                                           ),
@@ -365,7 +326,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               style: TextStyle(
                                                   fontFamily: 'poPPinSemiBold',
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize: 18),
+                                                  fontSize: 16),
                                             ),
                                           ),
                                           const SizedBox(height: 2.0),
@@ -393,115 +354,122 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                   ),
 
                   //Show Payment Method
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: yellowE4AC3BColor.withOpacity(.12),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0,
-                              vertical: 8.0,
+                  widget.item.paymentStatus != "no"
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: yellowE4AC3BColor.withOpacity(.12),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Flexible(
-                                  flex: 2,
-                                  child: Text(
-                                    "Payment Through",
-                                    style: TextStyle(
-                                      fontFamily: 'poPPinMedium',
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                    ),
-                                  ),
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                  vertical: 8.0,
                                 ),
-                                Flexible(
-                                  flex: 2,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Flexible(
+                                      flex: 2,
+                                      child: Text(
+                                        "Payment Through",
+                                        style: TextStyle(
+                                          fontFamily: 'poPPinMedium',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 2,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
 
-                                    //                   ? SvgPicture.asset('assets/icons/card.svg')
-                                    // : widget.paymentMode == 3
-                                    //     ? SvgPicture.asset('assets/icons/google.svg')
-                                    //     : SvgPicture.asset('assets/icons/apple.svg'),
-                                    children: [
-                                      widget.item.paymentMethod == "1"
-                                          ? SvgPicture.asset(
-                                              'assets/icons/cash.svg',
-                                              height: 40,
-                                              width: 40,
-                                              fit: BoxFit.fill,
-                                            )
-                                          : widget.item.paymentMethod == "2"
+                                        //                   ? SvgPicture.asset('assets/icons/card.svg')
+                                        // : widget.paymentMode == 3
+                                        //     ? SvgPicture.asset('assets/icons/google.svg')
+                                        //     : SvgPicture.asset('assets/icons/apple.svg'),
+                                        children: [
+                                          widget.item.paymentMethod == "1"
                                               ? SvgPicture.asset(
-                                                  'assets/icons/card.svg',
+                                                  'assets/icons/cash.svg',
                                                   height: 40,
                                                   width: 40,
                                                   fit: BoxFit.fill,
                                                 )
-                                              : widget.item.paymentMethod == "3"
-                                                  ? SvgPicture.asset(
-                                                      'assets/icons/google.svg',
-                                                      height: 40,
-                                                      width: 40,
-                                                      fit: BoxFit.fill)
-                                                  : SvgPicture.asset(
-                                                      'assets/icons/apple.svg',
-                                                      height: 40,
-                                                      width: 40,
-                                                      fit: BoxFit.fill),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          left: 10.0,
-                                        ),
-                                        child: Text(
-                                          widget.item.paymentMethod == "1"
-                                              ? "Cash"
                                               : widget.item.paymentMethod == "2"
-                                                  ? "Credit Card"
+                                                  ? SvgPicture.asset(
+                                                      'assets/icons/card.svg',
+                                                      height: 40,
+                                                      width: 40,
+                                                      fit: BoxFit.fill,
+                                                    )
                                                   : widget.item.paymentMethod ==
                                                           "3"
-                                                      ? "Google Pay"
-                                                      : "Apple Pay",
-                                          style: TextStyle(
-                                              fontFamily: 'poPPinMedium',
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                              color: grey7D7979Color),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                                      ? SvgPicture.asset(
+                                                          'assets/icons/google.svg',
+                                                          height: 40,
+                                                          width: 40,
+                                                          fit: BoxFit.fill)
+                                                      : SvgPicture.asset(
+                                                          'assets/icons/apple.svg',
+                                                          height: 40,
+                                                          width: 40,
+                                                          fit: BoxFit.fill),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              left: 10.0,
+                                            ),
+                                            child: Text(
+                                              widget.item.paymentMethod == "1"
+                                                  ? "Cash"
+                                                  : widget.item.paymentMethod ==
+                                                          "2"
+                                                      ? "Credit Card"
+                                                      : widget.item
+                                                                  .paymentMethod ==
+                                                              "3"
+                                                          ? "Google Pay"
+                                                          : "Apple Pay",
+                                              style: TextStyle(
+                                                  fontFamily: 'poPPinMedium',
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 14,
+                                                  color: grey7D7979Color),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
+
+                                // Column(
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: [
+                                //     mediumVerticalSpacing(),
+                                //     Text(
+                                //       appLoc.paymentMethod,
+                                //       style: const TextStyle(
+                                //           fontFamily: 'Yu Ghotic',
+                                //           fontWeight: FontWeight.bold,
+                                //           fontSize: 16),
+                                //     ),
+                                //     smallVerticalSpacing(),
+                                //     Text(
+                                //       getPaymentMethod(widget.item),
+                                //     ),
+                                //     mediumVerticalSpacing(),
+                                //   ],
+                                // ),
+
                                 ),
-                              ],
-                            )
-
-                            // Column(
-                            //   crossAxisAlignment: CrossAxisAlignment.start,
-                            //   children: [
-                            //     mediumVerticalSpacing(),
-                            //     Text(
-                            //       appLoc.paymentMethod,
-                            //       style: const TextStyle(
-                            //           fontFamily: 'Yu Ghotic',
-                            //           fontWeight: FontWeight.bold,
-                            //           fontSize: 18),
-                            //     ),
-                            //     smallVerticalSpacing(),
-                            //     Text(
-                            //       getPaymentMethod(widget.item),
-                            //     ),
-                            //     mediumVerticalSpacing(),
-                            //   ],
-                            // ),
-
-                            ),
-                      )),
+                          ))
+                      : SizedBox(),
 
                   //Show payment status
 
@@ -543,7 +511,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       ? Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
                           child: Container(
-                            height: _deviceSize.height * .3,
+                            height: _deviceSize.height * .6,
                             color: whiteColor,
                             child: LayoutBuilder(
                               builder: (context, constraints) {
@@ -557,7 +525,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                         CrossAxisAlignment.stretch,
                                     children: [
                                       Container(
-                                        height: constraints.maxHeight * 0.65,
+                                        // height: constraints.maxHeight,
                                         decoration: const BoxDecoration(
                                           color: whiteColor,
                                           border: Border(
@@ -571,32 +539,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            //Distance
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(appLoc.distance,
-                                                    style: const TextStyle(
-                                                        fontFamily:
-                                                            'poPPinSemiBold',
-                                                        fontSize: 16)),
-                                                Text(
-                                                  mergeDistanceTxt(
-                                                    widget.item.distance!,
-                                                  ),
-                                                  style: const TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-
-                                            //Type of Taxi/Cab Type
+                                            /**  Cab Type  **/
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -615,13 +558,213 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   ),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 )
                                               ],
                                             ),
                                             /** Current ride payment **/
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+                                            /** Total Distance **/
+                                            //Distance
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Total Distance",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergeDistanceTxt(
+                                                    widget.item.distance!,
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 8.0,
+                                            ),
+                                            /** Total Distance **/
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Per Km Price",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(widget.item.category.priceKm ==
+                                                      null
+                                                      ? "0.0"
+                                                      : widget.item.category.priceKm.toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 8.0,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Total Time",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  formatDuration(double.tryParse(widget.item.actual_time.toString())?.toInt()??0),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 8.0,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Per Minute Price",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(
+                                                    widget.item.category.price_min !=
+                                                            null
+                                                        ? "${widget.item.category.price_min ?? "0.0"}"
+                                                        : "0.0",
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 8.0,
+                                            ),
 
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Minimum fare",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(widget.item
+                                                              .minimum_fare ==
+                                                          null
+                                                      ? "0.0"
+                                                      : widget.item.minimum_fare
+                                                          .toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Base fare",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(widget
+                                                              .item.base_fare ==
+                                                          null
+                                                      ? "0.0"
+                                                      : widget.item.base_fare
+                                                          .toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("Tech Fee",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                            'poPPinSemiBold',
+                                                        fontSize: 16)),
+                                                Text(
+                                                  mergePriceTxt(
+                                                      widget.item.tech_fee ==
+                                                              null
+                                                          ? "0.0"
+                                                          : widget.item.tech_fee
+                                                              .toString()),
+                                                  style: const TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Poppins",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
+                                            //TCurrent Ride Payment
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -636,7 +779,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                         fontSize: 16)),
                                                 Text(
                                                   mergePriceTxt(double.parse(
-                                                          widget.item.grandTotal
+                                                          widget.item.newTotal
                                                               .toString())
                                                       .toStringAsFixed(2)),
                                                   // mergePriceTxt(widget.item.tip ==
@@ -645,12 +788,15 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                   //     : widget.item.tip.toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 ),
                                               ],
                                             ),
-/** Pending/Previous ride payment **/
+                                            /** Pending/Previous ride payment **/
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
 
                                             Row(
                                               mainAxisAlignment:
@@ -667,38 +813,18 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                 Text(
                                                   mergePriceTxt(widget
                                                       .item.pendingAmount),
-                                                  // mergePriceTxt(widget.item.tip ==
-                                                  //         null
-                                                  //     ? "0.0"
-                                                  //     : widget.item.tip.toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 ),
                                               ],
                                             ),
 
-                                            // Row(
-                                            //   mainAxisAlignment:
-                                            //       MainAxisAlignment.spaceBetween,
-                                            //   crossAxisAlignment:
-                                            //       CrossAxisAlignment.center,
-                                            //   children: [
-                                            //     Text(appLoc.price,
-                                            //         style: const TextStyle(
-                                            //             fontFamily: 'poPPinSemiBold',
-                                            //             fontSize: 16)),
-                                            //     Text(
-                                            //       mergePriceTxt(widget.item.total!),
-                                            //       style: const TextStyle(
-                                            //         fontSize: 16.0,
-                                            //         fontFamily: "poPPinMedium",
-                                            //       ),
-                                            //     ),
-                                            //   ],
-                                            // ),
-
+//etxra timne
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -719,13 +845,19 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                                               .toString()),
                                                   style: const TextStyle(
                                                     fontSize: 16.0,
-                                                    fontFamily: "poPPinMedium",
+                                                    fontFamily: "Poppins",
                                                   ),
                                                 ),
                                               ],
                                             ),
+                                            SizedBox(
+                                              height: 6.0,
+                                            ),
                                           ],
                                         ),
+                                      ),
+                                      SizedBox(
+                                        height: 6.0,
                                       ),
                                       Row(
                                           mainAxisAlignment:
@@ -738,7 +870,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               style: const TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontWeight: FontWeight.w700,
-                                                fontSize: 18,
+                                                fontSize: 16,
                                                 color: blackColor,
                                               ),
                                             ),
@@ -752,7 +884,7 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                                               style: const TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontWeight: FontWeight.w700,
-                                                fontSize: 18,
+                                                fontSize: 16,
                                                 color: blackColor,
                                               ),
                                             ),
@@ -812,37 +944,6 @@ class _DetailHistoryPageState extends State<DetailHistoryPage> {
                       },
                     ),
                   ),
-                  // Text(
-                  //   appLoc.ratingGiven,
-                  //   style: TextStyle(
-                  //       fontSize: 16.0,
-                  //       fontFamily: 'poPPinMedium',
-                  //       color: grey7D7979Color),
-                  // ),
-
-                  // RatingWidget(
-                  //   ratingDate: "Date",
-                  //   rating: 5.0,
-                  //   review: "sdf",
-                  // ),
-                  // SizedBox(
-                  //   height: 10.0,
-                  // ),
-
-                  // //Rating Given by Driver  ---->>>> customer
-                  // Text(
-                  //   appLoc.ratingReceived,
-                  //   style: TextStyle(
-                  //       fontSize: 16.0,
-                  //       fontFamily: 'poPPinMedium',
-                  //       color: grey7D7979Color),
-                  // ),
-
-                  // RatingWidget(
-                  //   ratingDate: "Date",
-                  //   rating: 5.0,
-                  //   review: "sdf",
-                  // ),
                 ],
               ),
             ),

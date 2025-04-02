@@ -3,18 +3,19 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/payment_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/new_order_page.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-import '../../../features/order/presentation/pages/order_page.dart';
 import '../../domain/entities/order_data_detail.dart';
 import '../../static/enums.dart';
 import '../../utility/helper.dart';
 import '../../utility/injection.dart';
-import '../../utility/session_helper.dart';
-import '../providers/create_order_state.dart';
 import '../providers/vehicle_category_state.dart';
 import 'custom_button/custom_button_widget.dart';
 import 'custom_vehicle_info.dart';
@@ -24,23 +25,29 @@ class BottomSheetBookRide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _deviceSize = MediaQuery.of(context).size;
+    var _deviceSize = MediaQuery.sizeOf(context);
 
     return StreamBuilder<VehiclesCategoryState>(
         stream: context.read<HomeProvider>().fetchVehicleCategory(),
         builder: (context, state) {
           switch (state.data.runtimeType) {
             case VehiclesCategoryLoading:
-              return const Padding(
+              return Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(
+                  child: LottieBuilder.asset('assets/icons/lottie_animation.json'),
+                ),
+
+                // Center(child: CircularProgressIndicator()),
               );
             case VehiclesCategoryLoaded:
               final data = (state.data as VehiclesCategoryLoaded).data;
               return Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 0.0),
+                padding: const EdgeInsets.only(top: 0.0, bottom: 0.0),
                 child: Scaffold(
-                  body: Consumer<HomeProvider>(builder: (context, provider, _) {
+                  backgroundColor: whiteColor,
+                  body: Consumer<HomeProvider>(builder: (context, homeProvider, _) {
+                    final provider = context.read<HomeProvider>();
                     return Container(
                       decoration: const BoxDecoration(
                         color: whiteColor,
@@ -79,26 +86,32 @@ class BottomSheetBookRide extends StatelessWidget {
                                         EdgeInsets.symmetric(horizontal: 0.0),
                                     child: InkWell(
                                       onTap: () {
+                                        log("on tap on vehicle called");
                                         provider.updatePriceAndCatagortId(
-                                            fare: data[index]
-                                                .totalFare
-                                                .toString(),
-                                            catagoryId: data[index]
-                                                .categoryId
-                                                .toString());
-
-                                        provider.updateSelectedVehicleIndex(
-                                            index: index);
-                                        provider.updateIsAvailable(
-                                            val: data[index].isAvailable);
+                                            fare: data[index].totalFare.toString(),
+                                            catagoryId: data[index].categoryId.toString());
+                                        provider.updateSelectedVehicleIndex(index: index);
+                                        provider.updateIsAvailable(val: data[index].isAvailable);
                                       },
                                       child: CustomVehicleInfo(
                                         index: index,
                                         vehicleImage:
                                             "${provider.carsImageList[index]}",
                                         // time: "${provider.estimatedTimeToShow}",
-                                        time: data[index].time.toString() +
+                                        time: data[index]
+                                                .estimatedTime
+                                                .toString() +
                                             " min",
+                                        priceMin:
+                                            data[index].priceMin.toString(),
+                                        baseFare:
+                                            data[index].base_fare.toString(),
+                                        techFee:
+                                            data[index].tech_fee.toString(),
+                                        pricePerMin:
+                                            data[index].price_min.toString(),
+                                        pricePerKM:
+                                            data[index].price_km.toString(),
                                         // price: data[index].totalFare.toString(),
                                         price: data[index].totalFare.toString(),
                                         vehicleType: data[index].categoryCar,
@@ -106,13 +119,15 @@ class BottomSheetBookRide extends StatelessWidget {
                                         provider: provider,
                                         vehicleDetail:
                                             provider.vehiclesDetailsList,
-
                                         newTotal:
                                             data[index].newTotal.toString(),
                                         pendingAmount: data[index]
                                             .pendingAmount
                                             .toString(),
                                         isAvailable: data[index].isAvailable,
+                                        estimatedDistance: data[index]
+                                            .estimatedDistance
+                                            .toString(),
                                       ),
                                     ),
                                   );
@@ -139,7 +154,6 @@ class BottomSheetBookRide extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 provider.setPaymentMethod = PaymentMethod.cash;
-
                                 showModalBottomSheet(
                                   barrierColor: Colors.transparent,
                                   useRootNavigator: true,
@@ -159,28 +173,13 @@ class BottomSheetBookRide extends StatelessWidget {
                                     return Container(child: PaymentOption());
                                   },
                                 );
-
-                                //  selected: provider.paymentMethod == null
-                                //           ? false
-                                //           : provider.paymentMethod == PaymentMethod.cash
-                                //               ? true
-                                //               : false,
-
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => const PaymentOption(),
-                                //   ),
-                                // );
                               },
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: _deviceSize.width * .05),
+                                padding: EdgeInsets.symmetric(horizontal: _deviceSize.width * .05),
                                 child: Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
@@ -213,8 +212,22 @@ class BottomSheetBookRide extends StatelessWidget {
                                             Text(
                                               provider.paymentMethod == null
                                                   ? "Select Payment"
-                                                  : provider
-                                                      .paymentMethod!.name,
+                                                  : provider.paymentMethod! ==
+                                                          PaymentMethod.cash
+                                                      ? "Cash"
+                                                      : provider.paymentMethod! ==
+                                                              PaymentMethod
+                                                                  .creditCard
+                                                          ? "CreditCard"
+                                                          : provider.paymentMethod! ==
+                                                                  PaymentMethod
+                                                                      .googlePay
+                                                              ? "Google Pay"
+                                                              : provider.paymentMethod! ==
+                                                                      PaymentMethod
+                                                                          .applePay
+                                                                  ? "Apple Pay"
+                                                                  : "Select Payment",
                                               style: TextStyle(
                                                 fontFamily: 'poPPinMedium',
                                                 fontSize: 16.0,
@@ -234,7 +247,7 @@ class BottomSheetBookRide extends StatelessWidget {
                                       height: _deviceSize.height * .03,
                                     ),
 
-                                    //Book Now Button
+                                    //***  --------->>>>>>> BOOK NOW BUTTON <<<<<<<<<-------------**\
                                     CustomButton(
                                       text: const Text(
                                         "Book Now",
@@ -245,132 +258,63 @@ class BottomSheetBookRide extends StatelessWidget {
                                         ),
                                       ),
                                       event: () {
+                                        final session = locator<Session>();
+                                        session.setSearchingTime = 180;
+                                        final socketProvider = context.read<TestSocketProvider>();
                                         if (provider.paymentMethod != null) {
-                                          if (provider.price.isEmpty ||
-                                              provider
-                                                  .selectedVehicleId.isEmpty) {
-                                            showToast(
-                                                message:
-                                                    appLoc.taxiTypeNotSelected);
-                                          } else if ((provider.isAvailable ==
-                                                  '') ||
-                                              provider.isAvailable == 'no') {
-                                            showToast(
-                                                message:
-                                                    "Selected vehicle is not available yet, Please select another");
+                                          if (provider.price.isEmpty || provider.selectedVehicleId.isEmpty) {
+                                            showToast(message: appLoc.taxiTypeNotSelected);
+                                          } else if ((provider.isAvailable == '') || provider.isAvailable == 'no') {
+                                            showToast(message: "Selected vehicle is not available yet, Please select another");
                                           } else {
-                                            provider
-                                                .submitOrder()
-                                                .listen((event) async {
-                                              if (event is CreateOrderLoading) {
-                                                showLoading();
-                                              } else if (event
-                                                  is CreateOrderLoaded) {
-                                                dismissLoading();
-                                                // showToast(
-                                                //     message: appLoc
-                                                //         .orderCreatedSuccessfully);
-
-                                                // provider.sendRequest();
-                                                var session =
-                                                    locator<Session>();
-
-                                                session.setOriginAddress =
-                                                    provider.originAddress;
-                                                session.setDestinationAddress =
-                                                    provider.destinationAddress;
-                                                session.setOriginLat = provider
-                                                    .originLatLng.latitude;
-                                                session.setOriginLong = provider
-                                                    .originLatLng.longitude;
-                                                session.setDestinationLat =
-                                                    provider.destinationLatLng
-                                                        .latitude;
-                                                session.setDestinationLong =
-                                                    provider.destinationLatLng
-                                                        .longitude;
-
-                                                log("first time order origin lat long:-->> ${provider.originLatLng}");
-                                                log("first time order origin lat long:-->> ${provider.originLatLng.latitude}");
-                                                log("first time order origin lat long:-->> ${provider.originLatLng.longitude}");
-
-                                                final OrderDataDetail
-                                                    orderDataDetail = OrderDataDetail(
-                                                        originLatLng: provider
-                                                            .originLatLng,
-                                                        destinationLatLng: provider
-                                                            .destinationLatLng,
-                                                        originAddress: provider
-                                                            .originAddress,
-                                                        destinationAddress: provider
-                                                            .destinationAddress);
-
-                                                // log("session origin latitude:-->> ${session.originLat}");
-                                                // log("session origin longitude:-->> ${session.originLong}");
-
-                                                Navigator
-                                                    .pushNamedAndRemoveUntil(
-                                                        context,
-                                                        OrderPage.routeName,
-                                                        (route) => false,
-                                                        arguments:
-                                                            orderDataDetail);
-                                              } else if (event
-                                                  is CreateOrderFailure) {
-                                                dismissLoading();
+                                            final orderDataDetail = OrderDataDetail(
+                                                    originLatLng: provider.originLatLng,
+                                                    destinationLatLng: provider.destinationLatLng,
+                                                    originAddress: provider.originAddress,
+                                                    destinationAddress: provider.destinationAddress);
+                                            /*** NEW RIDE REQUEST SEND VIA SOCKET */
+                                            socketProvider.createRideRequest(
+                                              originLatLngs: "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
+                                              destinationLatLngs: "${provider.destinationLatLng.latitude},${provider.destinationLatLng.longitude}",
+                                              vehicleCatagory: provider.selectedVehicleId,
+                                              startAddress: provider.originAddress,
+                                              endAddress: provider.destinationAddress,
+                                              estimatedTime: data[0].estimatedTime.toString(),
+                                              distance: data[0].estimatedDistance.toString(),
+                                              total: provider.price,
+                                              payment_method: provider.paymentMethod! == PaymentMethod.cash
+                                                  ? 1
+                                                  : provider.paymentMethod! ==
+                                                          PaymentMethod
+                                                              .creditCard
+                                                      ? 2
+                                                      : provider.paymentMethod! ==
+                                                              PaymentMethod
+                                                                  .googlePay
+                                                          ? 3
+                                                          : provider.paymentMethod! ==
+                                                                  PaymentMethod
+                                                                      .applePay
+                                                              ? 4
+                                                              : 1,
+                                            ).then((value) {
+                                              if (value) {
+                                                session.setOrderStatus = 0;
+                                                session.setIsRunningOrder = true;
+                                                session.setBookingTime = DateTime.now().toString();
+                                                Navigator.pushNamedAndRemoveUntil(context, NewOrderPage.routeName, (route) => false, arguments: orderDataDetail);
+                                              } else {
+                                                showToast(message: "Something went wrong Please try again");
                                               }
                                             });
                                           }
-
-                                          log(provider.originAddress
-                                              .toString());
-                                          log(provider.destinationAddress
-                                              .toString());
-                                          log(provider.distance.toString());
-                                          log(provider.price.toString());
-
-                                          // showModalBottomSheet(
-                                          //     isScrollControlled: true,
-                                          //     constraints: BoxConstraints(
-                                          //         maxHeight:
-                                          //             _deviceSize.height * .5),
-                                          //     context: context,
-                                          //     shape:
-                                          //         const RoundedRectangleBorder(
-                                          //       borderRadius:
-                                          //           BorderRadius.vertical(
-                                          //         top: Radius.circular(50.0),
-                                          //       ),
-                                          //     ),
-                                          //     builder: (context) {
-                                          //       return SearchingRideBottomSheet();
-                                          //     });
+                                          log(provider.originAddress.toString(),name: "ORIGIN ADDRESS");
+                                          log(provider.destinationAddress.toString(),name: "DESTINATION ADDRESS");
+                                          log(provider.distance.toString(),name: "TOTAL DISTANCE");
+                                          log(provider.price.toString(),name: "TOTAL ESTIMATED PRICE");
                                         } else {
-                                          showToast(
-                                              message:
-                                                  "Please Select Payment Method");
-                                        }
-                                        // showModalBottomSheet(
-                                        //     useRootNavigator: true,
-                                        //     shape: RoundedRectangleBorder(
-                                        //       borderRadius: BorderRadius.vertical(
-                                        //         top: Radius.circular(100),
-                                        //       ),
-                                        //     ),
-                                        //     // backgroundColor: ,
-                                        //     context: context,
-                                        //     builder: (context) {
-                                        //       return const SearchingRideBottomSheet();
-                                        //     },
-                                        //   )
-
-                                        ;
-                                        // showBottomSheet(
-                                        //   context: context,
-                                        //   builder: (context) {
-                                        //     return const BottomSheetBookRide();
-                                        //   },
-                                        // );
+                                          showToast(message: "Please Select Payment Method");
+                                        };
                                       },
                                       buttonHeight: 50,
                                       isRounded: true,
@@ -390,201 +334,5 @@ class BottomSheetBookRide extends StatelessWidget {
           }
           return const SizedBox.shrink();
         });
-
-    // Scaffold(
-    //   body: Consumer<HomeProvider>(builder: (context, provider, _) {
-    //     return Container(
-    //       decoration: const BoxDecoration(
-    //         color: whiteColor,
-    //         borderRadius: BorderRadius.only(
-    //           topLeft: Radius.circular(16.0),
-    //           topRight: Radius.circular(16.0),
-    //         ),
-    //       ),
-    //       height: _deviceSize.height * .5,
-    //       child: SingleChildScrollView(
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //           crossAxisAlignment: CrossAxisAlignment.stretch,
-    //           children: [
-    //             GestureDetector(
-    //               onTap: () {
-    //                 Navigator.pop(context);
-    //               },
-    //               child: Padding(
-    //                 padding: EdgeInsets.symmetric(
-    //                     vertical: _deviceSize.height * .02),
-    //                 child: SvgPicture.asset(
-    //                   'assets/icons/grey-dropdown-icon.svg',
-    //                 ),
-    //               ),
-    //             ),
-    //             Container(
-    //               height: _deviceSize.height * .22,
-    //               child: ListView.builder(
-    //                 itemCount: 6,
-    //                 shrinkWrap: true,
-    //                 itemBuilder: (context, index) {
-    //                   return const Padding(
-    //                     padding: EdgeInsets.symmetric(horizontal: 8.0),
-    //                     child: CustomVehicleInfo(
-    //                       vehicleImage: 'assets/icons/car-dropdown.png',
-    //                       time: "2 min",
-    //                       price: r'$ 40.00',
-    //                       vehicleType: 'Economy',
-    //                       capacity: "4",
-    //                     ),
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //             Padding(
-    //               padding:
-    //                   EdgeInsets.symmetric(vertical: _deviceSize.height * .01),
-    //               child: const DottedLine(
-    //                 direction: Axis.horizontal,
-    //                 lineLength: double.infinity,
-    //                 lineThickness: 1.0,
-    //                 dashLength: 4.0,
-    //                 dashColor: greyB6B6B6Color,
-    //                 // dashGradient: const [Colors.red, Colors.blue],
-    //                 dashRadius: 0.0,
-    //                 dashGapLength: 4.0,
-    //                 dashGapColor: Colors.transparent,
-    //                 // dashGapGradient: const [Colors.red, Colors.blue],
-    //                 dashGapRadius: 0.0,
-    //               ),
-    //             ),
-    //             InkWell(
-    //               onTap: () {
-    //                 provider.setPaymentMethod = PaymentMethod.cash;
-
-    //                 //  selected: provider.paymentMethod == null
-    //                 //           ? false
-    //                 //           : provider.paymentMethod == PaymentMethod.cash
-    //                 //               ? true
-    //                 //               : false,
-
-    //                 Navigator.push(
-    //                   context,
-    //                   MaterialPageRoute(
-    //                     builder: (context) => const PaymentOption(),
-    //                   ),
-    //                 );
-    //               },
-    //               child: Padding(
-    //                 padding: EdgeInsets.symmetric(
-    //                     horizontal: _deviceSize.width * .05),
-    //                 child: Column(
-    //                   children: [
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Row(
-    //                           children: [
-    //                             Padding(
-    //                                 padding: EdgeInsets.only(
-    //                                   right: _deviceSize.width * .05,
-    //                                 ),
-    //                                 child: provider.paymentMethod == null
-    //                                     ? SvgPicture.asset(
-    //                                         'assets/icons/cash.svg')
-    //                                     : provider.paymentMethod ==
-    //                                             PaymentMethod.applePay
-    //                                         ? SvgPicture.asset(
-    //                                             'assets/icons/apple.svg')
-    //                                         : provider.paymentMethod ==
-    //                                                 PaymentMethod.googlePay
-    //                                             ? SvgPicture.asset(
-    //                                                 'assets/icons/google.svg')
-    //                                             : SvgPicture.asset(
-    //                                                 'assets/icons/cash.svg')),
-    //                             Text(
-    //                               provider.paymentMethod == null
-    //                                   ? "Select Payment"
-    //                                   : provider.paymentMethod!.name,
-    //                               style: TextStyle(
-    //                                 fontFamily: 'poPPinMedium',
-    //                                 fontSize: 16.0,
-    //                               ),
-    //                             ),
-    //                           ],
-    //                         ),
-    //                         Padding(
-    //                           padding: EdgeInsets.only(
-    //                               right: _deviceSize.width * .02),
-    //                           child: SvgPicture.asset(
-    //                               'assets/icons/grey-disclosure.svg'),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     SizedBox(
-    //                       height: _deviceSize.height * .05,
-    //                     ),
-    //                     CustomButton(
-    //                       text: const Text(
-    //                         "Book Now",
-    //                         style: TextStyle(
-    //                           fontFamily: 'poPPinSemiBold',
-    //                           fontWeight: FontWeight.w600,
-    //                           color: Colors.white,
-    //                         ),
-    //                       ),
-    //                       event: () {
-    //                         if (provider.paymentMethod != null) {
-    //                           Navigator.pop(context);
-    //                           showModalBottomSheet(
-    //                               isScrollControlled: true,
-    //                               constraints: BoxConstraints(
-    //                                   maxHeight: _deviceSize.height * .5),
-    //                               context: context,
-    //                               shape: const RoundedRectangleBorder(
-    //                                 borderRadius: BorderRadius.vertical(
-    //                                   top: Radius.circular(50.0),
-    //                                 ),
-    //                               ),
-    //                               builder: (context) {
-    //                                 return SearchingRideBottomSheet();
-    //                               });
-    //                         } else {
-    //                           showToast(
-    //                               message: "Please Select Payment Method");
-    //                         }
-    //                         // showModalBottomSheet(
-    //                         //     useRootNavigator: true,
-    //                         //     shape: RoundedRectangleBorder(
-    //                         //       borderRadius: BorderRadius.vertical(
-    //                         //         top: Radius.circular(100),
-    //                         //       ),
-    //                         //     ),
-    //                         //     // backgroundColor: ,
-    //                         //     context: context,
-    //                         //     builder: (context) {
-    //                         //       return const SearchingRideBottomSheet();
-    //                         //     },
-    //                         //   )
-
-    //                         ;
-    //                         // showBottomSheet(
-    //                         //   context: context,
-    //                         //   builder: (context) {
-    //                         //     return const BottomSheetBookRide();
-    //                         //   },
-    //                         // );
-    //                       },
-    //                       buttonHeight: 50,
-    //                       isRounded: true,
-    //                       bgColor: black080809Color,
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     );
-    //   }),
-    // );
   }
 }

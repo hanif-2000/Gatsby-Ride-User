@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 class OrderDetail extends Equatable {
-  final dynamic totalPrice;
-  final int orderId, userId, driverId;
+  final dynamic totalPrice, driverId;
+  final dynamic orderId, userId, orderStatus, phone;
+
   final String startCoordinate,
       endCoordinate,
       distance,
@@ -19,9 +20,43 @@ class OrderDetail extends Equatable {
     required this.endCoordinate,
     required this.startAddress,
     required this.endAddress,
+    required this.orderStatus,
+    required this.phone,
   });
 
-  toJson() {}
+  // Factory method to create an OrderDetail instance from a Map (JSON)
+  factory OrderDetail.fromJson(Map<String, dynamic> json) {
+    return OrderDetail(
+      orderId: json['orderId'],
+      totalPrice: json['totalPrice'],
+      userId: json['userId'],
+      driverId: json['driverId'],
+      distance: json['distance'],
+      startCoordinate: json['startCoordinate'],
+      endCoordinate: json['endCoordinate'],
+      startAddress: json['startAddress'],
+      endAddress: json['endAddress'],
+      orderStatus: json['order_status'],
+      phone: json['phone'],
+    );
+  }
+
+  // Convert OrderDetail instance to a Map (JSON)
+  Map<String, dynamic> toJson() {
+    return {
+      'orderId': orderId,
+      'totalPrice': totalPrice,
+      'userId': userId,
+      'driverId': driverId,
+      'distance': distance,
+      'startCoordinate': startCoordinate,
+      'endCoordinate': endCoordinate,
+      'startAddress': startAddress,
+      'endAddress': endAddress,
+      'orderStatus': orderStatus,
+      "phone": phone,
+    };
+  }
 
   @override
   bool? get stringify => true;
@@ -36,6 +71,7 @@ class OrderDetail extends Equatable {
         startCoordinate,
         endCoordinate,
         startAddress,
-        endAddress
+        endAddress,
+        phone
       ];
 }

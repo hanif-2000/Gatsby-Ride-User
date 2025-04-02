@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,16 @@ import 'app_settings.dart';
 import 'injection.dart';
 import 'session_helper.dart';
 
-logMe(Object? obj) {
+logMe(Object? obj,{String name="LOGS"}) {
   /* 
     use this for print something, its run only on debug mode.
   */
   if (kDebugMode) {
-    print(obj);
+    print(
+        "**************************************👇👇👇👇👇👇👇👇   DEBUG START   👇👇👇👇👇👇👇👇👇👇********************************");
+    log(obj.toString(),name: name);
+    print(
+        "**************************************👆👆👆👆👆👆👆👆   DEBUG END      👆👆👆👆👆👆👆👆👆👆********************************");
   }
 }
 
@@ -48,6 +53,7 @@ Future<bool> checkPermission() async {
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
     return false;
+    ;
   }
 
   permission = await Geolocator.checkPermission();
@@ -67,8 +73,13 @@ Future<bool> checkPermission() async {
 
 String mergeAddress(String placeName, String address) {
   String result;
-  result = '$placeName, $address';
-  return result;
+  if (address.isNotEmpty && address.contains(placeName)) {
+    result = '$address';
+    return result;
+  } else {
+    result = '$placeName, $address';
+    return result;
+  }
 }
 
 String mergeTypeTaxi(history.CategoryClass category) {
@@ -84,7 +95,7 @@ String mergePhotoUrl(String photoUrl) {
   if (photoUrl == '') {
     result = '';
   } else {
-    result = '$BASE_URL_PHOTO/$photoUrl';
+    result = '$BASE_URL/$photoUrl';
   }
 
   return result;
@@ -118,7 +129,7 @@ Future<double> getDistance(
 
 showLoading() {
   SmartDialog.showLoading(
-    animationType: SmartAnimationType.fade,
+    animationType: SmartAnimationType.scale,
     backDismiss: false,
     builder: (context) => const CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
@@ -138,6 +149,38 @@ void showToast({required String message, Color? color}) {
       timeInSecForIosWeb: 1);
 }
 
+void showNoInternetDialog() {
+  showDialog(
+    context: locator<GlobalKey<NavigatorState>>().currentContext!,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text('No Internet Connection'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.signal_wifi_off,
+              size: 48,
+              color: Colors.red,
+            ),
+            SizedBox(height: 10),
+            Text('Please connect to the internet and try again.'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 Future<void> sessionLogOut() async {
   final session = locator<Session>();
   await session.clearSession();
@@ -147,10 +190,10 @@ LatLngBounds getBounds(List<Marker> markers) {
   var lngs = markers.map<double>((m) => m.position.longitude).toList();
   var lats = markers.map<double>((m) => m.position.latitude).toList();
 
-  double topMost = lngs.reduce(max);
-  double leftMost = lats.reduce(min);
-  double rightMost = lats.reduce(max);
-  double bottomMost = lngs.reduce(min);
+  double topMost = lngs.reduce(math.max);
+  double leftMost = lats.reduce(math.min);
+  double rightMost = lats.reduce(math.max);
+  double bottomMost = lngs.reduce(math.min);
 
   LatLngBounds bounds = LatLngBounds(
     northeast: LatLng(rightMost, topMost),
@@ -180,7 +223,7 @@ String getPaymentMethod(history.HistoryOrder data) {
   } else if (data.paymentMethod == "3") {
     result = "Google Pay";
   } else {
-    result = "Apple Pay";
+    result = "";
   }
   return result;
 }

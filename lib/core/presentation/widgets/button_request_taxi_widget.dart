@@ -3,7 +3,7 @@ import 'package:GetsbyRideshare/core/presentation/providers/create_order_state.d
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
+import 'package:GetsbyRideshare/features/order/presentation/pages/new_order_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -82,8 +82,8 @@ class ButtonRequestTaxi extends StatelessWidget {
                                     originAddress: provider.originAddress,
                                     destinationAddress:
                                         provider.destinationAddress);
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, OrderPage.routeName, (route) => false,
+                            Navigator.pushNamedAndRemoveUntil(context,
+                                NewOrderPage.routeName, (route) => false,
                                 arguments: orderDataDetail);
                           } else if (event is CreateOrderFailure) {
                             dismissLoading();

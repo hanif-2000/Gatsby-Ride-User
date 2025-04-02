@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:GetsbyRideshare/core/utility/injection.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:dio/dio.dart';
@@ -18,16 +20,17 @@ class RegisterDataSourceImplementation implements RegisterDataSource {
     String url = 'api/webservice/user_register';
 
     try {
-      final response = await dio.post(
-        url,
-        data: formData,
-      );
+      final response = await dio.post(url, data: formData,);
+      log("user register formdata is:-->> ${formData.fields}");
       final model = RegisterResponseModel.fromJson(response.data);
       final session = locator<Session>();
       if (model.token != '') {
         session.setToken = model.token!;
+        session.setUserId = model.userId.toString();
+        session.setChatToken = model.chatToken;
         return model;
       }
+
       return model;
     } catch (e) {
       rethrow;

@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../error/failure.dart';
 import '../../network/network_info.dart';
+import '../../utility/helper.dart';
 
 class PriceCategoryRepositoryImplementation implements PriceCategoryRepository {
   final PriceCategoryDataSource dataSource;
@@ -23,6 +24,8 @@ class PriceCategoryRepositoryImplementation implements PriceCategoryRepository {
   ) async {
     if (!await networkInfo.isConnected) {
       return const Left(ConnectionFailure());
+    } else if (await networkInfo.isSlow) {
+      showToast(message: "Network is Slow");
     }
 
     try {

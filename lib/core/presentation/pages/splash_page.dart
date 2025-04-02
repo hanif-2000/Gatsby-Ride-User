@@ -1,18 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
-
-import 'package:GetsbyRideshare/features/order/presentation/pages/order_page.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-
 import '../../../features/login/presentation/pages/login_page.dart';
-import '../../../socket/new_socket_provider.dart';
-import '../../domain/entities/order_data_detail.dart';
 import '../../static/assets.dart';
 import '../../utility/helper.dart';
 import '../../utility/injection.dart';
@@ -30,49 +21,30 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final newSocketProvider = locator<NewSocketProvider>();
   @override
   void initState() {
+
     super.initState();
 
     // newSocketProvider.connectToSocket();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Timer(const Duration(seconds: 2), () async {
-        // if (kDebugMode) {
-        //   checkPermission().then((value) {
-        //     return log(value.toString());
-        //   });
-        //   // log("This text showing after 2seconds");
-        //   // log(checkPermission().toString());
-        // }
+    WidgetsBinding.instance.addPostFrameCallback((_)async {
+      final session = locator<Session>();
+      final splashProvider = context.read<SplashProvider>();
+      splashProvider.getDeviceType();
+      splashProvider.getSessionData();
+      Timer(const Duration(seconds: 3), (){
+        if (session.isLoggedIn) {
+          Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
+        /*  if (session.orderStatus == 100 || session.orderStatus == 8) {
+            Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
+          } else {
+            Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
+          }*/
+        } else {
+          Navigator.pushNamedAndRemoveUntil(context, LoginPage.routeName, (route) => false);
+        }
 
-        // if (await checkPermission()) {
-        // log("Check Permission value----" + checkPermission().toString());
-        // await sessionClearOrder();
-
-        context.read<SplashProvider>().fetchCurrency().listen((state) async {
-          // Permission.notification.isDenied.then((value) async {
-          //   if (value) {
-          //     Permission.notification.request();
-          //   }
-          // });
-
-          if (Platform.isAndroid) {
-            PermissionStatus status = await Permission.notification.request();
-            if (status.isGranted) {
-              log("notification permissin is granetd");
-              // notification permission is granted
-            } else {
-              // Permission.notification.request();
-              log("ask for notification permission ");
-              AppSettings.openAppSettings(type: AppSettingsType.notification);
-              // Open settings to enable notification permission
-            }
-          }
-
-          final session = locator<Session>();
-          // log("session token" + session.sessionToken.toString());
-          // log("order id" + session.orderId.toString());
+   /*     context.read<SplashProvider>().fetchCurrency().listen((state) async {
 
           log("state runtime type:==" + state.runtimeType.toString());
 
@@ -80,78 +52,11 @@ class _SplashPageState extends State<SplashPage> {
             case CurrencyLoading:
               break;
             case CurrencyLoaded:
-              if (session.isLoggedIn) {
-                newSocketProvider.connectToSocket();
-                if (session.orderStatus == 100 || session.orderStatus == 8) {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, HomePage.routeName, (route) => false);
-                } else {
-                  log("orogin lat lat :->> ${session.originLat}");
-                  log("orogin lat long :->> ${session.originLong}");
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OrderPage(
-                        location: OrderDataDetail(
-                          destinationAddress: session.destinationAddress,
-                          originAddress: session.originAddress,
-                          originLatLng:
-                              LatLng(session.originLat, session.originLong),
-                          destinationLatLng: LatLng(
-                              session.destinationLat, session.destinationLong),
-                        ),
-                      ),
-                    ),
-                  );
-                }
-
-                //   if (session.orderStatus != 100 || session.orderStatus != 8) {
-
-                //     // OrderDataDetail(destinationAddress: session.destinationAddress,originAddress: session.originAddress,
-                //     //   originLatLng: LatLng(session.originLat, session.originLong),destinationLatLng: LatLng(session.destinationLat, session.destinationLong
-
-                //     // Navigator.pushNamedAndRemoveUntil(
-                //     //     context, OrderPage.routeName, (route) => false);
-
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => OrderPage(
-                //           location: OrderDataDetail(
-                //             destinationAddress: session.destinationAddress,
-                //             originAddress: session.originAddress,
-                //             originLatLng:
-                //                 LatLng(session.originLat, session.originLong),
-                //             destinationLatLng: LatLng(
-                //                 session.destinationLat, session.destinationLong),
-                //           ),
-                //         ),
-                //       ),
-                //     );
-                //   } else {
-                //     Navigator.pushNamedAndRemoveUntil(
-                //         context, HomePage.routeName, (route) => false);
-                //   }
-              } else {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, LoginPage.routeName, (route) => false);
-              }
-
-              // if(session.isLoggedIn){
-              //   if(session.orderStatus=)
-              // Navigator.pushNamedAndRemoveUntil(
-              //     context, OrderPage.routeName, (route) => false);
-              // }
-              // session.isLoggedIn
-              //     ? Navigator.pushNamedAndRemoveUntil(
-              //         context, HomePage.routeName, (route) => false)
-              //     : Navigator.pushNamedAndRemoveUntil(
-              //         context, LoginPage.routeName, (route) => false);
 
               break;
           }
-        });
+        });*/
         // }
       });
     });
@@ -167,50 +72,47 @@ class _SplashPageState extends State<SplashPage> {
     appLoc = AppLocalizations.of(context)!;
     myLocale = Localizations.localeOf(context);
     sessionHelper = locator<Session>();
-
-    return SafeArea(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          double imgHeight = constraints.maxWidth * 0.5;
-          double imgWidth = imgHeight;
-          return Container(
-            height: constraints.maxHeight,
-            width: constraints.maxWidth,
-            color: Colors.white,
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment:CrossAxisAlignment.center ,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: constraints.maxHeight * 0.35),
-                  child: Image.asset(
-                    logoSplash,
-                    //height: imgHeight,
-                    width: imgWidth,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double imgHeight = constraints.maxWidth * 0.5;
+        double imgWidth = imgHeight;
+        return Container(
+          height: constraints.maxHeight,
+          width: constraints.maxWidth,
+          color: Colors.white,
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment:CrossAxisAlignment.center ,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: constraints.maxHeight * 0.35),
+                child: Image.asset(
+                  logoSplash,
+                  //height: imgHeight,
+                  width: imgWidth,
                 ),
-                // Center(
-                //   child: Hero(
-                //     tag: "taxiIcon",
-                //     child: Image.asset(
-                //       logoSplash,
-                //       //height: imgHeight,
-                //       width: imgWidth,
-                //     ),
-                //   ),
-                // ),
-                const Spacer(),
-                Image.asset(
-                  splashTaxiImage,
-                  // height: imgHeight,
-                  alignment: Alignment.bottomCenter,
-                  width: constraints.maxWidth,
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+              // Center(
+              //   child: Hero(
+              //     tag: "taxiIcon",
+              //     child: Image.asset(
+              //       logoSplash,
+              //       //height: imgHeight,
+              //       width: imgWidth,
+              //     ),
+              //   ),
+              // ),
+              const Spacer(),
+              Image.asset(
+                splashTaxiImage,
+                // height: imgHeight,
+                alignment: Alignment.bottomCenter,
+                width: constraints.maxWidth,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

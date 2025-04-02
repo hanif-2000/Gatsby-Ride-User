@@ -3,9 +3,13 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/rating_submitted_screen.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/circular_image_container.dart';
 import 'package:GetsbyRideshare/features/testing/widgets/common_text.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart' as rating;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -13,8 +17,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../../core/presentation/providers/home_provider.dart';
-import '../../providers/order_provider.dart';
-import '../../providers/submit_ratings_state.dart';
 
 class FeedBackScreen extends StatelessWidget {
   final String name;
@@ -33,23 +35,24 @@ class FeedBackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: whiteColor,
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: whiteColor,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-              ),
-              color: blackColor,
-            ),
+            // leading: IconButton(
+            //   onPressed: () {
+            //     Navigator.pop(context);
+            //   },
+            //   icon: Icon(
+            //     Icons.arrow_back,
+            //   ),
+            //   color: blackColor,
+            // ),
           ),
-          body: Consumer<OrderProvider>(
+          body: Consumer<TestSocketProvider>(
             builder: (context, provider, child) {
               return Padding(
                 padding:
@@ -127,8 +130,8 @@ class FeedBackScreen extends StatelessWidget {
                           updateOnDrag: true,
                           unratedColor: greyEFEFF4Color,
                           glow: false,
-                          initialRating: 0,
-                          minRating: 0,
+                          initialRating: provider.ratingGiven,
+                          minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: true,
                           itemCount: 5,
@@ -183,44 +186,39 @@ class FeedBackScreen extends StatelessWidget {
                           ),
                         ),
                         event: () {
-                          if (provider.ratingGiven == 10.0) {
-                            showToast(message: appLoc.pleaseGiveRating);
-                          } else {
-                            //  SubmitRatingsResponseModel data=   provider.submitRatingsReview().;
+                          showLoading();
+                          var session = locator<Session>();
+                          logMe("submit rating called");
+                          // showLoading();
+                          final formData = FormData.fromMap({
+                            "id": session.driverId,
+                            "order_id": session.orderId,
+                            "rating": provider.ratingGiven,
+                            "review": provider.commentsEditingController.text,
+                            "type": 1
+                          });
 
-                            provider
-                                .submitRatingsReview()
-                                .listen((event) async {
-                              if (event is SubmitRatingsLoading) {
-                                showLoading();
-                                log("LOADING");
-                              } else if (event is SubmitRatingsLoaded) {
-                                log("Order Status LOADED--------");
+                          log("rating data:-->> ${formData}");
 
-                                provider.commentsEditingController.clear();
+                          provider.submitRatings(formData).then((value) {
+                            session.setIsRatingGiven = true;
+                            log("Order Status LOADED--------");
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        RatingSubmittedScreen(),
-                                  ),
-                                );
+                            provider.commentsEditingController.clear();
 
-                                dismissLoading();
-                              } else if (event is SubmitRatingsFailure) {
-                                showToast(message: "submission falied");
-                                log("Update Order Status Failed.......");
-                                dismissLoading();
-                              }
-                            });
-                          }
+                            provider.updateRatingComment(
+                              rating: 1,
+                              comment: '',
+                            );
+                            dismissLoading();
 
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             RatingSubmittedScreen()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RatingSubmittedScreen(),
+                              ),
+                            );
+                          });
                         },
                         buttonHeight: 50,
                         // buttonHeight: MediaQuery.of(context)._deviceSize.height * 0.080,
@@ -240,15 +238,18 @@ class FeedBackScreen extends StatelessWidget {
                             ),
                           ),
                           event: () async {
+                            var session = locator<Session>();
+
                             var homeProvider = Provider.of<HomeProvider>(
                                 context,
                                 listen: false);
 
-                            var orderProvider = Provider.of<OrderProvider>(
-                                context,
-                                listen: false);
-                            await homeProvider.clearState();
-                            await orderProvider.clearState();
+                            // var orderProvider =
+                            //     Provider.of<LatestSocketProvider>(context,
+                            //         listen: false);
+                            session.setIsRatingGiven = true;
+                            homeProvider.clearState();
+                            await provider.clearState();
 
                             Navigator.pushNamedAndRemoveUntil(
                                 context, HomePage.routeName, (route) => false);

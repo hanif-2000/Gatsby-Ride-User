@@ -9,29 +9,20 @@ import '../../utility/image_picker_helper.dart';
 class FormProvider with ChangeNotifier {
   // initial
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController =
-      TextEditingController(text: kDebugMode ? "testdev@gmail.com" : '');
+  final TextEditingController _emailController = TextEditingController(text: kDebugMode ? "dev@gmail.com" : '');
   final TextEditingController _emailConfirmController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController(text: kDebugMode ? "Pass@123" : '');
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-  final TextEditingController _currentPasswordController =
-      TextEditingController();
-  final TextEditingController _passwordConfirmController =
-      TextEditingController();
+  final TextEditingController _passwordController = TextEditingController(text: kDebugMode ? "Pass@123" : '');
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _currentPasswordController = TextEditingController();
+  final TextEditingController _passwordConfirmController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _countryController =
-      TextEditingController(text: "Canada");
-  final TextEditingController _contactMessageController =
-      TextEditingController();
-
+  final TextEditingController _countryController = TextEditingController(text: "Canada");
+  final TextEditingController _contactMessageController = TextEditingController();
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _cardCvvController = TextEditingController();
-  final TextEditingController _accountHolderController =
-      TextEditingController();
+  final TextEditingController _accountHolderController = TextEditingController();
   final TextEditingController _expiryController = TextEditingController();
 
   // final TextEditingController _otpController = TextEditingController();
@@ -47,7 +38,7 @@ class FormProvider with ChangeNotifier {
 
   final _imagePicker = ImagePicker();
   dynamic _imagePickerError;
-  XFile? _imageFile;
+  String? _imageFile;
   bool _returnData = false;
 
   // setter
@@ -82,7 +73,7 @@ class FormProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set setImageFile(XFile? file) {
+  set setImageFile(String? file) {
     _imageFile = file;
     notifyListeners();
   }
@@ -137,8 +128,8 @@ class FormProvider with ChangeNotifier {
   bool get phoneError => _phoneError;
   bool get checkBox => _checkBox;
 
-  XFile? get imageFile => _imageFile;
-  String get imageFilePath => _imageFile?.path ?? '';
+  String? get imageFile => _imageFile;
+  String get imageFilePath => _imageFile ?? '';
   dynamic get imagePickerError => _imagePickerError;
   bool get returnData => _returnData;
 
@@ -183,15 +174,19 @@ class FormProvider with ChangeNotifier {
       context: context,
       imagePicker: _imagePicker,
       successCallBack: (file) {
+        if(file== null){
+          return;
+        }
         setImageFile = file;
-        logMe('++++++>${file?.name}:${file?.path}');
-        if (file!.path != "") {
+        logMe('++++++>file:${file}');
+        if (file != "") {
           setReturnData = true;
         }
       },
       failedCallBack: (error) {
         logMe(error);
-        showToast(message: error);
+
+        // showToast(message: error);
         setImageError = error;
         setImageFile = null;
         setReturnData = false;

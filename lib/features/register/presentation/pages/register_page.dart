@@ -17,28 +17,6 @@ class RegisterPage extends StatelessWidget {
       create: (context) => locator<RegisterProvider>(),
       child: Scaffold(
         backgroundColor: whiteColor,
-
-        // appBar: CustomAppTtitleBar(
-        //   centerTitle: true,
-        //   canBack: true,
-        //   backgroundColor: primaryColor,
-        //   title: appLoc.signup.toUpperCase(),
-        //   hideShadow: true,
-        // ),
-        // body: SafeArea(child: LayoutBuilder(
-        //   builder: (context, constraints) {
-        //     return Container(
-        //       height: constraints.maxHeight,
-        //       width: constraints.maxWidth,
-        //       color: primaryColor,
-        //       child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.start,
-        //         children: [FormRegister(constraints: constraints)],
-        //       ),
-        //     );
-        //   },
-        // )
-        // )
         body: SafeArea(
           child: ListView(
             children: [

@@ -1,6 +1,7 @@
 import 'package:GetsbyRideshare/core/data/datasources/vehicles_category_datasource.dart';
 import 'package:GetsbyRideshare/core/domain/entities/vehcles_category_list.dart';
 import 'package:GetsbyRideshare/core/domain/repositories/vehicle_catagory_repository.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../error/failure.dart';
@@ -24,6 +25,8 @@ class VehiclesCategoryRepositoryImplementation
       String time) async {
     if (!await networkInfo.isConnected) {
       return const Left(ConnectionFailure());
+    } else if (await networkInfo.isSlow) {
+      showToast(message: "Network is Slow");
     }
 
     try {

@@ -6,8 +6,9 @@ class TextInRow extends StatelessWidget {
   final String? firstText;
   final String? secondText;
   final FontWeight? secondTextweight;
+  final FontWeight? titleFontWeight;
   const TextInRow(
-      {Key? key, this.firstText, this.secondText, this.secondTextweight})
+      {Key? key, this.firstText, this.secondText, this.secondTextweight,this.titleFontWeight})
       : super(key: key);
 
   @override
@@ -17,8 +18,8 @@ class TextInRow extends StatelessWidget {
       children: [
         CommonText(
           text: firstText,
-          fontWeight: FontWeight.w500,
-          fontColor: grey7C7C7CColor,
+          fontWeight: titleFontWeight??FontWeight.w500,
+          fontColor:titleFontWeight == null? grey7C7C7CColor:blue242E42Color,
           fontFamily: "poPPinMedium",
           fontSize: 16,
         ),

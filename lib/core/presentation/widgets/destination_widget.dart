@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/static/enums.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../utility/global_function.dart';
@@ -22,7 +22,7 @@ class DestinationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isFromOrder) {
-      return Consumer<OrderProvider>(builder: (context, map, _) {
+      return Consumer<TestSocketProvider>(builder: (context, map, _) {
         if (map.originAddress == '') {
           return const SizedBox();
         } else {
@@ -89,27 +89,17 @@ class DestinationWidget extends StatelessWidget {
                     log("On CLick on Destination field");
                     checkUserSession().then((value) async {
                       if (value) {
-                        final result = await Navigator.push(
-                            context,
+                        final result = await Navigator.push(context,
                             MaterialPageRoute(
                               builder: (context) => PlacePickerPage(
                                   address: map.destinationAddress,
                                   addressType: AddressType.destination,
                                   latLng: map.destinationLatLng),
                             ));
-                        map.displayResult(result['pickUpCoordinate'],
-                            result['pickUpName'], result['addressType']);
-                        if (map.selectedCategory != null) {
-                          // map.fetchTotalPrice().listen((event) {});
-                        }
-
-                        if (result != null) {
+                        if(result != null){
+                          map.displayResult(result['pickUpCoordinate'], result['pickUpName'], result['addressType']);
                           map.toggleIsDestinationSelected();
                         }
-
-                        // log("Result" + result.toString());
-                      } else {
-                        // Navigator.pushNamed(context, LoginPage.routeName);
                       }
                     });
                   },
@@ -135,19 +125,6 @@ class DestinationWidget extends StatelessWidget {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    // SvgPicture.asset(
-                                    //   'assets/icons/destination.svg',
-                                    //   currentColor: Colors.red,
-                                    // ),
-                                    // SvgPicture.asset(
-                                    //   'assets/icons/destination_logo.svg',
-                                    //   height: 30.0,
-                                    //   width: 30.0,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-                                    // const SizedBox(
-                                    //   width: 10,
-                                    // ),
                                     Flexible(
                                       child: Text(
                                         map.destinationIsFilled

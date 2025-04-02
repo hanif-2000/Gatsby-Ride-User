@@ -7,6 +7,7 @@ import '../models/google_place_model_response.dart';
 
 abstract class GooglePlaceDataSource {
   Future<List<GooglePlaceSearchModel>> getGooglePlace(String query);
+  Future<List<GooglePlaceSearchModel>> getGooglePlaceNearBy(String query,double latitude, double longitude);
 }
 
 class GooglePlaceDataSourceImpl implements GooglePlaceDataSource {
@@ -19,10 +20,9 @@ class GooglePlaceDataSourceImpl implements GooglePlaceDataSource {
 
     if (myLocale.languageCode == 'ja') {
       path =
-          'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&language=ja&key=$GOOGLEMAPKEY';
+      'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&language=ja&components=country:ca|country:in&key=$GOOGLEMAPKEY';
     } else {
-      path =
-          'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=$GOOGLEMAPKEY';
+      path = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&components=country:ca|country:in&key=$GOOGLEMAPKEY';
     }
 
     dio.withToken();
@@ -30,6 +30,32 @@ class GooglePlaceDataSourceImpl implements GooglePlaceDataSource {
       final result = await dio.get(path);
       return GooglePlaceSearchModelResponse.fromJson(result.data).results;
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<GooglePlaceSearchModel>> getGooglePlaceNearBy(String query, double latitude, double longitude) async {
+    String pathTextSearch, pathNearbySearch;
+
+    // Text search with language handling
+    if (myLocale.languageCode == 'ja') {
+      pathTextSearch = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&language=ja&components=country:ca|country:in&key=$GOOGLEMAPKEY';
+    } else {
+      pathTextSearch = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&components=country:ca|country:in&key=$GOOGLEMAPKEY';
+    }
+    pathNearbySearch= "https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=$query&location=$latitude,$longitude&radius=50000&type=establishment&key=$GOOGLEMAPKEY";
+    dio.withToken();
+    try {
+      final nearbyResult = await dio.get(pathNearbySearch);
+      List<GooglePlaceSearchModel> nearbyPlaces = GooglePlaceSearchModelResponse.fromJson(nearbyResult.data).results;
+      if (nearbyPlaces.isEmpty) {
+        final textResult = await dio.get(pathTextSearch);
+        List<GooglePlaceSearchModel> textSearchPlaces = GooglePlaceSearchModelResponse.fromJson(textResult.data).results;
+        nearbyPlaces.addAll(textSearchPlaces.where((place) => !nearbyPlaces.any((nearbyPlace) => nearbyPlace.place_id == place.place_id)));
+      }
+      return nearbyPlaces;
+    } catch (e,s) {
+      print("$e,$s");
       rethrow;
     }
   }

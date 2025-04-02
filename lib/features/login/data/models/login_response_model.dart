@@ -13,6 +13,8 @@ class LoginResponseModel extends Equatable {
     this.message,
   });
 
+
+
   @override
   List<Object?> get props => [data, success, token, message];
 

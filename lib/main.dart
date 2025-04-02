@@ -1,3 +1,7 @@
+import 'dart:developer';
+import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
+import 'package:GetsbyRideshare/core/static/strings.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_provider.dart';
@@ -5,12 +9,15 @@ import 'package:GetsbyRideshare/features/login/presentation/providers/login_prov
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
-import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
+import 'package:GetsbyRideshare/firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/presentation/pages/splash_page.dart';
 import 'core/presentation/providers/home_provider.dart';
 import 'core/presentation/providers/place_picker_provider.dart';
@@ -21,29 +28,24 @@ import 'core/utility/firebase_helper.dart';
 import 'core/utility/helper.dart';
 import 'core/utility/injection.dart';
 import 'core/utility/notification_service.dart';
+import 'core/utility/push_notification_helper.dart';
 import 'core/utility/session_helper.dart';
 import 'features/about_us/presentation/providers/aboutus_provider.dart';
 import 'features/history/presentation/providers/history_provider.dart';
-import 'features/order/presentation/providers/order_provider.dart';
 import 'features/profile/presentation/providers/change_email_provider.dart';
 import 'features/profile/presentation/providers/change_password_provider.dart';
 import 'features/profile/presentation/providers/profile_edit_provider.dart';
 import 'features/profile/presentation/providers/profile_provider.dart';
 import 'dart:async';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Stripe.publishableKey =
-  //     'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
-
-  // getKeyHash();
-
+  await Firebase.initializeApp(name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
   try {
     await init();
-
-    locator.isReady<Session>().then((_) async {
-      await NotificationHelper().init();
+     locator.isReady<Session>().then((_) async {
       runApp(
         MultiProvider(
           providers: [
@@ -52,9 +54,6 @@ Future<void> main() async {
             ),
             ChangeNotifierProvider<HomeProvider>(
               create: (context) => locator<HomeProvider>(),
-            ),
-            ChangeNotifierProvider<OrderProvider>(
-              create: (context) => locator<OrderProvider>(),
             ),
             ChangeNotifierProvider<PlacePickerProvider>(
               create: (context) => locator<PlacePickerProvider>(),
@@ -95,63 +94,59 @@ Future<void> main() async {
             ChangeNotifierProvider<LoginProvider>(
               create: (context) => locator<LoginProvider>(),
             ),
-            // ChangeNotifierProvider<SocketProvider>(
-            //   create: (context) => locator<SocketProvider>(),
-            // ),
             ChangeNotifierProvider<PaymentProvider>(
               create: (context) => locator<PaymentProvider>(),
             ),
-            // ChangeNotifierProvider<ChatProvider>(
-            //   create: (context) => locator<ChatProvider>(),
-            // ),
-            ChangeNotifierProvider<NewSocketProvider>(
-              create: (context) => locator<NewSocketProvider>(),
+            ChangeNotifierProvider<TestSocketProvider>(
+              create: (context) => TestSocketProvider(),
+
             ),
+            ChangeNotifierProvider<LogOutProvider>(
+              create: (context) => locator<LogOutProvider>(),
+            ),
+
           ],
           builder: (context, _) => const MyApp(),
         ),
       );
-      await FirebaseHelper.init().then((_) {});
     });
   } catch (e) {
     logMe(e);
   }
 }
 
-// Platform messages are asynchronous, so we initialize in an async method.
-// Future<void> getKeyHash() async {
-//   String keyHash;
-//   // Platform messages may fail, so we use a try/catch PlatformException.
-//   // We also handle the message potentially returning null.
-//   try {
-//     keyHash = await FlutterFacebookKeyhash.getFaceBookKeyHash ??
-//         'Unknown platform KeyHash';
-//   } on PlatformException {
-//     keyHash = 'Failed to get Kay Hash.';
-//   }
-
-//   log("KEY HASH IS===============>>>>>>>>>>>>>" + keyHash);
-
-// If the widget was removed from the tree while the asynchronous platform
-// message was in flight, we want to discard the reply rather than calling
-// setState to update our non-existent appearance.
-// if (!mounted) return;
-
-// setState(() {
-//   _keyHash = keyHash;
-// });
-// }
-
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    _initStripe();
+    super.initState();
+  }
+
+
+  _initStripe()async{
+    Stripe.publishableKey = publishKeyLive;
+    Stripe.merchantIdentifier = 'merchant.getride.user.taxi';
+    Stripe.urlScheme = 'flutterstripe';
+    await Stripe.instance.applySettings();
+    await FirebaseMessaging.instance.requestPermission();
+    await NotificationService().init();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: locator<GlobalKey<NavigatorState>>(),
       title: 'GatsbyRideShare',
       theme: ThemeData(
+        useMaterial3: false,
         colorScheme:
             ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color
                 // primary: primaryColor,
@@ -168,17 +163,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('en', 'US'),
       ],
-      // Initialize routes
       onGenerateRoute: generateRoute,
       home: const SplashPage(),
-      // home: CreateProfilePage(),
       debugShowCheckedModeBanner: false,
-
       builder: FlutterSmartDialog.init(),
     );
-
-    // return MaterialApp(
-    //   home: PaymentScreen(),
-    // );
   }
 }

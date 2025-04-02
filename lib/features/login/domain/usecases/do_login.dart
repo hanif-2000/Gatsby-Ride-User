@@ -20,6 +20,7 @@ abstract class LoginUseCase<Type> {
     String lastName,
     String loginType,
     String deviceType,
+    String socialId,
   );
 }
 
@@ -53,6 +54,7 @@ class DoLogin implements LoginUseCase<String> {
     String lastName,
     String loginType,
     String deviceType,
+    String socialId,
   ) async {
     final result = await repository.doLoginSocial(
       email,
@@ -60,6 +62,7 @@ class DoLogin implements LoginUseCase<String> {
       lastName,
       loginType,
       deviceType,
+      socialId,
     );
     return result.fold((l) => Left(l), (r) {
       return Right(r);

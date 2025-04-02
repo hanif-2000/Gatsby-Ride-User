@@ -1,24 +1,24 @@
-import 'dart:developer';
-
 import 'package:GetsbyRideshare/core/presentation/widgets/custom_button/custom_button_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
-import 'package:GetsbyRideshare/features/order/presentation/providers/order_provider.dart';
+import 'package:GetsbyRideshare/core/static/enums.dart';
+import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/presentation/pages/home_page/home_page.dart';
 import '../../../../core/presentation/providers/home_provider.dart';
-import '../../../../core/static/order_status.dart';
-import '../../../../core/utility/helper.dart';
-import '../providers/update_status_order_state.dart';
 
 class ButtonCancelOrder extends StatelessWidget {
   const ButtonCancelOrder({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
-    return Consumer<OrderProvider>(builder: (context, provider, _) {
+    return Consumer2(builder: (context, TestSocketProvider orderProvider,
+        TestSocketProvider socketProvider, _) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 8),
         child: SizedBox(
@@ -94,52 +94,83 @@ class ButtonCancelOrder extends StatelessWidget {
                           context: context,
                           size: _deviceSize,
                           onConfirm: () async {
-                            provider.updateCanceledBy(isDriver: false);
-                            provider
-                                .submitStatusOrder(Order.cancel)
-                                .listen((event) async {
-                              if (event is UpdateStatusOrderLoading) {
-                                showLoading();
-                                log("Order Status LOADING");
-                              } else if (event is UpdateStatusOrderLoaded) {
-                                log("Order Status LOADED--------");
+                            var session = locator<Session>();
 
+                            session.setIsRunningOrder = false;
+                            session.setOrderStatus = 8;
+                            session.setSearchingTime = 180;
+
+                            showLoading();
+
+                            socketProvider
+                                .cancelRideByCustomer()
+                                .then((value) async {
+                              session.setSearchingTime = 180;
+                              if (value) {
                                 var homeProvider = Provider.of<HomeProvider>(
                                     context,
                                     listen: false);
-                                await homeProvider.clearState();
+                                 homeProvider.clearState();
                                 dismissLoading();
+                                //**---------CREATE RIDE REQUEST AGAIN */
 
-                                log("order status code is:--->> ${provider.session.orderStatus}");
-
-                                provider.session.setOrderStatus = 100;
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
                                   HomePage.routeName,
                                   (route) => false,
                                 );
-
-//Show dialog for order canceled
-                                // showDialog(
-                                //   barrierDismissible: false,
-                                //   context: context,
-                                //   builder: (context) {
-                                //     return CustomSimpleDialog(
-                                //         text: appLoc.orderCanceled,
-                                //         onTap: () {
-                                //           Navigator.pushNamedAndRemoveUntil(
-                                //             context,
-                                //             HomePage.routeName,
-                                //             (route) => false,
-                                //           );
-                                //         });
-                                //   },
-                                // );
-                              } else if (event is UpdateStatusOrderFailure) {
-                                log("Update Order Status Failed.......");
+                              } else {
                                 dismissLoading();
+                                showToast(message: "Something went wrong");
                               }
                             });
+
+                            // orderProvider.updateCanceledBy(isDriver: false);
+                            // orderProvider
+                            //     .submitStatusOrder(Order.cancel)
+                            //     .listen((event) async {
+                            //   if (event is UpdateStatusOrderLoading) {
+                            //     showLoading();
+                            //     log("Order Status LOADING");
+                            //   } else if (event is UpdateStatusOrderLoaded) {
+                            //     log("Order Status LOADED--------");
+
+                            //     var homeProvider = Provider.of<HomeProvider>(
+                            //         context,
+                            //         listen: false);
+                            //     await homeProvider.clearState();
+                            //     dismissLoading();
+
+                            //     log("order status code is:--->> ${orderProvider.session.orderStatus}");
+
+                            //     orderProvider.session.setOrderStatus = 100;
+                            //     Navigator.pushNamedAndRemoveUntil(
+                            //       context,
+                            //       HomePage.routeName,
+                            //       (route) => false,
+                            //     );
+
+//Show dialog for order canceled
+                            // showDialog(
+                            //   barrierDismissible: false,
+                            //   context: context,
+                            //   builder: (context) {
+                            //     return CustomSimpleDialog(
+                            //         text: appLoc.orderCanceled,
+                            //         onTap: () {
+                            //           Navigator.pushNamedAndRemoveUntil(
+                            //             context,
+                            //             HomePage.routeName,
+                            //             (route) => false,
+                            //           );
+                            //         });
+                            //   },
+                            // );
+                            // } else if (event is UpdateStatusOrderFailure) {
+                            //   log("Update Order Status Failed.......");
+                            //   dismissLoading();
+                            // }
+                            // });
                           },
                         );
                       });

@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import 'package:lottie/lottie.dart';
@@ -12,6 +14,8 @@ import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../../core/utility/duration_helper.dart';
+import '../../../../../core/utility/dynamic_toasstring_helper.dart';
 import '../../../../../core/utility/injection.dart';
 import '../../../../../core/utility/session_helper.dart';
 import '../../../../testing/widgets/common_text.dart';
@@ -29,37 +33,52 @@ class PaymentScreen extends StatefulWidget {
   final int paymentMode;
   final String orderId;
   final String driverId;
-  final dynamic grandTotal;
   final String vehicleCategory;
   final dynamic pendingAmount;
   final dynamic newTotal;
 
   final dynamic extraDistancePrice;
-  // final dynamic extraMinPrice;
-  final dynamic extraDistance;
-  // final dynamic extraTime;
-  final String distance;
+  final dynamic actualDistancePrice;
 
-  const PaymentScreen({
-    Key? key,
-    required this.name,
-    required this.img,
-    required this.carModal,
-    required this.carNo,
-    required this.totalPrice,
-    required this.paymentMode,
-    required this.orderId,
-    required this.driverId,
-    required this.extraDistance,
-    // required this.extraTime,
-    required this.extraDistancePrice,
-    // required this.extraMinPrice,
-    required this.grandTotal,
-    required this.vehicleCategory,
-    required this.distance,
-    this.pendingAmount,
-    this.newTotal,
-  }) : super(key: key);
+  final dynamic extraTimePrice;
+  final dynamic extraDistance;
+  final dynamic extraTime;
+  final String distance;
+  final dynamic pricePerMin;
+  final dynamic pricePerKm;
+  final dynamic techFee;
+  final dynamic baseFare;
+  final dynamic minimumFare;
+  final dynamic timeTaken;
+  final dynamic distanceTravelled;
+
+  const PaymentScreen(
+      {Key? key,
+      required this.name,
+      required this.img,
+      required this.carModal,
+      required this.carNo,
+      required this.totalPrice,
+      required this.paymentMode,
+      required this.orderId,
+      required this.driverId,
+      required this.extraDistance,
+      required this.extraTime,
+      required this.extraDistancePrice,
+      required this.extraTimePrice,
+      required this.actualDistancePrice,
+      required this.vehicleCategory,
+      required this.distance,
+      required this.pricePerKm,
+      required this.pricePerMin,
+      this.pendingAmount,
+      this.newTotal,
+      this.baseFare,
+      this.minimumFare,
+      this.techFee,
+      this.distanceTravelled,
+      this.timeTaken})
+      : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -71,6 +90,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
   var sessionToken = locator<Session>().sessionToken;
 
   bool isPaymentSuccess = false;
+
+  var session = locator<Session>();
+
 
   updatePaymentSuccess() {
     setState(() {
@@ -90,6 +112,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   TextEditingController tipsTextEditingController =
       TextEditingController(text: "0.0");
 
+
   var _paymentItems = [
     PaymentItem(
       label: 'Total',
@@ -100,110 +123,103 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   TextEditingController textEditingController = TextEditingController();
 
-  var pkToken =
-      "pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U";
-
-  Future<void> onGooglePayResult(paymentResult) async {
-    // final response = await fetchPaymentIntentClientSecret();
-    // final clientSecret = response['clientSecret'];
-    // final token = paymentResult['paymentMethodData']['tokenizationData']['token'];
-    // final tokenJson = Map.castFrom(json.decode(token));
-
-    // final params = PaymentMethodParams.cardFromToken(
-    //   token: tokenJson['id'],
-    // );
-    // // Confirm Google pay payment method
-    // await Stripe.instance.confirmPayment(
-    //   clientSecret,
-    //   params,
-    // );-
-  }
-  //   debugPrint(paymentResult.toString());
-  // }
 
   void onApplePayResult(paymentResult) async {
-    final token =
-        await stripe.Stripe.instance.createApplePayToken(paymentResult);
-    log("-->>> Token id is <<<<-----" + token.id);
+   try{
+     final token = await stripe.Stripe.instance.createApplePayToken(paymentResult);
+     log("-->>> Token id is <<<<-----" + token.id);
 
-    var body = {
-      'tip': tipsTextEditingController.text,
-      'token': token.id,
-      'order_id': int.parse(widget.orderId),
-      "driver_id": int.parse(widget.driverId),
-      "amount": totalAmountToPay
-    };
+     var body = {
+       'tip': tipsTextEditingController.text,
+       'token': token.id,
+       'order_id': int.parse(widget.orderId),
+       "driver_id": int.parse(widget.driverId),
+       "amount": totalAmountToPay
+     };
 
-    log("apple card body is-->>  " + body.toString());
+     log("apple card body is-->>  " + body.toString());
 
-    var response = await dio.post(
-      'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
-      data: body,
-      options: Options(headers: {"Authorization": "Bearer $sessionToken"}),
-    );
+     var response = await dio.post(
+       '${BASE_URL}api/webservice/driver/payment',
+       data: body,
+       options: Options(headers: {"Authorization": "Bearer $sessionToken"}),
+     );
 
-    if (response.data["success"] == 1) {
-      updatePaymentSuccess();
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Ride Payment Status "),
-          content: const Text("Payment successfull"),
-          actions: [
-            CustomButton(
-                isRounded: true,
-                text: "Ok",
-                event: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FeedBackScreen(
-                        name: widget.name,
-                        img: widget.img,
-                        carModal: widget.carModal,
-                        carNo: widget.carNo,
-                      ),
-                    ),
-                  );
-                },
-                bgColor: black080808Color)
-          ],
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Payment unsuccessfull"),
-          content: Text(response.data["message"]),
-        ),
-      );
-    }
-    log(paymentResult.toString());
+     if (response.data["success"] == 1||kDebugMode) {
+       updatePaymentSuccess();
+       showDialog(
+         context: context,
+         builder: (ctx) => AlertDialog(
+           title: const Text("Ride Payment Status "),
+           content: const Text("Payment completed successfully"),
+           actions: [
+             CustomButton(
+                 isRounded: true,
+                 text: "Ok",
+                 event: () {
+                   session.setIsPaymentDone = true;
+                   Navigator.push(
+                     context,
+                     MaterialPageRoute(
+                       builder: (context) => FeedBackScreen(
+                         name: widget.name,
+                         img: widget.img,
+                         carModal: widget.carModal,
+                         carNo: widget.carNo,
+                       ),
+                     ),
+                   );
+                 },
+                 bgColor: black080808Color)
+           ],
+         ),
+       );
+     } else {
+       showDialog(
+         context: context,
+         builder: (ctx) => AlertDialog(
+           title: const Text("Payment unsuccessfully"),
+           content: Text(response.data["message"]),
+         ),
+       );
+     }
+     log(paymentResult.toString());
+   }catch(e, s){
+     log("$e, $s",name: "STRIPE LOG");
+     showToast(message: e.toString());
+   }
   }
 
   @override
   void initState() {
     super.initState();
-    _googlePayConfigFuture =
-        PaymentConfiguration.fromAsset('default_google_pay_config.json');
-
-    var cardNumber =
-        Provider.of<PaymentProvider>(context, listen: false).selectedCardNumber;
-
+    _googlePayConfigFuture = PaymentConfiguration.fromAsset('default_google_pay_config.json');
+    var cardNumber = Provider.of<PaymentProvider>(context, listen: false).selectedCardNumber;
     log("selected card number is :$cardNumber");
-
+    totalAmountToPay = widget.newTotal;
+    _getTotalAmount();
     setState(() {
-      totalAmountToPay = widget.newTotal;
     });
   }
 
+  void _getTotalAmount()async{
+    _paymentItems.clear();
+    _paymentItems.add(PaymentItem(
+      label: 'Total',
+      amount: '${totalAmountToPay}',
+      status: PaymentItemStatus.final_price,
+    ));
+  }
+
   var dio = Dio();
+
   @override
   Widget build(BuildContext context) {
     log("total amount to pay:-->> ${widget.totalPrice}");
     log("total amount to pay:-->> ${totalAmountToPay}");
     log("new amount to pay:-->> ${widget.newTotal}");
+    log("vehicle category is :-->> ${widget.vehicleCategory}");
+    log("actual distance priceis :-->> ${widget.actualDistancePrice}");
 
     var _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -242,104 +258,126 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 child: Column(
                   children: [
                     TextInRow(
-                      firstText: 'Distance',
-                      secondText: "${widget.distance} Km",
+                      firstText: 'Total Distance',
+                      secondText:
+                          "${double.parse(widget.distanceTravelled.toString()).toStringAsFixed(2)} Km",
                     ),
                     Divider(
                       color: whiteAccentColor,
                     ),
-                    TextInRow(
-                      firstText: 'Estimated Amount',
-                      secondText: r'CA$ ' + widget.totalPrice.toString(),
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
-
-                    TextInRow(
-                      firstText: 'Extra Distance',
-                      // secondText: widget.extraDistance + " Km",
-                      secondText: "0" + " Km",
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
-                    TextInRow(
-                      firstText: widget.vehicleCategory == "2"
-                          ? r"Extra Distance Price 1.65 /km"
-                          : r"Extra Distance Price 1.30 /km",
-                      // secondText: r'$' + widget.extraDistancePrice,
-                      secondText: r'CA$ ' + "0",
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
-
-                    TextInRow(
-                      firstText: 'Actual Amount',
-                      secondText: 'CA\$ ' + widget.grandTotal.toString(),
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
-                    TextInRow(
-                      firstText: 'Pending Amount',
-                      // secondText: widget.extraDistance + " Km",
-                      secondText: "CA\$" + " ${widget.pendingAmount}",
-                    ),
-                    Divider(
-                      color: whiteAccentColor,
-                    ),
-
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
                     // TextInRow(
-                    //   firstText: 'Extra Time',
-                    //   secondText: widget.extraTime.toString() + ' Min',
+                    //   firstText: 'Extra Distance',
+                    //   // secondText: widget.extraDistance + " Km",
+                    //   secondText: widget.extraDistance.toString() + " Km",
                     // ),
                     // Divider(
                     //   color: whiteAccentColor,
                     // ),
-                    // TextInRow(
-                    //   firstText: widget.vehicleCategory == "2"
-                    //       ? r"Extra Time Price 0.35$CA/Min"
-                    //       : r"Extra Time Price 0.30$CA/Min",
-                    //   secondText: r'$' + widget.extraMinPrice,
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
-
-                    // TextInRow(
-                    //   secondTextweight: FontWeight.w700,
-                    //   firstText: 'Total Distance',
-                    //   secondText: r'$' +
-                    //       ((double.parse(widget.distance)) +
-                    //               (double.parse(widget.extraDistance)))
-                    //           .toStringAsFixed(3)
-                    //           .toString(),
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
-                    // TextInRow(
-                    //   firstText: 'Service Price',
-                    //   secondText: r'$0.00',
-                    // ),
-                    // Divider(
-                    //   color: whiteAccentColor,
-                    // ),
+                    TextInRow(
+                      firstText: "Per Km Price ",
+                      secondText:
+                          r'CA$ ' + convertToFixedTwoDecimal(widget.pricePerKm),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: "Total Distance Price ",
+                      secondText: r'CA$ ' +
+                          convertToFixedTwoDecimal(widget.actualDistancePrice),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                        firstText: 'Total Time Taken',
+                        secondText: formatDuration(double.parse(widget.timeTaken.toString()).toInt()),
+                        ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                /*    TextInRow(
+                        firstText: 'Extra Time',
+                        // secondText: widget.extraDistance + " Km",
+                        secondText: extraTimeTaken
+                        //  (widget.extraTime == '')
+                        //     ? "0 Min"
+                        //     : "${(int.parse(widget.extraTime)) / 60}" + " min",
+                        ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),*/
+                    TextInRow(
+                      firstText: "Per Minute Price",
+                      secondText: ((widget.pricePerMin != null) ||
+                              (widget.pricePerMin != '') ||
+                              (widget.pricePerMin != '0'))
+                          ? r'CA$ ' +
+                              convertToFixedTwoDecimal(widget.pricePerMin)
+                          : r'CA$ 0',
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: "Total Time Price",
+                      secondText: ((widget.extraTimePrice != null) ||
+                              (widget.extraTimePrice != '') ||
+                              (widget.extraTimePrice != '0'))
+                          ? r'CA$ ' +
+                              convertToFixedTwoDecimal(widget.extraTimePrice)
+                          : r'CA$ 0',
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: 'Minimum Fare',
+                      secondText: 'CA\$ ' +
+                          convertToFixedTwoDecimal(widget.minimumFare),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: 'Tech Fee',
+                      secondText:
+                          'CA\$ ' + convertToFixedTwoDecimal(widget.techFee),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      firstText: 'Base Fare',
+                      secondText:
+                          'CA\$ ' + convertToFixedTwoDecimal(widget.baseFare),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
                     TextInRow(
                       secondTextweight: FontWeight.w700,
+                      titleFontWeight: FontWeight.w700,
                       firstText: 'Grand Total',
-                      secondText: r'CA$ ' + widget.newTotal,
+                      secondText:
+                          r'CA$ ' + convertToFixedTwoDecimal(widget.newTotal),
+                    ),
+                    Divider(
+                      color: whiteAccentColor,
+                    ),
+                    TextInRow(
+                      secondTextweight: FontWeight.w700,
+                      titleFontWeight: FontWeight.w700,
+                      firstText: 'Pending Amount',
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: "CA\$ " +
+                          convertToFixedTwoDecimal(widget.pendingAmount),
                     ),
                   ],
                 ),
               ),
 
-              widget.paymentMode != 1
+              widget.paymentMode.toString() != "1"
                   ? Padding(
                       padding: EdgeInsets.symmetric(
                           vertical: _deviceSize.height * .02),
@@ -369,7 +407,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                             ),
                           ),
-
                           Container(
                             height: 30,
                             width: _deviceSize.width * .3,
@@ -424,17 +461,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ],
                             ),
                           ),
-
-                          // Container(
-                          //   padding: EdgeInsets.zero,
-                          //   width: _deviceSize.width * .3,
-                          //   child: CustomTextField(
-
-                          //     placeholder: '0.0',
-                          //     controller: tipsTextEditingController,
-                          //     fieldValidator: null,
-                          //   ),
-                          // )
                         ],
                       ),
                     )
@@ -444,49 +470,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
               TextInRow(
                 firstText: 'Total amount to Pay',
-                secondText: "CA\$ ${totalAmountToPay} ",
+                secondText:
+                    "CA\$ ${convertToFixedTwoDecimal(totalAmountToPay)} ",
               ),
-              Padding(
-                padding:
-                    EdgeInsets.symmetric(vertical: _deviceSize.height * .02),
-                child: Text(
-                  "Payment Through",
-                  style: TextStyle(
-                    fontFamily: "poPPinMedium",
-                    fontSize: 13.0,
-                    color: grey7D7979Color,
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  widget.paymentMode == 1
-                      ? SvgPicture.asset('assets/icons/cash.svg')
-                      : widget.paymentMode == 2
-                          ? SvgPicture.asset('assets/icons/card.svg')
-                          : widget.paymentMode == 3
-                              ? SvgPicture.asset('assets/icons/google.svg')
-                              : SvgPicture.asset('assets/icons/apple.svg'),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    widget.paymentMode == 1
-                        ? "Cash"
-                        : widget.paymentMode == 2
-                            ? "Credit Card"
-                            : widget.paymentMode == 3
-                                ? "Google Pay"
-                                : "Apple Pay",
-                    style: TextStyle(
-                      fontFamily: "poPPinRegular",
-                      fontSize: 16.0,
-                      color: grey7D7979Color,
-                    ),
-                  )
-                ],
-              ),
-
               widget.paymentMode == 2
                   ? CustomButton(
                       borderRadius: 50.0,
@@ -529,7 +515,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         'Content-Type':
                                             'application/x-www-form-urlencoded',
                                         'Authorization':
-                                            'Bearer pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U',
+                                            'Bearer pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH',
                                       };
                                       try {
                                         var body = {
@@ -557,7 +543,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       listen: false)
                                                   .selectedCardExpiry
                                                   .split('/')
-                                                  .last
+                                                  .first
                                               : '10',
                                           "card[exp_year]": Provider.of<
                                                               PaymentProvider>(
@@ -571,7 +557,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       listen: false)
                                                   .selectedCardExpiry
                                                   .split('/')
-                                                  .first
+                                                  .last
                                               : '36',
                                           "card[cvc]": int.parse(
                                               textEditingController.text)
@@ -586,6 +572,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           ),
                                           data: body,
                                         );
+
+                                        log("card payment response code is:-->> ${res.statusCode}");
+                                        log("card payment response code is:-->>${res.data}");
 
                                         if (res.statusCode == 200) {
                                           log(res.data.toString());
@@ -605,9 +594,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           };
 
                                           log(body.toString());
+                                          log("session token is:-->> ${sessionToken}");
 
                                           var response = await dio.post(
-                                            'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                                            '${BASE_URL}api/webservice/driver/payment',
                                             data: body,
                                             options: Options(headers: {
                                               "Authorization":
@@ -629,6 +619,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       isRounded: true,
                                                       text: "Ok",
                                                       event: () {
+                                                        session.setIsPaymentDone =
+                                                            true;
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -663,6 +655,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                                         if (res.statusCode == 402) {
                                           dismissLoading();
+                                          Navigator.pop(context);
                                           log("card details incorrect");
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(const SnackBar(
@@ -688,41 +681,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             );
                           },
                         );
-
-                        // var body = {
-                        //   "card[number]":
-                        //       Provider.of<PaymentProvider>(context, listen: false)
-                        //           .selectedCardNumber,
-                        //   "card[exp_month]":
-                        //       Provider.of<PaymentProvider>(context, listen: false)
-                        //           .selectedCardExpiry
-                        //           .split('/')
-                        //           .first,
-                        //   "card[exp_year]":
-                        //       Provider.of<PaymentProvider>(context, listen: false)
-                        //           .selectedCardExpiry
-                        //           .split('/')
-                        //           .last,
-                        //   "card[cvc]": 123
-                        // };
-
-                        // var res = await dio.post(
-                        //     'https://api.stripe.com/v1/tokens',
-                        //     data: body,
-                        //     options: Options(
-                        //         headers: {"Authorization": "Bearer $pkToken"}));
-
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => FeedBackScreen(
-                        //       name: widget.name,
-                        //       img: widget.img,
-                        //       carModal: widget.carModal,
-                        //       carNo: widget.carNo,
-                        //     ),
-                        //   ),
-                        // );
                       },
                       bgColor: grey606060Color,
                     )
@@ -730,73 +688,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
               // Spacer(),
               SizedBox(
-                height: _deviceSize.height * .1,
+                height: _deviceSize.height * .05,
               ),
 
-              widget.paymentMode == 1
+              widget.paymentMode.toString() == "1"
                   ? CustomButton(
                       borderRadius: 50.0,
                       text: "Pay With Cash",
                       isRounded: true,
                       event: () async {
-                        // var headers = {
-                        //   'Content-Type': 'application/x-www-form-urlencoded',
-                        //   'Authorization':
-                        //       'Bearer pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U',
-                        // };
-                        // var data = {
-                        //   'card[number]': '4242424242424242',
-                        //   'card[exp_month]': '5',
-                        //   'card[exp_year]': '25',
-                        //   'card[cvc]': '123'
-                        // };
-                        // var response = await dio.request(
-                        //   'https://api.stripe.com/v1/tokens',
-                        //   options: Options(
-                        //     method: 'POST',
-                        //     headers: headers,
-                        //   ),
-                        //   data: data,
-                        // );
-
-                        // if (response.statusCode == 200) {
-                        //   print(json.encode(response.data));
-                        // } else {
-                        //   print(response.statusMessage);
-                        // }
-
-                        // try {
-                        //   dio.options.headers['content-Type'] =
-                        //       'application/x-www-form-urlencoded';
-                        //   dio.options.headers["Authorization"] = "Bearer +$pkToken";
-                        //   var body = {
-                        //     "card[number]": "4242424242424242",
-                        //     "card[exp_month]": int.parse(
-                        //         Provider.of<PaymentProvider>(context, listen: false)
-                        //             .selectedCardExpiry
-                        //             .split('/')
-                        //             .last),
-                        //     "card[exp_year]": int.parse(
-                        //         Provider.of<PaymentProvider>(context, listen: false)
-                        //             .selectedCardExpiry
-                        //             .split('/')
-                        //             .first),
-                        //     "card[cvc]": int.parse(textEditingController.text)
-                        //   };
-
-                        //   log("card token body :===>> $body");
-
-                        //   var res = await dio.post(
-                        //     'https://api.stripe.com/v1/tokens',
-                        //     data: body,
-                        //   );
-
-                        //   log(res.toString());
-                        // } catch (e) {
-                        //   log(e.toString());
-                        // }
-                        ;
-
+                        session.setIsPaymentDone = true;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -817,6 +718,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ? CustomButton(
                       text: "Give Feedback",
                       event: () {
+                        session.setIsPaymentDone = true;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -869,7 +771,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     log(body.toString());
                                     try {
                                       var response = await dio.post(
-                                        'https://php.parastechnologies.in/taxi/public/api/webservice/driver/payment',
+                                        '${BASE_URL}api/webservice/driver/payment',
                                         data: body,
                                         options: Options(headers: {
                                           "Authorization":
@@ -893,6 +795,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                   isRounded: true,
                                                   text: "Ok",
                                                   event: () {
+                                                    session.setIsPaymentDone =
+                                                        true;
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -937,28 +841,43 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           : SizedBox()
                       : const SizedBox.shrink()),
               // Example pay button configured using a string
-              (Platform.isIOS)
-                  ? widget.paymentMode != 1
-                      ? ApplePayButton(
-                          width: _deviceSize.width,
-                          height: 50,
-
-                          // paymentConfigurationAsset: 'assets/icons/car.png',
-                          paymentConfiguration:
-                              PaymentConfiguration.fromJsonString(
-                                  payment_configurations.defaultApplePay),
-                          paymentItems: _paymentItems,
-
-                          style: ApplePayButtonStyle.black,
-                          type: ApplePayButtonType.checkout,
-                          margin: const EdgeInsets.only(top: 15.0),
-                          onPaymentResult: onApplePayResult,
-                          loadingIndicator: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : SizedBox()
-                  : SizedBox(),
+              if(Platform.isIOS && widget.paymentMode != 1)...{
+                ApplePayButton(
+                  width: double.infinity, // or a fixed width if necessary
+                  height: 50,
+                  paymentConfiguration: PaymentConfiguration.fromJsonString(
+                    payment_configurations.defaultApplePay,
+                  ),
+                  paymentItems: _paymentItems,
+                  style: ApplePayButtonStyle.black, // Adjust based on app design
+                  margin: const EdgeInsets.only(top: 15.0),
+                  onPaymentResult: onApplePayResult,
+                  onPressed: () {
+                    if (_paymentItems.isEmpty) {
+                      return;
+                    }
+                  },
+                  loadingIndicator: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                SizedBox(
+                  height: _deviceSize.height * .05,
+                ),
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: blue242E42Color,)),
+                    TextInRow(
+                      secondTextweight: FontWeight.w700,
+                      titleFontWeight: FontWeight.w700,
+                      firstText: '   OR     ',
+                      // secondText: widget.extraDistance + " Km",
+                      secondText: ""
+                    ),
+                    Expanded(child: Divider(color: blue242E42Color,))
+                  ],
+                ),
+              },
               SizedBox(
                 height: _deviceSize.height * .05,
               ),
@@ -968,6 +887,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   isRounded: true,
                   text: "Pay outside the app",
                   event: () {
+                    session.setIsPaymentDone = true;
                     Navigator.push(
                       context,
                       MaterialPageRoute(

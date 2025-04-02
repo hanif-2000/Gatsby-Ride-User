@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/static/colors.dart';
-import 'package:GetsbyRideshare/core/static/styles.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/history/presentation/widgets/history_item.dart';
 import 'package:flutter/material.dart';
@@ -79,12 +78,24 @@ class _HistoryPageState extends State<HistoryPage> {
 
                       log("history data is====>>>${_data}");
                       if (_data.isEmpty) {
-                        return Center(
-                          child: Text(
-                            appLoc.thereAreNoPastOrders,
-                            style: formLabelHeaderStyle,
-                          ),
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: LottieBuilder.asset(
+                                  'assets/lottie_animation/no_data_found.json'),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .3,
+                            )
+                          ],
                         );
+                        // return Center(
+                        //   child: Text(
+                        //     appLoc.thereAreNoPastOrders,
+                        //     style: formLabelHeaderStyle,
+                        //   ),
+                        // );
                       }
                       return ListView.builder(
                           itemCount: _data.length,

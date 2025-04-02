@@ -20,8 +20,8 @@ class DioClient {
 
   Dio get dio => _dio;
 }
-String hitUrl ="";
 
+String hitUrl = "";
 
 class LoggingInterceptors extends Interceptor {
   String printObject(Object object) {
@@ -64,9 +64,10 @@ class LoggingInterceptors extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     print(
-        "<-- ${err.message} ${(err.response?.requestOptions != null ? (err.response!.requestOptions.baseUrl + err.response!.requestOptions.path) : 'URL')}" 'DioException');
-    print(
-        "${err.response != null ? err.response!.data : 'Unknown Error'}" 'DioException');
+        "<-- ${err.message} ${(err.response?.requestOptions != null ? (err.response!.requestOptions.baseUrl + err.response!.requestOptions.path) : 'URL')}"
+        'DioException');
+    print("${err.response != null ? err.response!.data : 'Unknown Error'}"
+        'DioException');
     return super.onError(err, handler);
   }
 

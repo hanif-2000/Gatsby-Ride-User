@@ -1,10 +1,8 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/utility/extension.dart';
-import 'package:GetsbyRideshare/features/order/data/models/detail_driver_response.dart';
 import 'package:GetsbyRideshare/features/order/data/models/detail_order_response_model.dart';
 import 'package:GetsbyRideshare/features/order/data/models/order_receipt_response_modal.dart';
-import 'package:GetsbyRideshare/features/order/domain/entities/driver_detail.dart';
 import 'package:GetsbyRideshare/features/order/domain/entities/order_detail.dart';
 import 'package:dio/dio.dart';
 
@@ -21,10 +19,9 @@ abstract class OrderDataSource {
   Future<UpdateStatusOrderResponseModel> updateStatusOrder(FormData formData);
   Future<SubmitRatingsResponseModel> submitRatings(FormData formData);
   Future<OrderReceiptResponseModel> orderReceipt(FormData formData);
-
   Future<GetStatusResponseModel> getStatusOrder();
   Future<OrderDetail> getDetailOrder();
-  Future<DriverDetail> getDriverDetail();
+  // Future<DriverDetail> getDriverDetail();
   Future<DriverLocationResponseModel> getDriverLocation();
   // Future<OrderPaymentResponseModal> orderPayment();
 }
@@ -105,23 +102,23 @@ class OrderDataSourceImplementation implements OrderDataSource {
     }
   }
 
-//GET Driver details while order Ride
-  @override
-  Future<DriverDetail> getDriverDetail() async {
-    final session = locator<Session>();
-    String driverId = session.driverId;
-    String url = 'api/webservice/driver-profile?id=$driverId';
-    dio.withToken();
-    try {
-      final response = await dio.get(
-        url,
-      );
-      final model = DriverDetailResponseModel.fromJson(response.data);
-      return model.data;
-    } catch (e) {
-      rethrow;
-    }
-  }
+// //GET Driver details while order Ride
+//   @override
+//   Future<DriverDetail> getDriverDetail() async {
+//     final session = locator<Session>();
+//     String driverId = session.driverId;
+//     String url = 'api/webservice/driver-profile?id=$driverId';
+//     dio.withToken();
+//     try {
+//       final response = await dio.get(
+//         url,
+//       );
+//       final model = DriverDetailResponseModel.fromJson(response.data);
+//       return model.data;
+//     } catch (e) {
+//       rethrow;
+//     }
+//   }
 
 //Get Driver Location
   @override

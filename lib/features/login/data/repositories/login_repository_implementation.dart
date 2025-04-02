@@ -37,9 +37,10 @@ class LoginRepositoryImplementation implements LoginRepository {
   Future<Either<Failure, LoginResponseModel?>> doLoginSocial(
     String email,
     String firstName,
+    String lastName,
     String loginType,
     String deviceType,
-    String lastName,
+    String socialId,
   ) async {
     try {
       final data = await dataSource.doLoginSocial(
@@ -48,6 +49,7 @@ class LoginRepositoryImplementation implements LoginRepository {
         lastName,
         loginType,
         deviceType,
+        socialId,
       );
       return Right(data);
     } on DioError catch (e) {

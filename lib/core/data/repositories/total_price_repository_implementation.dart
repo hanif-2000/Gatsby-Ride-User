@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../error/failure.dart';
 import '../../network/network_info.dart';
+import '../../utility/helper.dart';
 
 class TotalPriceRepositoryImplementation implements TotalPriceRepository {
   final TotalPriceDataSource dataSource;
@@ -20,6 +21,8 @@ class TotalPriceRepositoryImplementation implements TotalPriceRepository {
       String kategoriId, String distance, String night) async {
     if (!await networkInfo.isConnected) {
       return const Left(ConnectionFailure());
+    } else if (await networkInfo.isSlow) {
+      showToast(message: "Network is Slow");
     }
 
     try {

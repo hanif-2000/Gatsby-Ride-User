@@ -7,7 +7,6 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 import '../../../../core/error/failure.dart';
-import '../../domain/entities/driver_detail.dart';
 import '../../domain/entities/order_detail.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../datasources/order_data_source.dart';
@@ -25,7 +24,7 @@ class OrderRepositoryImplementation implements OrderRepository {
     try {
       final data = await dataSource.createOrder(formData);
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure Order repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
@@ -37,7 +36,7 @@ class OrderRepositoryImplementation implements OrderRepository {
     try {
       final data = await dataSource.updateStatusOrder(formData);
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure Update status Order repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
@@ -48,7 +47,7 @@ class OrderRepositoryImplementation implements OrderRepository {
     try {
       final data = await dataSource.getStatusOrder();
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure get status Order repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
@@ -59,22 +58,22 @@ class OrderRepositoryImplementation implements OrderRepository {
     try {
       final data = await dataSource.getDetailOrder();
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure getDetailOrder repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
   }
 
-  @override
-  Future<Either<Failure, DriverDetail>> getDriverDetail() async {
-    try {
-      final data = await dataSource.getDriverDetail();
-      return Right(data);
-    } on DioError catch (e) {
-      logMe("Failure getDriverDetail repository ${e.toString()}");
-      return Left(ServerFailure(message: e.message));
-    }
-  }
+  // @override
+  // Future<Either<Failure, DriverDetail>> getDriverDetail() async {
+  //   try {
+  //     final data = await dataSource.getDriverDetail();
+  //     return Right(data);
+  //   } on DioError catch (e) {
+  //     logMe("Failure getDriverDetail repository ${e.toString()}");
+  //     return Left(ServerFailure(message: e.message));
+  //   }
+  // }
 
   @override
   Future<Either<Failure, DriverLocationResponseModel>>
@@ -82,7 +81,7 @@ class OrderRepositoryImplementation implements OrderRepository {
     try {
       final data = await dataSource.getDriverLocation();
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure getDriverLocation repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
@@ -95,7 +94,7 @@ class OrderRepositoryImplementation implements OrderRepository {
     try {
       final data = await dataSource.submitRatings(formData);
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure Submit Ratings repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
@@ -108,22 +107,9 @@ class OrderRepositoryImplementation implements OrderRepository {
     try {
       final data = await dataSource.orderReceipt(formData);
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure Submit Ratings repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));
     }
   }
-
-  // //Payment
-  // @override
-  // Future<Either<Failure, OrderPaymentResponseModal>> orderPayment(
-  //     FormData formData) async {
-  //   try {
-  //     final data = await dataSource.orderPayment(formData);
-  //     return Right(data);
-  //   } on DioError catch (e) {
-  //     logMe("Failure Submit Ratings repository ${e.toString()}");
-  //     return Left(ServerFailure(message: e.message));
-  //   }
-  // }
 }

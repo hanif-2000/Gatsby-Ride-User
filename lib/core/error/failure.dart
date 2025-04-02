@@ -16,7 +16,8 @@ class ServerFailure extends Failure {
 }
 
 class ConnectionFailure extends Failure {
-  const ConnectionFailure({String? message}) : super(message: message ?? "");
+  const ConnectionFailure({String? message})
+      : super(message: message ?? "No network");
 }
 
 class CacheFailure extends Failure {}

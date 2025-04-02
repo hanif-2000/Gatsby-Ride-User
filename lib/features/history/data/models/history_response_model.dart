@@ -2,6 +2,7 @@
 //
 //     final historyResponseModel = historyResponseModelFromJson(jsonString);
 
+import 'dart:async';
 import 'dart:convert';
 
 HistoryResponseModel historyResponseModelFromJson(String str) =>
@@ -37,22 +38,34 @@ class HistoryResponseModel {
 }
 
 class HistoryOrder {
-  String? id;
-  String? driverId;
-  String? driverName;
-  String? image;
-  String? plateNumber;
-  int? rating;
-  String? startCoordinate;
-  String? endCoordinate;
-  String? startAddress;
-  String? endAddress;
-  String? distance;
-  String? total;
+  dynamic id;
+  dynamic driverId;
+  dynamic driverName;
+  dynamic image;
+  dynamic plateNumber;
+  dynamic rating;
+  dynamic startCoordinate;
+  dynamic endCoordinate;
+  dynamic startAddress;
+  dynamic endAddress;
+  dynamic distance;
+  dynamic extraDistance;
+  dynamic extraDistancePrice;
+  dynamic extraTime;
+  dynamic extraTimePrice;
+  dynamic total;
   dynamic grandTotal;
   dynamic pendingAmount;
   dynamic newTotal;
   dynamic paymentStatus;
+  dynamic minimum_fare;
+  dynamic actual_time;
+  dynamic base_fare;
+  dynamic tech_fee;
+  dynamic price_km;
+  dynamic price_min;
+  dynamic price_per_min;
+
 
   DateTime orderTime;
   dynamic tip;
@@ -81,6 +94,10 @@ class HistoryOrder {
     required this.total,
     required this.pendingAmount,
     required this.newTotal,
+    required this.extraDistance,
+    required this.extraDistancePrice,
+    required this.extraTime,
+    required this.extraTimePrice,
     required this.orderTime,
     required this.tip,
     required this.status,
@@ -93,15 +110,29 @@ class HistoryOrder {
     required this.ratingList,
     required this.grandTotal,
     required this.paymentStatus,
+    this.minimum_fare,
+    this.actual_time,
+    this.base_fare,
+    this.tech_fee,
+    this.price_km,
+    this.price_per_min,
+    this.price_min,
   });
 
   factory HistoryOrder.fromJson(Map<String, dynamic> json) => HistoryOrder(
         id: json["id"] ?? '',
         driverId: json["driver_id"] ?? "",
+        actual_time: json["actual_time"] ?? 0.0,
+        minimum_fare: json["minimum_fare"] ?? 0.0,
+         tech_fee: json["tech_fee"] ?? 0.0,
+        base_fare: json["base_fare"] ?? 0.0,
         driverName: json["driver_name"] ?? "",
         image: json["image"] ?? '',
         plateNumber: json["plate_number"] ?? '',
+        price_min: json["price_min"] ?? '',
         rating: json["rating"] ?? 0,
+       price_km: json["price_km"] ?? 0,
+      price_per_min: json["price_per_min"] ?? 0,
         tip: json["tip"],
         startCoordinate: json["start_coordinate"] ?? '',
         endCoordinate: json["end_coordinate"] ?? "",
@@ -115,6 +146,24 @@ class HistoryOrder {
         orderTime: DateTime.parse(json["order_time"]),
         status: json["status"] ?? 0,
         paymentStatus: json["payment_status"],
+        extraDistance:
+            ((json["extra_distance"] != null) || (json["extra_distance"] != ''))
+                ? json["extra_distance"]
+                : '0',
+        extraDistancePrice: ((json["extra_distance_price"] != null) ||
+                (json["extra_distance_price"] != ''))
+            ? json["extra_distance_price"]
+            : '0',
+        extraTime: ((json["extra_time"] != null) || (json["extra_time"] != ''))
+            ? json["extra_time"]
+            : '0',
+        extraTimePrice: ((json["extra_time_price"] != null) ||
+                (json["extra_time_price"] != ''))
+            ? json["extra_time_price"]
+            : '0',
+        // extraDistancePrice: json["extra_distance_price"],
+        // extraTime: json["extra_time"],
+        // extraTimePrice: json["extra_time_price"],
         timeSchool: json["time_school"] ?? '6',
         timeAfterSchool: json["time_after_school"] ?? '',
         paymentMethod: json["payment_method"],
@@ -136,10 +185,12 @@ class HistoryOrder {
         "rating": rating,
         "start_coordinate": startCoordinate,
         "end_coordinate": endCoordinate,
+        "price_per_min": price_per_min,
         "start_address": startAddress,
         "end_address": endAddress,
         "distance": distance,
         "total": total,
+        "price_min": price_min,
         "pendingAmount": pendingAmount,
         "newTotal": newTotal,
         "grandTotal": grandTotal,
@@ -161,6 +212,7 @@ class CategoryClass {
   int id;
   String? category;
   double? priceKm;
+  double? price_min;
   int? techFee;
   double? baseFare;
   int? distance;
@@ -186,11 +238,13 @@ class CategoryClass {
     required this.createdAt,
     required this.updatedAt,
     required this.deletedAt,
+     this.price_min,
   });
 
   factory CategoryClass.fromJson(Map<String, dynamic> json) => CategoryClass(
         id: json["id"] ?? 0,
         category: json["category"] ?? '',
+        price_min: json["price_min"] ?? '',
         priceKm: json["price_km"]?.toDouble(),
         techFee: json["tech_fee"],
         baseFare: json["base_fare"]?.toDouble(),
@@ -208,6 +262,7 @@ class CategoryClass {
         "id": id,
         "category": category,
         "price_km": priceKm,
+        "price_min": price_min,
         "tech_fee": techFee,
         "base_fare": baseFare,
         "distance": distance,
@@ -227,7 +282,7 @@ class RatingList {
   int receiverId;
   int orderId;
   String rating;
-  String? review;
+  dynamic review;
   int type;
   int status;
   DateTime createdAt;

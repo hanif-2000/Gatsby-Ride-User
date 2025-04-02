@@ -1,3 +1,5 @@
+import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/data/datasources/contactus_data_source.dart';
 import 'package:GetsbyRideshare/features/contact_us/data/repositories/contactus_repository_implementation.dart';
 import 'package:GetsbyRideshare/features/contact_us/domain/repositories/contactus_repository.dart';
@@ -52,13 +54,11 @@ import '../../features/order/data/datasources/order_data_source.dart';
 import '../../features/order/data/repositories/order_repository_implementation.dart';
 import '../../features/order/domain/repositories/order_repository.dart';
 import '../../features/order/domain/usecases/create_oder.dart';
-import '../../features/order/domain/usecases/get_driver_detail.dart';
 import '../../features/order/domain/usecases/get_driver_location.dart';
 import '../../features/order/domain/usecases/get_order_detail.dart';
 import '../../features/order/domain/usecases/get_receipt.dart';
 import '../../features/order/domain/usecases/get_status_order.dart';
 import '../../features/order/domain/usecases/update_status_order.dart';
-import '../../features/order/presentation/providers/order_provider.dart';
 import '../../features/profile/data/datasources/profile_data_source.dart';
 import '../../features/profile/data/repositories/create_profile_repository_implementation.dart';
 import '../../features/profile/data/repositories/profile_repository_implementation.dart';
@@ -76,7 +76,6 @@ import '../../features/register/data/repositories/register_repository_implementa
 import '../../features/register/domain/repositories/register_repository.dart';
 import '../../features/register/domain/usecases/do_register.dart';
 import '../../features/register/presentation/providers/register_provider.dart';
-import '../../socket/new_socket_provider.dart';
 import '../data/datasources/currency_datasource.dart';
 import '../data/datasources/place_text_search_datasource.dart';
 import '../data/datasources/price_category_datasource.dart';
@@ -112,23 +111,13 @@ late bool isLoggedIn;
 final locator = GetIt.instance;
 
 Future<void> init() async {
-  //network info
-  locator.registerLazySingleton<NetworkInfo>(
-      () => NetworkInfoImplementation(locator<Connectivity>()));
-
-  //external
+  locator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImplementation(locator<Connectivity>()));
   locator.registerLazySingleton<Dio>(() => DioClient().dio);
-  locator.registerLazySingletonAsync<Session>(() async =>
-      SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
-  locator.registerLazySingletonAsync<SharedPreferences>(
-      () async => await SharedPreferences.getInstance());
-  locator.registerLazySingleton<GlobalKey<NavigatorState>>(
-      () => GlobalKey<NavigatorState>());
+  locator.registerLazySingletonAsync<Session>(() async => SessionHelper(pref: await locator.getAsync<SharedPreferences>()));
+  locator.registerLazySingletonAsync<SharedPreferences>(() async => await SharedPreferences.getInstance());
+  locator.registerLazySingleton<GlobalKey<NavigatorState>>(() => GlobalKey<NavigatorState>());
   locator.registerLazySingleton<Connectivity>(() => Connectivity());
-  locator.registerLazySingleton<GlobalKey<ScaffoldState>>(
-      () => GlobalKey<ScaffoldState>());
-
-  //repository
+  locator.registerLazySingleton<GlobalKey<ScaffoldState>>(() => GlobalKey<ScaffoldState>());
   locator.registerLazySingleton<CurrencyRepository>(
     () => CurrencyRepositoryImplementation(
       dataSource: locator<CurrencyDataSource>(),
@@ -194,12 +183,6 @@ Future<void> init() async {
       dataSource: locator<OrderDataSource>(),
     ),
   );
-  //   locator.registerLazySingleton<OrderRepository>(
-  //   () => OrderRepositoryImplementation(
-  //     dataSource: locator<OrderDataSource>(),
-  //   ),
-  // );
-
   locator.registerLazySingleton<CreateProfileRepository>(
     () => CreateProfileRepositoryImplementation(
       dataSource: locator<CreateProfileDataSource>(),
@@ -223,15 +206,6 @@ Future<void> init() async {
       dataSource: locator<PaymentDataSource>(),
     ),
   );
-
-  // locator.registerLazySingleton<PaymentRepository>(
-  //   () => PaymentRepositoryImplementation(
-  //     dataSource: locator<PaymentDataSource>(),
-  //   ),
-  // );
-  // locator.registerLazySingleton<SocketProvider>(() => SocketProvider());
-
-  //datasource
   locator.registerLazySingleton<CurrencyDataSource>(
       () => CurrencyDataSourceImplementation(dio: locator<Dio>()));
   locator.registerLazySingleton<PriceCategoryDataSource>(
@@ -270,7 +244,6 @@ Future<void> init() async {
   locator.registerLazySingleton<PaymentDataSource>(
       () => PaymentDataSourceImplementation(dio: locator<Dio>()));
 
-  //usecase
   locator.registerLazySingleton<GetCurrency>(
       () => GetCurrency(locator<CurrencyRepository>()));
   locator.registerLazySingleton<GetPriceCategory>(
@@ -319,9 +292,6 @@ Future<void> init() async {
 
   locator.registerLazySingleton<SubmitRatings>(
       () => SubmitRatings(repository: locator<OrderRepository>()));
-
-  locator.registerLazySingleton<GetDriverDetail>(
-      () => GetDriverDetail(repository: locator<OrderRepository>()));
   locator.registerLazySingleton<GetDriverLocation>(
       () => GetDriverLocation(repository: locator<OrderRepository>()));
   locator.registerLazySingleton<CreateProfile>(
@@ -335,12 +305,7 @@ Future<void> init() async {
   locator.registerLazySingleton<PaymentCard>(
       () => PaymentCard(repository: locator<PaymentRepository>()));
 
-  //   locator.registerLazySingleton<DoCardList>(
-  // () => DoCardList(repository: locator<CardListRepository>()));
-
-  /**             providers             **/
-  locator.registerFactory(
-    () => SplashProvider(getCurrency: locator<GetCurrency>()),
+  locator.registerFactory(() => SplashProvider(),
   );
   locator.registerFactory(
     () => HomeProvider(
@@ -350,17 +315,6 @@ Future<void> init() async {
       getVehicleCatagory: locator<GetVehiclesCategory>(),
     ),
   );
-  locator.registerFactory(
-    () => OrderProvider(
-        updateStatusOrder: locator<UpdateStatusOrder>(),
-        getDriverDetail: locator<GetDriverDetail>(),
-        getDriverLocation: locator<GetDriverLocation>(),
-        getOrderDetail: locator<GetOrderDetail>(),
-        getStatusOrder: locator<GetStatusOrder>(),
-        submitRatings: locator<SubmitRatings>(),
-        orderReceipt: locator<GetOrderReceipt>()),
-  );
-
   locator.registerFactory<PlacePickerProvider>(
       () => PlacePickerProvider(getGooglePlace: locator<GetGooglePlace>()));
   locator.registerFactory<LoginProvider>(() => LoginProvider(
@@ -383,6 +337,7 @@ Future<void> init() async {
   );
   locator.registerFactory<ProfileEditProvider>(
       () => ProfileEditProvider(updateProfile: locator()));
+
   locator.registerFactory<ChangeEmailProvider>(
       () => ChangeEmailProvider(updateEmail: locator()));
   locator.registerFactory<ChangePasswordProvider>(
@@ -399,8 +354,5 @@ Future<void> init() async {
       () => ContactusProvider(doContactus: locator()));
   locator.registerFactory<PaymentProvider>(
       () => PaymentProvider(paymentCard: locator()));
-
-  // locator.registerFactory<SocketProvider>(() => SocketProvider());
-  locator.registerFactory<NewSocketProvider>(() => NewSocketProvider());
-  // locator.registerFactory<ChatProvider>(() => ChatProvider());
+  locator.registerFactory<LogOutProvider>(() => LogOutProvider());
 }

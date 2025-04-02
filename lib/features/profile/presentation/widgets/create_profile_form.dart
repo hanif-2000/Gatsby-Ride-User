@@ -8,8 +8,8 @@ import 'package:GetsbyRideshare/features/profile/presentation/providers/create_p
 import 'package:GetsbyRideshare/features/profile/presentation/providers/create_profile_state.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_provider.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/upload_profile_image_state.dart';
-import 'package:GetsbyRideshare/socket/new_socket_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/custom_button/custom_button_widget.dart';
 import '../../../../core/utility/helper.dart';
@@ -23,7 +23,8 @@ class CreateProfileForm extends StatefulWidget {
 }
 
 class _CreateProfileFormState extends State<CreateProfileForm> {
-  var socketProvider = locator<NewSocketProvider>();
+  // var socketProvider = Provider.of<LatestSocketProvider>(
+  //     locator<GlobalKey<NavigatorState>>().currentContext!);
   //Upload profile Image
   uploadProfileImage() {
     final provider = context.read<UploadProfileImageProvider>();
@@ -81,8 +82,7 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
             final session = locator<Session>();
             session.setLoggedIn = true;
             showToast(message: appLoc.createProfileSuccessfully);
-            socketProvider.connectToSocket();
-
+            // socketProvider.connectToSocket(context);
             Navigator.pushNamedAndRemoveUntil(
                 context, HomePage.routeName, (route) => false);
           } else {
@@ -109,6 +109,10 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
               height: 40,
             ),
             CustomTextField(
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                FilteringTextInputFormatter.deny(RegExp("[0-9]")),
+              ],
               placeholder: appLoc.firstName,
               controller: Provider.of<CreateProfileProvider>(context)
                   .firstNameController,
@@ -120,6 +124,10 @@ class _CreateProfileFormState extends State<CreateProfileForm> {
               },
             ),
             CustomTextField(
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                FilteringTextInputFormatter.deny(RegExp("[0-9]")),
+              ],
               placeholder: appLoc.lastName,
               controller: Provider.of<CreateProfileProvider>(context)
                   .lastNameController,
