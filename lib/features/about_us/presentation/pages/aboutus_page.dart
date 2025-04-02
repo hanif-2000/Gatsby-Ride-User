@@ -1,7 +1,7 @@
 import 'package:GetsbyRideshare/core/static/colors.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
@@ -93,13 +93,17 @@ class _AboutUsPageState extends State<AboutUsPage> {
                         final data = (state.data as AboutUsLoaded).data;
 
                         return SingleChildScrollView(
-                            child: Html(
+                            child: HtmlWidget( data!.text ?? '',textStyle: TextStyle(fontFamily: "Yu Gothic"),),
+
+                          /*  Html(
                           data: data!.text ?? '',
                           style: {
                             'html': Style(fontFamily: "Yu Gothic"),
                             'h1': Style(textAlign: TextAlign.center)
                           },
-                        ));
+                        )*/
+
+                        );
                     }
                     return const SizedBox.shrink();
                   }),
