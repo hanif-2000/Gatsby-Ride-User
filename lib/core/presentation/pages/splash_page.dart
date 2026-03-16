@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GetsbyRideshare/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../../features/login/presentation/pages/login_page.dart';
 import '../../static/assets.dart';
@@ -21,6 +21,8 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  Timer? _splashTimer;
+
   @override
   void initState() {
 
@@ -32,7 +34,8 @@ class _SplashPageState extends State<SplashPage> {
       final splashProvider = context.read<SplashProvider>();
       splashProvider.getDeviceType();
       splashProvider.getSessionData();
-      Timer(const Duration(seconds: 3), (){
+      _splashTimer = Timer(const Duration(seconds: 3), (){
+        if (!mounted) return;
         if (session.isLoggedIn) {
           Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
         /*  if (session.orderStatus == 100 || session.orderStatus == 8) {
@@ -64,6 +67,7 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   void dispose() {
+    _splashTimer?.cancel();
     super.dispose();
   }
 

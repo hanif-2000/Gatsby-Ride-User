@@ -147,7 +147,7 @@ class CustomVehicleInfo extends StatelessWidget {
                         perkm: pricePerKM,
                         permin:pricePerMin,
                         techFee: techFee,
-                        newTotal: double.parse(newTotal!).toStringAsFixed(2),
+newTotal: (double.tryParse(newTotal?.replaceAll(',', '') ?? '0') ?? 0.0).toStringAsFixed(2),
                         pendingAmount: pendingAmount,
                         estimatedTime: time.toString(),
                         estimatedDistance: estimatedDistance.toString(),
@@ -164,7 +164,7 @@ class CustomVehicleInfo extends StatelessWidget {
                     width: 40,
                   ),
                   Text(
-                    double.parse(newTotal!).toStringAsFixed(2),
+(double.tryParse(newTotal?.replaceAll(',', '') ?? '0') ?? 0.0).toStringAsFixed(2),
                     style: const TextStyle(
                         fontFamily: 'poPPinRegular',
                         fontWeight: FontWeight.w600,

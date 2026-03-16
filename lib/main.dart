@@ -37,12 +37,12 @@ import 'features/profile/presentation/providers/change_password_provider.dart';
 import 'features/profile/presentation/providers/profile_edit_provider.dart';
 import 'features/profile/presentation/providers/profile_provider.dart';
 import 'dart:async';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GetsbyRideshare/l10n/generated/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(name: 'gatsbyRideShare', options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   try {
     await init();
      locator.isReady<Session>().then((_) async {
@@ -130,13 +130,21 @@ class _MyAppState extends State<MyApp> {
   }
 
 
-  _initStripe()async{
-    Stripe.publishableKey = publishKeyLive;
-    Stripe.merchantIdentifier = 'merchant.getride.user.taxi';
-    Stripe.urlScheme = 'flutterstripe';
-    await Stripe.instance.applySettings();
-    await FirebaseMessaging.instance.requestPermission();
-    await NotificationService().init();
+  _initStripe() async {
+    try {
+      Stripe.publishableKey = publishKeyLive;
+      Stripe.merchantIdentifier = 'merchant.getride.user.taxi';
+      Stripe.urlScheme = 'flutterstripe';
+      await Stripe.instance.applySettings();
+    } catch (e) {
+      logMe("Stripe init failed: $e");
+    }
+    try {
+      await FirebaseMessaging.instance.requestPermission();
+      await NotificationService().init();
+    } catch (e) {
+      logMe("Notification init failed: $e");
+    }
   }
 
 

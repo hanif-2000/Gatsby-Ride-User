@@ -201,7 +201,13 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                       fontSize: 15,
                     ),
                   ),
-                  image: SvgPicture.asset('assets/icons/google.svg'),
+                  image: SvgPicture.asset(
+                    'assets/icons/google.svg',
+                    width: 24,
+                    height: 24,
+                  ),
+                  borderColor: greyB8B8B8Color,
+                  bgColor: whiteColor,
                   event: () async {
                     await signInWithGoogle().then((value) {
                       if(value != null){
@@ -247,9 +253,7 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                     });
                   },
                   buttonHeight: 50,
-                  // buttonHeight: MediaQuery.of(context).size.height * 0.080,
                   isRounded: true,
-                  bgColor: greyC8C7CCColor,
                 ),
               ),
 
@@ -270,7 +274,11 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                             fontSize: 15,
                           ),
                         ),
-                        image: SvgPicture.asset('assets/icons/apple.svg'),
+                        image: SvgPicture.asset(
+                          'assets/icons/apple.svg',
+                          width: 24,
+                          height: 24,
+                        ),
                         event: () async {
                          await signInWithApple().then((value){
                            if(value != null){
@@ -304,7 +312,7 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                                    Navigator.pushNamedAndRemoveUntil(
                                        context,
                                        HomePage.routeName,
-                                           (route) => true);
+                                           (route) => false);
 
                                    logMe(
                                        "Authorization Token: ${session.sessionToken}");

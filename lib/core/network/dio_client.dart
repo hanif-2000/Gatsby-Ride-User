@@ -13,7 +13,7 @@ class DioClient {
   DioClient({String base = BASE_URL}) {
     _dio = Dio(BaseOptions(
       baseUrl: base,
-      validateStatus: (status) => (status! >= 200) && (status <= 422),
+      validateStatus: (status) => (status! >= 200) && (status < 300),
     ));
     addInterception();
   }
@@ -48,7 +48,7 @@ class LoggingInterceptors extends Interceptor {
       try {
         // print("Body: ${printObject(options.data)}");
         FormData formData = options.data as FormData;
-        print("Body:");
+        print("Body------:");
         var buffer = [];
         for (MapEntry<String, String> pair in formData.fields) {
           buffer.add('${pair.key}:${pair.value}');

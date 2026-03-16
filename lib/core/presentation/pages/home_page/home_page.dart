@@ -34,27 +34,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
-
   Future<void> retrieveOrderReceiptFromLocal() async {
     final socketProvider = context.read<TestSocketProvider>();
     String? jsonData = session.orderReceipt;
-    Map<String, dynamic> dataMap = jsonDecode(jsonData);
-
-    // Map the data to your ReceiptResponseModel
+    if (jsonData == null || jsonData.isEmpty) {
+      logMe("retrieveOrderReceiptFromLocal: no receipt data in session");
+      return;
+    }
+    Map<String, dynamic> dataMap;
+    try {
+      dataMap = jsonDecode(jsonData);
+    } catch (e) {
+      logMe("retrieveOrderReceiptFromLocal: failed to parse JSON — $e");
+      return;
+    }
     ReceiptResponseModel receipt = ReceiptResponseModel.fromJson(dataMap);
-
     socketProvider.updateReceiptResponseModel(receipt).then((value) {
       logMe("RECEIPT DATA UPDATED SUCCESS");
-
-      socketProvider
-          .fetchOrderDetails(int.parse(session.orderId))
-          .then((value) {
+      socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
         logMe(" order details are:::::::::::::: ${value}");
-
         socketProvider.updateOrderDetailsModel(data: value);
-        socketProvider
-            .fetchDriverDetails(int.parse(session.driverId))
-            .then((value) {
+        socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
           socketProvider.updateDriverDetailsModel(data: value);
           logMe(" driver details are:::::::::::::: ${value}");
         });
@@ -70,13 +70,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return difference.inSeconds;
   }
 
- FutureOr<void> checkSessionDataAndNavigate()async {
-    if(context.mounted){
+  FutureOr<void> checkSessionDataAndNavigate() async {
+    if (context.mounted) {
       final socketProvider = context.read<TestSocketProvider>();
       if (session.isRunningOrder && session.orderId.isNotEmpty) {
         socketProvider.updateBitsImage();
         final orderId = int.tryParse(session.orderId);
-        await socketProvider.fetchOrderDetails(orderId ?? 0).then((value)async {
+        await socketProvider.fetchOrderDetails(orderId ?? 0).then((value) async {
           log("order details are:  ${value.data}");
           print("order details are:  ${session.orderStatus}");
           {
@@ -85,31 +85,25 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             if (session.orderStatus.toString() == "7") {
               if (!session.isPaymentDone) {
                 retrieveOrderReceiptFromLocal().then((value) {
-                  logMe(
-                      "receipt data from session is ${socketProvider.receiptResponseModel}:");
+                  logMe("receipt data from session is ${socketProvider.receiptResponseModel}:");
                   SmartDialog.dismiss();
                   dismissLoading();
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       ReceiptScreen.routeName, (route) => false);
                 });
-                /** Navigate to receipt screen */
               } else if (!session.isRatingGiven) {
                 await socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
                   socketProvider.updateDriverDetailsModel(data: value).then((value) {
-                    logMe(" driver details are:::::::::::::: $socketProvider.driverDetailResponseModel}");
+                    logMe(" driver details are:::::::::::::: ${socketProvider.driverDetailResponseModel}");
                     SmartDialog.dismiss();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => FeedBackScreen(
-                          name: socketProvider
-                              .driverDetailResponseModel!.message.name,
-                          img: socketProvider
-                              .driverDetailResponseModel!.message.image,
-                          carModal: socketProvider
-                              .driverDetailResponseModel!.message.carModel,
-                          carNo: socketProvider
-                              .driverDetailResponseModel!.message.plateNumber,
+                          name: socketProvider.driverDetailResponseModel!.message.name,
+                          img: socketProvider.driverDetailResponseModel!.message.image,
+                          carModal: socketProvider.driverDetailResponseModel!.message.carModel,
+                          carNo: socketProvider.driverDetailResponseModel!.message.plateNumber,
                         ),
                       ),
                     );
@@ -127,78 +121,52 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               {log("searching time differnece is : -->> $value  seconds")});
 
               log("Customer searching for driver");
-
               log("order id is : " + session.orderId);
 
               await socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
                 log("order details are:  ${value.data}");
                 socketProvider.updateOrderDetailsModel(data: value);
                 dismissLoading();
-
                 Navigator.pushNamedAndRemoveUntil(
                     context, NewOrderPage.routeName, (route) => false,
                     arguments: OrderDataDetail(
-                        originAddress: socketProvider
-                            .orderDetailResponseModel!.data.startAddress,
-                        destinationAddress: socketProvider
-                            .orderDetailResponseModel!.data.endAddress,
+                        originAddress: socketProvider.orderDetailResponseModel!.data.startAddress,
+                        destinationAddress: socketProvider.orderDetailResponseModel!.data.endAddress,
                         originLatLng: LatLng(
-                            double.parse(socketProvider
-                                .orderDetailResponseModel!.data.startCoordinate
-                                .split(',')
-                                .first),
-                            double.parse(socketProvider
-                                .orderDetailResponseModel!.data.startCoordinate
-                                .split(',')
-                                .last)),
+                            double.parse(socketProvider.orderDetailResponseModel!.data.startCoordinate.split(',').first),
+                            double.parse(socketProvider.orderDetailResponseModel!.data.startCoordinate.split(',').last)),
                         destinationLatLng: LatLng(
                             double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
                             double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
               });
             } else {
-              logMe(
-                  "-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
+              logMe("-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
               await socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
                 socketProvider.updateCurrentOrderStatus(val: int.parse(value.data.orderStatus.toString()));
-
                 session.setDriverId = value.data.driverId.toString();
-
                 if (value.data.orderStatus.toString() == "8") {
                   session.setIsPaymentDone = true;
                   session.setIsRunningOrder = false;
                   session.setIsPaymentDone = true;
-
                   showToast(message: "Previous Ride is Canceled");
                 } else {
                   logMe(" order details are:::::::::::::: ${value}");
-
                   socketProvider.updateOrderDetailsModel(data: value);
-
-                  socketProvider
-                      .fetchDriverDetails(int.parse(session.driverId))
-                      .then((value) {
+                  socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
                     socketProvider.updateDriverDetailsModel(data: value);
                     logMe(" driver details are::::::::::::::---- ${value}");
                     SmartDialog.dismiss();
-
                     Navigator.pushNamedAndRemoveUntil(
                         context, NewOrderPage.routeName, (route) => false,
                         arguments: OrderDataDetail(
-                            originAddress: socketProvider
-                                .orderDetailResponseModel!.data.startAddress,
-                            destinationAddress: socketProvider
-                                .orderDetailResponseModel!.data.endAddress,
+                            originAddress: socketProvider.orderDetailResponseModel!.data.startAddress,
+                            destinationAddress: socketProvider.orderDetailResponseModel!.data.endAddress,
                             originLatLng: LatLng(
-                                double.parse(socketProvider
-                                    .orderDetailResponseModel!.data.startCoordinate
-                                    .split(',')
-                                    .first),
-                                double.parse(socketProvider
-                                    .orderDetailResponseModel!.data.startCoordinate
-                                    .split(',')
-                                    .last)),
-                            destinationLatLng:
-                            LatLng(double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first), double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
+                                double.parse(socketProvider.orderDetailResponseModel!.data.startCoordinate.split(',').first),
+                                double.parse(socketProvider.orderDetailResponseModel!.data.startCoordinate.split(',').last)),
+                            destinationLatLng: LatLng(
+                                double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').first),
+                                double.parse(socketProvider.orderDetailResponseModel!.data.endCoordinate.split(',').last))));
                   });
                 }
               });
@@ -260,7 +228,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             log("Getting location function finish.");
                           });
                           await checkSessionDataAndNavigate();
-
                         },
                         polylines: map.polylines,
                         markers: Set<Marker>.of(map.markers.values),
@@ -283,7 +250,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             onTap: () async {
                               await map.setCurrentLocation().then((value) {
                                 log("Getting location function finish.");
-                               // SmartDialog.dismiss();
                               });
                             },
                             child: Container(
@@ -295,13 +261,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.2),
-                                    // Light shadow color
                                     spreadRadius: 2,
-                                    // Spread of the shadow
                                     blurRadius: 5,
-                                    // Softness of the shadow
-                                    offset: Offset(0,
-                                        3), // Shadow position (horizontal, vertical)
+                                    offset: Offset(0, 3),
                                   ),
                                 ],
                               ),
@@ -309,7 +271,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                 Icons.location_searching_outlined,
                                 color: Colors.black,
                                 shadows: <Shadow>[Shadow(color: Colors.grey, blurRadius: 5.0)],
-
                               ),
                             ),
                           ),
@@ -323,16 +284,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                         Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                           decoration: BoxDecoration(
                               color: whiteColor,
                               borderRadius: BorderRadius.circular(10)),
                           child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 6.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 6.0),
                             child: Container(
                                 child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -357,8 +315,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                 ),
                                 Expanded(
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       OriginWidget(
                                         deviceWidth: _deviceSize.width,
@@ -383,9 +340,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             )),
                           ),
                         ),
-
-                        /** Below is the new UI*/
-
                         const Spacer(),
                         Visibility(
                           visible: map.isDestinationSelected,
@@ -402,25 +356,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               ),
                               event: () async {
                                 log("origin" + map.originLatLng.toString());
-                                log("destination" +
-                                    map.destinationLatLng.toString());
+                                log("destination" + map.destinationLatLng.toString());
                                 log(map.distance.toString());
-
                                 log(map.originIsFilled.toString());
                                 log(map.destinationIsFilled.toString());
 
-                                if (!map.originIsFilled ||
-                                    !map.destinationIsFilled) {
+                                if (!map.originIsFilled || !map.destinationIsFilled) {
                                   showToast(message: "Select Address");
                                 } else {
-                                  map.fetchVehicleCategory().listen((event) {
-                                    log("========>>>>>>" + event.toString());
-                                  });
-
+                                  // ✅ FIX: fetchVehicleCategory() call REMOVED
+                                  // Data is already loaded via _fetchVehicleCategoryWithActualValues()
+                                  // in home_provider.dart after setActualDistance() completes
                                   showModalBottomSheet(
                                     barrierColor: Colors.transparent,
                                     useRootNavigator: true,
-                                    // isScrollControlled: true,
                                     constraints: BoxConstraints(
                                         maxHeight: _deviceSize.height * .45),
                                     shape: RoundedRectangleBorder(

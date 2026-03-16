@@ -9,6 +9,7 @@ abstract class GetPriceCategoryUseCase<Type> {
     String distance,
     String nightService,
     String coordinates,
+    String estimatedTime,
   );
 }
 
@@ -22,8 +23,9 @@ class GetPriceCategory implements GetPriceCategoryUseCase {
     String distance,
     String nightService,
     String coordinates,
+    String estimatedTime,
   ) async {
     return await repository.getPriceCategoryList(
-        distance, nightService, coordinates);
+        distance, nightService, coordinates, estimatedTime);
   }
 }

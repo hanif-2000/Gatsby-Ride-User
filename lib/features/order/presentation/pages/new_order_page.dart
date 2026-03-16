@@ -34,6 +34,7 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
   final session = locator<Session>();
   final homeProvider = locator<HomeProvider>();
   Timer? _timer;
+  bool _hasNavigatedToReceipt = false;
 
   @override
   void initState() {
@@ -206,6 +207,18 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
               _timer?.cancel();
               Navigator.pop(context, true);
               log("order status is: ${newSocketProvider.currentOrderStatus}");
+            }
+
+            if ((newSocketProvider.currentOrderStatus == 7 || session.orderStatus == 7) &&
+                !_hasNavigatedToReceipt &&
+                !session.isPaymentDone) {
+              _hasNavigatedToReceipt = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, ReceiptScreen.routeName, (route) => false);
+                }
+              });
             }
             return Stack(
               children: <Widget>[

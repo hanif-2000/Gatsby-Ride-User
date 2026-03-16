@@ -10,6 +10,7 @@ abstract class PriceCategoryDataSource {
     String distance,
     String nightService,
     String coordinates,
+    String estimatedTime,
   );
 }
 
@@ -23,24 +24,25 @@ class PriceCategoryDataSourceImplementation implements PriceCategoryDataSource {
     String distance,
     String nightService,
     String coordinates,
+    String estimatedTime,
   ) async {
     FormData data = FormData.fromMap({
       'distance': distance,
       'night_service': nightService,
-      'coordinates': coordinates
+      'coordinates': coordinates,
+      'estimated_time': estimatedTime,
     });
     String url = 'api/webservice/priceCategory';
 
     try {
-      // final response = await dio.post(path,data: formdata);
       final response = await dio.post(
         url,
         data: data,
       );
 
       log("bikbbu-price" + response.data.toString());
+      log("=== PRICE CATEGORY PARSING ===");
       return PriceCategoryListModel.fromJson(response.data);
-      // return VehicleCategoryModal.fromJson(response.data);
     } catch (e) {
       log("PriceCategoryListModel detail Error PriceCategoryDataSourceImplementation : ",
           error: e);

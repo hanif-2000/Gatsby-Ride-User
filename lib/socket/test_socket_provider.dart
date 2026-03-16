@@ -47,10 +47,11 @@ class TestSocketProvider extends ChangeNotifier {
   bool isLoading = false;
   bool isConnected = false;
 
+  // ✅ FIX 1: Duplicate listener rokne ke liye flag
+  bool _isListening = false;
+
   List<ChatModel> get chatMessageList => _chatMessagesList;
-  late BitmapDescriptor destinationMarker,
-      initialMarker,
-      driverMarker;
+  late BitmapDescriptor destinationMarker, initialMarker, driverMarker;
   String originAddress = 'Pickup Address';
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   List<LatLng> polylineCoordinates = [];
@@ -100,16 +101,13 @@ class TestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //   // // Update rating and comments
   updateRatingComment({double? rating, String? comment}) {
     ratingGiven = rating!;
     commentGiven = comment!;
     notifyListeners();
   }
 
-  updateBearing({
-    val,
-  }) {
+  updateBearing({val}) {
     bearing = val;
     notifyListeners();
   }
@@ -145,16 +143,13 @@ class TestSocketProvider extends ChangeNotifier {
 
   updateIsWithDriver({required bool val}) {
     log("update is with driver called");
-
     isWithDriver = val;
     notifyListeners();
-    // }
   }
 
   updateCurrentOrderStatus({required int val}) {
     currentOrderStatus = val;
     session.setOrderStatus = val;
-
     notifyListeners();
   }
 
@@ -166,23 +161,19 @@ class TestSocketProvider extends ChangeNotifier {
   addSingleChat(ChatModel chat) {
     log("my single chat data is:-->> $chat");
     print("my single chat data is:-->> $chat");
-
     _chatMessagesList.insert(0, chat);
     notifyListeners();
   }
 
   updateUnReadMessages({required int count}) {
     unreadMessageCount = count;
-
     log("un read message count is:-->> $unreadMessageCount");
     print("un read message count is:-->> $unreadMessageCount");
-
     notifyListeners();
   }
 
   /** update driver details model */
-  Future<void> updateDriverDetailsModel(
-      {required DriverDetailResponseModel data}) async {
+  Future<void> updateDriverDetailsModel({required DriverDetailResponseModel data}) async {
     driverDetailResponseModel = data;
     notifyListeners();
   }
@@ -195,52 +186,62 @@ class TestSocketProvider extends ChangeNotifier {
     isWithDriver = false;
     originIsFilled = false;
     originAddress = 'Pickup Address';
-   // originLatLng =
     notifyListeners();
   }
 
   // -----> function to connect the socket <--------- //
   Future<void> connectToSocket() async {
-    if(isConnected){
+    if (isConnected) {
       return;
     }
     print("-------->CONNECTING TO SOCKET <--------");
     print('Socket Url===>>>> "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}""');
-    _socket = WebSocket(Uri.parse("ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
+    _socket = WebSocket(Uri.parse(
+        "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
 
     _socket!.connection.listen((event) {
       print("connection state is :-->. ${_socket!.connection.state}");
       if (event is Connected) {
-        isConnected= true;
+        isConnected = true;
         print("************ Connected ***********");
         listenSocketRequests();
       } else if (event is Disconnected) {
-        isConnected= false;
+        isConnected = false;
+        // ✅ FIX 2: Disconnect hone par _isListening reset karo
+        _isListening = false;
         print("************ Disconnected ***********");
-        // showToast(message: "disconnected");
       } else if (event is Connecting) {
-        isConnected= false;
+        isConnected = false;
         print("************ CONNECTING ***********");
-        // showToast(message: "CONNECTING");
       } else if (event is Reconnecting) {
-        isConnected= false;
+        isConnected = false;
         print("************ Reconnecting ***********");
       } else if (event is Reconnected) {
-        isConnected= true;
+        isConnected = true;
+        // ✅ FIX 3: Reconnect par bhi _isListening reset karo taaki naya listener lage
+        _isListening = false;
         listenSocketRequests();
         print("************ Reconnected ***********");
       } else {
-        isConnected= false;
+        isConnected = false;
         print("************ else $event ***********");
       }
     });
   }
 
+  // ✅ FIX 4: Duplicate listener check
   void listenSocketRequests() {
+    if (_isListening) {
+      print("************ Already listening, skipping duplicate ***********");
+      return;
+    }
+    _isListening = true;
+
     print("************ listen to socket called");
     _socket!.messages.listen((event) async {
       final response = jsonDecode(event);
       print('----- Event Messages ===============\n  ${response.toString()} \n ===============');
+
       // <----------- Checking When request come ---------> //
       if (response['type'] == 'CustomerBookRequest') {
         bookingDataModel = BookingDataModel.fromJson(response);
@@ -249,26 +250,25 @@ class TestSocketProvider extends ChangeNotifier {
           session.setOrderId = bookingDataModel!.data.id;
           final oriLatLng = LatLng(
             double.tryParse(bookingDataModel!.data.startCoordinate.split(",").first) ?? 0.0,
-            double.tryParse(bookingDataModel!.data.startCoordinate.split(",").last) ?? 0.0,);
+            double.tryParse(bookingDataModel!.data.startCoordinate.split(",").last) ?? 0.0,
+          );
           final destLatLng = LatLng(
             double.tryParse(bookingDataModel!.data.endCoordinate.split(",").first) ?? 0.0,
             double.tryParse(bookingDataModel!.data.endCoordinate.split(",").last) ?? 0.0,
           );
           updateOriginAndDestinationLatLong(origin: oriLatLng, destination: destLatLng);
         }
-
         notifyListeners();
       }
 
       /// *************** DRIVER UPDATED LAT LONG ********* -------
-
       else if (response['type'] == 'UpdatedLatLong') {
         log(response['type']);
         log("****************************      DRIVER UPDATED THE LAT LNG *************************");
         driverUpdatedPositionModel = DriverUpdatedPositionModel.fromJson(response);
-        updateDriverLatLng(driverLtLng: LatLng(driverUpdatedPositionModel!.latitude, driverUpdatedPositionModel!.latitude));
+        updateDriverLatLng(driverLtLng: LatLng(driverUpdatedPositionModel!.latitude, driverUpdatedPositionModel!.longitude));
         session.setDriverLatLong = "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
-        updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!,);
+        updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!);
         if (driverUpdatedPositionModel!.status == 3 || driverUpdatedPositionModel!.status == 5) {
           updateIsWithDriver(val: true);
           isWithDriver = true;
@@ -285,7 +285,6 @@ class TestSocketProvider extends ChangeNotifier {
       }
 
       /// *************** RIDE ACCEPTED ********* -------
-
       else if (response['type'] == 'Accept') {
         log("****************************      DRIVER ACCEPTED THE RIDE *************************");
 
@@ -354,15 +353,11 @@ class TestSocketProvider extends ChangeNotifier {
         session.setOrderStatus = 2;
         currentOrderStatus = 2;
         updateCurrentOrderStatus(val: 2);
-
         session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: false);
         isWithDriver = false;
-
         session.setIsRunningOrder = true;
-
         currentOrderStatus = 2;
-
         notifyListeners();
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
@@ -370,7 +365,6 @@ class TestSocketProvider extends ChangeNotifier {
       /// *************** REACH TO CUSTOMER LOCATION  ********* -------
       else if (response['type'] == 'reachLocation') {
         log("****************************      DRIVER REACH YOUR LOCATION *************************");
-
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
         session.setOrderStatus = 3;
@@ -378,34 +372,27 @@ class TestSocketProvider extends ChangeNotifier {
         updateIsWithDriver(val: true);
         isWithDriver = true;
         session.setIsRunningOrder = true;
-
         currentOrderStatus = 3;
         updateCurrentOrderStatus(val: 3);
-
         notifyListeners();
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
       /// *************** START TRIP  ********* -------
-
       else if (response['type'] == 'startTrip') {
         log("****************************      DRIVER START THE RIDE *************************");
-
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
         session.setOrderStatus = 5;
         session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: true);
         isWithDriver = true;
-
         currentOrderStatus = 5;
-
         notifyListeners();
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
       /// *************** END TRIP  ********* -------
-
       else if (response['type'] == 'endTrip') {
         log("****************************      DRIVER END THE RIDE *************************");
         session.setOrderStatus = 7;
@@ -421,7 +408,6 @@ class TestSocketProvider extends ChangeNotifier {
       }
 
       /// *************** DRIVER CANCEL THE RIDE  ********* -------
-
       else if (response['type'] == 'Reject') {
         log("****************************      DRIVER CANCEL THE RIDE *************************");
 
@@ -441,16 +427,15 @@ class TestSocketProvider extends ChangeNotifier {
                 canPop: false,
                 child: AlertDialog(
                   title: Text("Ride is Cancelled by the Driver"),
-                  // content: new Text("sdf"),
                   actions: [
-                    // usually buttons at the bottom of the dialog
                     ElevatedButton(
                       child: Text("Find Next Driver"),
                       onPressed: () async {
                         session.setIsRunningOrder = false;
                         _homeProvider.clearState();
                         Navigator.pop(context);
-                        Navigator.pushNamedAndRemoveUntil(context, HomePage.routeName, (route) => false);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, HomePage.routeName, (route) => false);
                       },
                     ),
                   ],
@@ -469,7 +454,6 @@ class TestSocketProvider extends ChangeNotifier {
         notifyListeners();
         log("messgae type is MESSAGE LIST");
         print("messgae type is MESSAGE LIST");
-
         log('Message list data-----> ${response['data']}');
 
         if (response['data'] != null) {
@@ -480,29 +464,30 @@ class TestSocketProvider extends ChangeNotifier {
               ),
             ),
           );
-          // dismissLoading();
           log("chat data is :-->>${chatMessageList.length}");
           print("chat data is :-->>${chatMessageList.length}");
         } else {
           addChatAll([]);
-          // dismissLoading();
         }
-      }
-
-      else if (response['type'] == 'Chat') {
+      } else if (response['type'] == 'Chat') {
         addSingleChat(
           ChatModel.fromMap(
             response['data'],
           ),
         );
-
         log("chat data is :-->>${chatMessageList.length}");
-      }
-      else  if (response['type'] == 'UnreadCount') {
+      } else if (response['type'] == 'UnreadCount') {
         log("unread message count called");
-
         updateUnReadMessages(count: response['data']);
       }
+    }, onDone: () {
+      // ✅ FIX 5: Stream close hone par reset karo
+      _isListening = false;
+      print("************ Socket stream closed ***********");
+    }, onError: (error) {
+      // ✅ FIX 6: Error aane par reset karo
+      _isListening = false;
+      print("************ Socket stream error: $error ***********");
     });
   }
 
@@ -518,24 +503,23 @@ class TestSocketProvider extends ChangeNotifier {
     var latDriver = lat;
     var lngDriver = long;
 
-    // var latDriver driverLatLng.
     MarkerId markerId = const MarkerId("driver");
 
-    // creating a new MARKER
     final Marker marker = Marker(
       anchor: const Offset(0.5, 0.5),
       markerId: markerId,
       position: LatLng(latDriver, lngDriver),
       icon: driverMarker,
-      // rotation: bearing - 30,
-      // infoWindow: InfoWindow(title: "${latDriver},${lngDriver}"),
       onTap: () {},
     );
 
     markers[markerId] = marker;
     if (listenLocation && session.isRunningOrder) {
       logMe("is with driver called:-->> ${isWithDriver}");
-      if ((isWithDriver) || (currentOrderStatus == 5) || (currentOrderStatus == 7) || (currentOrderStatus == 3)) {
+      if ((isWithDriver) ||
+          (currentOrderStatus == 5) ||
+          (currentOrderStatus == 7) ||
+          (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         log("driver:- destination LatLng. $destinationLatLng");
         await setPolyLinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
@@ -556,9 +540,7 @@ class TestSocketProvider extends ChangeNotifier {
 
     if (receiptResponseModel != null) {
       logMe("save order receipt called receiptResponseModel ==== NOT NULL");
-
       session.setOrderReceipt = json.encode(receiptResponseModel!);
-      // _prefs.setString(_userDataKey, jsonEncode(_userData!.toMap()));
     }
   }
 
@@ -569,7 +551,6 @@ class TestSocketProvider extends ChangeNotifier {
         bearing: bearing,
         zoom: zoom,
       )));
-      //googleMapController.moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
     } catch (e) {
       logMe("UNABLE TO ANIMATE");
     }
@@ -578,7 +559,10 @@ class TestSocketProvider extends ChangeNotifier {
   Future<void> setPolyLinesDirection(LatLng origin, LatLng destination) async {
     log("polyline///  --Driver co:" + origin.latitude.toString() + "," + origin.longitude.toString());
     log("polyline/// destination co:" + destination.latitude.toString() + "," + destination.longitude.toString());
-    await DirectionHelper().getRouteBetweenCoordinates(origin.latitude, origin.longitude, destination.latitude, destination.longitude).then((result) {
+    await DirectionHelper()
+        .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
+            destination.latitude, destination.longitude)
+        .then((result) {
       log("Polyline results are ::::::::--------------  ${result} ------------********");
       if (result.isNotEmpty) {
         polylineCoordinates = [];
@@ -594,7 +578,7 @@ class TestSocketProvider extends ChangeNotifier {
             startCap: Cap.roundCap,
             endCap: Cap.roundCap);
 
-        polylines.clear(); // Clearing polylines is not necessary here
+        polylines.clear();
         polylines.add(polyline);
         log("Polylines are:-->> " + polylines.toString());
       }
@@ -602,8 +586,7 @@ class TestSocketProvider extends ChangeNotifier {
     });
   }
 
-//   /** Send RIDE REQUEST to Drivers **/
-
+  // ✅ FIX 7: createRideRequest mein connection check add kiya
   Future<bool> createRideRequest({
     required originLatLngs,
     required destinationLatLngs,
@@ -629,29 +612,40 @@ class TestSocketProvider extends ChangeNotifier {
         'total': total,
         'payment_method': payment_method,
       };
-      try {
-        log("connection status :-->>${_socket!.connection.state}");
-        // _socket!.connection.listen((event) {
-        // if (event is Connected) {
-        _socket!.send(json.encode(map));
-        print("UserBookDriver ===========>>> ${map.toString()}");
-        logMe(' CONNECTED:-->> Send New ride request -- > ${map.toString()}');
-        notifyListeners();
-        return true;
-      } catch (e) {
-        print(e.toString());
-        return false;
+
+      if (_socket == null) {
+        print("Socket is null! Reconnecting...");
+        await connectToSocket();
+        await Future.delayed(Duration(seconds: 2));
       }
 
-      // _socket!.send(jsonEncode(map));
+      // ✅ Connected hai to directly send karo
+      if (_socket!.connection.state is Connected) {
+        _socket!.send(json.encode(map));
+        print("UserBookDriver ===========>>> ${map.toString()}");
+        logMe('CONNECTED:-->> Send New ride request -- > ${map.toString()}');
+        notifyListeners();
+        return true;
+      } else {
+        // ✅ Connected nahi hai to wait karo phir send karo
+        print("Socket not connected, waiting for connection...");
+        await for (final state in _socket!.connection) {
+          if (state is Connected || state is Reconnected) {
+            _socket!.send(json.encode(map));
+            print("UserBookDriver sent after reconnect ===========>>> ${map.toString()}");
+            notifyListeners();
+            return true;
+          }
+        }
+        return false;
+      }
     } catch (e) {
       print('Error creating ride request: $e');
       return false;
     }
   }
 
-  //   /** -------------------*************************** CANCEL RIDE BY CUSTOMER  ******************----------------- */
-
+  // /** -------------------*************************** CANCEL RIDE BY CUSTOMER  ******************----------------- */
   Future<bool> cancelRideByCustomer() async {
     try {
       final map = {
@@ -692,10 +686,11 @@ class TestSocketProvider extends ChangeNotifier {
     }
   }
 
-//   /** Get Order Details */
+  /** Get Order Details */
   Future<OrderDetailResponseModel> fetchOrderDetails(int id) async {
     log("fetch order details called");
-    final String apiUrl = 'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
+    final String apiUrl =
+        'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
 
     try {
       log("try called : ${apiUrl}");
@@ -705,23 +700,24 @@ class TestSocketProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         dismissLoading();
         log("api/webservice/getOrder response is :${response}");
-        OrderDetailResponseModel data = OrderDetailResponseModel.fromJson(response.data);
-        updateReceiptResponseModel(ReceiptResponseModel.fromJson(response.data), addData: true);
-        session.setOrderStatus = int.parse(data.data.orderStatus.toString());
+        OrderDetailResponseModel data =
+            OrderDetailResponseModel.fromJson(response.data);
+        updateReceiptResponseModel(ReceiptResponseModel.fromJson(response.data),
+            addData: true);
+        session.setOrderStatus =
+            int.parse(data.data.orderStatus.toString());
 
         return data;
       } else {
-        // If the server did not return a 200 OK response, throw an exception.
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      // Handle network or decoding errors
       print('Error: $e');
       throw Exception('Failed to load data');
     }
   }
 
-//   /** Get DRIVER Details */
+  /** Get DRIVER Details */
   Future<DriverDetailResponseModel> fetchDriverDetails(int id) async {
     showLoading();
 
@@ -742,21 +738,17 @@ class TestSocketProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         dismissLoading();
         log("driver details are:-->> ${response.data}");
-        // If the server returns a 200 OK response, parse the JSON
         DriverDetailResponseModel data =
             DriverDetailResponseModel.fromJson(response.data);
         return data;
       } else {
-        // If the server did not return a 200 OK response, throw an exception.
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      // Handle network or decoding errors
       print('Error: $e');
       throw Exception('Failed to load data');
     }
   }
-
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -779,7 +771,6 @@ class TestSocketProvider extends ChangeNotifier {
 
     if (type == 'Join') {
       isLoading = true;
-
       markMessageAsRead(receiverId: receiverId);
     } else if (type == 'unJoin') {
       updateUnReadMessages(count: 0);
@@ -801,9 +792,7 @@ class TestSocketProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void markMessageAsRead({
-    int? receiverId,
-  }) {
+  void markMessageAsRead({int? receiverId}) {
     log("mark message as read  called");
     print("mark message as read  called");
 
@@ -821,7 +810,6 @@ class TestSocketProvider extends ChangeNotifier {
 
     print("mark as read $map");
     _socket!.send(jsonEncode(map));
-    // updateUnreadCount("0");
   }
 
   void clearChatList() {
@@ -835,7 +823,6 @@ class TestSocketProvider extends ChangeNotifier {
     int? receiverId,
     String? messageType = 'Text',
   }) {
-    // final chatProvider = locator<ChatProvider>();
     final map = {
       "userID": session.userId,
       "serviceType": "Chat",
@@ -913,7 +900,8 @@ class TestSocketProvider extends ChangeNotifier {
   }
 
   void callDriver() async {
-    final call = Uri.parse('tel:${orderDetailResponseModel?.data.phone ?? '9876543210'}');
+    final call =
+        Uri.parse('tel:${orderDetailResponseModel?.data.phone ?? '9876543210'}');
     launchUrl(call);
   }
 
@@ -925,7 +913,8 @@ class TestSocketProvider extends ChangeNotifier {
       final Marker markerOrigin = Marker(
         anchor: const Offset(0.5, 0.5),
         markerId: markerIdOrigin,
-        position: LatLng(orderDataDetail.originLatLng.latitude, orderDataDetail.originLatLng.longitude),
+        position: LatLng(orderDataDetail.originLatLng.latitude,
+            orderDataDetail.originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),
         icon: initialMarker,
         onTap: () {},
@@ -933,14 +922,17 @@ class TestSocketProvider extends ChangeNotifier {
       final Marker markerDestination = Marker(
         anchor: const Offset(0.5, 0.5),
         markerId: markerIdDestination,
-        position: LatLng(orderDataDetail.destinationLatLng.latitude, orderDataDetail.destinationLatLng.longitude),
+        position: LatLng(orderDataDetail.destinationLatLng.latitude,
+            orderDataDetail.destinationLatLng.longitude),
         infoWindow: const InfoWindow(title: "destination"),
         icon: destinationMarker,
         onTap: () {},
       );
 
-      googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(orderDataDetail.originLatLng.latitude, orderDataDetail.originLatLng.longitude),
+      googleMapController.animateCamera(
+          CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(orderDataDetail.originLatLng.latitude,
+            orderDataDetail.originLatLng.longitude),
         zoom: zoom,
       )));
 
@@ -958,7 +950,7 @@ class TestSocketProvider extends ChangeNotifier {
 
   Future<void> updateBitsImage() async {
     await getBytesFromAsset(initialPickUpIcon, 80).then((value) async {
-      initialMarker =BitmapDescriptor.bytes(value);
+      initialMarker = BitmapDescriptor.bytes(value);
     });
     await getBytesFromAsset(destinationIcon, 40).then((value) async {
       destinationMarker = BitmapDescriptor.bytes(value);
@@ -968,7 +960,8 @@ class TestSocketProvider extends ChangeNotifier {
     });
   }
 
-  void updateOriginAndDestinationLatLong({required LatLng origin, required LatLng destination}) {
+  void updateOriginAndDestinationLatLong(
+      {required LatLng origin, required LatLng destination}) {
     originLatLng = origin;
     destinationLatLng = destination;
     notifyListeners();

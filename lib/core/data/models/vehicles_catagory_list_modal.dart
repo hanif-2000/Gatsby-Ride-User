@@ -14,7 +14,7 @@ class VehiclesCategoryListModel extends VehiclesCategoryList {
 
   factory VehiclesCategoryListModel.fromJson(Map<String, dynamic> json) =>
       VehiclesCategoryListModel(
-        success: json['success'],
+success: json['success'] == 1,
         data: List<VehiclesCategoryModel>.from(
           json['data'].map(
             (x) => VehiclesCategoryModel.fromJson(x),

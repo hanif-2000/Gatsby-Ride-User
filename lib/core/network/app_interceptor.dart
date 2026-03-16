@@ -82,8 +82,8 @@ class AppInterceptor extends Interceptor {
       // final session = locator<Session>();
       // session.setLoggedIn = false;
     }
-    if (statusCode == HttpStatus.notFound) {
-      print("====not found called==>>");
+    if (statusCode == HttpStatus.unauthorized || statusCode == 401) {
+      print("====unauthorized called==>>");
       dismissLoading();
       await sessionLogOut().then(
         (_) => Navigator.pushNamedAndRemoveUntil(
@@ -92,21 +92,6 @@ class AppInterceptor extends Interceptor {
           (route) => false,
         ),
       );
-      // final session = locator<Session>();
-      // session.setLoggedIn = false;
-    }
-    if (statusCode == 404) {
-      print("====not found called==>>");
-      dismissLoading();
-      await sessionLogOut().then(
-        (_) => Navigator.pushNamedAndRemoveUntil(
-          locator<GlobalKey<NavigatorState>>().currentContext!,
-          LoginPage.routeName,
-          (route) => false,
-        ),
-      );
-      // final session = locator<Session>();
-      // session.setLoggedIn = false;
     }
 
     if (statusCode == HttpStatus.forbidden) {}

@@ -7,6 +7,7 @@ const String defaultCurrency = "\$";
 // const String BASE_URL = 'https://[your_domain]/';
 // const String BASE_URL = 'https://api.gatsbyrideshare.com/';
 const String BASE_URL = 'https://api.gatsbyrideshare.com/';
+// const String BASE_URL = 'http://192.168.1.17:8000/';
 
 // const String BASE_URL_PHOTO = 'https://php.parastechnologies.in/taxi/public';
 const String BASE_URL_PHOTO =

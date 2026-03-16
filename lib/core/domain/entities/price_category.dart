@@ -4,6 +4,13 @@ class PriceCategory extends Equatable {
   final num categoryId, priceKm, priceMin, seat;
   final String categoryCar;
   final dynamic pendingAmount, newTotal, estimatedDistance, estimatedTime;
+  final num totalFare;
+  final num baseFare;
+  final num techFee;
+  final num pricePerMin;
+  final num nightService;
+  final String? image;
+  final String isAvailable;
 
   const PriceCategory({
     required this.categoryId,
@@ -15,9 +22,14 @@ class PriceCategory extends Equatable {
     required this.newTotal,
     required this.estimatedDistance,
     required this.estimatedTime,
+    required this.totalFare,
+    required this.baseFare,
+    required this.techFee,
+    required this.pricePerMin,
+    required this.nightService,
+    this.image,
+    this.isAvailable = 'yes',
   });
-
-  toJson() {}
 
   @override
   bool? get stringify => true;
@@ -33,5 +45,12 @@ class PriceCategory extends Equatable {
         newTotal,
         estimatedDistance,
         estimatedTime,
+        totalFare,
+        baseFare,
+        techFee,
+        pricePerMin,
+        nightService,
+        image,
+        isAvailable,
       ];
 }

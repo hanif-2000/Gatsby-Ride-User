@@ -13,12 +13,13 @@ class PriceCategoryListModel extends PriceCategoryList {
 
   factory PriceCategoryListModel.fromJson(Map<String, dynamic> json) =>
       PriceCategoryListModel(
-          success: json['success'],
+          success: json['success'] == 1 || json['success'] == true,  // ✅ FIX: int 1 → bool true
           data: List<PriceCategoryModel>.from(
               json['data'].map((x) => PriceCategoryModel.fromJson(x))));
+
   @override
   Map<String, dynamic> toJson() => {
         'success': success,
-        'data': data.map((e) => e.toJson()),
+        'data': data.map((e) => (e as PriceCategoryModel).toJson()).toList(),
       };
 }

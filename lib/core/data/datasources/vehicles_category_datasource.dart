@@ -30,7 +30,7 @@ class VehicleCategoryDataSourceImplementation
   //     'night_service': nightService,
   //     'coordinates': coordinates
   //   });
-  //   String url = 'api/webservice/priceCategory';
+  //   String url = '';
 
   //   try {
   //     // final response = await dio.post(path,data: formdata);
@@ -69,26 +69,34 @@ class VehicleCategoryDataSourceImplementation
 
     log("fetch vehicle catagory list body:---> ${data.fields} ");
 
-    try {
-      // final response = await dio.post(path,data: formdata);
-      final response = await dio.post(
-        url,
-        data: data,
-      );
+try {
+  final response = await dio.post(
+    url,
+    data: data,
+  );
 
-      log("bikbbu" + response.data.toString());
-      log("Complete Url=========>>>>>>" + response.realUri.path);
+  log("bikbbu" + response.data.toString());
+  log("Complete Url=========>>>>>>" + response.realUri.path);
 
-      if ((response.data["success"] == 0) &&
-          (response.data["message"] == "Account Suspended")) {
-        showToast(message: 'Account Suspended');
-      }
-      return VehiclesCategoryListModel.fromJson(response.data);
-      // return VehicleCategoryModal.fromJson(response.data);
-    } catch (e) {
-      log("VehiclesCategoryListModel detail Error VehiclesDataSourceImplementation : ",
-          error: e);
-      rethrow;
-    }
+  if ((response.data["success"] == 0) &&
+      (response.data["message"] == "Account Suspended")) {
+    showToast(message: 'Account Suspended');
+  }
+  
+  // ADD THIS DEBUG LOG
+  log("=== PARSING START ===");
+  final result = VehiclesCategoryListModel.fromJson(response.data);
+  log("=== PARSING SUCCESS === Items: ${result.data.length}");
+  for(var item in result.data) {
+    log("Parsed vehicle: ${item.categoryCar}");
+  }
+  return result;
+  
+} catch (e, stackTrace) {  // ADD stackTrace
+  log("VehiclesCategoryListModel detail Error VehiclesDataSourceImplementation : ",
+      error: e);
+  log("Stack trace: $stackTrace");  // ADD THIS
+  rethrow;
+}
   }
 }

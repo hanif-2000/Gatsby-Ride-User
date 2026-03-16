@@ -8,5 +8,6 @@ abstract class PriceCategoryRepository {
     String distance,
     String nightService,
     String coordinates,
+    String estimatedTime,
   );
 }

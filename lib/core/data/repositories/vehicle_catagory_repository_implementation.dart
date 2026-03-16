@@ -33,7 +33,9 @@ class VehiclesCategoryRepositoryImplementation
       final response = await dataSource.getVehiclesCategoryList(
           distance, nightService, coordinates, time);
       return Right(response);
-    } catch (e) {
+    } catch (e, stackTrace){
+      print("=== REPOSITORY ERROR: $e ===");
+  print("=== STACK TRACE: $stackTrace ===");
       return const Left(ServerFailure());
     }
   }

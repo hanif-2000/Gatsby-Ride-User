@@ -20,7 +20,7 @@ class VehiclesCategoryModel extends VehiclesCategory {
     required dynamic base_fare,
     required dynamic tech_fee,
     required dynamic price_km,
-    required dynamic price_min
+    required dynamic price_min,
   }) : super(
           categoryId: id,
           categoryCar: category,
@@ -40,51 +40,50 @@ class VehiclesCategoryModel extends VehiclesCategory {
           tech_fee: tech_fee,
           base_fare: base_fare,
           price_min: price_min,
-         price_km: price_km,
-
+          price_km: price_km,
         );
 
   factory VehiclesCategoryModel.fromJson(Map<String, dynamic> json) =>
       VehiclesCategoryModel(
-        id: json['id'],
-        category: json['category'],
-        priceKm: json['price_km'],
-        minPrice: json['min_price'],
-        seat: json['seat'],
-        extraKm: json['extra_km'],
-        drivers: json['drivers'],
-        totalFare: json['total_fair'],
-        time: json['time'],
-        minKm: json['min_km'],
-        pendingAmount: json['pending_amount'],
-        newTotal: json['new_total'],
-        isAvailable: json['is_available'],
-        estimatedDistance: json['estimated_distance'],
-        estimatedTime: json['estimated_time'],
-        base_fare: json['base_fare'],
-        tech_fee: json['tech_fee'],
-        price_km: json['price_km'],
-        price_min: json['price_min'],
+        id: json['id'] ?? 0,
+        category: json['name']?.toString() ?? '',               // ✅ FIXED: was 'category', API sends 'name'
+        priceKm: json['price_km'] ?? 0,
+        minPrice: json['min_price'] ?? 0,
+        seat: json['seat']?.toString() ?? '4',
+        extraKm: json['extra_km'] ?? 0,
+        drivers: json['drivers'] ?? 0,
+        totalFare: json['price']?.toString() ?? '0',            // ✅ FIXED: was 'total', API sends 'price'
+        time: json['time'] ?? 0,
+        minKm: json['min_km'] ?? 0,
+        pendingAmount: json['pending_amount'] ?? 0,
+        newTotal: json['price']?.toString() ?? '0',             // ✅ FIXED: was 'total', API sends 'price'
+        isAvailable: json['is_available']?.toString() ?? 'yes',
+        estimatedDistance: json['estimated_distance'] ?? 0,
+        estimatedTime: json['estimated_time'] ?? 0,
+        base_fare: json['base_fare'] ?? 0,
+        tech_fee: json['tech_fee'] ?? 0,
+        price_km: json['price_km'] ?? 0,
+        price_min: json['price_min'] ?? 0,
       );
 
   @override
   Map<String, dynamic> toJson() => {
         "id": categoryId,
-        "category": categoryCar,
+        "name": categoryCar,
         "min_price": priceMin,
         "tech_fee": tech_fee,
         "base_fare": base_fare,
         "seat": seat,
         "extra_km": extraKm,
         "drivers": drivers,
-        "totalFare": totalFare,
+        "price": totalFare,
         "time": time,
-        "min_km": priceMin,
-        "newTotal": newTotal,
-        "pendingAmount": pendingAmount,
-        "isAvailable": isAvailable,
-        "estimatedTime": estimatedTime,
-        "estimatedDistance": estimatedDistance,
+        "min_km": minKm,
+        "new_total": newTotal,
+        "pending_amount": pendingAmount,
+        "is_available": isAvailable,
+        "estimated_time": estimatedTime,
+        "estimated_distance": estimatedDistance,
         "price_min": price_min,
         "price_km": price_km,
       };

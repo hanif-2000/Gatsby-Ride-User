@@ -15,12 +15,13 @@ class PriceCategoryRepositoryImplementation implements PriceCategoryRepository {
     required this.dataSource,
     required this.networkInfo,
   });
-
+//-------------------------------------**-------------------------------------**
   @override
   Future<Either<Failure, PriceCategoryList>> getPriceCategoryList(
     String distance,
     String nightService,
     String coordinates,
+    String estimatedTime,
   ) async {
     if (!await networkInfo.isConnected) {
       return const Left(ConnectionFailure());
@@ -30,7 +31,7 @@ class PriceCategoryRepositoryImplementation implements PriceCategoryRepository {
 
     try {
       final response = await dataSource.getPriceCategoryList(
-          distance, nightService, coordinates);
+          distance, nightService, coordinates, estimatedTime);
       return Right(response);
     } catch (e) {
       return const Left(ServerFailure());
