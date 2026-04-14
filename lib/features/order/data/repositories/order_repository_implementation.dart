@@ -20,10 +20,10 @@ class OrderRepositoryImplementation implements OrderRepository {
 
   @override
   Future<Either<Failure, CreateOrderResponseModel>> createOrder(
-      FormData formData) async {
+      Map<String, dynamic> data) async {
     try {
-      final data = await dataSource.createOrder(formData);
-      return Right(data);
+      final result = await dataSource.createOrder(data);
+      return Right(result);
     } on DioException catch (e) {
       logMe("Failure Order repository ${e.toString()}");
       return Left(ServerFailure(message: e.message));

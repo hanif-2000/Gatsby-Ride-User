@@ -27,9 +27,12 @@ class LoginRepositoryImplementation implements LoginRepository {
         deviceType,
       );
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure login repository ${e.toString()}");
-      return Left(ServerFailure(message: e.message));
+      final serverMessage = e.response?.data is Map
+          ? (e.response!.data['message'] as String? ?? 'Something went wrong')
+          : 'Something went wrong';
+      return Left(ServerFailure(message: serverMessage));
     }
   }
 
@@ -52,9 +55,12 @@ class LoginRepositoryImplementation implements LoginRepository {
         socialId,
       );
       return Right(data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       logMe("Failure login repository ${e.toString()}");
-      return Left(ServerFailure(message: e.message));
+      final serverMessage = e.response?.data is Map
+          ? (e.response!.data['message'] as String? ?? 'Something went wrong')
+          : 'Something went wrong';
+      return Left(ServerFailure(message: serverMessage));
     }
   }
 }

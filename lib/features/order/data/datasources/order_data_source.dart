@@ -15,7 +15,7 @@ import '../models/status_oder_response_model.dart';
 import '../models/submit_rating_response_modal.dart';
 
 abstract class OrderDataSource {
-  Future<CreateOrderResponseModel> createOrder(FormData formData);
+  Future<CreateOrderResponseModel> createOrder(Map<String, dynamic> data);
   Future<UpdateStatusOrderResponseModel> updateStatusOrder(FormData formData);
   Future<SubmitRatingsResponseModel> submitRatings(FormData formData);
   Future<OrderReceiptResponseModel> orderReceipt(FormData formData);
@@ -32,15 +32,16 @@ class OrderDataSourceImplementation implements OrderDataSource {
   OrderDataSourceImplementation({required this.dio});
 
   @override
-  Future<CreateOrderResponseModel> createOrder(FormData formData) async {
+  Future<CreateOrderResponseModel> createOrder(Map<String, dynamic> data) async {
     String url = 'api/webservice/send_order';
 
-    log(formData.fields.toString());
+    log(data.toString());
     dio.withToken();
     try {
       final response = await dio.post(
         url,
-        data: formData,
+        data: data,
+        options: Options(headers: {'content-type': 'application/json'}),
       );
       final model = CreateOrderResponseModel.fromJson(response.data);
       return model;

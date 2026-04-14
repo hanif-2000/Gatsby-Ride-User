@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import '../models/register_response_model.dart';
 
 abstract class RegisterDataSource {
-  Future<RegisterResponseModel> doRegister(FormData formData);
+  Future<RegisterResponseModel> doRegister(Map<String, dynamic> data);
 }
 
 class RegisterDataSourceImplementation implements RegisterDataSource {
@@ -16,12 +16,12 @@ class RegisterDataSourceImplementation implements RegisterDataSource {
   RegisterDataSourceImplementation({required this.dio});
 
   @override
-  Future<RegisterResponseModel> doRegister(FormData formData) async {
+  Future<RegisterResponseModel> doRegister(Map<String, dynamic> data) async {
     String url = 'api/webservice/user_register';
 
     try {
-      final response = await dio.post(url, data: formData,);
-      log("user register formdata is:-->> ${formData.fields}");
+      final response = await dio.post(url, data: data);
+      log("user register data is:-->> $data");
       final model = RegisterResponseModel.fromJson(response.data);
       final session = locator<Session>();
       if (model.token != '') {

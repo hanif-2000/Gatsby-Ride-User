@@ -27,7 +27,6 @@ class CreateProfileProvider extends FormProvider {
       'last_name': lastNameController.text,
       'phone': phoneController.text,
       'country': "Canada",
-      'image': profileImage
     });
     final result = await doCreateProfile.execute(formData);
     yield* result.fold((statusCode) async* {

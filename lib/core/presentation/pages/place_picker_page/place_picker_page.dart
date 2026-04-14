@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/static/assets.dart';
@@ -38,10 +39,17 @@ class PlacePickerPage extends StatefulWidget {
 
 class _PlacePickerPageState extends State<PlacePickerPage> {
   OverlayEntry? overlayEntry;
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   _displayOverlay(Widget overlayChild) {
@@ -120,20 +128,23 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
                             _displayOverlay(buildPredictionOverlay(data, context));
                           }
                         },
-                        onChanged: (String val) async {
+                        onChanged: (String val) {
                           dev.log("onchnaged called on search $val");
                           provider.changeValue = provider.controller.text;
                           if (provider.textFieldIsEmpty) {
                             _clearOverlay();
+                            return;
                           }
-                          dev.log("search val onchanged is -->> $val");
                           _displayOverlay(buildSearchingOverlay());
-                          await provider.fetchGooglePlaces();
-                          if (provider.state.runtimeType == PlaceAutoLoaded) {
-                            final data =
-                                (provider.state as PlaceAutoLoaded).data;
-                            _displayOverlay(buildPredictionOverlay(data, context));
-                          }
+                          _debounce?.cancel();
+                          _debounce = Timer(const Duration(milliseconds: 500), () async {
+                            await provider.fetchGooglePlaces();
+                            if (provider.state.runtimeType == PlaceAutoLoaded) {
+                              final data =
+                                  (provider.state as PlaceAutoLoaded).data;
+                              _displayOverlay(buildPredictionOverlay(data, context));
+                            }
+                          });
                         },
                       ),
                     ),

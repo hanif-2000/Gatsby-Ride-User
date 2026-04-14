@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:web_socket_client/web_socket_client.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:ui' as ui;
 import '../../core/domain/entities/order_data_detail.dart';
 import '../../core/presentation/pages/home_page/home_page.dart';
@@ -31,7 +31,7 @@ import '../../features/order/domain/entities/order_detail.dart';
 import 'package:location/location.dart' as lctn;
 
 class TestSocketProvider extends ChangeNotifier {
-  WebSocket? _socket;
+  IO.Socket? _socket;
   List<ChatModel> _chatMessagesList = [];
   BookingDataModel? bookingDataModel;
   AcceptResponseModel? acceptResponseModel;
@@ -46,6 +46,7 @@ class TestSocketProvider extends ChangeNotifier {
   String destinationAddress = "Destination";
   bool isLoading = false;
   bool isConnected = false;
+  Map<String, dynamic>? _pendingRideRequest;
 
   // ✅ FIX 1: Duplicate listener rokne ke liye flag
   bool _isListening = false;
@@ -195,41 +196,98 @@ class TestSocketProvider extends ChangeNotifier {
       return;
     }
     print("-------->CONNECTING TO SOCKET <--------");
-    print('Socket Url===>>>> "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}""');
-    _socket = WebSocket(Uri.parse(
-        "ws://3.97.35.163:8051?token=${session.chatToken}&room=0&userID=${session.userId}"));
+    print('Socket Url===>>>> "https://api.gatsbyrideshare.com" token=${session.sessionToken.isNotEmpty ? "[JWT set]" : "EMPTY"} userID=${session.userId}');
 
-    _socket!.connection.listen((event) {
-      print("connection state is :-->. ${_socket!.connection.state}");
-      if (event is Connected) {
-        isConnected = true;
-        print("************ Connected ***********");
-        listenSocketRequests();
-      } else if (event is Disconnected) {
-        isConnected = false;
-        // ✅ FIX 2: Disconnect hone par _isListening reset karo
-        _isListening = false;
-        print("************ Disconnected ***********");
-      } else if (event is Connecting) {
-        isConnected = false;
-        print("************ CONNECTING ***********");
-      } else if (event is Reconnecting) {
-        isConnected = false;
-        print("************ Reconnecting ***********");
-      } else if (event is Reconnected) {
-        isConnected = true;
-        // ✅ FIX 3: Reconnect par bhi _isListening reset karo taaki naya listener lage
-        _isListening = false;
-        listenSocketRequests();
-        print("************ Reconnected ***********");
-      } else {
-        isConnected = false;
-        print("************ else $event ***********");
+    _socket = IO.io(
+      'https://api.gatsbyrideshare.com',
+      IO.OptionBuilder()
+          .setTransports(['websocket'])
+          .setQuery({
+            'token': session.sessionToken,
+            'room': '0',
+            'userID': session.userId,
+          })
+          .setReconnectionDelay(3000)      // 3 sec baad retry
+          .setReconnectionDelayMax(15000)  // max 15 sec wait
+          .setReconnectionAttempts(10)     // 10 baar try karo
+          .disableAutoConnect()
+          .build(),
+    );
+
+    _socket!.onConnect((_) {
+      isConnected = true;
+      _isListening = false;
+      print("************ Connected ***********");
+      listenSocketRequests();
+      if (_pendingRideRequest != null) {
+        _socket!.emit('message', _pendingRideRequest);
+        print("Pending ride request sent on connect: $_pendingRideRequest");
+        _pendingRideRequest = null;
       }
     });
+
+    _socket!.onDisconnect((_) {
+      isConnected = false;
+      _isListening = false;
+      print("************ Disconnected ***********");
+    });
+
+    _socket!.onConnecting((_) {
+      isConnected = false;
+      print("************ CONNECTING ***********");
+    });
+
+    _socket!.onReconnecting((_) {
+      isConnected = false;
+      print("************ Reconnecting ***********");
+    });
+
+    _socket!.onReconnect((_) {
+      isConnected = true;
+      // Note: onConnect also fires after reconnect — let onConnect handle
+      // listenSocketRequests() and pendingRideRequest to avoid duplicates.
+      print("************ Reconnected ***********");
+
+      // Re-emit UserBookDriver if still searching (status 0) and no pending stored
+      if (session.orderStatus == 0 &&
+          session.isRunningOrder &&
+          _pendingRideRequest == null &&
+          session.orderId.isNotEmpty) {
+        final paymentStr = session.bookingPaymentMethod == 1 ? "cash" : "card";
+        final reEmitMap = {
+          'serviceType': 'UserBookDriver',
+          'UserID': session.userId,
+          'OrderID': session.orderId,
+          'vehicle_category_id': int.tryParse(session.bookingVehicleCategoryId) ?? session.bookingVehicleCategoryId,
+          'start_coordinate': '${session.originLat},${session.originLong}',
+          'end_coordinate': '${session.destinationLat},${session.destinationLong}',
+          'start_address': session.originAddress,
+          'end_address': session.destinationAddress,
+          'estimated_time': session.estimatedTime.isNotEmpty ? session.estimatedTime : "0.0",
+          'distance': session.estimatedDistance,
+          'total': session.rideTotal,
+          'payment_method': paymentStr,
+        };
+        _socket!.emit('message', reEmitMap);
+        print("UserBookDriver re-emitted after reconnect: $reEmitMap");
+      }
+    });
+
+    _socket!.onConnectError((data) {
+      isConnected = false;
+      _isListening = false;
+      print("************ Connect Error: $data ***********");
+    });
+
+    _socket!.onError((data) {
+      isConnected = false;
+      _isListening = false;
+      print("************ Socket Error: $data ***********");
+    });
+
+    _socket!.connect();
   }
 
-  // ✅ FIX 4: Duplicate listener check
   void listenSocketRequests() {
     if (_isListening) {
       print("************ Already listening, skipping duplicate ***********");
@@ -237,9 +295,16 @@ class TestSocketProvider extends ChangeNotifier {
     }
     _isListening = true;
 
+    // Remove any stale listeners from previous connections before adding new one
+    _socket!.off('message');
+
     print("************ listen to socket called");
-    _socket!.messages.listen((event) async {
-      final response = jsonDecode(event);
+    _socket!.on('message', (event) async {
+      try {
+      final response = event is String ? jsonDecode(event) : event;
+      final eventType = response['type'] ?? 'UNKNOWN';
+      print('');
+      print('🔔 ========== SOCKET EVENT: $eventType ==========');
       print('----- Event Messages ===============\n  ${response.toString()} \n ===============');
 
       // <----------- Checking When request come ---------> //
@@ -247,7 +312,10 @@ class TestSocketProvider extends ChangeNotifier {
         bookingDataModel = BookingDataModel.fromJson(response);
         print("order id is :--->> ${bookingDataModel!.data.id} and Customer Id  is:--->> ${bookingDataModel!.data.customerId}");
         if (bookingDataModel!.data.customerId == session.userId) {
-          session.setOrderId = bookingDataModel!.data.id;
+          final receivedId = bookingDataModel!.data.id?.toString() ?? '';
+          if (receivedId.isNotEmpty && receivedId != '0') {
+            session.setOrderId = receivedId;
+          }
           final oriLatLng = LatLng(
             double.tryParse(bookingDataModel!.data.startCoordinate.split(",").first) ?? 0.0,
             double.tryParse(bookingDataModel!.data.startCoordinate.split(",").last) ?? 0.0,
@@ -335,10 +403,10 @@ class TestSocketProvider extends ChangeNotifier {
 
         session.setOriginAddress = acceptResponseModel!.data.startAddress;
         session.setDestinationAddress = acceptResponseModel!.data.endAddress;
-        session.setOriginLat = double.parse(acceptResponseModel!.data.startCoordinate.split(',').first);
-        session.setOriginLong = double.parse(acceptResponseModel!.data.startCoordinate.split(',').last);
-        session.setDestinationLat = double.parse(acceptResponseModel!.data.endCoordinate.split(',').first);
-        session.setDestinationLong = double.parse(acceptResponseModel!.data.endCoordinate.split(',').last);
+        session.setOriginLat = double.tryParse(acceptResponseModel!.data.startCoordinate.split(',').first) ?? 0.0;
+        session.setOriginLong = double.tryParse(acceptResponseModel!.data.startCoordinate.split(',').last) ?? 0.0;
+        session.setDestinationLat = double.tryParse(acceptResponseModel!.data.endCoordinate.split(',').first) ?? 0.0;
+        session.setDestinationLong = double.tryParse(acceptResponseModel!.data.endCoordinate.split(',').last) ?? 0.0;
         updateIsWithDriver(val: false);
         isWithDriver = false;
         notifyListeners();
@@ -480,14 +548,10 @@ class TestSocketProvider extends ChangeNotifier {
         log("unread message count called");
         updateUnReadMessages(count: response['data']);
       }
-    }, onDone: () {
-      // ✅ FIX 5: Stream close hone par reset karo
-      _isListening = false;
-      print("************ Socket stream closed ***********");
-    }, onError: (error) {
-      // ✅ FIX 6: Error aane par reset karo
-      _isListening = false;
-      print("************ Socket stream error: $error ***********");
+      } catch (e, stack) {
+        log("⚠️ Socket message handler ERROR: $e");
+        log("⚠️ Stack: $stack");
+      }
     });
   }
 
@@ -602,6 +666,7 @@ class TestSocketProvider extends ChangeNotifier {
       final map = {
         'serviceType': 'UserBookDriver',
         'UserID': session.userId,
+        'OrderID': session.orderId,
         'vehicle_category_id': vehicleCatagory,
         'start_coordinate': originLatLngs,
         'end_coordinate': destinationLatLngs,
@@ -619,25 +684,20 @@ class TestSocketProvider extends ChangeNotifier {
         await Future.delayed(Duration(seconds: 2));
       }
 
-      // ✅ Connected hai to directly send karo
-      if (_socket!.connection.state is Connected) {
-        _socket!.send(json.encode(map));
+      // Connected hai to directly send karo
+      if (_socket!.connected) {
+        _socket!.emit('message', map);
+        _pendingRideRequest = null;
         print("UserBookDriver ===========>>> ${map.toString()}");
         logMe('CONNECTED:-->> Send New ride request -- > ${map.toString()}');
         notifyListeners();
         return true;
       } else {
-        // ✅ Connected nahi hai to wait karo phir send karo
-        print("Socket not connected, waiting for connection...");
-        await for (final state in _socket!.connection) {
-          if (state is Connected || state is Reconnected) {
-            _socket!.send(json.encode(map));
-            print("UserBookDriver sent after reconnect ===========>>> ${map.toString()}");
-            notifyListeners();
-            return true;
-          }
-        }
-        return false;
+        // Socket connected nahi — request store karo, reconnect hone pe automatically jayega
+        print("Socket not connected, storing ride request for retry on reconnect...");
+        _pendingRideRequest = map;
+        notifyListeners();
+        return true;
       }
     } catch (e) {
       print('Error creating ride request: $e');
@@ -648,6 +708,7 @@ class TestSocketProvider extends ChangeNotifier {
   // /** -------------------*************************** CANCEL RIDE BY CUSTOMER  ******************----------------- */
   Future<bool> cancelRideByCustomer() async {
     try {
+      _pendingRideRequest = null;
       final map = {
         'serviceType': 'CancelByUser',
         'UserID': session.userId,
@@ -656,7 +717,7 @@ class TestSocketProvider extends ChangeNotifier {
       logMe('cancelRideByCustomer -- > ${map.toString()}');
       print('cancelRideByCustomer -- > ${map.toString()}');
 
-      _socket!.send(jsonEncode(map));
+      _socket!.emit('message', map);
       session.setSearchingTime = 30;
 
       return true;
@@ -677,17 +738,17 @@ class TestSocketProvider extends ChangeNotifier {
       "UserType": 'Customer'
     };
 
-    if (_socket!.connection.state is Connected) {
+    if (_socket!.connected) {
       log("socket is connected ==>>unread count ");
       log("get total count:" + map.toString());
-      _socket!.send(jsonEncode(map));
+      _socket!.emit('message', map);
     } else {
-      log("socket is connected ${_socket!.connection.state}");
+      log("socket not connected: ${_socket!.id}");
     }
   }
 
   /** Get Order Details */
-  Future<OrderDetailResponseModel> fetchOrderDetails(int id) async {
+  Future<OrderDetailResponseModel?> fetchOrderDetails(int id) async {
     log("fetch order details called");
     final String apiUrl =
         'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
@@ -713,7 +774,7 @@ class TestSocketProvider extends ChangeNotifier {
       }
     } catch (e) {
       print('Error: $e');
-      throw Exception('Failed to load data');
+      return null;
     }
   }
 
@@ -762,9 +823,9 @@ class TestSocketProvider extends ChangeNotifier {
 
   void joinExitRoom({int? receiverId, required String type}) {
     print("chat page join exit room called");
-    print("connection state ${_socket!.connection.state}");
-    log('-----Event  ${_socket!.connection.state}');
-    log('connection state  ${_socket!.connection.state}');
+    print("connection state: connected=${_socket!.connected}");
+    log('-----Event  connected=${_socket!.connected}');
+    log('connection state  connected=${_socket!.connected}');
 
     log("join socket called $type");
     print("join socket called $type");
@@ -788,7 +849,7 @@ class TestSocketProvider extends ChangeNotifier {
     logMe('Join Exit room socket -- > ${map.toString()}');
     print('Join Exit room socket -- > ${map.toString()}');
 
-    _socket!.send(json.encode(map));
+    _socket!.emit('message', map);
     notifyListeners();
   }
 
@@ -809,7 +870,7 @@ class TestSocketProvider extends ChangeNotifier {
     };
 
     print("mark as read $map");
-    _socket!.send(jsonEncode(map));
+    _socket!.emit('message', map);
   }
 
   void clearChatList() {
@@ -838,7 +899,7 @@ class TestSocketProvider extends ChangeNotifier {
     };
     print('Message send ---> ${map.toString()}');
 
-    _socket!.send(jsonEncode(map));
+    _socket!.emit('message', map);
     addSingleChat(
       ChatModel(
         id: session.orderId,

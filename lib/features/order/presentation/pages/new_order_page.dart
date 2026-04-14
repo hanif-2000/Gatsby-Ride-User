@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:GetsbyRideshare/core/domain/entities/order_data_detail.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
-import 'package:GetsbyRideshare/core/static/enums.dart';
+
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/order/presentation/pages/components/chat_page.dart';
@@ -35,6 +35,46 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
   final homeProvider = locator<HomeProvider>();
   Timer? _timer;
   bool _hasNavigatedToReceipt = false;
+  bool _hasClosedSearchingSheet = false;
+
+  int _lastProcessedStatus = -1;
+
+  void _onSocketUpdate() {
+    if (!mounted) return;
+    final socketProvider = context.read<TestSocketProvider>();
+    if (socketProvider.isOrderAccepted && !_hasClosedSearchingSheet) {
+      _hasClosedSearchingSheet = true;
+      _timer?.cancel();
+      session.setSearchingTime = 180;
+      log("Accept received — closing searching bottom sheet");
+      print("******* _onSocketUpdate: isOrderAccepted=true, attempting pop *******");
+
+      if (!mounted) return;
+      final navigator = Navigator.of(context, rootNavigator: true);
+      print("******* canPop: ${navigator.canPop()} *******");
+      if (navigator.canPop()) {
+        navigator.pop();
+      }
+      socketProvider.updateIsOrderAccepted(val: false);
+    }
+
+    final currentStatus = socketProvider.currentOrderStatus;
+    if (currentStatus > 0 && currentStatus != _lastProcessedStatus) {
+      _lastProcessedStatus = currentStatus;
+      log("Status changed to: $currentStatus");
+
+      if (currentStatus == 7 && !_hasNavigatedToReceipt && !session.isPaymentDone) {
+        _hasNavigatedToReceipt = true;
+        if (!mounted) return;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, ReceiptScreen.routeName, (route) => false);
+          }
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -42,6 +82,7 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
     dismissLoading();
     var newSocketProvider = context.read<TestSocketProvider>();
     WidgetsBinding.instance.addObserver(this);
+    newSocketProvider.addListener(_onSocketUpdate);
     newSocketProvider.updateBitsImage().then((value) {
       if (session.driverId != '') {
         newSocketProvider.joinExitRoom(
@@ -49,7 +90,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
             receiverId: int.parse(session.driverId.toString()));
       }
     });
-
 
     void startTimerAndNavigate({required int time}) {
       Duration duration = Duration(seconds: time);
@@ -59,20 +99,23 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
         print('Remaining time: ${remainingSeconds}');
         if (remainingSeconds <= 0) {
           timer.cancel();
+
+          if (!mounted) return;
+
           newSocketProvider.cancelRideByCustomer().then((value) async {
             session.setSearchingTime = 180;
             if (value) {
-              var homeProvider = Provider.of<HomeProvider>(context, listen: false);
               session.setIsRunningOrder = false;
-
               dismissLoading();
+
+              if (!mounted) return;
               Navigator.pop(context);
-              WidgetsBinding.instance.addPostFrameCallback((callback){
+
+              WidgetsBinding.instance.addPostFrameCallback((callback) {
                 showDialog(
                   barrierDismissible: false,
                   context: locator<GlobalKey<NavigatorState>>().currentContext!,
                   builder: (BuildContext context) {
-                    // return object of type Dialog
                     return PopScope(
                       canPop: false,
                       child: AlertDialog(
@@ -80,42 +123,30 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                           "No Nearby Driver Found",
                           textAlign: TextAlign.center,
                         ),
-
-                        // content: new Text("sdf"),
                         actions: [
-                          // usually buttons at the bottom of the dialog
                           ElevatedButton(
                             child: Text("Search Again"),
                             onPressed: () async {
                               logMe("search again called-->>");
                               session.setIsRunningOrder = true;
+                              final navContext = locator<GlobalKey<NavigatorState>>().currentContext!;
                               Navigator.pop(context);
+                              final paymentStr = session.bookingPaymentMethod == 1 ? "cash" : "card";
+                              _hasClosedSearchingSheet = false;
+                              _lastProcessedStatus = -1; 
                               newSocketProvider.createRideRequest(
-                                originLatLngs: "${homeProvider.originLatLng.latitude},${homeProvider.originLatLng.longitude}",
-                                destinationLatLngs: "${homeProvider.destinationLatLng.latitude},${homeProvider.destinationLatLng.longitude}",
-                                vehicleCatagory: homeProvider.selectedVehicleId,
-                                startAddress: homeProvider.originAddress,
-                                endAddress: homeProvider.destinationAddress,
-                                estimatedTime: (double.parse(session.estimatedTime.toString()) / 60).toStringAsFixed(1),
-                                distance: (int.parse(session.estimatedDistance.toString()) / 1000).toString(),
-                                total: homeProvider.price,
-                                payment_method: homeProvider.paymentMethod! == PaymentMethod.cash
-                                    ? 1
-                                    : homeProvider.paymentMethod! ==
-                                    PaymentMethod.creditCard
-                                    ? 2
-                                    : homeProvider.paymentMethod! ==
-                                    PaymentMethod.googlePay
-                                    ? 3
-                                    : homeProvider.paymentMethod! ==
-                                    PaymentMethod.applePay
-                                    ? 4
-                                    : 1,
+                                originLatLngs: "${session.originLat},${session.originLong}",
+                                destinationLatLngs: "${session.destinationLat},${session.destinationLong}",
+                                vehicleCatagory: session.bookingVehicleCategoryId,
+                                startAddress: session.originAddress,
+                                endAddress: session.destinationAddress,
+                                estimatedTime: session.estimatedTime.isNotEmpty ? session.estimatedTime : "0.0",
+                                distance: session.estimatedDistance,
+                                total: session.rideTotal,
+                                payment_method: paymentStr,
                               ).then((value) {
                                 startTimerAndNavigate(time: 180);
-                                showSearchingVehiclesBottomSheet(
-                                  context,
-                                );
+                                showSearchingVehiclesBottomSheet(navContext);
                                 if (value) {
                                   var session = locator<Session>();
                                   session.setOrderStatus = 0;
@@ -127,18 +158,13 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                               });
                             },
                           ),
-                          SizedBox(
-                            width: 20,
-                          ),
-
+                          SizedBox(width: 20),
                           ElevatedButton(
                             child: Text("Cancel ride"),
                             onPressed: () async {
                               session.setIsRunningOrder = false;
-
                               Navigator.pop(context);
                               _timer?.cancel();
-
                               Navigator.pushNamedAndRemoveUntil(
                                   context, HomePage.routeName, (route) => false);
                             },
@@ -149,8 +175,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                   },
                 );
               });
-
-
             } else {
               dismissLoading();
               showToast(message: "Something went wrong");
@@ -163,17 +187,13 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
       });
     }
 
-
-
     log("order status is:  -->> ${session.orderStatus}");
 
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
       if (session.orderStatus.toString() == "0") {
         startTimerAndNavigate(time: session.searchingTime);
-        showSearchingVehiclesBottomSheet(
-          context,
-        );
+        showSearchingVehiclesBottomSheet(context);
       } else {
         newSocketProvider.getTotalUnreadCount(int.parse(session.driverId));
         session.setSearchingTime = 180;
@@ -183,10 +203,15 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
 
   @override
   void dispose() {
-    super.dispose();
     _timer?.cancel();
-
+    try {
+      final socketProvider = context.read<TestSocketProvider>();
+      socketProvider.removeListener(_onSocketUpdate);
+    } catch (e) {
+      log("dispose listener remove error: $e");
+    }
     WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -202,27 +227,10 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
           resizeToAvoidBottomInset: false,
           body: Consumer<TestSocketProvider>(builder: (context, provider, _) {
             final newSocketProvider = context.read<TestSocketProvider>();
-            if (newSocketProvider.isOrderAccepted) {
-              session.setSearchingTime = 180;
-              _timer?.cancel();
-              Navigator.pop(context, true);
-              log("order status is: ${newSocketProvider.currentOrderStatus}");
-            }
 
-            if ((newSocketProvider.currentOrderStatus == 7 || session.orderStatus == 7) &&
-                !_hasNavigatedToReceipt &&
-                !session.isPaymentDone) {
-              _hasNavigatedToReceipt = true;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (context.mounted) {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, ReceiptScreen.routeName, (route) => false);
-                }
-              });
-            }
+
             return Stack(
               children: <Widget>[
-                //Google Maps
                 GoogleMap(
                   mapType: MapType.normal,
                   myLocationButtonEnabled: true,
@@ -232,13 +240,12 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                       zoom: newSocketProvider.zoom,
                       bearing: newSocketProvider.bearing),
                   onMapCreated: (GoogleMapController controller) async {
-                     newSocketProvider.googleMapController = controller;
-                     newSocketProvider.setCurrentLocation(widget.location);
+                    newSocketProvider.googleMapController = controller;
+                    newSocketProvider.setCurrentLocation(widget.location);
                   },
                   onCameraMove: (val) async {
                     newSocketProvider.updateZoom(val);
-                    await newSocketProvider.googleMapController
-                        .getVisibleRegion();
+                    await newSocketProvider.googleMapController.getVisibleRegion();
                   },
                   tiltGesturesEnabled: false,
                   rotateGesturesEnabled: false,
@@ -286,14 +293,12 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                                 ],
                               ),
                               Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   SizedBox(
                                     width: _deviceSize.width * .8,
                                     child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 10.0),
+                                      padding: EdgeInsets.symmetric(vertical: 10.0),
                                       child: Text(
                                         widget.location.originAddress,
                                         overflow: TextOverflow.ellipsis,
@@ -313,8 +318,7 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                                   SizedBox(
                                     width: _deviceSize.width * .8,
                                     child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 10.0),
+                                      padding: EdgeInsets.symmetric(vertical: 10.0),
                                       child: Text(
                                         widget.location.destinationAddress,
                                         overflow: TextOverflow.ellipsis,
@@ -331,13 +335,10 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                           )),
                         ),
                       ),
-                      // ElevatedButton(
-                      //     onPressed: () {}, child: Text("New Chat Screen")),
                       Spacer(),
                       Visibility(
                         visible: (newSocketProvider.currentOrderStatus != 0) ||
                             (session.orderStatus != 0),
-                        // visible: true,
                         child: Container(
                             decoration: BoxDecoration(
                               color: whiteColor,
@@ -346,74 +347,50 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                                 topRight: Radius.circular(20.0),
                               ),
                             ),
-                            child: newSocketProvider
-                                        .driverDetailResponseModel !=
-                                    null
+                            child: newSocketProvider.driverDetailResponseModel != null
                                 ? DriverInfoBottomSheet(
-                                    driverStatusText: ((newSocketProvider
-                                                    .currentOrderStatus ==
-                                                1) ||
+                                    driverStatusText: ((newSocketProvider.currentOrderStatus == 1) ||
                                             (session.orderStatus == 1))
                                         ? "Driver is arriving"
-                                        : ((newSocketProvider
-                                                        .currentOrderStatus ==
-                                                    2) ||
+                                        : ((newSocketProvider.currentOrderStatus == 2) ||
                                                 (session.orderStatus == 2))
                                             ? "Driver is on the way"
-                                            : ((newSocketProvider
-                                                            .currentOrderStatus ==
-                                                        3) ||
+                                            : ((newSocketProvider.currentOrderStatus == 3) ||
                                                     (session.orderStatus == 3))
                                                 ? "Driver reached your location"
-                                                : ((newSocketProvider
-                                                                .currentOrderStatus ==
-                                                            5) ||
-                                                        (session.orderStatus ==
-                                                            5))
+                                                : ((newSocketProvider.currentOrderStatus == 5) ||
+                                                        (session.orderStatus == 5))
                                                     ? "Departure to your Destination"
-                                                    : ((newSocketProvider
-                                                                    .currentOrderStatus ==
-                                                                7) ||
-                                                            (session.orderStatus ==
-                                                                7))
+                                                    : ((newSocketProvider.currentOrderStatus == 7) ||
+                                                            (session.orderStatus == 7))
                                                         ? "Ride is Completed"
                                                         : "",
-
-                                    newMessgeCount:
-                                        newSocketProvider.unreadMessageCount,
+                                    newMessgeCount: newSocketProvider.unreadMessageCount,
                                     reviewEvent: () {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RatingsScreen(
-                                                      driverId:
-                                                          session.driverId)));
+                                              builder: (context) => RatingsScreen(
+                                                  driverId: session.driverId)));
                                     },
-
                                     callEvent: () {
                                       newSocketProvider.callDriver();
                                     },
                                     messageEvent: () async {
                                       log("OnClick on MESSAGE event");
-
                                       bool unread = await Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ChatPage()));
-
+                                              builder: (context) => ChatPage()));
                                       if (unread) {
                                         provider.joinExitRoom(
                                           type: "unJoin",
-                                          receiverId:
-                                              int.parse(session.driverId),
+                                          receiverId: int.parse(session.driverId),
                                         );
                                       }
                                     },
                                     viewReceiptEvent: () async {
                                       log("On Click on view receipt");
-
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -421,21 +398,16 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                                         ),
                                       );
                                     },
-
                                     category: newSocketProvider
                                             .driverDetailResponseModel
                                             ?.message
                                             .carModel
                                             .toString() ??
                                         '',
-
-                                    isReceiptVisible: ((newSocketProvider
-                                                    .currentOrderStatus ==
-                                                7) ||
+                                    isReceiptVisible: ((newSocketProvider.currentOrderStatus == 7) ||
                                             (session.orderStatus == 7))
                                         ? true
                                         : false,
-                                    // isReceiptVisible: true,
                                   )
                                 : Text("Fetching Driver Data...")),
                       ),
@@ -448,17 +420,12 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
     );
   }
 
-  showSearchingVehiclesBottomSheet(
-    BuildContext context,
-  ) {
+  showSearchingVehiclesBottomSheet(BuildContext context) {
     showModalBottomSheet(
         enableDrag: false,
         isDismissible: false,
-        isScrollControlled: false,
+        isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * .45,
-        ),
         context: context,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -466,18 +433,16 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
           topLeft: Radius.circular(30.0),
         )),
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        builder: (context) {
-          return PopScope(
-              canPop: false,
-              onPopInvokedWithResult: (_,__) => {},
-              child: SearchingRideBottomSheet());
+        builder: (ctx) {
+          return SizedBox(
+            height: MediaQuery.of(ctx).size.height * .45,
+            child: PopScope(
+                canPop: false,
+                onPopInvokedWithResult: (_, __) => {},
+                child: SearchingRideBottomSheet()),
+          );
         }).whenComplete(() {
       log("THis is called after open Bottom sheet---");
-    }).then((value) {
-      if (value != null && value) {
-        var newSocketProvider = context.read<TestSocketProvider>();
-        newSocketProvider.updateIsOrderAccepted(val: false);
-      }
     });
   }
 }

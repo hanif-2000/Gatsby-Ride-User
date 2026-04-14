@@ -207,8 +207,7 @@ class HomeDrawerPage extends StatelessWidget {
                                 log("my response data is:  ${response.data}");
                                 dismissLoading();
                                 if (response.statusCode == 200 &&
-                                    response.data["message"] ==
-                                        "Logout successfully") {
+                                    response.data["status"] == true) {
                                   await sessionLogOut().then(
                                     (_) => Navigator.of(context)
                                         .pushNamedAndRemoveUntil(

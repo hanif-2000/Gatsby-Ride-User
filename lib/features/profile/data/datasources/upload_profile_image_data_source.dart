@@ -20,7 +20,10 @@ class UploadProfileImageDataSourceImplementation
       final response = await dio.post(url,
           data: formData,
           options: Options(
-            headers: {'Content-Type': 'multipart/form-data'},
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'required_token': true,
+            },
           ));
 
       final model = EditProfileResponseModel.fromJson(response.data);

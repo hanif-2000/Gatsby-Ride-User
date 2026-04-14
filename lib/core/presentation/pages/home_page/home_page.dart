@@ -52,6 +52,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     socketProvider.updateReceiptResponseModel(receipt).then((value) {
       logMe("RECEIPT DATA UPDATED SUCCESS");
       socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
+        if (value == null) return;
         logMe(" order details are:::::::::::::: ${value}");
         socketProvider.updateOrderDetailsModel(data: value);
         socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
@@ -76,7 +77,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       if (session.isRunningOrder && session.orderId.isNotEmpty) {
         socketProvider.updateBitsImage();
         final orderId = int.tryParse(session.orderId);
-        await socketProvider.fetchOrderDetails(orderId ?? 0).then((value) async {
+        await socketProvider.fetchOrderDetails(orderId ?? 0).catchError((e) {
+          log("Order not found (${session.orderId}), resetting running order state: $e");
+          session.setIsRunningOrder = false;
+          dismissLoading();
+          return null;
+        }).then((value) async {
+          if (value == null) return;
           log("order details are:  ${value.data}");
           print("order details are:  ${session.orderStatus}");
           {
@@ -124,6 +131,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               log("order id is : " + session.orderId);
 
               await socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
+                if (value == null) return;
                 log("order details are:  ${value.data}");
                 socketProvider.updateOrderDetailsModel(data: value);
                 dismissLoading();
@@ -142,6 +150,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             } else {
               logMe("-------- SESSION ORDER STATUS IS${session.orderStatus.toString()} ");
               await socketProvider.fetchOrderDetails(int.parse(session.orderId)).then((value) {
+                if (value == null) return;
                 socketProvider.updateCurrentOrderStatus(val: int.parse(value.data.orderStatus.toString()));
                 session.setDriverId = value.data.driverId.toString();
                 if (value.data.orderStatus.toString() == "8") {

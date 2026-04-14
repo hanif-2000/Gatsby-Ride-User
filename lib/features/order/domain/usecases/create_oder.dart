@@ -1,12 +1,11 @@
 import 'package:GetsbyRideshare/features/order/data/models/create_order_response_model.dart';
 import 'package:GetsbyRideshare/features/order/domain/repositories/order_repository.dart';
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 
 import '../../../../core/error/failure.dart';
 
 abstract class CreateOrderUseCase<Type> {
-  Future<Either<Failure, CreateOrderResponseModel>> execute(FormData formData);
+  Future<Either<Failure, CreateOrderResponseModel>> execute(Map<String, dynamic> data);
 }
 
 class CreateOrder implements CreateOrderUseCase<String> {
@@ -16,8 +15,8 @@ class CreateOrder implements CreateOrderUseCase<String> {
 
   @override
   Future<Either<Failure, CreateOrderResponseModel>> execute(
-      FormData formData) async {
-    final result = await repository.createOrder(formData);
+      Map<String, dynamic> data) async {
+    final result = await repository.createOrder(data);
     return result.fold((l) => Left(l), (r) {
       return Right(r);
     });

@@ -1,6 +1,5 @@
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/core/utility/injection.dart';
-import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';
@@ -19,15 +18,14 @@ class RegisterProvider extends FormProvider {
       required String password}) async* {
     yield RegisterLoading();
     final deviceToken = await FirebaseMessaging.instance.getToken()??"";
-    final formData = FormData.fromMap({
-      'name': name,
-      // 'phone': phone,
+    final data = {
+      'name': email.split('@').first,
       'email': email,
       'password': password,
       'device_type': sessionHelper.device,
-      'fcm_token':deviceToken
-    });
-    final result = await doRegister.call(formData);
+      'fcm_token': deviceToken,
+    };
+    final result = await doRegister.call(data);
     logMe('result123---');
     logMe('result$result');
     yield* result.fold((statusCode) async* {

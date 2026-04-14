@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:GetsbyRideshare/core/presentation/providers/create_order_state.dart';
 import 'package:GetsbyRideshare/core/presentation/providers/home_provider.dart';
 import 'package:GetsbyRideshare/core/presentation/widgets/payment_widget.dart';
 import 'package:GetsbyRideshare/core/static/colors.dart';
@@ -234,33 +235,56 @@ class BottomSheetBookRide extends StatelessWidget {
                                         destinationLatLng: provider.destinationLatLng,
                                         originAddress: provider.originAddress,
                                         destinationAddress: provider.destinationAddress);
-                                    socketProvider.createRideRequest(
-                                      originLatLngs: "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
-                                      destinationLatLngs: "${provider.destinationLatLng.latitude},${provider.destinationLatLng.longitude}",
-                                      vehicleCatagory: provider.selectedVehicleId,
-                                      startAddress: provider.originAddress,
-                                      endAddress: provider.destinationAddress,
-                                      estimatedTime: data[provider.selectedVehicleIndex].estimatedTime.toString(),
-                                      distance: data[provider.selectedVehicleIndex].estimatedDistance.toString(),
-                                      total: provider.price,
-                                      payment_method: provider.paymentMethod! == PaymentMethod.cash
-                                          ? 1
-                                          : provider.paymentMethod! == PaymentMethod.creditCard
-                                              ? 2
-                                              : provider.paymentMethod! == PaymentMethod.googlePay
-                                                  ? 3
-                                                  : provider.paymentMethod! == PaymentMethod.applePay
-                                                      ? 4
-                                                      : 1,
-                                    ).then((value) {
-                                      if (value) {
-                                        session.setOrderStatus = 0;
+                                    showLoading();
+                                    provider.submitOrder().listen((event) async {
+                                      if (event is CreateOrderLoading) {
+                                        // loading already shown
+                                      } else if (event is CreateOrderLoaded) {
+                                        final int paymentMethodInt = provider.paymentMethod! == PaymentMethod.cash
+                                            ? 1
+                                            : provider.paymentMethod! == PaymentMethod.creditCard
+                                                ? 2
+                                                : provider.paymentMethod! == PaymentMethod.googlePay
+                                                    ? 3
+                                                    : 4;
+                                        final String paymentMethodStr = provider.paymentMethod! == PaymentMethod.cash
+                                            ? "cash"
+                                            : "card";
+                                        final String estTime = data[provider.selectedVehicleIndex].estimatedTime.toString();
+                                        final String estDistance = data[provider.selectedVehicleIndex].estimatedDistance.toString();
+                                        // Save booking data to session for "Search Again"
+                                        session.setOriginLat = provider.originLatLng.latitude;
+                                        session.setOriginLong = provider.originLatLng.longitude;
+                                        session.setDestinationLat = provider.destinationLatLng.latitude;
+                                        session.setDestinationLong = provider.destinationLatLng.longitude;
+                                        session.setOriginAddress = provider.originAddress;
+                                        session.setDestinationAddress = provider.destinationAddress;
+                                        session.setBookingVehicleCategoryId = provider.selectedVehicleId;
+                                        session.setBookingPaymentMethod = paymentMethodInt;
+                                        session.setEstimatedTime = estTime;
+                                        session.setEstimatedDistance = estDistance;
+                                        final serverTotal = event.data.total.toStringAsFixed(2);
+                                        session.setRideTotal = serverTotal;
+                                        // Fire-and-forget socket request with server's actual total (after surge)
+                                        socketProvider.createRideRequest(
+                                          originLatLngs: "${provider.originLatLng.latitude},${provider.originLatLng.longitude}",
+                                          destinationLatLngs: "${provider.destinationLatLng.latitude},${provider.destinationLatLng.longitude}",
+                                          vehicleCatagory: provider.selectedVehicleId,
+                                          startAddress: provider.originAddress,
+                                          endAddress: provider.destinationAddress,
+                                          estimatedTime: estTime,
+                                          distance: estDistance,
+                                          total: serverTotal,
+                                          payment_method: paymentMethodStr,
+                                        );
+                                        dismissLoading();
                                         session.setIsRunningOrder = true;
                                         session.setBookingTime = DateTime.now().toString();
                                         Navigator.pushNamedAndRemoveUntil(
                                             context, NewOrderPage.routeName, (route) => false,
                                             arguments: orderDataDetail);
-                                      } else {
+                                      } else if (event is CreateOrderFailure) {
+                                        dismissLoading();
                                         showToast(message: "Something went wrong Please try again");
                                       }
                                     });

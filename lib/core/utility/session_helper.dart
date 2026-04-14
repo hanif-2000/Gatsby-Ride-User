@@ -48,6 +48,8 @@ abstract class Session {
   set setOriginLong(double originLong);
   set setDestinationLat(double destinationLat);
   set setDestinationLong(double destinationLong);
+  set setBookingVehicleCategoryId(String vehicleCategoryId);
+  set setBookingPaymentMethod(int paymentMethod);
   set setOrderDetails(orderDetails);
   set setDriverDetails(DriverDetails);
 
@@ -99,6 +101,8 @@ abstract class Session {
 
   double get destinationLat;
   double get destinationLong;
+  String get bookingVehicleCategoryId;
+  int get bookingPaymentMethod;
 
   /// * GET ORDER DETAILS
   String get orderDetails;
@@ -321,6 +325,14 @@ class SessionHelper implements Session {
     pref.setDouble(DESTINATION_LONG, destinationLong);
   }
 
+  set setBookingVehicleCategoryId(String vehicleCategoryId) {
+    pref.setString(BOOKING_VEHICLE_CATEGORY_ID, vehicleCategoryId);
+  }
+
+  set setBookingPaymentMethod(int paymentMethod) {
+    pref.setInt(BOOKING_PAYMENT_METHOD, paymentMethod);
+  }
+
   set setSearchingTime(int searchingTime) {
     pref.setInt(SEARCHING_TIME, searchingTime);
   }
@@ -480,6 +492,12 @@ class SessionHelper implements Session {
 
   @override
   double get destinationLong => pref.getDouble(DESTINATION_LONG) ?? 0.0;
+
+  @override
+  String get bookingVehicleCategoryId => pref.getString(BOOKING_VEHICLE_CATEGORY_ID) ?? '';
+
+  @override
+  int get bookingPaymentMethod => pref.getInt(BOOKING_PAYMENT_METHOD) ?? 1;
 
   @override
   String get originAddress => pref.getString(ORIGIN_ADDRESS) ?? '';

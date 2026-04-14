@@ -1,9 +1,6 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/domain/entities/vehcles_category_list.dart';
-import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/core/utility/injection.dart';
-import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:dio/dio.dart';
 
 import '../models/vehicles_catagory_list_modal.dart';
@@ -57,46 +54,53 @@ class VehicleCategoryDataSourceImplementation
     String time,
   ) async {
     log("get vehicle catagory called");
-    Session session = locator<Session>();
-    FormData data = FormData.fromMap({
-      'distance': distance,
-      'night_service': nightService,
-      'coordinates': coordinates,
-      'time': time,
-      'user_id': session.userId
-    });
-    String url = 'api/webservice/priceCategory';
 
-    log("fetch vehicle catagory list body:---> ${data.fields} ");
+    try {
+      // Step 1: Get all vehicle categories
+      final categoriesResponse = await dio.get('api/webservice/vehicleCategories');
+      log("vehicleCategories response: ${categoriesResponse.data}");
 
-try {
-  final response = await dio.post(
-    url,
-    data: data,
-  );
+      final List<dynamic> categories = categoriesResponse.data['data'] ?? [];
 
-  log("bikbbu" + response.data.toString());
-  log("Complete Url=========>>>>>>" + response.realUri.path);
+      // Step 2: For each category, fetch calculated price
+      final List<Map<String, dynamic>> enrichedCategories = await Future.wait(
+        categories.map((cat) async {
+          try {
+            final priceResponse = await dio.post(
+              'api/webservice/priceCategory',
+              data: {
+                'vehicle_category_id': cat['id'],
+                'distance': double.tryParse(distance) ?? 0.0,
+              },
+              options: Options(headers: {'content-type': 'application/json'}),
+            );
+            final priceData = priceResponse.data['data'];
+            final total = priceData['total']?.toString() ?? '0';
+            return {
+              ...Map<String, dynamic>.from(cat),
+              'price': total,
+              'new_total': total,
+              'estimated_distance': distance,
+              'estimated_time': time,
+            };
+          } catch (e) {
+            log("Price fetch failed for category ${cat['id']}: $e");
+            return Map<String, dynamic>.from(cat);
+          }
+        }),
+      );
 
-  if ((response.data["success"] == 0) &&
-      (response.data["message"] == "Account Suspended")) {
-    showToast(message: 'Account Suspended');
-  }
-  
-  // ADD THIS DEBUG LOG
-  log("=== PARSING START ===");
-  final result = VehiclesCategoryListModel.fromJson(response.data);
-  log("=== PARSING SUCCESS === Items: ${result.data.length}");
-  for(var item in result.data) {
-    log("Parsed vehicle: ${item.categoryCar}");
-  }
-  return result;
-  
-} catch (e, stackTrace) {  // ADD stackTrace
-  log("VehiclesCategoryListModel detail Error VehiclesDataSourceImplementation : ",
-      error: e);
-  log("Stack trace: $stackTrace");  // ADD THIS
-  rethrow;
-}
+      final result = VehiclesCategoryListModel.fromJson({
+        'success': 1,
+        'data': enrichedCategories,
+      });
+
+      log("=== Categories loaded: ${result.data.length} ===");
+      return result;
+    } catch (e, stackTrace) {
+      log("VehiclesCategoryListModel Error: ", error: e);
+      log("Stack trace: $stackTrace");
+      rethrow;
+    }
   }
 }

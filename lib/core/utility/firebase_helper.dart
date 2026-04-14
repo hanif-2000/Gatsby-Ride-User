@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:GetsbyRideshare/core/presentation/pages/home_page/home_page.dart';
 import 'package:GetsbyRideshare/core/utility/notification_service.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
+import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'helper.dart';
 import 'injection.dart';
 
@@ -32,16 +35,79 @@ class FirebaseHelper {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final session = locator<Session>();
-      if (Platform.isIOS || session.sessionToken.isEmpty) {
+      if (session.sessionToken.isEmpty) {
         return;
       }
       log("onMessage listen called");
-      print("on message listen called");
       log("remote message is------->>>>>. ${message.toMap().toString()}");
-      //  _fetchRemoteMessage(message);
-      NotificationHelper notificationService = NotificationHelper();
-      notificationService.showNotifications(message);
+
+      final String title = message.data['title'] ?? message.notification?.title ?? '';
+      final bool isNoDriver = title.toLowerCase().contains('no driver');
+
+      if (isNoDriver && session.isRunningOrder && session.orderStatus == 0) {
+        // Wait 4 seconds before cancelling — gives socket 'Accept' event time to arrive.
+        // If driver accepted in this window, orderStatus will be 1+ and we skip cancel.
+        Future.delayed(const Duration(seconds: 4), () {
+          if (session.isRunningOrder && session.orderStatus == 0) {
+            _handleNoDriverAvailable(session);
+          } else {
+            log("No-driver notification ignored — driver already accepted (status=${session.orderStatus})");
+          }
+        });
+        return;
+      }
+
+      // Show local notification on Android only (iOS APNs handles it automatically)
+      if (!Platform.isIOS) {
+        NotificationHelper notificationService = NotificationHelper();
+        notificationService.showNotifications(message);
+      }
     });
+  }
+
+  static void _handleNoDriverAvailable(Session session) {
+    log("No driver available notification received — cancelling ride and going home");
+    session.setIsRunningOrder = false;
+    session.setOrderStatus = 8;
+    session.setSearchingTime = 180;
+
+    final socketProvider = locator<TestSocketProvider>();
+    socketProvider.cancelRideByCustomer();
+
+    final navigatorKey = locator<GlobalKey<NavigatorState>>();
+    final context = navigatorKey.currentContext;
+    if (context != null) {
+      dismissLoading();
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        HomePage.routeName,
+        (route) => false,
+      );
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = navigatorKey.currentContext;
+        if (ctx != null) {
+          showDialog(
+            barrierDismissible: false,
+            context: ctx,
+            builder: (dialogContext) => PopScope(
+              canPop: false,
+              child: AlertDialog(
+                title: Text(
+                  "No Nearby Driver Found",
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  ElevatedButton(
+                    child: Text("OK"),
+                    onPressed: () => Navigator.pop(dialogContext),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      });
+    }
   }
 
   static _fetchRemoteMessage(RemoteMessage message) {

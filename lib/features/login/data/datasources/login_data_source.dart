@@ -41,13 +41,13 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String url = 'api/webservice/login';
     final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
     log("fcm token : " + deviceToken.toString());
-    FormData data = FormData.fromMap({
+    final data = {
       'email': email,
       'password': password,
       'fcm_token': deviceToken,
       'login_type': loginType,
-      'device_type': deviceType
-    });
+      'device_type': deviceType,
+    };
 
     try {
       final response = await dio.post(

@@ -1,14 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 
 import '../../../../core/error/failure.dart';
 import '../../data/models/register_response_model.dart';
 import '../repositories/register_repository.dart';
 
 abstract class RegisterUseCase<Type> {
-  // return statusCode when fails
-  // return token when succeed
-  Future<Either<Failure, RegisterResponseModel>> call(FormData formData);
+  Future<Either<Failure, RegisterResponseModel>> call(Map<String, dynamic> data);
 }
 
 class DoRegister implements RegisterUseCase<String> {
@@ -17,8 +14,8 @@ class DoRegister implements RegisterUseCase<String> {
   DoRegister({required this.repository});
 
   @override
-  Future<Either<Failure, RegisterResponseModel>> call(FormData formData) async {
-    final result = await repository.doRegister(formData);
+  Future<Either<Failure, RegisterResponseModel>> call(Map<String, dynamic> data) async {
+    final result = await repository.doRegister(data);
     return result.fold((l) => Left(l), (r) {
       return Right(r);
     });

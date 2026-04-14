@@ -18,14 +18,17 @@ class LoginResponseModel extends Equatable {
   @override
   List<Object?> get props => [data, success, token, message];
 
-  factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
-      LoginResponseModel(
-          data: json['user'] == null
-              ? null
-              : LoginDataModel.fromJson(json['user']),
-          token: json['token'] ?? '',
-          success: json['success'] ?? 1,
-          message: json['message'] ?? '');
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
+    final innerData = json['data'] as Map<String, dynamic>?;
+    return LoginResponseModel(
+      data: innerData?['user'] == null
+          ? null
+          : LoginDataModel.fromJson(innerData!['user']),
+      token: innerData?['token'] ?? '',
+      success: json['success'] ?? 1,
+      message: json['message'] ?? '',
+    );
+  }
   Map<String, dynamic> toJson() => {
         'data': data ?? null,
         // 'data': data == null ? '' : data!.toJson(),
@@ -68,7 +71,7 @@ class LoginDataModel extends Equatable {
       fcmToken: json['fcm_token'] ?? '',
       image: json['image'] ?? '',
       status: json['status'] ?? 0,
-      chatToken: json['chat_token'] ?? 0);
+      chatToken: int.tryParse(json['chat_token']?.toString() ?? '') ?? 0);
 
   Map<String, dynamic> toJson() => {
         'id': userId,

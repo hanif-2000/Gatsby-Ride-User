@@ -14,9 +14,9 @@ class RegisterRepositoryImplementation implements RegisterRepository {
 
   @override
   Future<Either<Failure, RegisterResponseModel>> doRegister(
-      FormData formData) async {
+      Map<String, dynamic> requestData) async {
     try {
-      final data = await dataSource.doRegister(formData);
+      final data = await dataSource.doRegister(requestData);
       return Right(data);
     } on DioError catch (e) {
       logMe("Failure register repository ${e.toString()}");

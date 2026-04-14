@@ -19,8 +19,6 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:web_socket_client/web_socket_client.dart';
-
 import '../../data/models/google_route_response_modal.dart';
 import '../../domain/entities/price_category.dart';
 import '../../domain/usecases/get_price_category.dart';
@@ -53,8 +51,6 @@ class HomeProvider with ChangeNotifier {
   final session = locator<Session>();
 
   LatLng defaultLatLng = LatLng(55.170834, -118.794724);
-
-  WebSocket? socket;
 
   bool isAccepted = false;
   bool isMapLoading = true;
@@ -569,7 +565,7 @@ class HomeProvider with ChangeNotifier {
     log("estimated time while send order is:-->> $newTime");
 
     final dist = metersToKilometers(totalDistance);
-    final formData = FormData.fromMap({
+    final orderData = {
       'start_coordinate': txtLatLngOrigin,
       'end_coordinate': txtLatLngDestination,
       'start_address': originAddress,
@@ -578,18 +574,20 @@ class HomeProvider with ChangeNotifier {
       'total': price,
       'estimated_time': newTime,
       'payment_method': (_paymentMethod == PaymentMethod.cash)
-          ? "1"
+          ? "cash"
           : (_paymentMethod == PaymentMethod.creditCard)
-              ? "2"
+              ? "card"
               : (_paymentMethod == PaymentMethod.googlePay)
-                  ? "3"
-                  : "4",
-      'vehicle_category_id': selectedVehicleId.toString(),
-    });
+                  ? "card"
+                  : (_paymentMethod == PaymentMethod.applePay)
+                      ? "card"
+                      : "cash",
+      'vehicle_category_id': int.tryParse(selectedVehicleId.toString()) ?? selectedVehicleId,
+    };
 
-    log(formData.toString());
-    logMe("formData");
-    final result = await createOrder.execute(formData);
+    log(orderData.toString());
+    logMe("orderData");
+    final result = await createOrder.execute(orderData);
     yield* result.fold((failure) async* {
       logMe("failure");
       logMe(failure);

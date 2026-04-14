@@ -32,7 +32,7 @@ class _FormRegisterState extends State<FormRegister> {
             // email: email, phone: phone, password: passsword, name: name
             email: email,
             password: passsword,
-            name: "")
+            name: name)
         .listen((state) async {
       switch (state.runtimeType) {
         case RegisterLoading:
@@ -215,8 +215,7 @@ class _FormRegisterState extends State<FormRegister> {
                     if (provider.formKey.currentState!.validate()) {
                       if (provider.checkBox) {
                         submit(
-                            "",
-                            // provider.nameController.text,
+                            provider.nameController.text,
                             provider.emailController.text,
                             provider.phoneController.text,
                             provider.passwordController.text);

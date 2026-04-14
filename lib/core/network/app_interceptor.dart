@@ -11,11 +11,15 @@ import '../utility/injection.dart';
 import '../utility/session_helper.dart';
 
 class AppInterceptor extends Interceptor {
+  static bool _isNavigatingToLogin = false;
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     logMe("on request called");
-    // set default headers
-    options.headers.addAll({"content-type": "application/json; charset=utf-8"});
+    // set default headers (skip content-type for FormData — Dio sets multipart boundary automatically)
+    if (options.data is! FormData) {
+      options.headers.addAll({"content-type": "application/json; charset=utf-8"});
+    }
     options.headers.addAll({"Accept": "application/json"});
 
     //check param 'required_token'
@@ -71,27 +75,25 @@ class AppInterceptor extends Interceptor {
     log("--->>>>>> status coder is :${statusCode} --------*****00");
     if (statusCode == HttpStatus.unprocessableEntity) {
       dismissLoading();
-
-      await sessionLogOut().then(
-        (_) => Navigator.pushNamedAndRemoveUntil(
-          locator<GlobalKey<NavigatorState>>().currentContext!,
-          LoginPage.routeName,
-          (route) => false,
-        ),
-      );
+      // Don't logout on 422 — it's a validation error (e.g. login/register form errors)
+      // just propagate the error to the caller
       // final session = locator<Session>();
       // session.setLoggedIn = false;
     }
     if (statusCode == HttpStatus.unauthorized || statusCode == 401) {
       print("====unauthorized called==>>");
       dismissLoading();
-      await sessionLogOut().then(
-        (_) => Navigator.pushNamedAndRemoveUntil(
-          locator<GlobalKey<NavigatorState>>().currentContext!,
-          LoginPage.routeName,
-          (route) => false,
-        ),
-      );
+      if (!_isNavigatingToLogin) {
+        _isNavigatingToLogin = true;
+        await sessionLogOut().then(
+          (_) => Navigator.pushNamedAndRemoveUntil(
+            locator<GlobalKey<NavigatorState>>().currentContext!,
+            LoginPage.routeName,
+            (route) => false,
+          ),
+        );
+        _isNavigatingToLogin = false;
+      }
     }
 
     if (statusCode == HttpStatus.forbidden) {}

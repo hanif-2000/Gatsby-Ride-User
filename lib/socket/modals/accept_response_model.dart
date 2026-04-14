@@ -26,9 +26,9 @@ class AcceptResponseModel {
   factory AcceptResponseModel.fromJson(Map<String, dynamic> json) =>
       AcceptResponseModel(
         response: json["Response"],
-        message: json["message"],
-        type: json["type"],
-        data: Data.fromJson(json["data"]),
+        message: json["message"] ?? '',
+        type: json["type"] ?? '',
+        data: Data.fromJson(json["data"] ?? {}),
       );
 
   Map<String, dynamic> toJson() => {
@@ -114,7 +114,7 @@ class Data {
         plateNumber: json["plate_number"] ?? "",
         vehicleName: json["vehicle_name"] ?? "",
         carModel: json["car_model"] ?? "",
-        driverRating: json["DriverRating"] ?? 0,
+        driverRating: json["driverRating"] ?? json["DriverRating"] ?? 0,
         phoneNumber: json["phone"] ?? "",
         extraDistance: json["extra_distance"] ?? "0",
         extraDistancePrice: json["extra_distance_price"] ?? '0',

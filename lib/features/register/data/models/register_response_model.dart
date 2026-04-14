@@ -17,13 +17,17 @@ class RegisterResponseModel extends Equatable {
   @override
   List<Object?> get props => [success, message];
 
-  factory RegisterResponseModel.fromJson(Map<String, dynamic> json) =>
-      RegisterResponseModel(
-          message: json['message'] ?? '',
-          success: json['success'] ?? 1,
-          token: json['token'] ?? '',
-          userId: json['id'] ?? '',
-          chatToken: json['chat_token'] ?? 0);
+  factory RegisterResponseModel.fromJson(Map<String, dynamic> json) {
+    final innerData = json['data'] as Map<String, dynamic>?;
+    final user = innerData?['user'] as Map<String, dynamic>?;
+    return RegisterResponseModel(
+      message: json['message'] ?? '',
+      success: json['success'] ?? 1,
+      token: innerData?['token'] ?? json['token'] ?? '',
+      userId: user?['id'] ?? json['id'] ?? '',
+      chatToken: int.tryParse((user?['chat_token'] ?? json['chat_token'] ?? 0).toString()) ?? 0,
+    );
+  }
   Map<String, dynamic> toJson() => {
         'message': message ?? '',
         'success': success,

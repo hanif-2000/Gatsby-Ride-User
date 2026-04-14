@@ -12,7 +12,7 @@ import '../entities/order_detail.dart';
 
 abstract class OrderRepository {
   Future<Either<Failure, CreateOrderResponseModel>> createOrder(
-      FormData formData);
+      Map<String, dynamic> data);
   Future<Either<Failure, UpdateStatusOrderResponseModel>> updateStatusOrder(
       FormData formData);
   Future<Either<Failure, GetStatusResponseModel>> getStatusOrder();

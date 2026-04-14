@@ -24,7 +24,7 @@ class UploadProfileImageProvider extends FormProvider {
 
     //formdata
     var formData = FormData.fromMap({
-      'upload': await MultipartFile.fromFile(imageFilePath!,
+      'file': await MultipartFile.fromFile(imageFilePath!,
           filename: 'profile'),
     });
     // logMe(formData.files[0].toString());

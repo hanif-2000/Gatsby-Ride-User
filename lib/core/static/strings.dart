@@ -46,5 +46,7 @@ const String ORIGIN_LAT = 'origin_lat';
 const String ORIGIN_LONG = 'origin_long';
 const String DESTINATION_LAT = 'destination_lat';
 const String DESTINATION_LONG = 'destination_long';
+const String BOOKING_VEHICLE_CATEGORY_ID = 'booking_vehicle_category_id';
+const String BOOKING_PAYMENT_METHOD = 'booking_payment_method';
 const String publishKey = 'pk_test_51NbHA8L2KkuOUsISsCEKwg1fsZIDBCSHwtMvk9rJXj5fuG8owddgm518RSVnEsyDV1r7sv8KuEf1aXGUh1FgeLcD006NL53v2U';
 const String publishKeyLive = "pk_live_51NbHA8L2KkuOUsISLMZg8rgdOQ4Po3VKyiOsWjmxY2N5FQUM0ggbFdXFoJ0H06sdaCVj1yGCw9Qcf6CvjhTF3erW00Q1GUJ0sH";
