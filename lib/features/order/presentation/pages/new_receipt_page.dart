@@ -20,6 +20,7 @@ import 'package:pay/pay.dart';
 import '../../../../core/utility/duration_helper.dart';
 import '../../../../core/utility/dynamic_toasstring_helper.dart';
 import '../../../testing/widgets/text_in_row.dart';
+import '../../../../socket/modals/new_receipt_model.dart';
 
 class ReceiptScreen extends StatefulWidget {
   const ReceiptScreen({Key? key}) : super(key: key);
@@ -80,6 +81,42 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
           ),
         ) ??
         false; //if showDialouge had returned null, then return false
+  }
+
+  // payment_method "cash"/"card" string ya "1"/"2" int dono handle karta hai
+  String _getPaymentText(dynamic pm) {
+    final s = pm?.toString().toLowerCase() ?? '';
+    if (s == '1' || s == 'cash') return 'Cash';
+    if (s == '2' || s == 'card' || s.contains('credit')) return 'Credit Card';
+    if (s == '3' || s.contains('google')) return 'Google Pay';
+    if (s == '4' || s.contains('apple')) return 'Apple Pay';
+    return 'Online';
+  }
+
+  String _getPaymentIcon(dynamic pm) {
+    final s = pm?.toString().toLowerCase() ?? '';
+    if (s == '1' || s == 'cash') return cashIconSvg;
+    if (s == '2' || s == 'card' || s.contains('credit')) return creditIcon;
+    if (s == '3' || s.contains('google')) return googleIconSvg;
+    return 'assets/icons/apple.svg';
+  }
+
+  // actual_distance 0 ho to original distance use karo
+  String _getDisplayDistance(ReceiptData data) {
+    final actual = double.tryParse(data.actual_distance?.toString() ?? '0') ?? 0.0;
+    if (actual > 0) return actual.toStringAsFixed(2);
+    final dist = double.tryParse(data.distance?.toString() ?? '0') ?? 0.0;
+    if (dist > 0) return dist.toStringAsFixed(2);
+    return '0.0';
+  }
+
+  // actual_time 0 ho to "N/A" dikhao
+  String _getDisplayTime(ReceiptData data) {
+    final actual = num.tryParse(data.actual_time?.toString() ?? '0') ?? 0;
+    if (actual > 0) return formatDuration(actual.toInt());
+    final est = num.tryParse(data.estimatedTime?.toString() ?? '0') ?? 0;
+    if (est > 0) return formatDuration(est.toInt());
+    return 'N/A';
   }
 
   @override
@@ -222,19 +259,11 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                       ),
                       TextInRow(
                         firstText: appLoc.totalDistance,
-                        secondText:
-                            "${provider.receiptResponseModel!.data!.actual_distance ?? double.parse(provider.receiptResponseModel!.data!.distance1 ?? "0.0").toStringAsFixed(2)} Km",
+                        secondText: "${_getDisplayDistance(provider.receiptResponseModel!.data!)} Km",
                       ),
                       TextInRow(
                         firstText: "Time Taken",
-                        secondText:
-                            provider.receiptResponseModel!.data!.actual_time !=
-                                    null
-                                ? formatDuration(num.parse(provider
-                                        .receiptResponseModel!.data!.actual_time
-                                        .toString())
-                                    .toInt())
-                                : "0.0",
+                        secondText: _getDisplayTime(provider.receiptResponseModel!.data!),
                       ),
                       CommonText(
                         text: appLoc.paymentInformation,
@@ -255,61 +284,15 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                           ),
                           Row(
                             children: [
-                              provider.receiptResponseModel!.data!.paymentMethod
-                                          .toString() ==
-                                      "1"
-                                  ? SvgPicture.asset(
-                                      cashIconSvg,
-                                      height: 30,
-                                      width: 30,
-                                      fit: BoxFit.fill,
-                                    )
-                                  : provider.receiptResponseModel!.data!
-                                              .paymentMethod
-                                              .toString() ==
-                                          "2"
-                                      ? SvgPicture.asset(
-                                          creditIcon,
-                                          height: 30,
-                                          width: 30,
-                                          fit: BoxFit.fill,
-                                        )
-                                      : provider.receiptResponseModel!.data!
-                                                  .paymentMethod
-                                                  .toString() ==
-                                              "3"
-                                          ? SvgPicture.asset(
-                                              googleIconSvg,
-                                              height: 30,
-                                              width: 30,
-                                              fit: BoxFit.fill,
-                                            )
-                                          : SvgPicture.asset(
-                                              "assets/icons/apple.svg",
-                                              height: 30,
-                                              width: 30,
-                                              fit: BoxFit.fill,
-                                            ),
-                              SizedBox(
-                                width: 10.0,
+                              SvgPicture.asset(
+                                _getPaymentIcon(provider.receiptResponseModel!.data!.paymentMethod),
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.fill,
                               ),
+                              SizedBox(width: 10.0),
                               CommonText(
-                                text: provider.receiptResponseModel!.data!
-                                            .paymentMethod
-                                            .toString() ==
-                                        "1"
-                                    ? appLoc.cash
-                                    : provider.receiptResponseModel!.data!
-                                                .paymentMethod
-                                                .toString() ==
-                                            "2"
-                                        ? "Credit Card"
-                                        : provider.receiptResponseModel!.data!
-                                                    .paymentMethod
-                                                    .toString() ==
-                                                "3"
-                                            ? "Google Pay"
-                                            : "Online",
+                                text: _getPaymentText(provider.receiptResponseModel!.data!.paymentMethod),
                                 fontWeight: FontWeight.w400,
                                 fontColor: grey7D7979Color,
                                 fontFamily: "poPPinMedium",

@@ -42,6 +42,19 @@ class CustomVehicleInfo extends StatelessWidget {
     this.priceMin,this.baseFare,this.techFee,this.pricePerKM,this.pricePerMin
   }) : super(key: key);
 
+  String _formatTimeAndDistance() {
+    final distVal = double.tryParse(estimatedDistance?.toString() ?? '');
+    final distStr = distVal != null && distVal > 0
+        ? '${distVal.toStringAsFixed(1)} km'
+        : null;
+    final timeStr = (time != null && time!.isNotEmpty) ? time! : null;
+
+    if (timeStr != null && distStr != null) return '$timeStr · $distStr';
+    if (timeStr != null) return timeStr;
+    if (distStr != null) return distStr;
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     var _deviceSize = MediaQuery.of(context).size;
@@ -122,9 +135,9 @@ class CustomVehicleInfo extends StatelessWidget {
                       ],
                     ),
 
-                    //Time
+                    //Time · Distance
                     Text(
-                      time!,
+                      _formatTimeAndDistance(),
                       style: const TextStyle(
                           fontFamily: 'poPPinRegular',
                           fontWeight: FontWeight.w400,
