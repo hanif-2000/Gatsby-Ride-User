@@ -10,7 +10,7 @@ abstract class ProfileDataSource {
   Future<User> getProfile();
   Future<int> updateProfile(FormData formData);
   Future<int> updateEmail(FormData formData);
-  Future<EditProfileResponseModel> updatePassword(FormData formData);
+  Future<EditProfileResponseModel> updatePassword(Map<String, dynamic> data);
 }
 
 class ProfileDataSourceImplementation implements ProfileDataSource {
@@ -69,12 +69,14 @@ class ProfileDataSourceImplementation implements ProfileDataSource {
   }
 
   @override
-  Future<EditProfileResponseModel> updatePassword(FormData formData) async {
-    // String url = 'api/webservice/update-password-user';
-    String url = '                         ';
-    dio.withToken();
+  Future<EditProfileResponseModel> updatePassword(Map<String, dynamic> data) async {
+    String url = 'api/webservice/customer/password/reset';
     try {
-      final response = await dio.post(url, data: formData);
+      final response = await dio.post(
+        url,
+        data: data,
+        options: Options(headers: {'content-type': 'application/json'}),
+      );
       final model = EditProfileResponseModel.fromJson(response.data);
       return model;
     } catch (e) {

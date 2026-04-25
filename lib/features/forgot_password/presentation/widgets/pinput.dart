@@ -221,8 +221,12 @@ class _PinPutFormState extends State<PinPutForm> {
               ),
               event: () {
                 logMe(widget.email.toString());
-
                 logMe(provider.otp.toString());
+
+                if (provider.otp.isEmpty || provider.otp.length < 4) {
+                  showToast(message: "Please enter OTP code");
+                  return;
+                }
                 onVerify(widget.email, provider.otp);
                 // final provider = context.read<OtpVerificationProvider>();
 

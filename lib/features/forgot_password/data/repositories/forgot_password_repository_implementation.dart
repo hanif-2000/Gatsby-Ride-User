@@ -15,37 +15,46 @@ class ForgotPasswordRepositoryImplementation
 
   @override
   Future<Either<Failure, ForgotPasswordResponseModel>> doForgotPassword(
-      FormData formData) async {
+      Map<String, dynamic> data) async {
     try {
-      final data = await dataSource.doForgotPassword(formData);
-      return Right(data);
-    } on DioError catch (e) {
+      final result = await dataSource.doForgotPassword(data);
+      return Right(result);
+    } on DioException catch (e) {
       logMe("Failure ForgotPassword repository ${e.toString()}");
-      return Left(ServerFailure(message: e.message));
+      final serverMessage = e.response?.data is Map
+          ? (e.response!.data['message'] as String? ?? 'Something went wrong')
+          : 'Something went wrong';
+      return Left(ServerFailure(message: serverMessage));
     }
   }
 
   @override
   Future<Either<Failure, ForgotPasswordResponseModel>> updatePassword(
-      FormData formData) async {
+      Map<String, dynamic> data) async {
     try {
-      final data = await dataSource.updatePassword(formData);
-      return Right(data);
-    } on DioError catch (e) {
-      logMe("Failure profile repository ${e.toString()}");
-      return Left(ServerFailure(message: e.message));
+      final result = await dataSource.updatePassword(data);
+      return Right(result);
+    } on DioException catch (e) {
+      logMe("Failure updatePassword repository ${e.toString()}");
+      final serverMessage = e.response?.data is Map
+          ? (e.response!.data['message'] as String? ?? 'Something went wrong')
+          : 'Something went wrong';
+      return Left(ServerFailure(message: serverMessage));
     }
   }
 
   @override
   Future<Either<Failure, ForgotPasswordResponseModel>> verifyOtp(
-      FormData formData) async {
+      Map<String, dynamic> data) async {
     try {
-      final data = await dataSource.verifyOtp(formData);
-      return Right(data);
-    } on DioError catch (e) {
-      logMe("Failure profile repository ${e.toString()}");
-      return Left(ServerFailure(message: e.message));
+      final result = await dataSource.verifyOtp(data);
+      return Right(result);
+    } on DioException catch (e) {
+      logMe("Failure verifyOtp repository ${e.toString()}");
+      final serverMessage = e.response?.data is Map
+          ? (e.response!.data['message'] as String? ?? 'Something went wrong')
+          : 'Something went wrong';
+      return Left(ServerFailure(message: serverMessage));
     }
   }
 }

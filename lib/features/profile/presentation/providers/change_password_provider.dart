@@ -1,7 +1,6 @@
 import 'package:GetsbyRideshare/core/utility/helper.dart';
 import 'package:GetsbyRideshare/features/profile/domain/usecases/update_password.dart';
 import 'package:GetsbyRideshare/features/profile/presentation/providers/profile_state.dart';
-import 'package:dio/dio.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';
 
@@ -16,11 +15,12 @@ class ChangePasswordProvider extends FormProvider {
     // required String confirmPwd,
   }) async* {
     yield ProfileLoading();
-    final data = FormData.fromMap({
+    final data = {
       'email': email,
       'password': newPwd,
+      'type': 'Customer',
       // 'password_confirmation': confirmPwd,
-    });
+    };
     final result = await updatePassword.execute(data);
     yield* result.fold((failure) async* {
       logMe("Failureeeee");

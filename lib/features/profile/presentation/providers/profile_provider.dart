@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/core/utility/injection.dart';
+import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 
 import '../../../../core/presentation/providers/form_provider.dart';
 import '../../data/models/profile_response_model.dart';
@@ -31,6 +33,13 @@ class ProfileProvider extends FormProvider {
   ProfileProvider({required this.getProfile});
 
   Stream<ProfileState> fetchProfile() async* {
+    // Token empty hai matlab logout ho chuka hai — API call mat karo
+    final token = locator<Session>().sessionToken;
+    if (token.isEmpty) {
+      logMe("fetchProfile skipped — token is empty (user logged out)");
+      return;
+    }
+
     logMe("loading");
 
     yield ProfileLoading();

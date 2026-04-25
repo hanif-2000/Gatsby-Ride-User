@@ -13,6 +13,14 @@ import '../utility/session_helper.dart';
 class AppInterceptor extends Interceptor {
   static bool _isNavigatingToLogin = false;
 
+  static void beginLogout() {
+    _isNavigatingToLogin = true;
+  }
+
+  static void endLogout() {
+    _isNavigatingToLogin = false;
+  }
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     logMe("on request called");
@@ -83,6 +91,13 @@ class AppInterceptor extends Interceptor {
     if (statusCode == HttpStatus.unauthorized || statusCode == 401) {
       print("====unauthorized called==>>");
       dismissLoading();
+
+      // If token is already empty, manual logout is in progress — skip navigation
+      final session = locator<Session>();
+      if (session.sessionToken.isEmpty) {
+        return super.onError(err, handler);
+      }
+
       if (!_isNavigatingToLogin) {
         _isNavigatingToLogin = true;
         await sessionLogOut().then(

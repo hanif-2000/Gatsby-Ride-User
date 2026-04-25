@@ -1,10 +1,11 @@
-import 'package:GetsbyRideshare/core/error/failure.dart';
-import 'package:GetsbyRideshare/core/utility/helper.dart';
-import 'package:GetsbyRideshare/features/forgot_password/data/datasources/otp_verification_data_source.dart';
-import 'package:GetsbyRideshare/features/forgot_password/data/models/otp_verification_response_modal.dart';
-import 'package:GetsbyRideshare/features/forgot_password/domain/repositories/otp_verification_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+
+import '../../../../core/error/failure.dart';
+import '../../../../core/utility/helper.dart';
+import '../../data/datasources/otp_verification_data_source.dart';
+import '../../data/models/otp_verification_response_modal.dart';
+import '../../domain/repositories/otp_verification_repository.dart';
 
 class OtpVerifyRepositoryImplementation implements OtpVerificationRepository {
   final OtpVerificationDataSource dataSource;
@@ -13,13 +14,16 @@ class OtpVerifyRepositoryImplementation implements OtpVerificationRepository {
 
   @override
   Future<Either<Failure, OtpVerificationResponseModal>> doOtpVerify(
-      FormData formData) async {
+      Map<String, dynamic> data) async {
     try {
-      final data = await dataSource.doVerifyOtp(formData);
-      return Right(data);
-    } on DioError catch (e) {
+      final result = await dataSource.doVerifyOtp(data);
+      return Right(result);
+    } on DioException catch (e) {
       logMe("Failure otp verification repository ${e.toString()}");
-      return Left(ServerFailure(message: e.message));
+      final serverMessage = e.response?.data is Map
+          ? (e.response!.data['message'] as String? ?? 'Something went wrong')
+          : 'Something went wrong';
+      return Left(ServerFailure(message: serverMessage));
     }
   }
 }

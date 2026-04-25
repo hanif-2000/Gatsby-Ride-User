@@ -1,12 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 
 import '../../../../core/error/failure.dart';
 import '../../data/models/edit_profile_response_model.dart';
 import '../repositories/profile_repository.dart';
 
 abstract class UpdatePasswordUseCase<Type> {
-  Future<Either<Failure, EditProfileResponseModel>> execute(FormData formData);
+  Future<Either<Failure, EditProfileResponseModel>> execute(Map<String, dynamic> data);
 }
 
 class UpdatePassword implements UpdatePasswordUseCase<String> {
@@ -16,8 +15,8 @@ class UpdatePassword implements UpdatePasswordUseCase<String> {
 
   @override
   Future<Either<Failure, EditProfileResponseModel>> execute(
-      FormData formData) async {
-    final result = await repository.updatePassword(formData);
+      Map<String, dynamic> data) async {
+    final result = await repository.updatePassword(data);
     return result.fold((l) => Left(l), (r) {
       return Right(r);
     });

@@ -14,13 +14,12 @@ class ForgotPasswordProvider extends FormProvider {
 
   Stream<ForgotPasswordState> doForgotPasswordApi(
       {required String email}) async* {
-    // saveEmailToLocal();
     yield ForgotPasswordLoading();
-    final formData = FormData.fromMap({
+    final data = {
       'email': email,
       'type': "Customer",
-    });
-    final result = await doForgotPassword.call(formData);
+    };
+    final result = await doForgotPassword.call(data);
     yield* result.fold((statusCode) async* {
       yield ForgotPasswordFailure(failure: statusCode.message);
     }, (result) async* {

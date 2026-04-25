@@ -48,7 +48,7 @@ class ProfileRepositoryImplementation implements ProfileRepository {
 
   @override
   Future<Either<Failure, EditProfileResponseModel>> updatePassword(
-      FormData formData) async {
+      Map<String, dynamic> formData) async {
     try {
       final data = await dataSource.updatePassword(formData);
       return Right(data);

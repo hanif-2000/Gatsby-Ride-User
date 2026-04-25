@@ -85,18 +85,18 @@ class LoginDataSourceImplementation implements LoginDataSource {
   ) async {
     String url = 'api/webservice/login';
     final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
-    FormData data = FormData.fromMap({
-      'email': email,
+    final data = {
+      'email': email.trim(),
       'first_name': firstName,
       'last_name': lastName,
       'fcm_token': deviceToken,
       'login_type': 'social',
       'device_type': Platform.isAndroid ? "android" : "ios",
       'country': 'Canada',
-      "social_id": socialId,
-    });
+      'social_id': socialId,
+    };
 
-    log("----Social login ----> ${data.fields}");
+    log("----Social login ----> $data");
 
     try {
       final response = await dio.post(

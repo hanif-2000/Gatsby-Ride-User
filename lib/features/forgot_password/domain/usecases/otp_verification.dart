@@ -1,14 +1,11 @@
-import 'package:GetsbyRideshare/features/forgot_password/data/models/otp_verification_response_modal.dart';
-import 'package:GetsbyRideshare/features/forgot_password/domain/repositories/otp_verification_repository.dart';
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 
 import '../../../../core/error/failure.dart';
+import '../../data/models/otp_verification_response_modal.dart';
+import '../repositories/otp_verification_repository.dart';
 
 abstract class OtpVerificationUserCases<Type> {
-  // return statusCode when fails
-  // return token when succeed
-  Future<Either<Failure, OtpVerificationResponseModal>> call(FormData formData);
+  Future<Either<Failure, OtpVerificationResponseModal>> call(Map<String, dynamic> data);
 }
 
 class DoOtpVerify implements OtpVerificationUserCases<String> {
@@ -18,10 +15,8 @@ class DoOtpVerify implements OtpVerificationUserCases<String> {
 
   @override
   Future<Either<Failure, OtpVerificationResponseModal>> call(
-      FormData formData) async {
-    final result = await repository.doOtpVerify(formData);
-    return result.fold((l) => Left(l), (r) {
-      return Right(r);
-    });
+      Map<String, dynamic> data) async {
+    final result = await repository.doOtpVerify(data);
+    return result.fold((l) => Left(l), (r) => Right(r));
   }
 }

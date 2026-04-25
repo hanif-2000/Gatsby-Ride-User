@@ -9,5 +9,5 @@ abstract class ProfileRepository {
   Future<Either<Failure, int>> updateProfile(FormData formData);
   Future<Either<Failure, int>> updateEmail(FormData formData);
   Future<Either<Failure, EditProfileResponseModel>> updatePassword(
-      FormData formData);
+      Map<String, dynamic> data);
 }

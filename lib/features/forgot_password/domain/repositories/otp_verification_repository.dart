@@ -1,9 +1,9 @@
-import 'package:GetsbyRideshare/core/error/failure.dart';
-import 'package:GetsbyRideshare/features/forgot_password/data/models/otp_verification_response_modal.dart';
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
+
+import '../../../../core/error/failure.dart';
+import '../../data/models/otp_verification_response_modal.dart';
 
 abstract class OtpVerificationRepository {
   Future<Either<Failure, OtpVerificationResponseModal>> doOtpVerify(
-      FormData formData);
+      Map<String, dynamic> data);
 }

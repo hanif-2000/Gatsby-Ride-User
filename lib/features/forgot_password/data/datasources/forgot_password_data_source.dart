@@ -2,9 +2,9 @@ import 'package:GetsbyRideshare/features/forgot_password/data/models/forgot_pass
 import 'package:dio/dio.dart';
 
 abstract class ForgotPasswordDataSource {
-  Future<ForgotPasswordResponseModel> doForgotPassword(FormData formData);
-  Future<ForgotPasswordResponseModel> updatePassword(FormData formData);
-  Future<ForgotPasswordResponseModel> verifyOtp(FormData formData);
+  Future<ForgotPasswordResponseModel> doForgotPassword(Map<String, dynamic> data);
+  Future<ForgotPasswordResponseModel> updatePassword(Map<String, dynamic> data);
+  Future<ForgotPasswordResponseModel> verifyOtp(Map<String, dynamic> data);
 }
 
 class ForgotPasswordDataSourceImplementation
@@ -15,16 +15,13 @@ class ForgotPasswordDataSourceImplementation
 
   @override
   Future<ForgotPasswordResponseModel> doForgotPassword(
-      FormData formData) async {
+      Map<String, dynamic> data) async {
     String url = 'api/webservice/password/forgot';
-    // String url = 'api/webservice/reset-password-user';
-
-    // String url = 'api/webservice/customer/password/reset';
-
     try {
       final response = await dio.post(
         url,
-        data: formData,
+        data: data,
+        options: Options(headers: {'content-type': 'application/json'}),
       );
       final model = ForgotPasswordResponseModel.fromJson(response.data);
       return model;
@@ -34,11 +31,15 @@ class ForgotPasswordDataSourceImplementation
   }
 
   @override
-  Future<ForgotPasswordResponseModel> updatePassword(FormData formData) async {
+  Future<ForgotPasswordResponseModel> updatePassword(
+      Map<String, dynamic> data) async {
     String url = 'api/webservice/customer/password/reset';
-    // dio.withToken();
     try {
-      final response = await dio.post(url, data: formData);
+      final response = await dio.post(
+        url,
+        data: data,
+        options: Options(headers: {'content-type': 'application/json'}),
+      );
       final model = ForgotPasswordResponseModel.fromJson(response.data);
       return model;
     } catch (e) {
@@ -47,11 +48,15 @@ class ForgotPasswordDataSourceImplementation
   }
 
   @override
-  Future<ForgotPasswordResponseModel> verifyOtp(FormData formData) async {
+  Future<ForgotPasswordResponseModel> verifyOtp(
+      Map<String, dynamic> data) async {
     String url = 'api/webservice/otp/verify';
-    // dio.withToken();
     try {
-      final response = await dio.post(url, data: formData);
+      final response = await dio.post(
+        url,
+        data: data,
+        options: Options(headers: {'content-type': 'application/json'}),
+      );
       final model = ForgotPasswordResponseModel.fromJson(response.data);
       return model;
     } catch (e) {

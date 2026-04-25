@@ -1,8 +1,9 @@
-import 'package:GetsbyRideshare/features/forgot_password/data/models/otp_verification_response_modal.dart';
 import 'package:dio/dio.dart';
 
+import '../../data/models/otp_verification_response_modal.dart';
+
 abstract class OtpVerificationDataSource {
-  Future<OtpVerificationResponseModal> doVerifyOtp(FormData formData);
+  Future<OtpVerificationResponseModal> doVerifyOtp(Map<String, dynamic> data);
 }
 
 class OtpVerificationDataSourceImplementation
@@ -12,13 +13,14 @@ class OtpVerificationDataSourceImplementation
   OtpVerificationDataSourceImplementation({required this.dio});
 
   @override
-  Future<OtpVerificationResponseModal> doVerifyOtp(FormData formData) async {
+  Future<OtpVerificationResponseModal> doVerifyOtp(
+      Map<String, dynamic> data) async {
     String url = 'api/webservice/otp/verify';
-
     try {
       final response = await dio.post(
         url,
-        data: formData,
+        data: data,
+        options: Options(headers: {'content-type': 'application/json'}),
       );
       final model = OtpVerificationResponseModal.fromJson(response.data);
       return model;

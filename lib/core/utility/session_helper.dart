@@ -430,10 +430,14 @@ class SessionHelper implements Session {
 
   @override
   Future<void> clearSession() async {
-    setOldFcmToken = pref.getString(FCM_TOKEN)!;
-
+    final currentFcmToken = pref.getString(FCM_TOKEN) ?? '';
+    if (currentFcmToken.isNotEmpty) {
+      setOldFcmToken = currentFcmToken;
+    }
     await pref.clear();
-    setFcmToken = sessionFcmToken;
+    if (currentFcmToken.isNotEmpty) {
+      setFcmToken = currentFcmToken;
+    }
   }
 
   @override

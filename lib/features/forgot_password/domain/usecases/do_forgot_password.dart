@@ -1,14 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 
 import '../../../../core/error/failure.dart';
 import '../../data/models/forgot_password_response_model.dart';
 import '../repositories/forgot_password_repository.dart';
 
 abstract class ForgotPasswordUseCase<Type> {
-  // return statusCode when fails
-  // return token when succeed
-  Future<Either<Failure, ForgotPasswordResponseModel>> call(FormData formData);
+  Future<Either<Failure, ForgotPasswordResponseModel>> call(Map<String, dynamic> data);
 }
 
 class DoForgotPassword implements ForgotPasswordUseCase<String> {
@@ -18,10 +15,8 @@ class DoForgotPassword implements ForgotPasswordUseCase<String> {
 
   @override
   Future<Either<Failure, ForgotPasswordResponseModel>> call(
-      FormData formData) async {
-    final result = await repository.doForgotPassword(formData);
-    return result.fold((l) => Left(l), (r) {
-      return Right(r);
-    });
+      Map<String, dynamic> data) async {
+    final result = await repository.doForgotPassword(data);
+    return result.fold((l) => Left(l), (r) => Right(r));
   }
 }

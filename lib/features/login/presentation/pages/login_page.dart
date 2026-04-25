@@ -212,6 +212,10 @@ class _LoginPageState extends State<LoginPage> with AuthServices{
                     await signInWithGoogle().then((value) {
                       if(value != null){
                         log("value" + value.toString());
+                        if ((value.email ?? "").isEmpty) {
+                          showToast(message: "Could not get email from Google. Please try again.");
+                          return;
+                        }
                         var provider = Provider.of<LoginProvider>(context, listen: false);
                         provider.updateSocialLoginData(
                           userEmail: value.email??"",

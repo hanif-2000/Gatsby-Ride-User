@@ -18,6 +18,7 @@ mixin AuthServices {
       // Perform sign-in
       final result = await googleSignIn.signIn();
       if (result != null) {
+        final googleEmail = result.email;
         final googleAuth = await result.authentication;
         final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
@@ -27,7 +28,7 @@ mixin AuthServices {
           credential,
           socialType: "google",
           userName: result.displayName,
-          email: result.email,
+          email: googleEmail,
         );
       }
       return null;
@@ -41,12 +42,16 @@ mixin AuthServices {
     try {
       final appleProvider = AppleAuthProvider();
       appleProvider.addScope('email');
+      appleProvider.addScope('name');
       final userCred = await FirebaseAuth.instance.signInWithProvider(appleProvider);
+      final user = userCred.user;
+      // Apple only provides email/name on first login, use uid-based fallback email
+      final email = user?.email ?? user?.providerData.firstOrNull?.email ?? "${user?.uid ?? ""}@privaterelay.appleid.com";
       return UserModel(
-        socialId: userCred.user?.uid??"",
-        email:userCred.user?.email??"",
+        socialId: user?.uid ?? "",
+        email: email,
         socialType: "apple",
-        name: userCred.user?.displayName??"",
+        name: user?.displayName ?? user?.providerData.firstOrNull?.displayName ?? "",
       );
     } catch (error) {
       debugPrint('Apple sign-in error: $error');

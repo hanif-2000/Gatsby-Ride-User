@@ -1,6 +1,5 @@
 import 'package:GetsbyRideshare/core/presentation/providers/form_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/otp_verification_state.dart';
-import 'package:dio/dio.dart';
 
 import '../../domain/usecases/otp_verification.dart';
 
@@ -14,12 +13,12 @@ class OtpVerificationProvider extends FormProvider {
     required String otp,
   }) async* {
     yield OtpVerificationLoading();
-    final formData = FormData.fromMap({
+    final data = {
       'email': email,
       'otp': otp,
       'type': "Customer",
-    });
-    final result = await doOtpVerify!.call(formData);
+    };
+    final result = await doOtpVerify!.call(data);
     yield* result.fold((statusCode) async* {
       yield OtpVerificationFailure(failure: statusCode.message);
     }, (result) async* {
