@@ -65,12 +65,19 @@ class NotificationHelper {
     print("show notification called :-->> ${message.data}");
     print("show notification title :-->> ${message.data["title"]}");
     print("show notification message :-->> ${message.data["message"]}");
+    await showLocalNotification(
+      title: message.data["title"] ?? "",
+      body: message.data["message"] ?? "",
+    );
+  }
+
+  Future<void> showLocalNotification({required String title, required String body}) async {
     Random random = Random();
     int id = random.nextInt(900) + 10;
     await flutterLocalNotificationsPlugin.show(
       id,
-      message.data["title"],
-      message.data["message"],
+      title,
+      body,
       NotificationDetails(
         android: AndroidNotificationDetails(
           channel.id,
@@ -81,11 +88,14 @@ class NotificationHelper {
           playSound: true,
           priority: Priority.max,
           importance: Importance.max,
-          styleInformation:
-              BigTextStyleInformation(message.data["message"] ?? ""),
+          styleInformation: BigTextStyleInformation(body),
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
         ),
       ),
-      //  NotificationDetails(android: _androidNotificationDetails),
     );
   }
 

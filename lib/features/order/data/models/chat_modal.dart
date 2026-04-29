@@ -40,17 +40,17 @@ class ChatModel {
   });
 
   factory ChatModel.fromMap(Map<String, dynamic> json) => ChatModel(
-        id: json["id"],
+        id: json["id"]?.toString(),
         roomId: json["roomID"],
-        sourceUserId: json["source_user_id"],
-        targetUserId: json["target_user_id"],
+        sourceUserId: json["source_user_id"]?.toString(),
+        targetUserId: json["target_user_id"]?.toString(),
         senderType: json["senderType"],
         recieverType: json["recieverType"],
-        message: json["message"],
+        message: json["message"] ?? json["msg"],
         status: json["status"],
         messageType: json["MessageType"],
-        modifiedOn: DateTime.parse(json["modified_on"]),
-        createdOn: DateTime.parse(json["created_on"]),
+        modifiedOn: json["modified_on"] != null ? DateTime.tryParse(json["modified_on"]) ?? DateTime.now() : DateTime.now(),
+        createdOn: json["created_on"] != null ? DateTime.tryParse(json["created_on"]) ?? DateTime.now() : DateTime.now(),
       );
 
   Map<String, dynamic> toMap() => {

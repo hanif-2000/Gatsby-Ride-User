@@ -47,7 +47,6 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       socketProvider.joinExitRoom(
           receiverId: int.parse(session.driverId),
           type: "Join");
-      socketProvider.markMessageAsRead(receiverId: int.parse(session.driverId));
     });
 
     // socketProvider.JoinExitRoomListen(context: context);

@@ -29,6 +29,7 @@ import '../../features/order/data/models/submit_rating_response_modal.dart';
 import '../../features/order/domain/entities/order_detail.dart';
 
 import 'package:location/location.dart' as lctn;
+import '../../core/utility/notification_service.dart';
 
 class TestSocketProvider extends ChangeNotifier {
   IO.Socket? _socket;
@@ -46,6 +47,7 @@ class TestSocketProvider extends ChangeNotifier {
   String destinationAddress = "Destination";
   bool isLoading = false;
   bool isConnected = false;
+  bool isChatPageOpen = false;
   Map<String, dynamic>? _pendingRideRequest;
 
   // ✅ FIX 1: Duplicate listener rokne ke liye flag
@@ -427,6 +429,10 @@ class TestSocketProvider extends ChangeNotifier {
         session.setIsRunningOrder = true;
         currentOrderStatus = 2;
         notifyListeners();
+        NotificationHelper().showLocalNotification(
+          title: "Driver On the Way",
+          body: "Your driver is heading to your pickup location.",
+        );
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
@@ -443,6 +449,10 @@ class TestSocketProvider extends ChangeNotifier {
         currentOrderStatus = 3;
         updateCurrentOrderStatus(val: 3);
         notifyListeners();
+        NotificationHelper().showLocalNotification(
+          title: "Driver Arrived",
+          body: "Your driver has reached your pickup location. Please come outside.",
+        );
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
@@ -457,6 +467,10 @@ class TestSocketProvider extends ChangeNotifier {
         isWithDriver = true;
         currentOrderStatus = 5;
         notifyListeners();
+        NotificationHelper().showLocalNotification(
+          title: "Ride Started",
+          body: "Your ride has started. Enjoy your trip!",
+        );
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
@@ -472,6 +486,10 @@ class TestSocketProvider extends ChangeNotifier {
         session.setOrderId = acceptResponseModel!.data.id.toString();
         saveOrderReceipt();
         notifyListeners();
+        NotificationHelper().showLocalNotification(
+          title: "Ride Completed",
+          body: "Your ride has ended. Thank you for riding with Gatsby!",
+        );
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
@@ -487,6 +505,10 @@ class TestSocketProvider extends ChangeNotifier {
           updateCurrentOrderStatus(val: 8);
 
           notifyListeners();
+          NotificationHelper().showLocalNotification(
+            title: "Ride Cancelled",
+            body: "Your driver has cancelled the ride. Please search for another driver.",
+          );
           showDialog(
             barrierDismissible: false,
             context: locator<GlobalKey<NavigatorState>>().currentContext!,
@@ -538,12 +560,15 @@ class TestSocketProvider extends ChangeNotifier {
           addChatAll([]);
         }
       } else if (response['type'] == 'Chat') {
-        addSingleChat(
-          ChatModel.fromMap(
-            response['data'],
-          ),
-        );
+        final chatData = response['data'] ?? response;
+        addSingleChat(ChatModel.fromMap(chatData));
         log("chat data is :-->>${chatMessageList.length}");
+        if (!isChatPageOpen) {
+          NotificationHelper().showLocalNotification(
+            title: "New Message",
+            body: chatData['message'] ?? chatData['msg'] ?? "You have a new message",
+          );
+        }
       } else if (response['type'] == 'UnreadCount') {
         log("unread message count called");
         updateUnReadMessages(count: response['data']);
@@ -832,8 +857,17 @@ class TestSocketProvider extends ChangeNotifier {
 
     if (type == 'Join') {
       isLoading = true;
+      isChatPageOpen = true;
+      _chatMessagesList = [];
       markMessageAsRead(receiverId: receiverId);
+      Future.delayed(const Duration(seconds: 6), () {
+        if (isLoading) {
+          isLoading = false;
+          notifyListeners();
+        }
+      });
     } else if (type == 'unJoin') {
+      isChatPageOpen = false;
       updateUnReadMessages(count: 0);
       clearChatList();
     }
