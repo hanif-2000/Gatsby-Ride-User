@@ -547,13 +547,10 @@ class TestSocketProvider extends ChangeNotifier {
         log('Message list data-----> ${response['data']}');
 
         if (response['data'] != null) {
-          addChatAll(
-            List<ChatModel>.from(
-              response["data"].map(
-                (x) => ChatModel.fromMap(x),
-              ),
-            ),
+          final list = List<ChatModel>.from(
+            response["data"].map((x) => ChatModel.fromMap(x)),
           );
+          addChatAll(list.reversed.toList());
           log("chat data is :-->>${chatMessageList.length}");
           print("chat data is :-->>${chatMessageList.length}");
         } else {

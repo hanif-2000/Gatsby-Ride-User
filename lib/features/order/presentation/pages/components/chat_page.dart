@@ -227,18 +227,12 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                   itemCount: latestSocketProvider
                                       .chatMessageList.length,
                                   itemBuilder: (context, index) {
-                                    return latestSocketProvider
-                                                .chatMessageList[index]
-                                                .senderType ==
-                                            'Driver'
-                                        ? ReceiverTile(
-                                            title: latestSocketProvider
-                                                .chatMessageList[index].message,
-                                          )
-                                        : SenderTile(
-                                            title: latestSocketProvider
-                                                .chatMessageList[index].message,
-                                          );
+                                    final msg = latestSocketProvider.chatMessageList[index];
+                                    final isMe = msg.sourceUserId == session.userId ||
+                                        msg.senderType?.toLowerCase() == 'customer';
+                                    return isMe
+                                        ? SenderTile(title: msg.message)
+                                        : ReceiverTile(title: msg.message);
                                   },
                                 ),
                         ),

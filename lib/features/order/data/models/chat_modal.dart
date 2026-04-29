@@ -41,11 +41,11 @@ class ChatModel {
 
   factory ChatModel.fromMap(Map<String, dynamic> json) => ChatModel(
         id: json["id"]?.toString(),
-        roomId: json["roomID"],
-        sourceUserId: json["source_user_id"]?.toString(),
-        targetUserId: json["target_user_id"]?.toString(),
-        senderType: json["senderType"],
-        recieverType: json["recieverType"],
+        roomId: json["roomID"] ?? json["room"],
+        sourceUserId: (json["source_user_id"] ?? json["userID"] ?? json["sender_id"])?.toString(),
+        targetUserId: (json["target_user_id"] ?? json["recieverID"] ?? json["receiver_id"])?.toString(),
+        senderType: json["senderType"] ?? json["SenderType"] ?? json["sender_type"],
+        recieverType: json["recieverType"] ?? json["RecieverType"],
         message: json["message"] ?? json["msg"],
         status: json["status"],
         messageType: json["MessageType"],
