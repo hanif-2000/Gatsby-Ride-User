@@ -65,13 +65,6 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
 
       if (currentStatus == 7 && !_hasNavigatedToReceipt && !session.isPaymentDone) {
         _hasNavigatedToReceipt = true;
-        if (!mounted) return;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, ReceiptScreen.routeName, (route) => false);
-          }
-        });
       }
     }
   }

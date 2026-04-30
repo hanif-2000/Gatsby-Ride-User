@@ -142,6 +142,7 @@ class _MyAppState extends State<MyApp> {
     try {
       await FirebaseMessaging.instance.requestPermission();
       await NotificationService().init();
+      await FirebaseHelper.init();
     } catch (e) {
       logMe("Notification init failed: $e");
     }

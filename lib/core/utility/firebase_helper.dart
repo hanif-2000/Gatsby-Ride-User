@@ -44,24 +44,26 @@ class FirebaseHelper {
       final String title = message.data['title'] ?? message.notification?.title ?? '';
       final bool isNoDriver = title.toLowerCase().contains('no driver');
 
-      if (isNoDriver && session.isRunningOrder && session.orderStatus == 0) {
-        // Wait 4 seconds before cancelling — gives socket 'Accept' event time to arrive.
-        // If driver accepted in this window, orderStatus will be 1+ and we skip cancel.
-        Future.delayed(const Duration(seconds: 4), () {
-          if (session.isRunningOrder && session.orderStatus == 0) {
-            _handleNoDriverAvailable(session);
-          } else {
-            log("No-driver notification ignored — driver already accepted (status=${session.orderStatus})");
-          }
-        });
+      if (isNoDriver) {
+        // Only show "No Driver" dialog if customer is still actively searching
+        if (session.isRunningOrder && session.orderStatus == 0) {
+          // Wait 4 seconds — gives socket 'Accept' event time to arrive first
+          Future.delayed(const Duration(seconds: 4), () {
+            if (session.isRunningOrder && session.orderStatus == 0) {
+              _handleNoDriverAvailable(session);
+            } else {
+              log("No-driver notification ignored — order no longer searching (status=${session.orderStatus}, running=${session.isRunningOrder})");
+            }
+          });
+        } else {
+          // Customer already cancelled or ride is in progress — ignore silently
+          log("No-driver notification ignored — customer cancelled or ride active (status=${session.orderStatus}, running=${session.isRunningOrder})");
+        }
         return;
       }
 
-      // Show local notification on Android only (iOS APNs handles it automatically)
-      if (!Platform.isIOS) {
-        NotificationHelper notificationService = NotificationHelper();
-        notificationService.showNotifications(message);
-      }
+      NotificationHelper notificationService = NotificationHelper();
+      notificationService.showNotifications(message);
     });
   }
 

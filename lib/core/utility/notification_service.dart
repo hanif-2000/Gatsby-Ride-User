@@ -45,9 +45,9 @@ class NotificationHelper {
     /// heads up notifications.
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
+      alert: false,
+      badge: false,
+      sound: false,
     );
   }
 
@@ -63,12 +63,9 @@ class NotificationHelper {
 
   Future<void> showNotifications(RemoteMessage message) async {
     print("show notification called :-->> ${message.data}");
-    print("show notification title :-->> ${message.data["title"]}");
-    print("show notification message :-->> ${message.data["message"]}");
-    await showLocalNotification(
-      title: message.data["title"] ?? "",
-      body: message.data["message"] ?? "",
-    );
+    final title = message.data["title"] ?? message.notification?.title ?? "";
+    final body = message.data["message"] ?? message.data["body"] ?? message.notification?.body ?? "";
+    await showLocalNotification(title: title, body: body);
   }
 
   Future<void> showLocalNotification({required String title, required String body}) async {
