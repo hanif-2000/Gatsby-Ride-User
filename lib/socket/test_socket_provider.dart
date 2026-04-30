@@ -94,7 +94,12 @@ class TestSocketProvider extends ChangeNotifier {
         double.tryParse(data.endCoordinate.split(",").first) ?? 0.0,
         double.tryParse(data.endCoordinate.split(",").last) ?? 0.0,
       );
-      updateOriginAndDestinationLatLong(origin: oriLatLng, destination: destLatLng);
+      // Only overwrite if we got valid non-zero coords — Accept response often
+      // sends "0,0" for end_coordinate, which would clobber the correct
+      // destination set in initState from the booking data.
+      if (oriLatLng.latitude != 0.0 || oriLatLng.longitude != 0.0) {
+        updateOriginAndDestinationLatLong(origin: oriLatLng, destination: destLatLng);
+      }
     }
     notifyListeners();
   }
@@ -411,6 +416,19 @@ class TestSocketProvider extends ChangeNotifier {
         session.setDestinationLong = double.tryParse(acceptResponseModel!.data.endCoordinate.split(',').last) ?? 0.0;
         updateIsWithDriver(val: false);
         isWithDriver = false;
+
+        // Draw car + route immediately if Accept response includes driver position.
+        final acceptDriverLat = double.tryParse(acceptResponseModel!.data.latitude.toString()) ?? 0.0;
+        final acceptDriverLng = double.tryParse(acceptResponseModel!.data.longitude.toString()) ?? 0.0;
+        if (acceptDriverLat != 0.0 || acceptDriverLng != 0.0) {
+          session.setDriverLatLong = "$acceptDriverLat,$acceptDriverLng";
+          try {
+            await trackingDriver(listenLocation: true, lat: acceptDriverLat, long: acceptDriverLng, bearing: bearing);
+          } catch (e) {
+            logMe("Accept trackingDriver error: $e");
+          }
+        }
+
         notifyListeners();
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
@@ -428,6 +446,7 @@ class TestSocketProvider extends ChangeNotifier {
         isWithDriver = false;
         session.setIsRunningOrder = true;
         currentOrderStatus = 2;
+        await _trackFromStatusEvent(acceptResponseModel!);
         notifyListeners();
         NotificationHelper().showLocalNotification(
           title: "Driver On the Way",
@@ -448,6 +467,7 @@ class TestSocketProvider extends ChangeNotifier {
         session.setIsRunningOrder = true;
         currentOrderStatus = 3;
         updateCurrentOrderStatus(val: 3);
+        await _trackFromStatusEvent(acceptResponseModel!);
         notifyListeners();
         NotificationHelper().showLocalNotification(
           title: "Driver Arrived",
@@ -466,6 +486,8 @@ class TestSocketProvider extends ChangeNotifier {
         updateIsWithDriver(val: true);
         isWithDriver = true;
         currentOrderStatus = 5;
+        session.setIsRunningOrder = true;
+        await _trackFromStatusEvent(acceptResponseModel!);
         notifyListeners();
         NotificationHelper().showLocalNotification(
           title: "Ride Started",
@@ -577,6 +599,39 @@ class TestSocketProvider extends ChangeNotifier {
     });
   }
 
+  /// Updates origin/destination from a status event response (if valid) then
+  /// immediately draws the car marker + route without waiting for UpdatedLatLng.
+  Future<void> _trackFromStatusEvent(AcceptResponseModel model) async {
+    final oriLat = double.tryParse(model.data.startCoordinate.split(',').first) ?? 0.0;
+    final oriLng = double.tryParse(model.data.startCoordinate.split(',').last) ?? 0.0;
+    final destLat = double.tryParse(model.data.endCoordinate.split(',').first) ?? 0.0;
+    final destLng = double.tryParse(model.data.endCoordinate.split(',').last) ?? 0.0;
+    if ((oriLat != 0.0 || oriLng != 0.0) && (destLat != 0.0 || destLng != 0.0)) {
+      updateOriginAndDestinationLatLong(
+        origin: LatLng(oriLat, oriLng),
+        destination: LatLng(destLat, destLng),
+      );
+    }
+    var dLat = double.tryParse(model.data.latitude.toString()) ?? 0.0;
+    var dLng = double.tryParse(model.data.longitude.toString()) ?? 0.0;
+    // Fallback to last known driver position if event doesn't include coordinates.
+    if (dLat == 0.0 && dLng == 0.0) {
+      final parts = session.driverLatLng.split(',');
+      if (parts.length == 2) {
+        dLat = double.tryParse(parts[0].trim()) ?? 0.0;
+        dLng = double.tryParse(parts[1].trim()) ?? 0.0;
+      }
+    }
+    if (dLat != 0.0 || dLng != 0.0) {
+      session.setDriverLatLong = "$dLat,$dLng";
+      try {
+        await trackingDriver(listenLocation: true, lat: dLat, long: dLng, bearing: bearing);
+      } catch (e) {
+        logMe("_trackFromStatusEvent error: $e");
+      }
+    }
+  }
+
   // /**  Tracking Driver */
   Future<void> trackingDriver(
       {required bool listenLocation,
@@ -602,20 +657,26 @@ class TestSocketProvider extends ChangeNotifier {
     markers[markerId] = marker;
     if (listenLocation && session.isRunningOrder) {
       logMe("is with driver called:-->> ${isWithDriver}");
+      final LatLng waypoint;
       if ((isWithDriver) ||
           (currentOrderStatus == 5) ||
           (currentOrderStatus == 7) ||
           (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         log("driver:- destination LatLng. $destinationLatLng");
+        waypoint = destinationLatLng;
         await setPolyLinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
       } else {
         log("driver:-  is not with driver. $isWithDriver");
         log("driver:-  is not with driver.origin lat long $originLatLng");
+        waypoint = originLatLng;
         await setPolyLinesDirection(LatLng(latDriver, lngDriver), originLatLng);
       }
+      // Fit camera to show both the driver and the destination/pickup so the route is visible.
+      await animateToBounds(LatLng(latDriver, lngDriver), waypoint);
+    } else {
+      await animateToLocation(LatLng(latDriver, lngDriver));
     }
-    await animateToLocation(LatLng(latDriver, lngDriver));
   }
 
   // Save UserData to SharedPreferences
@@ -642,9 +703,41 @@ class TestSocketProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> animateToBounds(LatLng driverPos, LatLng waypoint) async {
+    try {
+      final double south = driverPos.latitude < waypoint.latitude ? driverPos.latitude : waypoint.latitude;
+      final double north = driverPos.latitude > waypoint.latitude ? driverPos.latitude : waypoint.latitude;
+      final double west = driverPos.longitude < waypoint.longitude ? driverPos.longitude : waypoint.longitude;
+      final double east = driverPos.longitude > waypoint.longitude ? driverPos.longitude : waypoint.longitude;
+      final bounds = LatLngBounds(
+        southwest: LatLng(south - 0.005, west - 0.005),
+        northeast: LatLng(north + 0.005, east + 0.005),
+      );
+      await googleMapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 70));
+    } catch (e) {
+      logMe("animateToBounds error: $e");
+      await animateToLocation(driverPos);
+    }
+  }
+
   Future<void> setPolyLinesDirection(LatLng origin, LatLng destination) async {
     log("polyline///  --Driver co:" + origin.latitude.toString() + "," + origin.longitude.toString());
     log("polyline/// destination co:" + destination.latitude.toString() + "," + destination.longitude.toString());
+
+    // Draw a straight line immediately so something always shows while API loads.
+    polylines = {
+      Polyline(
+        polylineId: const PolylineId("jalur"),
+        color: Colors.black,
+        points: [origin, destination],
+        width: 6,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+      )
+    };
+    notifyListeners();
+
+    // Replace with proper road route when Directions API responds.
     await DirectionHelper()
         .getRouteBetweenCoordinates(origin.latitude, origin.longitude,
             destination.latitude, destination.longitude)
@@ -655,17 +748,16 @@ class TestSocketProvider extends ChangeNotifier {
         for (var point in result) {
           polylineCoordinates.add(LatLng(point.latitude, point.longitude));
         }
-
-        Polyline polyline = Polyline(
+        polylines = {
+          Polyline(
             polylineId: const PolylineId("jalur"),
             color: Colors.black,
             points: polylineCoordinates,
             width: 6,
             startCap: Cap.roundCap,
-            endCap: Cap.roundCap);
-
-        polylines.clear();
-        polylines.add(polyline);
+            endCap: Cap.roundCap,
+          )
+        };
         log("Polylines are:-->> " + polylines.toString());
       }
       notifyListeners();
@@ -1061,5 +1153,36 @@ class TestSocketProvider extends ChangeNotifier {
 
   Future<void> moveCameraToDriver() async {
     await animateToLocation(LatLng(_driverLat, _driverLng));
+  }
+
+  void restoreOrderStatusFromSession() {
+    final status = session.orderStatus;
+    if (status > 0 && status != 100) {
+      currentOrderStatus = status;
+      if (status == 3 || status == 5 || status == 7) {
+        isWithDriver = true;
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<void> restoreDriverPositionOnMapReady() async {
+    try {
+      if (!session.isRunningOrder) return;
+      final driverPos = session.driverLatLng;
+      final parts = driverPos.split(',');
+      if (parts.length != 2) return;
+      final driverLat = double.tryParse(parts[0].trim()) ?? 0.0;
+      final driverLng = double.tryParse(parts[1].trim()) ?? 0.0;
+      if (driverLat == 0.0 && driverLng == 0.0) return;
+      await trackingDriver(
+        listenLocation: true,
+        lat: driverLat,
+        long: driverLng,
+        bearing: bearing,
+      );
+    } catch (e) {
+      logMe("restoreDriverPositionOnMapReady error: $e");
+    }
   }
 }

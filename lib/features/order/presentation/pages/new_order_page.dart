@@ -83,6 +83,16 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
     var newSocketProvider = context.read<TestSocketProvider>();
     WidgetsBinding.instance.addObserver(this);
     newSocketProvider.addListener(_onSocketUpdate);
+
+    // Pre-initialize coords so UpdatedLatLng events don't fail with LateInitializationError
+    // before onMapCreated fires and sets them via setAddressFromLatLng.
+    newSocketProvider.updateOriginAndDestinationLatLong(
+      origin: widget.location.originLatLng,
+      destination: widget.location.destinationLatLng,
+    );
+    // Restore persisted order status so route direction (to origin vs destination) is correct.
+    newSocketProvider.restoreOrderStatusFromSession();
+
     newSocketProvider.updateBitsImage().then((value) {
       if (session.driverId != '') {
         newSocketProvider.joinExitRoom(
@@ -242,6 +252,9 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                   onMapCreated: (GoogleMapController controller) async {
                     newSocketProvider.googleMapController = controller;
                     newSocketProvider.setCurrentLocation(widget.location);
+                    // Show driver marker + route from last known position immediately,
+                    // without waiting for the next UpdatedLatLng socket event.
+                    newSocketProvider.restoreDriverPositionOnMapReady();
                   },
                   onCameraMove: (val) async {
                     newSocketProvider.updateZoom(val);
@@ -250,7 +263,7 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
                   tiltGesturesEnabled: false,
                   rotateGesturesEnabled: false,
                   scrollGesturesEnabled: true,
-                  polylines: newSocketProvider.polylines,
+                  polylines: Set<Polyline>.of(newSocketProvider.polylines),
                   markers: Set<Marker>.of(newSocketProvider.markers.values),
                 ),
 
