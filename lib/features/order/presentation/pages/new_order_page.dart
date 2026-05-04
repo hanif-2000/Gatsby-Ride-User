@@ -77,14 +77,15 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
     WidgetsBinding.instance.addObserver(this);
     newSocketProvider.addListener(_onSocketUpdate);
 
-    // Pre-initialize coords so UpdatedLatLng events don't fail with LateInitializationError
-    // before onMapCreated fires and sets them via setAddressFromLatLng.
-    newSocketProvider.updateOriginAndDestinationLatLong(
-      origin: widget.location.originLatLng,
-      destination: widget.location.destinationLatLng,
-    );
-    // Restore persisted order status so route direction (to origin vs destination) is correct.
-    newSocketProvider.restoreOrderStatusFromSession();
+    // Deferred to post-frame to avoid notifyListeners() during build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      newSocketProvider.updateOriginAndDestinationLatLong(
+        origin: widget.location.originLatLng,
+        destination: widget.location.destinationLatLng,
+      );
+      newSocketProvider.restoreOrderStatusFromSession();
+    });
 
     newSocketProvider.updateBitsImage().then((value) {
       if (session.driverId != '') {

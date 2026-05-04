@@ -26,6 +26,22 @@ abstract class LoginDataSource {
   );
 }
 
+Future<String> _getFcmToken() async {
+  if (Platform.isIOS) {
+    String? apnsToken;
+    int retries = 0;
+    while (apnsToken == null && retries < 5) {
+      apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+      if (apnsToken == null) {
+        await Future.delayed(const Duration(seconds: 2));
+        retries++;
+      }
+    }
+    if (apnsToken == null) return '';
+  }
+  return await FirebaseMessaging.instance.getToken() ?? '';
+}
+
 class LoginDataSourceImplementation implements LoginDataSource {
   final Dio dio;
 
@@ -39,7 +55,7 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String deviceType,
   ) async {
     String url = 'api/webservice/login';
-    final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    final deviceToken = await _getFcmToken();
     log("fcm token : " + deviceToken.toString());
     final data = {
       'email': email,
@@ -84,7 +100,7 @@ class LoginDataSourceImplementation implements LoginDataSource {
     String socialId,
   ) async {
     String url = 'api/webservice/login';
-    final deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    final deviceToken = await _getFcmToken();
     final data = {
       'email': email.trim(),
       'first_name': firstName,

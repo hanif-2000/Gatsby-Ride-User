@@ -31,20 +31,19 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
-  // var orderProvider = locator<OrderProvider>();
-  // var chatProvider = locator<ChatProvider>();
   var session = locator<Session>();
+  late TestSocketProvider _socketProvider;
 
   @override
   void initState() {
     super.initState();
-    var socketProvider = context.read<TestSocketProvider>();
+    _socketProvider = context.read<TestSocketProvider>();
     WidgetsBinding.instance.addObserver(this);
 
     print("init in chat page called");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print("WidgetsBinding");
-      socketProvider.joinExitRoom(
+      _socketProvider.joinExitRoom(
           receiverId: int.parse(session.driverId),
           type: "Join");
     });
@@ -54,37 +53,26 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (context.mounted) {
-      var socketProvider = context.read<TestSocketProvider>();
-      log(" app lifecycle state is ------>>>>>>>   $state");
-      if (state == AppLifecycleState.paused) {
-        socketProvider.joinExitRoom(
-          type: 'unJoin',
+    if (!mounted) return;
+    log(" app lifecycle state is ------>>>>>>>   $state");
+    if (state == AppLifecycleState.paused) {
+      _socketProvider.joinExitRoom(
+        type: 'unJoin',
+        receiverId: int.parse(session.driverId),
+      );
+    } else if (state == AppLifecycleState.resumed) {
+      _socketProvider.joinExitRoom(
           receiverId: int.parse(session.driverId),
-        );
-      } else if (state == AppLifecycleState.resumed) {
-        socketProvider.joinExitRoom(
-            receiverId: int.parse(session.driverId),
-            type: 'Join');
-      }
+          type: 'Join');
     }
   }
 
-  // @override
-  // void dispose() {
-  //   log("dispoase called");
-
-  //   super.dispose();
-
-  //   // socketProvider.joinExitRoom(
-  //   //   context: context,
-  //   //   type: 'unJoin',
-  //   //   receiverId: int.parse(session.driverId),
-  //   // );
-  //   // socketProvider.updateUnReadMessages(count: 0);
-
-  //   WidgetsBinding.instance.removeObserver(this);
-  // }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _socketProvider.isChatPageOpen = false;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

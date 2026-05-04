@@ -651,6 +651,7 @@ class TestSocketProvider extends ChangeNotifier {
       markerId: markerId,
       position: LatLng(latDriver, lngDriver),
       icon: driverMarker,
+      zIndex: 2.0,
       onTap: () {},
     );
 
@@ -670,7 +671,17 @@ class TestSocketProvider extends ChangeNotifier {
         log("driver:-  is not with driver. $isWithDriver");
         log("driver:-  is not with driver.origin lat long $originLatLng");
         waypoint = originLatLng;
-        await setPolyLinesDirection(LatLng(latDriver, lngDriver), originLatLng);
+        // Accept event echoes pickup coords as driver position — that gives a
+        // zero-length polyline. Draw the full origin→destination route instead
+        // until UpdatedLatLng events arrive with the real driver position.
+        final bool driverAtPickup =
+            (latDriver - originLatLng.latitude).abs() < 0.0001 &&
+            (lngDriver - originLatLng.longitude).abs() < 0.0001;
+        if (driverAtPickup) {
+          await setPolyLinesDirection(originLatLng, destinationLatLng);
+        } else {
+          await setPolyLinesDirection(LatLng(latDriver, lngDriver), originLatLng);
+        }
       }
       // Fit camera to show both the driver and the destination/pickup so the route is visible.
       await animateToBounds(LatLng(latDriver, lngDriver), waypoint);

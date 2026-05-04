@@ -34,6 +34,11 @@ class NotificationHelper {
 
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
           alert: true,

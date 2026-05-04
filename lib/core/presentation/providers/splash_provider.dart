@@ -25,11 +25,12 @@ class SplashProvider extends ChangeNotifier{
     log("SessionToken ===========: " + session.sessionToken.toString());
     log("SessionFcmToken ===========: " + session.sessionFcmToken.toString());
     if (session.sessionFcmToken == '') {
-      FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance; // Change here
-      _firebaseMessaging.getToken().then((token) {
-        session.setFcmToken = token!;
-        notifyListeners();
-        print("fcm token token is $token");
+      _getFcmToken().then((token) {
+        if (token != null) {
+          session.setFcmToken = token;
+          notifyListeners();
+          print("fcm token token is $token");
+        }
       });
     }
 
@@ -54,6 +55,22 @@ class SplashProvider extends ChangeNotifier{
     );
 
   }*/
+
+  Future<String?> _getFcmToken() async {
+    if (Platform.isIOS) {
+      String? apnsToken;
+      int retries = 0;
+      while (apnsToken == null && retries < 5) {
+        apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        if (apnsToken == null) {
+          await Future.delayed(const Duration(seconds: 2));
+          retries++;
+        }
+      }
+      if (apnsToken == null) return null;
+    }
+    return await FirebaseMessaging.instance.getToken();
+  }
 
   getDeviceType() {
     if (Platform.isAndroid) {
