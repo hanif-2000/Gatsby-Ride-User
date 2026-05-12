@@ -171,10 +171,14 @@ newTotal: (double.tryParse(newTotal?.replaceAll(',', '') ?? '0') ?? 0.0).toStrin
               //Price
               Row(
                 children: [
-                  Image.asset(
-                    'assets/icons/cad_crncy.png',
-                    height: 40,
-                    width: 40,
+                  Text(
+                    'CA\$ ',
+                    style: const TextStyle(
+                      fontFamily: 'poPPinRegular',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14.0,
+                      color: black080808Color,
+                    ),
                   ),
                   Text(
 (double.tryParse(newTotal?.replaceAll(',', '') ?? '0') ?? 0.0).toStringAsFixed(2),

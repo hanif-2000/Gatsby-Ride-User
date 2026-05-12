@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import GoogleMaps
 import Firebase
+import FirebaseMessaging
 import GoogleSignIn
 
 @main
@@ -23,6 +24,16 @@ import GoogleSignIn
     }
         application.registerForRemoteNotifications()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  // FirebaseAppDelegateProxyEnabled is false, so we must forward APNs token manually
+  override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    Messaging.messaging().apnsToken = deviceToken
+    super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+  }
+
+  override func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    print("Failed to register for remote notifications: \(error)")
   }
 
   override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
