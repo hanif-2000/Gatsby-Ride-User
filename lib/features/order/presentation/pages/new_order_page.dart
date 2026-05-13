@@ -206,6 +206,14 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && session.isRunningOrder) {
+      log("App resumed — syncing ride status from API");
+      context.read<TestSocketProvider>().syncStatusFromApi();
+    }
+  }
+
+  @override
   void dispose() {
     _timer?.cancel();
     try {

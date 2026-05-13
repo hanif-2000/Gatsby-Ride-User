@@ -1196,4 +1196,44 @@ class TestSocketProvider extends ChangeNotifier {
       logMe("restoreDriverPositionOnMapReady error: $e");
     }
   }
+
+  /// App background se foreground mein aane par API se latest ride status sync karta hai.
+  /// Socket.IO background mein disconnect ho jaata hai, isliye yeh method missed events cover karta hai.
+  Future<void> syncStatusFromApi() async {
+    if (!session.isRunningOrder || session.orderId.isEmpty) return;
+    log("syncStatusFromApi: checking API for latest ride status");
+    try {
+      final orderId = int.tryParse(session.orderId);
+      if (orderId == null) return;
+
+      final data = await fetchOrderDetails(orderId);
+      if (data == null) return;
+
+      final apiStatus = int.tryParse(data.data.orderStatus.toString()) ?? 0;
+      log("syncStatusFromApi: apiStatus=$apiStatus, currentStatus=$currentOrderStatus");
+
+      if (apiStatus > currentOrderStatus) {
+        log("syncStatusFromApi: updating status $currentOrderStatus → $apiStatus");
+        currentOrderStatus = apiStatus;
+        session.setOrderStatus = apiStatus;
+        if (apiStatus == 3 || apiStatus == 5 || apiStatus == 7) {
+          isWithDriver = true;
+        }
+        if (driverDetailResponseModel == null && session.driverId.isNotEmpty) {
+          final driverId = int.tryParse(session.driverId);
+          if (driverId != null) {
+            try {
+              final driverData = await fetchDriverDetails(driverId);
+              await updateDriverDetailsModel(data: driverData);
+            } catch (e) {
+              logMe("syncStatusFromApi: driver details error: $e");
+            }
+          }
+        }
+        notifyListeners();
+      }
+    } catch (e) {
+      logMe("syncStatusFromApi error: $e");
+    }
+  }
 }
