@@ -69,17 +69,37 @@ class PaymentProvider extends FormProvider {
   }
 
   Stream<AddCardState> deleteCard(int cardId) async* {
-
     yield DeleteCardLoading();
-    final formData = FormData.fromMap({
-      'id': cardId,
-    });
+    final formData = FormData.fromMap({'id': cardId});
     log(formData.fields.toString());
     final result = await paymentCard.delete(formData);
     yield* result.fold((statusCode) async* {
       yield DeleteCardFailure(failure: statusCode.message);
     }, (result) async* {
       yield DeleteCardSuccess(data: result);
+    });
+  }
+
+  Stream<AddCardState> createPaymentIntent({
+    required String orderId,
+    required String driverId,
+    required String amount,
+    required String tip,
+  }) async* {
+    yield CreatePaymentIntentLoading();
+    final formData = FormData.fromMap({
+      'order_id': orderId,
+      'driver_id': driverId,
+      'amount': amount,
+      'tip': tip,
+      'currency': 'cad',
+    });
+    final result = await paymentCard.createIntent(formData);
+    yield* result.fold((failure) async* {
+      yield CreatePaymentIntentFailure(failure: failure.message);
+    }, (data) async* {
+      final clientSecret = data['client_secret'] as String? ?? '';
+      yield CreatePaymentIntentSuccess(clientSecret: clientSecret);
     });
   }
 

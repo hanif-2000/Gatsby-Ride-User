@@ -6,11 +6,10 @@ import '../../data/models/card_list_response_modal.dart';
 import '../repositories/payment_repository.dart';
 
 abstract class PaymentUseCase<Type> {
-  // return statusCode when fails
-  // return token when succeed
   Future<Either<Failure, CardListResponseModal>> call();
   Future<Either<Failure, AddCardResponseModal>> execute(FormData formData);
   Future<Either<Failure, AddCardResponseModal>> delete(FormData formData);
+  Future<Either<Failure, Map<String, dynamic>>> createIntent(FormData formData);
 }
 
 class PaymentCard implements PaymentUseCase<String> {
@@ -41,5 +40,11 @@ class PaymentCard implements PaymentUseCase<String> {
     return result.fold((l) => Left(l), (r) {
       return Right(r);
     });
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> createIntent(FormData formData) async {
+    final result = await repository.createPaymentIntent(formData);
+    return result.fold((l) => Left(l), (r) => Right(r));
   }
 }

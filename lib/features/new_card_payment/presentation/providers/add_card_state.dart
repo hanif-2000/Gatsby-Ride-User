@@ -42,3 +42,21 @@ class DeleteCardFailure extends AddCardState {
   @override
   List<Object?> get props => [failure];
 }
+
+class CreatePaymentIntentLoading extends AddCardState {}
+
+class CreatePaymentIntentSuccess extends AddCardState {
+  final String clientSecret;
+  CreatePaymentIntentSuccess({required this.clientSecret});
+
+  @override
+  List<Object?> get props => [clientSecret];
+}
+
+class CreatePaymentIntentFailure extends AddCardState {
+  final String failure;
+  CreatePaymentIntentFailure({required this.failure});
+
+  @override
+  List<Object?> get props => [failure];
+}

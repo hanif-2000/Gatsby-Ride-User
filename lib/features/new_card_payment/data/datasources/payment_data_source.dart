@@ -8,6 +8,7 @@ abstract class PaymentDataSource {
   Future<CardListResponseModal> getCardDetails();
   Future<AddCardResponseModal> addCardDetails(FormData formData);
   Future<AddCardResponseModal> deleteCard(FormData formData);
+  Future<Map<String, dynamic>> createPaymentIntent(FormData formData);
 }
 
 class PaymentDataSourceImplementation implements PaymentDataSource {
@@ -46,13 +47,24 @@ class PaymentDataSourceImplementation implements PaymentDataSource {
 
   @override
   Future<AddCardResponseModal> deleteCard(FormData formData) async {
-    // String url = "api/webservice/card/detail/add";
     String url = "api/webservice/card/delete";
     dio.withToken();
     try {
       final response = await dio.post(url, data: formData);
       final model = AddCardResponseModal.fromJson(response.data);
       return model;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createPaymentIntent(FormData formData) async {
+    String url = "api/webservice/stripe/create-intent";
+    dio.withToken();
+    try {
+      final response = await dio.post(url, data: formData);
+      return response.data as Map<String, dynamic>;
     } catch (e) {
       rethrow;
     }

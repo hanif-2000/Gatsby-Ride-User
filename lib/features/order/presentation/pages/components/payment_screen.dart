@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:GetsbyRideshare/core/services/stripe_service.dart';
 import 'package:GetsbyRideshare/core/utility/app_settings.dart';
 import 'package:GetsbyRideshare/core/utility/helper.dart';
+import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/add_card_state.dart';
 import 'package:GetsbyRideshare/features/new_card_payment/presentation/providers/payment_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -111,6 +113,74 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   TextEditingController tipsTextEditingController =
       TextEditingController(text: "0.0");
+
+  Future<void> _payWithStripePaymentSheet() async {
+    showLoading();
+    try {
+      await for (final state in context.read<PaymentProvider>().createPaymentIntent(
+        orderId: widget.orderId,
+        driverId: widget.driverId,
+        amount: totalAmountToPay,
+        tip: tipsTextEditingController.text,
+      )) {
+        if (state is CreatePaymentIntentLoading) continue;
+
+        if (state is CreatePaymentIntentFailure) {
+          dismissLoading();
+          showToast(message: state.failure);
+          return;
+        }
+
+        if (state is CreatePaymentIntentSuccess) {
+          dismissLoading();
+          await StripeService.instance.makePayment(
+            clientSecret: state.clientSecret,
+            amount: totalAmountToPay,
+          );
+          updatePaymentSuccess();
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text("Ride Payment Status"),
+                content: const Text("Payment successful"),
+                actions: [
+                  CustomButton(
+                    isRounded: true,
+                    text: "Ok",
+                    event: () {
+                      session.setIsPaymentDone = true;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FeedBackScreen(
+                            name: widget.name,
+                            img: widget.img,
+                            carModal: widget.carModal,
+                            carNo: widget.carNo,
+                          ),
+                        ),
+                      );
+                    },
+                    bgColor: black080808Color,
+                  )
+                ],
+              ),
+            );
+          }
+          return;
+        }
+      }
+    } on stripe.StripeException catch (e) {
+      dismissLoading();
+      if (e.error.code == stripe.FailureCode.Canceled) return;
+      showToast(message: e.error.localizedMessage ?? 'Payment failed');
+    } catch (e) {
+      dismissLoading();
+      log(e.toString(), name: 'STRIPE');
+      showToast(message: e.toString());
+    }
+  }
 
 
   var _paymentItems = [
@@ -881,6 +951,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
               SizedBox(
                 height: _deviceSize.height * .05,
               ),
+
+              if (widget.paymentMode != 1) ...[
+                SizedBox(height: _deviceSize.height * .02),
+                CustomButton(
+                  borderRadius: 50.0,
+                  isRounded: true,
+                  text: "Pay with Stripe",
+                  event: _payWithStripePaymentSheet,
+                  bgColor: const Color(0xFF635BFF),
+                ),
+              ],
 
               CustomButton(
                   borderRadius: 50.0,

@@ -48,4 +48,14 @@ class PaymentRepositoryImplementation implements PaymentRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> createPaymentIntent(FormData formData) async {
+    try {
+      final data = await dataSource.createPaymentIntent(formData);
+      return Right(data);
+    } on DioException catch (e) {
+      logMe("Failure createPaymentIntent repository ${e.toString()}");
+      return Left(ServerFailure(message: e.message));
+    }
+  }
 }

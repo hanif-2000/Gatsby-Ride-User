@@ -8,4 +8,5 @@ abstract class PaymentRepository {
   Future<Either<Failure, CardListResponseModal>> getCardDetails();
   Future<Either<Failure, AddCardResponseModal>> addCardDetails(FormData formData);
   Future<Either<Failure, AddCardResponseModal>> deleteCard(FormData formData);
+  Future<Either<Failure, Map<String, dynamic>>> createPaymentIntent(FormData formData);
 }
