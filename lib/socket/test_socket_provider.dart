@@ -54,15 +54,18 @@ class TestSocketProvider extends ChangeNotifier {
   bool _isListening = false;
 
   List<ChatModel> get chatMessageList => _chatMessagesList;
-  late BitmapDescriptor destinationMarker, initialMarker, driverMarker;
+  BitmapDescriptor? destinationMarker, initialMarker, driverMarker;
   String originAddress = 'Pickup Address';
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
-  late LatLng originLatLng, destinationLatLng;
+  LatLng? originLatLng, destinationLatLng;
   final chatController = TextEditingController();
   String orderId = '';
   double bearing = 0.0;
+
+  LatLng? _previousDriverLatLng;
+  Timer? _driverAnimTimer;
 
   double ratingGiven = 1;
   late GoogleMapController googleMapController;
@@ -124,6 +127,7 @@ class TestSocketProvider extends ChangeNotifier {
   double _driverLng = 0.0;
 
   final lctn.Location locationService = lctn.Location();
+  StreamSubscription<lctn.LocationData>? _customerLocationSubscription;
 
   bool isOrderAccepted = false;
   DriverUpdatedPositionModel? driverUpdatedPositionModel;
@@ -158,6 +162,8 @@ class TestSocketProvider extends ChangeNotifier {
   updateCurrentOrderStatus({required int val}) {
     currentOrderStatus = val;
     session.setOrderStatus = val;
+    // Active ride shuru hone par customer_current marker hata do (blue dot kaafi hai)
+    if (val > 0) markers.remove(const MarkerId("customer_current"));
     notifyListeners();
   }
 
@@ -189,12 +195,66 @@ class TestSocketProvider extends ChangeNotifier {
   //clear state
   FutureOr<void> clearState() async {
     await sessionClearOrder();
+    stopCustomerLocationTracking();
+    _driverAnimTimer?.cancel();
+    _driverAnimTimer = null;
+    _previousDriverLatLng = null;
     polylines.clear();
     markers.clear();
     isWithDriver = false;
     originIsFilled = false;
     originAddress = 'Pickup Address';
     notifyListeners();
+  }
+
+  /// Customer ki apni live location track karta hai aur map mein update karta hai.
+  /// Isse customer apni current position map par dekhta hai.
+  Future<void> startCustomerLocationTracking() async {
+    _customerLocationSubscription?.cancel();
+    try {
+      bool serviceEnabled = await locationService.serviceEnabled();
+      if (!serviceEnabled) {
+        serviceEnabled = await locationService.requestService();
+        if (!serviceEnabled) return;
+      }
+      lctn.PermissionStatus permissionStatus = await locationService.hasPermission();
+      if (permissionStatus == lctn.PermissionStatus.denied) {
+        permissionStatus = await locationService.requestPermission();
+        if (permissionStatus != lctn.PermissionStatus.granted) return;
+      }
+
+      await locationService.changeSettings(
+        accuracy: lctn.LocationAccuracy.high,
+        interval: 3000,
+        distanceFilter: 10,
+      );
+
+      _customerLocationSubscription = locationService.onLocationChanged.listen((lctn.LocationData locationData) {
+        if (locationData.latitude == null || locationData.longitude == null) return;
+        final customerLatLng = LatLng(locationData.latitude!, locationData.longitude!);
+
+        // Sirf searching (status 0) mein custom marker dikhao
+        // Active ride mein myLocationEnabled: true ka blue dot enough hai
+        if (currentOrderStatus == 0) {
+          const markerId = MarkerId("customer_current");
+          markers[markerId] = Marker(
+            markerId: markerId,
+            position: customerLatLng,
+            icon: initialMarker ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+            anchor: const Offset(0.5, 0.5),
+            zIndexInt: 1,
+          );
+          notifyListeners();
+        }
+      });
+    } catch (e) {
+      logMe("startCustomerLocationTracking error: $e");
+    }
+  }
+
+  void stopCustomerLocationTracking() {
+    _customerLocationSubscription?.cancel();
+    _customerLocationSubscription = null;
   }
 
   // -----> function to connect the socket <--------- //
@@ -337,18 +397,19 @@ class TestSocketProvider extends ChangeNotifier {
       }
 
       /// *************** DRIVER UPDATED LAT LONG ********* -------
-      else if (response['type'] == 'UpdatedLatLong') {
+      else if (response['type'] == 'UpdatedLatLong' || response['serviceType'] == 'UpdatedLatLong') {
         log(response['type']);
         log("****************************      DRIVER UPDATED THE LAT LNG *************************");
         driverUpdatedPositionModel = DriverUpdatedPositionModel.fromJson(response);
         updateDriverLatLng(driverLtLng: LatLng(driverUpdatedPositionModel!.latitude, driverUpdatedPositionModel!.longitude));
         session.setDriverLatLong = "${driverUpdatedPositionModel!.latitude},${driverUpdatedPositionModel!.longitude}";
-        updateBearing(val: double.tryParse(driverUpdatedPositionModel!.bearing.toString())!);
+        final parsedBearing = double.tryParse(driverUpdatedPositionModel!.bearing?.toString() ?? '0') ?? 0.0;
+        updateBearing(val: parsedBearing);
         if (driverUpdatedPositionModel!.status == 3 || driverUpdatedPositionModel!.status == 5) {
           updateIsWithDriver(val: true);
           isWithDriver = true;
         }
-        if (session.isRunningOrder) {
+        if (session.isRunningOrder || currentOrderStatus > 0) {
           await trackingDriver(
               listenLocation: true,
               lat: driverUpdatedPositionModel!.latitude,
@@ -417,10 +478,15 @@ class TestSocketProvider extends ChangeNotifier {
         updateIsWithDriver(val: false);
         isWithDriver = false;
 
-        // Draw car + route immediately if Accept response includes driver position.
+        // Draw car + route immediately if Accept response includes real driver position.
         final acceptDriverLat = double.tryParse(acceptResponseModel!.data.latitude.toString()) ?? 0.0;
         final acceptDriverLng = double.tryParse(acceptResponseModel!.data.longitude.toString()) ?? 0.0;
-        if (acceptDriverLat != 0.0 || acceptDriverLng != 0.0) {
+        // Backend kabhi kabhi pickup coords ko driver position ki jagah bhejta hai —
+        // agar ye pickup location ke same hain to skip karo, real UpdatedLatLong ka wait karo.
+        final bool isPickupCoords =
+            (acceptDriverLat - session.originLat).abs() < 0.0001 &&
+            (acceptDriverLng - session.originLong).abs() < 0.0001;
+        if (!isPickupCoords && (acceptDriverLat != 0.0 || acceptDriverLng != 0.0)) {
           session.setDriverLatLong = "$acceptDriverLat,$acceptDriverLng";
           try {
             await trackingDriver(listenLocation: true, lat: acceptDriverLat, long: acceptDriverLng, bearing: bearing);
@@ -644,50 +710,92 @@ class TestSocketProvider extends ChangeNotifier {
     var latDriver = lat;
     var lngDriver = long;
 
-    MarkerId markerId = const MarkerId("driver");
+    const MarkerId markerId = MarkerId("driver");
+    final LatLng newDriverPos = LatLng(latDriver, lngDriver);
 
-    final Marker marker = Marker(
-      anchor: const Offset(0.5, 0.5),
-      markerId: markerId,
-      position: LatLng(latDriver, lngDriver),
-      icon: driverMarker,
-      zIndex: 2.0,
-      onTap: () {},
-    );
+    // Smooth animation: agar pehle position hai to slide karo, warna seedha place karo
+    if (_previousDriverLatLng != null &&
+        (_previousDriverLatLng!.latitude != newDriverPos.latitude ||
+         _previousDriverLatLng!.longitude != newDriverPos.longitude)) {
+      _animateDriverMarker(_previousDriverLatLng!, newDriverPos, bearing);
+    } else {
+      markers[markerId] = Marker(
+        markerId: markerId,
+        position: newDriverPos,
+        icon: driverMarker ?? BitmapDescriptor.defaultMarker,
+        anchor: const Offset(0.5, 0.5),
+        zIndexInt: 2,
+        rotation: bearing,
+        onTap: () {},
+      );
+      notifyListeners();
+    }
+    _previousDriverLatLng = newDriverPos;
 
-    markers[markerId] = marker;
-    if (listenLocation && session.isRunningOrder) {
+    if (listenLocation && (session.isRunningOrder || currentOrderStatus > 0)) {
       logMe("is with driver called:-->> ${isWithDriver}");
-      final LatLng waypoint;
       if ((isWithDriver) ||
           (currentOrderStatus == 5) ||
           (currentOrderStatus == 7) ||
           (currentOrderStatus == 3)) {
         log("driver:-  is with driver. $isWithDriver");
         log("driver:- destination LatLng. $destinationLatLng");
-        waypoint = destinationLatLng;
-        await setPolyLinesDirection(LatLng(latDriver, lngDriver), destinationLatLng);
+        if (destinationLatLng != null) {
+          await setPolyLinesDirection(LatLng(latDriver, lngDriver), destinationLatLng!);
+          await animateToBounds(LatLng(latDriver, lngDriver), destinationLatLng!);
+        } else {
+          await animateToLocation(LatLng(latDriver, lngDriver));
+        }
       } else {
         log("driver:-  is not with driver. $isWithDriver");
         log("driver:-  is not with driver.origin lat long $originLatLng");
-        waypoint = originLatLng;
-        // Accept event echoes pickup coords as driver position — that gives a
-        // zero-length polyline. Draw the full origin→destination route instead
-        // until UpdatedLatLng events arrive with the real driver position.
-        final bool driverAtPickup =
-            (latDriver - originLatLng.latitude).abs() < 0.0001 &&
-            (lngDriver - originLatLng.longitude).abs() < 0.0001;
-        if (driverAtPickup) {
-          await setPolyLinesDirection(originLatLng, destinationLatLng);
+        if (originLatLng != null) {
+          // Accept event echoes pickup coords as driver position — that gives a
+          // zero-length polyline. Draw the full origin→destination route instead
+          // until UpdatedLatLng events arrive with the real driver position.
+          final bool driverAtPickup =
+              (latDriver - originLatLng!.latitude).abs() < 0.0001 &&
+              (lngDriver - originLatLng!.longitude).abs() < 0.0001;
+          if (driverAtPickup && destinationLatLng != null) {
+            await setPolyLinesDirection(originLatLng!, destinationLatLng!);
+          } else {
+            await setPolyLinesDirection(LatLng(latDriver, lngDriver), originLatLng!);
+          }
+          await animateToBounds(LatLng(latDriver, lngDriver), originLatLng!);
         } else {
-          await setPolyLinesDirection(LatLng(latDriver, lngDriver), originLatLng);
+          await animateToLocation(LatLng(latDriver, lngDriver));
         }
       }
-      // Fit camera to show both the driver and the destination/pickup so the route is visible.
-      await animateToBounds(LatLng(latDriver, lngDriver), waypoint);
     } else {
       await animateToLocation(LatLng(latDriver, lngDriver));
     }
+  }
+
+  // Driver marker ko smoothly animate karo (Ola/Uber jaise sliding movement)
+  void _animateDriverMarker(LatLng from, LatLng to, double targetBearing) {
+    _driverAnimTimer?.cancel();
+    const int steps = 20;
+    int step = 0;
+    final double latStep = (to.latitude - from.latitude) / steps;
+    final double lngStep = (to.longitude - from.longitude) / steps;
+
+    _driverAnimTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      step++;
+      final LatLng pos = step >= steps
+          ? to
+          : LatLng(from.latitude + latStep * step, from.longitude + lngStep * step);
+      markers[const MarkerId("driver")] = Marker(
+        markerId: const MarkerId("driver"),
+        position: pos,
+        icon: driverMarker ?? BitmapDescriptor.defaultMarker,
+        anchor: const Offset(0.5, 0.5),
+        zIndexInt: 2,
+        rotation: targetBearing,
+        onTap: () {},
+      );
+      notifyListeners();
+      if (step >= steps) timer.cancel();
+    });
   }
 
   // Save UserData to SharedPreferences
@@ -875,12 +983,21 @@ class TestSocketProvider extends ChangeNotifier {
   /** Get Order Details */
   Future<OrderDetailResponseModel?> fetchOrderDetails(int id) async {
     log("fetch order details called");
+    if (id <= 0) {
+      log("fetchOrderDetails: invalid id=$id, skipping API call");
+      return null;
+    }
     final String apiUrl =
         'https://api.gatsbyrideshare.com/api/webservice/getOrder?id=$id';
 
     try {
       log("try called : ${apiUrl}");
-      final response = await Dio().get(apiUrl);
+      final response = await Dio().get(
+        apiUrl,
+        options: Options(
+          headers: {'Authorization': 'Bearer ${session.sessionToken}'},
+        ),
+      );
       log("--------******* ${response.data}");
 
       if (response.statusCode == 200) {
@@ -1111,7 +1228,7 @@ class TestSocketProvider extends ChangeNotifier {
         position: LatLng(orderDataDetail.originLatLng.latitude,
             orderDataDetail.originLatLng.longitude),
         infoWindow: const InfoWindow(title: "Origin"),
-        icon: initialMarker,
+        icon: initialMarker ?? BitmapDescriptor.defaultMarker,
         onTap: () {},
       );
       final Marker markerDestination = Marker(
@@ -1120,7 +1237,7 @@ class TestSocketProvider extends ChangeNotifier {
         position: LatLng(orderDataDetail.destinationLatLng.latitude,
             orderDataDetail.destinationLatLng.longitude),
         infoWindow: const InfoWindow(title: "destination"),
-        icon: destinationMarker,
+        icon: destinationMarker ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         onTap: () {},
       );
 
@@ -1161,6 +1278,7 @@ class TestSocketProvider extends ChangeNotifier {
     destinationLatLng = destination;
     notifyListeners();
   }
+
 
   Future<void> moveCameraToDriver() async {
     await animateToLocation(LatLng(_driverLat, _driverLng));

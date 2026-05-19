@@ -6,6 +6,7 @@ import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'helper.dart';
 import 'injection.dart';
 
@@ -41,6 +42,14 @@ class FirebaseHelper {
       log("onMessage listen called");
       log("remote message is------->>>>>. ${message.toMap().toString()}");
 
+      final String type = message.data['type'] ?? '';
+      // Chat notifications are handled by the socket Chat event (with isChatPageOpen
+      // check), so skip the FCM duplicate to avoid showing the notification twice.
+      if (type == 'Chat' || type == 'chat') {
+        log("Chat FCM notification skipped — handled by socket");
+        return;
+      }
+
       final String title = message.data['title'] ?? message.notification?.title ?? '';
       final bool isNoDriver = title.toLowerCase().contains('no driver');
 
@@ -73,12 +82,17 @@ class FirebaseHelper {
     session.setOrderStatus = 8;
     session.setSearchingTime = 180;
 
-    final socketProvider = locator<TestSocketProvider>();
-    socketProvider.cancelRideByCustomer();
-
     final navigatorKey = locator<GlobalKey<NavigatorState>>();
     final context = navigatorKey.currentContext;
     if (context != null) {
+      // TestSocketProvider Provider se milta hai, GetIt se nahi
+      try {
+        final socketProvider = Provider.of<TestSocketProvider>(context, listen: false);
+        socketProvider.cancelRideByCustomer();
+      } catch (e) {
+        log("_handleNoDriverAvailable: could not cancel ride — $e");
+      }
+
       dismissLoading();
       Navigator.of(context).pushNamedAndRemoveUntil(
         HomePage.routeName,

@@ -219,6 +219,7 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
     try {
       final socketProvider = context.read<TestSocketProvider>();
       socketProvider.removeListener(_onSocketUpdate);
+      socketProvider.stopCustomerLocationTracking();
     } catch (e) {
       log("dispose listener remove error: $e");
     }
@@ -245,18 +246,20 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
               children: <Widget>[
                 GoogleMap(
                   mapType: MapType.normal,
+                  myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   zoomControlsEnabled: true,
                   initialCameraPosition: CameraPosition(
-                      target: LatLng(newSocketProvider.lat, newSocketProvider.long),
+                      target: widget.location.originLatLng,
                       zoom: newSocketProvider.zoom,
                       bearing: newSocketProvider.bearing),
                   onMapCreated: (GoogleMapController controller) async {
                     newSocketProvider.googleMapController = controller;
-                    newSocketProvider.setCurrentLocation(widget.location);
-                    // Show driver marker + route from last known position immediately,
-                    // without waiting for the next UpdatedLatLng socket event.
-                    newSocketProvider.restoreDriverPositionOnMapReady();
+                    // Pehle markers set karo (origin/destination), phir driver restore karo
+                    await newSocketProvider.setCurrentLocation(widget.location);
+                    newSocketProvider.startCustomerLocationTracking();
+                    // Driver marker + route last known position se immediately dikhao
+                    await newSocketProvider.restoreDriverPositionOnMapReady();
                   },
                   onCameraMove: (val) async {
                     newSocketProvider.updateZoom(val);

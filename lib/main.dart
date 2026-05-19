@@ -1,6 +1,7 @@
-import 'dart:developer';
+import 'dart:io';
 import 'package:GetsbyRideshare/core/presentation/providers/logout_provider.dart';
 import 'package:GetsbyRideshare/core/static/strings.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:GetsbyRideshare/socket/test_socket_provider.dart';
 import 'package:GetsbyRideshare/features/contact_us/presentation/providers/contactus_provider.dart';
 import 'package:GetsbyRideshare/features/forgot_password/presentation/providers/forgot_password_provider.dart';
@@ -17,7 +18,6 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'core/presentation/pages/splash_page.dart';
 import 'core/presentation/providers/home_provider.dart';
 import 'core/presentation/providers/place_picker_provider.dart';
@@ -43,6 +43,35 @@ import 'package:firebase_core/firebase_core.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // iOS: APNs automatically shows the notification when `notification` key is
+  // present in the FCM payload — no local notification needed here.
+  // Android: show a local notification for data-only messages.
+  if (Platform.isAndroid) {
+    final String title = message.data['title'] ?? message.notification?.title ?? 'Gatsby RideShare';
+    final String body = message.data['message'] ?? message.data['body'] ?? message.notification?.body ?? '';
+    if (title.isEmpty && body.isEmpty) return;
+
+    final plugin = FlutterLocalNotificationsPlugin();
+    const androidSettings = AndroidInitializationSettings('@mipmap/notification_icon');
+    await plugin.initialize(const InitializationSettings(android: androidSettings));
+
+    await plugin.show(
+      DateTime.now().millisecondsSinceEpoch.remainder(100000),
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'high_importance_channel',
+          'High Importance Notifications',
+          channelDescription: 'This channel is used for important notifications.',
+          importance: Importance.max,
+          priority: Priority.max,
+          icon: '@mipmap/notification_icon',
+        ),
+      ),
+    );
+  }
 }
 
 Future<void> main() async {
@@ -147,11 +176,27 @@ class _MyAppState extends State<MyApp> {
     }
     try {
       await FirebaseMessaging.instance.requestPermission();
-      await NotificationService().init();
-      await FirebaseHelper.init();
+      await NotificationHelper().init();   // local notifications (socket events)
+      await NotificationService().init();  // FCM tap navigation setup
+      await FirebaseHelper.init();         // FCM foreground handler
     } catch (e) {
       logMe("Notification init failed: $e");
     }
+
+    // Killed state: user ne notification tap karke app khola — sahi screen par bhejo
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        final route = await NotificationService().getPushNotificationRoute();
+        if (route == null) return;
+        final navigatorKey = locator<GlobalKey<NavigatorState>>();
+        final context = navigatorKey.currentContext;
+        if (context != null && (context as Element).mounted) {
+          Navigator.of(context).pushNamedAndRemoveUntil(route.$1, (r) => false);
+        }
+      } catch (e) {
+        logMe("Killed state notification navigation failed: $e");
+      }
+    });
   }
 
 

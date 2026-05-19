@@ -31,12 +31,12 @@ class DriverUpdatedPositionModel {
   factory DriverUpdatedPositionModel.fromJson(Map<String, dynamic> json) =>
       DriverUpdatedPositionModel(
         response: json["Response"],
-        message: json["message"],
-        type: json["type"],
-        bearing: json["bearing"],
+        message: json["message"] ?? '',
+        type: json["type"] ?? '',
+        bearing: json["bearing"] ?? 0,
         status: json["status"],
-        latitude: json["Latitude"]?.toDouble(),
-        longitude: json["Longitude"]?.toDouble(),
+        latitude: (json["Latitude"] ?? json["latitude"] ?? 0).toDouble(),
+        longitude: (json["Longitude"] ?? json["longitude"] ?? 0).toDouble(),
       );
 
   Map<String, dynamic> toJson() => {

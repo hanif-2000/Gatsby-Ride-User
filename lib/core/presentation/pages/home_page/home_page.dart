@@ -83,7 +83,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           dismissLoading();
           return null;
         }).then((value) async {
-          if (value == null) return;
+          if (value == null) {
+            session.setIsRunningOrder = false;
+            return;
+          }
           log("order details are:  ${value.data}");
           print("order details are:  ${session.orderStatus}");
           {
@@ -201,6 +204,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void dispose() {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (!context.mounted) return;
+      final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+      if (!homeProvider.isDestinationSelected) {
+        homeProvider.setCurrentLocation();
+      }
+    }
   }
 
   Session session = locator<Session>();

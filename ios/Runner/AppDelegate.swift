@@ -27,7 +27,7 @@ import Stripe
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-  // FirebaseAppDelegateProxyEnabled is false, so we must forward APNs token manually
+  // FirebaseAppDelegateProxyEnabled is false — APNs token manually forward karo
   override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     Messaging.messaging().apnsToken = deviceToken
     super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
@@ -35,6 +35,17 @@ import Stripe
 
   override func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
     print("Failed to register for remote notifications: \(error)")
+  }
+
+  // YE METHOD CRITICAL HAI — FirebaseAppDelegateProxyEnabled=false hone par
+  // background/killed state mein Firebase ko message forward karna zaroori hai.
+  // Iske bina iOS background mein FCM process nahi hota aur sab messages queue
+  // hote hain aur app open hone par ek saath aate hain.
+  override func application(_ application: UIApplication,
+                             didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                             fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    Messaging.messaging().appDidReceiveMessage(userInfo)
+    super.application(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
   }
 
   override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {

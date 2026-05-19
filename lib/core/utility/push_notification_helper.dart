@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:GetsbyRideshare/core/presentation/pages/home_page/home_page.dart';
 import 'package:GetsbyRideshare/core/utility/session_helper.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -81,13 +83,8 @@ class NotificationService {
           sound: true,
         );
 
-    /// Update the iOS foreground notification presentation options to allow
-    /// heads up notifications.
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: false,
-      badge: false,
-      sound: false,
-    );
+    // iOS foreground options NotificationHelper.init() mein set hoti hain (alert:false)
+    // taki FCM + local dono ek saath na aayein (duplicate avoid)
     _initFirebaseListeners();
   }
 
@@ -130,17 +127,8 @@ class NotificationService {
           NotificationEntity.fromJson(message.data);
       _pushNextScreenFromForeground(notificationEntity);
     });
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      if (Platform.isIOS || (session.userId.isEmpty)) {
-        return;
-      }
-      print("Foreground notification received:  ${message.data}");
-      NotificationEntity notificationEntity = NotificationEntity.fromJson(message.data);
-      print(message.data.toString());
-      notificationEntity.title = notificationEntity.title ?? "Auto Experts Tx";
-      notificationEntity.body = notificationEntity.body;
-      _showNotifications(notificationEntity);
-    });
+    // onMessage is handled by FirebaseHelper.incomingNotificationHandling() to
+    // avoid duplicate local notifications. Do not add another listener here.
   }
 
   Future<void> clearAllNotifications() async {
@@ -171,32 +159,29 @@ class NotificationService {
             importance: Importance.high,
             styleInformation: BigTextStyleInformation(notificationEntity.body!),
           ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         ),
         payload: convertNotificationEntityToString(notificationEntity));
   }
 
   void _pushNextScreenFromForeground(NotificationEntity notificationEntity) async {
-    final tuple2 = await callApi(notificationEntity);
-    if (tuple2 != null) {
-      /*if (myRouteObserver.currentRoute == Routes.notification &&
-          Getters.getContext!.mounted) {
-        Getters.getContext!.read<NotificationBloc>().add(GetNotifications());
-      } else if (myRouteObserver.currentRoute == Routes.courseDetail &&
-          Getters.getContext!.mounted) {
-        back(Getters.getContext!);
-        toNamed(Getters.getContext!, tuple2.$1, args: tuple2.$2);
-      } else {
-        toNamed(Getters.getContext!, tuple2.$1, args: tuple2.$2);
-      }*/
+    final route = await callApi(notificationEntity);
+    if (route == null) return;
+    final navigatorKey = locator<GlobalKey<NavigatorState>>();
+    final context = navigatorKey.currentContext;
+    if (context != null && (context as Element).mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil(route.$1, (r) => false);
     }
   }
 
   Future<(String, Object?)?> callApi(NotificationEntity entity) async {
-   /* if (entity.courseId != null) {
-      return (Routes.courseDetail, {"id": int.tryParse(entity.courseId ?? "")});
-    } else {
-      return (Routes.notification, null);
-    }*/
+    // Notification tap hone par hamesha HomePage par bhejo —
+    // HomePage khud session check karke order page par redirect kar deta hai
+    return (HomePage.routeName, null);
   }
 
   Future<(String, Object?)?> getPushNotificationRoute() async {
@@ -228,11 +213,16 @@ class NotificationService {
   }
 
   NotificationEntity? convertStringToNotificationEntity(String? value) {
-    if (value == null) {
+    if (value == null || value.trim().isEmpty) {
       return null;
     }
 
-    Map<String, dynamic> map = _decoder.convert(value);
-    return NotificationEntity.fromJson(map);
+    try {
+      Map<String, dynamic> map = _decoder.convert(value);
+      return NotificationEntity.fromJson(map);
+    } catch (e) {
+      print("convertStringToNotificationEntity parse error: $e");
+      return null;
+    }
   }
 }
