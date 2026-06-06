@@ -53,6 +53,12 @@ class TestSocketProvider extends ChangeNotifier {
   // ✅ FIX 1: Duplicate listener rokne ke liye flag
   bool _isListening = false;
 
+  // Tracks the highest status for which a local notification was shown.
+  // Prevents duplicate banners when the socket replays a status event after
+  // background → foreground transition (socket reconnects while syncStatusFromApi
+  // hasn't completed yet, so isNewXxx guards are still true).
+  int _lastNotifiedStatus = 0;
+
   List<ChatModel> get chatMessageList => _chatMessagesList;
   BitmapDescriptor? destinationMarker, initialMarker, driverMarker;
   String originAddress = 'Pickup Address';
@@ -255,6 +261,14 @@ class TestSocketProvider extends ChangeNotifier {
   void stopCustomerLocationTracking() {
     _customerLocationSubscription?.cancel();
     _customerLocationSubscription = null;
+  }
+
+  /// Returns true only when the Flutter app is in the foreground (resumed state).
+  /// Used to skip local notifications in background — FCM system notification
+  /// already covers that case, so showing another local notification would duplicate it.
+  bool _isAppInForeground() {
+    final state = WidgetsBinding.instance.lifecycleState;
+    return state == AppLifecycleState.resumed;
   }
 
   // -----> function to connect the socket <--------- //
@@ -504,6 +518,7 @@ class TestSocketProvider extends ChangeNotifier {
         log("****************************     DRIVER DEPARTURE TO CUSTOMER *************************");
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
+        final bool isNewDeparture = session.orderStatus < 2;
         session.setOrderStatus = 2;
         currentOrderStatus = 2;
         updateCurrentOrderStatus(val: 2);
@@ -514,10 +529,16 @@ class TestSocketProvider extends ChangeNotifier {
         currentOrderStatus = 2;
         await _trackFromStatusEvent(acceptResponseModel!);
         notifyListeners();
-        NotificationHelper().showLocalNotification(
-          title: "Driver On the Way",
-          body: "Your driver is heading to your pickup location.",
-        );
+        // Foreground mein hi local notification dikhao.
+        // Background mein FCM system notification khud show karta hai —
+        // socket + FCM dono saath fire hone se duplicate banta tha.
+        if (isNewDeparture && _isAppInForeground() && 2 > _lastNotifiedStatus) {
+          _lastNotifiedStatus = 2;
+          NotificationHelper().showLocalNotification(
+            title: "Driver On the Way",
+            body: "Your driver is heading to your pickup location.",
+          );
+        }
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
@@ -526,6 +547,7 @@ class TestSocketProvider extends ChangeNotifier {
         log("****************************      DRIVER REACH YOUR LOCATION *************************");
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
+        final bool isNewReach = session.orderStatus < 3;
         session.setOrderStatus = 3;
         session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: true);
@@ -535,10 +557,13 @@ class TestSocketProvider extends ChangeNotifier {
         updateCurrentOrderStatus(val: 3);
         await _trackFromStatusEvent(acceptResponseModel!);
         notifyListeners();
-        NotificationHelper().showLocalNotification(
-          title: "Driver Arrived",
-          body: "Your driver has reached your pickup location. Please come outside.",
-        );
+        if (isNewReach && _isAppInForeground() && 3 > _lastNotifiedStatus) {
+          _lastNotifiedStatus = 3;
+          NotificationHelper().showLocalNotification(
+            title: "Driver Arrived",
+            body: "Your driver has reached your pickup location. Please come outside.",
+          );
+        }
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
@@ -547,6 +572,7 @@ class TestSocketProvider extends ChangeNotifier {
         log("****************************      DRIVER START THE RIDE *************************");
         acceptResponseModel = AcceptResponseModel.fromJson(response);
         session.setOrderId = acceptResponseModel!.data.id.toString();
+        final bool isNewTrip = session.orderStatus < 5;
         session.setOrderStatus = 5;
         session.setDriverId = acceptResponseModel!.data.driverId.toString();
         updateIsWithDriver(val: true);
@@ -555,16 +581,20 @@ class TestSocketProvider extends ChangeNotifier {
         session.setIsRunningOrder = true;
         await _trackFromStatusEvent(acceptResponseModel!);
         notifyListeners();
-        NotificationHelper().showLocalNotification(
-          title: "Ride Started",
-          body: "Your ride has started. Enjoy your trip!",
-        );
+        if (isNewTrip && _isAppInForeground() && 5 > _lastNotifiedStatus) {
+          _lastNotifiedStatus = 5;
+          NotificationHelper().showLocalNotification(
+            title: "Ride Started",
+            body: "Your ride has started. Enjoy your trip!",
+          );
+        }
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
       /// *************** END TRIP  ********* -------
       else if (response['type'] == 'endTrip') {
         log("****************************      DRIVER END THE RIDE *************************");
+        final bool isNewEnd = session.orderStatus < 7;
         session.setOrderStatus = 7;
         currentOrderStatus = 7;
         updateCurrentOrderStatus(val: 7);
@@ -574,10 +604,13 @@ class TestSocketProvider extends ChangeNotifier {
         session.setOrderId = acceptResponseModel!.data.id.toString();
         saveOrderReceipt();
         notifyListeners();
-        NotificationHelper().showLocalNotification(
-          title: "Ride Completed",
-          body: "Your ride has ended. Thank you for riding with Gatsby!",
-        );
+        if (isNewEnd && _isAppInForeground() && 7 > _lastNotifiedStatus) {
+          _lastNotifiedStatus = 7;
+          NotificationHelper().showLocalNotification(
+            title: "Ride Completed",
+            body: "Your ride has ended. Thank you for riding with Gatsby!",
+          );
+        }
         log("-------->>>>>> ********* >>>>>>> CURRENT ORDER STATUS IS:-->> ${currentOrderStatus}   ----------<<<<<<<<<<<<*********");
       }
 
@@ -593,10 +626,12 @@ class TestSocketProvider extends ChangeNotifier {
           updateCurrentOrderStatus(val: 8);
 
           notifyListeners();
-          NotificationHelper().showLocalNotification(
-            title: "Ride Cancelled",
-            body: "Your driver has cancelled the ride. Please search for another driver.",
-          );
+          if (_isAppInForeground()) {
+            NotificationHelper().showLocalNotification(
+              title: "Ride Cancelled",
+              body: "Your driver has cancelled the ride. Please search for another driver.",
+            );
+          }
           showDialog(
             barrierDismissible: false,
             context: locator<GlobalKey<NavigatorState>>().currentContext!,
@@ -648,7 +683,7 @@ class TestSocketProvider extends ChangeNotifier {
         final chatData = response['data'] ?? response;
         addSingleChat(ChatModel.fromMap(chatData));
         log("chat data is :-->>${chatMessageList.length}");
-        if (!isChatPageOpen) {
+        if (!isChatPageOpen && _isAppInForeground()) {
           NotificationHelper().showLocalNotification(
             title: "New Message",
             body: chatData['message'] ?? chatData['msg'] ?? "You have a new message",
@@ -1288,6 +1323,9 @@ class TestSocketProvider extends ChangeNotifier {
     final status = session.orderStatus;
     if (status > 0 && status != 100) {
       currentOrderStatus = status;
+      // Prevent re-showing notifications for statuses already seen before this
+      // session (e.g. app killed and relaunched mid-ride).
+      if (status > _lastNotifiedStatus) _lastNotifiedStatus = status;
       if (status == 3 || status == 5 || status == 7) {
         isWithDriver = true;
       }
@@ -1334,8 +1372,15 @@ class TestSocketProvider extends ChangeNotifier {
         log("syncStatusFromApi: updating status $currentOrderStatus → $apiStatus");
         currentOrderStatus = apiStatus;
         session.setOrderStatus = apiStatus;
+        // Mark this status as already-notified (APNs showed it in background).
+        // Prevents socket replay events after foreground from showing a duplicate banner.
+        if (apiStatus > _lastNotifiedStatus) _lastNotifiedStatus = apiStatus;
         if (apiStatus == 3 || apiStatus == 5 || apiStatus == 7) {
           isWithDriver = true;
+        }
+        // Persist receipt to session so ReceiptScreen can load it after background→foreground
+        if (apiStatus == 7) {
+          saveOrderReceipt();
         }
         if (driverDetailResponseModel == null && session.driverId.isNotEmpty) {
           final driverId = int.tryParse(session.driverId);

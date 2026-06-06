@@ -4,7 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationHelper {
-  //singleton pattern
   static NotificationHelper? _instance;
 
   NotificationHelper._internal() {
@@ -46,23 +45,20 @@ class NotificationHelper {
           sound: true,
         );
 
-    /// Update the iOS foreground notification presentation options to allow
-    /// heads up notifications.
+    // alert: false — background replay messages foreground mein auto-banner na dikhayein.
+    // Background notifications APNs khud dikhata hai. Socket events foreground UI update karte hain.
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
       alert: false,
-      badge: false,
+      badge: true,
       sound: false,
     );
   }
 
-  /// Create a [AndroidNotificationChannel] for heads up notifications
   AndroidNotificationChannel channel = const AndroidNotificationChannel(
-    'high_importance_channel', // id
+    'high_importance_channel',
     'High Importance Notifications',
     description: 'This channel is used for important notifications.',
-
-    // description
     importance: Importance.max,
   );
 
@@ -101,29 +97,5 @@ class NotificationHelper {
     );
   }
 
-  // Future<void> showNotifications(RemoteMessage message) async {
-  //   if (message.notification != null) {
-  //     await flutterLocalNotificationsPlugin.show(
-  //       0,
-  //       message.data['title'],
-  //       message.data['message'],
-  //       // message.notification?.title,%
-  //       // message.notification?.body != null
-  //       //     ? message.notification?.body
-  //       //     : message.data['message'],
-  //       NotificationDetails(android: _androidNotificationDetails),
-  //     );
-  //   } else {
-  //     await flutterLocalNotificationsPlugin.show(
-  //       0,
-  //       message.data['title'],
-  //       message.data['message'],
-  //       NotificationDetails(android: _androidNotificationDetails),
-  //     );
-  //   }
-  // }
-
-  void selectNotification(NotificationResponse? payload) async {
-    //handle your logic here
-  }
+  void selectNotification(NotificationResponse? payload) async {}
 }

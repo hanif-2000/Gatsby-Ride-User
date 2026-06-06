@@ -21,8 +21,8 @@ class DriverDetailResponseModel {
 
   factory DriverDetailResponseModel.fromJson(Map<String, dynamic> json) =>
       DriverDetailResponseModel(
-        success: json["success"],
-        message: Message.fromJson(json["message"]),
+        success: (json["success"] as num?)?.toInt() ?? 1,
+        message: Message.fromJson(json["message"] ?? {}),
       );
 
   Map<String, dynamic> toJson() => {

@@ -55,9 +55,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         if (value == null) return;
         logMe(" order details are:::::::::::::: ${value}");
         socketProvider.updateOrderDetailsModel(data: value);
-        socketProvider.fetchDriverDetails(int.parse(session.driverId)).then((value) {
+        final driverId = int.tryParse(session.driverId);
+        if (driverId == null) return;
+        socketProvider.fetchDriverDetails(driverId).then((value) {
           socketProvider.updateDriverDetailsModel(data: value);
           logMe(" driver details are:::::::::::::: ${value}");
+        }).catchError((e) {
+          logMe("retrieveOrderReceiptFromLocal: fetchDriverDetails error — $e");
         });
       });
     });

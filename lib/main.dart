@@ -27,7 +27,6 @@ import 'core/static/colors.dart';
 import 'core/utility/firebase_helper.dart';
 import 'core/utility/helper.dart';
 import 'core/utility/injection.dart';
-import 'core/utility/notification_service.dart';
 import 'core/utility/push_notification_helper.dart';
 import 'core/utility/session_helper.dart';
 import 'features/about_us/presentation/providers/aboutus_provider.dart';
@@ -44,18 +43,21 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // iOS: APNs automatically shows the notification when `notification` key is
-  // present in the FCM payload — no local notification needed here.
-  // Android: show a local notification for data-only messages.
-  if (Platform.isAndroid) {
-    final String title = message.data['title'] ?? message.notification?.title ?? 'Gatsby RideShare';
-    final String body = message.data['message'] ?? message.data['body'] ?? message.notification?.body ?? '';
-    if (title.isEmpty && body.isEmpty) return;
+  // Chat socket se handle hoti hai — FCM duplicate avoid karo
+  final String type = message.data['type'] ?? '';
+  if (type == 'Chat' || type == 'chat') return;
 
+  final String title = message.data['title'] ?? 'Gatsby RideShare';
+  final String body = message.data['message'] ?? message.data['body'] ?? '';
+  if (title.isEmpty && body.isEmpty) return;
+
+  // Android: backend ab data-only message bhejta hai (notification field nahi).
+  // System auto-show nahi karta — hum yahan exactly ek baar show karte hain.
+  // iOS: APNs ne apns.payload.aps.alert se khud show kar diya — duplicate na ho.
+  if (Platform.isAndroid) {
     final plugin = FlutterLocalNotificationsPlugin();
     const androidSettings = AndroidInitializationSettings('@mipmap/notification_icon');
     await plugin.initialize(const InitializationSettings(android: androidSettings));
-
     await plugin.show(
       DateTime.now().millisecondsSinceEpoch.remainder(100000),
       title,
@@ -80,71 +82,68 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   try {
     await init();
-     locator.isReady<Session>().then((_) async {
-      runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider<SplashProvider>(
-              create: (context) => locator<SplashProvider>(),
-            ),
-            ChangeNotifierProvider<HomeProvider>(
-              create: (context) => locator<HomeProvider>(),
-            ),
-            ChangeNotifierProvider<PlacePickerProvider>(
-              create: (context) => locator<PlacePickerProvider>(),
-            ),
-            ChangeNotifierProvider<AboutUsProvider>(
-              create: (context) => locator<AboutUsProvider>(),
-            ),
-            ChangeNotifierProvider<ProfileProvider>(
-              create: (context) => locator<ProfileProvider>(),
-            ),
-            ChangeNotifierProvider<HistoryProvider>(
-              create: (context) => locator<HistoryProvider>(),
-            ),
-            ChangeNotifierProvider<ProfileEditProvider>(
-              create: (context) => locator<ProfileEditProvider>(),
-            ),
-            ChangeNotifierProvider<ChangeEmailProvider>(
-              create: (context) => locator<ChangeEmailProvider>(),
-            ),
-            ChangeNotifierProvider<ChangePasswordProvider>(
-              create: (context) => locator<ChangePasswordProvider>(),
-            ),
-            ChangeNotifierProvider<ForgotPasswordProvider>(
-              create: (context) => locator<ForgotPasswordProvider>(),
-            ),
-            ChangeNotifierProvider<OtpVerificationProvider>(
-              create: (context) => locator<OtpVerificationProvider>(),
-            ),
-            ChangeNotifierProvider<CreateProfileProvider>(
-              create: (context) => locator<CreateProfileProvider>(),
-            ),
-            ChangeNotifierProvider<UploadProfileImageProvider>(
-              create: (context) => locator<UploadProfileImageProvider>(),
-            ),
-            ChangeNotifierProvider<ContactusProvider>(
-              create: (context) => locator<ContactusProvider>(),
-            ),
-            ChangeNotifierProvider<LoginProvider>(
-              create: (context) => locator<LoginProvider>(),
-            ),
-            ChangeNotifierProvider<PaymentProvider>(
-              create: (context) => locator<PaymentProvider>(),
-            ),
-            ChangeNotifierProvider<TestSocketProvider>(
-              create: (context) => TestSocketProvider(),
-
-            ),
-            ChangeNotifierProvider<LogOutProvider>(
-              create: (context) => locator<LogOutProvider>(),
-            ),
-
-          ],
-          builder: (context, _) => const MyApp(),
-        ),
-      );
-    });
+    await locator.isReady<Session>();
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SplashProvider>(
+            create: (context) => locator<SplashProvider>(),
+          ),
+          ChangeNotifierProvider<HomeProvider>(
+            create: (context) => locator<HomeProvider>(),
+          ),
+          ChangeNotifierProvider<PlacePickerProvider>(
+            create: (context) => locator<PlacePickerProvider>(),
+          ),
+          ChangeNotifierProvider<AboutUsProvider>(
+            create: (context) => locator<AboutUsProvider>(),
+          ),
+          ChangeNotifierProvider<ProfileProvider>(
+            create: (context) => locator<ProfileProvider>(),
+          ),
+          ChangeNotifierProvider<HistoryProvider>(
+            create: (context) => locator<HistoryProvider>(),
+          ),
+          ChangeNotifierProvider<ProfileEditProvider>(
+            create: (context) => locator<ProfileEditProvider>(),
+          ),
+          ChangeNotifierProvider<ChangeEmailProvider>(
+            create: (context) => locator<ChangeEmailProvider>(),
+          ),
+          ChangeNotifierProvider<ChangePasswordProvider>(
+            create: (context) => locator<ChangePasswordProvider>(),
+          ),
+          ChangeNotifierProvider<ForgotPasswordProvider>(
+            create: (context) => locator<ForgotPasswordProvider>(),
+          ),
+          ChangeNotifierProvider<OtpVerificationProvider>(
+            create: (context) => locator<OtpVerificationProvider>(),
+          ),
+          ChangeNotifierProvider<CreateProfileProvider>(
+            create: (context) => locator<CreateProfileProvider>(),
+          ),
+          ChangeNotifierProvider<UploadProfileImageProvider>(
+            create: (context) => locator<UploadProfileImageProvider>(),
+          ),
+          ChangeNotifierProvider<ContactusProvider>(
+            create: (context) => locator<ContactusProvider>(),
+          ),
+          ChangeNotifierProvider<LoginProvider>(
+            create: (context) => locator<LoginProvider>(),
+          ),
+          ChangeNotifierProvider<PaymentProvider>(
+            create: (context) => locator<PaymentProvider>(),
+          ),
+          ChangeNotifierProvider<TestSocketProvider>(
+            create: (context) => TestSocketProvider(),
+          ),
+          ChangeNotifierProvider<LogOutProvider>(
+            create: (context) => locator<LogOutProvider>(),
+          ),
+        ],
+        builder: (context, _) => const MyApp(),
+      ),
+    );
   } catch (e) {
     logMe(e);
   }
@@ -164,7 +163,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-
   _initStripe() async {
     try {
       Stripe.publishableKey = publishKeyLive;
@@ -176,14 +174,12 @@ class _MyAppState extends State<MyApp> {
     }
     try {
       await FirebaseMessaging.instance.requestPermission();
-      await NotificationHelper().init();   // local notifications (socket events)
-      await NotificationService().init();  // FCM tap navigation setup
-      await FirebaseHelper.init();         // FCM foreground handler
+      await NotificationService().init();
+      await FirebaseHelper.init();
     } catch (e) {
       logMe("Notification init failed: $e");
     }
 
-    // Killed state: user ne notification tap karke app khola — sahi screen par bhejo
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         final route = await NotificationService().getPushNotificationRoute();
@@ -199,7 +195,6 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -207,10 +202,7 @@ class _MyAppState extends State<MyApp> {
       title: 'GatsbyRideShare',
       theme: ThemeData(
         useMaterial3: false,
-        colorScheme:
-            ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color
-                // primary: primaryColor,
-                ),
+        colorScheme: ColorScheme.fromSwatch().copyWith(primary: yellowE5A829Color),
       ),
       navigatorObservers: [routeObserver],
       localizationsDelegates: [

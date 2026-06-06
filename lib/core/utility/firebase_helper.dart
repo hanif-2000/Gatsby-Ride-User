@@ -50,6 +50,17 @@ class FirebaseHelper {
         return;
       }
 
+      // Ride status notifications are handled by socket event handlers which show
+      // a local notification. Skipping here prevents a duplicate on Android foreground
+      // (socket fires first, then onMessage fires for the same event).
+      const rideStatusTypes = {
+        'DepartToCustomer', 'reachLocation', 'startTrip', 'endTrip', 'Reject'
+      };
+      if (rideStatusTypes.contains(type)) {
+        log("Ride status FCM skipped on Android — socket handler shows it: $type");
+        return;
+      }
+
       final String title = message.data['title'] ?? message.notification?.title ?? '';
       final bool isNoDriver = title.toLowerCase().contains('no driver');
 
@@ -68,6 +79,14 @@ class FirebaseHelper {
           // Customer already cancelled or ride is in progress — ignore silently
           log("No-driver notification ignored — customer cancelled or ride active (status=${session.orderStatus}, running=${session.isRunningOrder})");
         }
+        return;
+      }
+
+      // iOS: background mein APNs already show kar chuka hota hai.
+      // Foreground mein setForegroundNotificationPresentationOptions(alert:true) handle karta hai.
+      // iOS par onMessage background messages ko replay karta hai — duplicate rokne ke liye skip karo.
+      if (Platform.isIOS) {
+        log("iOS onMessage — notification display skipped (APNs handles it)");
         return;
       }
 

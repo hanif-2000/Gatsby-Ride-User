@@ -83,10 +83,22 @@ class AppInterceptor extends Interceptor {
     log("--->>>>>> status coder is :${statusCode} --------*****00");
     if (statusCode == HttpStatus.unprocessableEntity) {
       dismissLoading();
-      // Don't logout on 422 — it's a validation error (e.g. login/register form errors)
-      // just propagate the error to the caller
-      // final session = locator<Session>();
-      // session.setLoggedIn = false;
+      // Token mismatch means the server has invalidated this token (e.g. login on another device).
+      // Treat it the same as 401 — force re-login.
+      final responseData = err.response?.data;
+      final isTokenMismatch = responseData is Map &&
+          (responseData['message'] as String? ?? '').toLowerCase().contains('token mismatch');
+      if (isTokenMismatch && !_isNavigatingToLogin) {
+        _isNavigatingToLogin = true;
+        await sessionLogOut().then(
+          (_) => Navigator.pushNamedAndRemoveUntil(
+            locator<GlobalKey<NavigatorState>>().currentContext!,
+            LoginPage.routeName,
+            (route) => false,
+          ),
+        );
+        _isNavigatingToLogin = false;
+      }
     }
     if (statusCode == HttpStatus.unauthorized || statusCode == 401) {
       print("====unauthorized called==>>");

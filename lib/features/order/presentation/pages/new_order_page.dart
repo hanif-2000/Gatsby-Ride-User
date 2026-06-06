@@ -59,13 +59,30 @@ class _NewOrderPageState extends State<NewOrderPage> with WidgetsBindingObserver
     }
 
     final currentStatus = socketProvider.currentOrderStatus;
-    if (currentStatus > 0 && currentStatus != _lastProcessedStatus) {
+    if (currentStatus <= 0) return;
+
+    // Status 7 (endTrip): auto-navigate to receipt. Retry on each notifyListeners
+    // until receiptResponseModel is ready (may arrive via syncStatusFromApi after resume).
+    if (currentStatus == 7 && !_hasNavigatedToReceipt && !session.isPaymentDone) {
+      if (socketProvider.receiptResponseModel != null) {
+        _hasNavigatedToReceipt = true;
+        _lastProcessedStatus = 7;
+        log("Status 7 — auto-navigating to receipt screen");
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ReceiptScreen()),
+          );
+        });
+      }
+      // Receipt data not ready yet — don't mark as processed so we retry next notifyListeners
+      return;
+    }
+
+    if (currentStatus != _lastProcessedStatus) {
       _lastProcessedStatus = currentStatus;
       log("Status changed to: $currentStatus");
-
-      if (currentStatus == 7 && !_hasNavigatedToReceipt && !session.isPaymentDone) {
-        _hasNavigatedToReceipt = true;
-      }
     }
   }
 
